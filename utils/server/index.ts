@@ -41,10 +41,9 @@ export const OpenAIStream = async (
   if (OPENAI_API_TYPE === 'azure') {
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
   }
-  console.info(`HTTP POST ${url}`);
-  console.info('  Content-Type: application/json');
-  console.info(`  ${(OPENAI_API_TYPE === 'openai' && 'Authorization: Bearer... (openai)') || (OPENAI_API_TYPE === 'azure' && 'api-key: ... (azure)')}`);
-  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, '${messages[messages.length - 1].content}'>]}`);
+  console.info(`Server: ${OPENAI_API_TYPE}`);
+  console.info(`  HTTP POST ${url}`);
+  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, '${messages[messages.length - 1].content.length} chars'>]}`);
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
