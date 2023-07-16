@@ -1,4 +1,4 @@
-export const TOMTOM_CHATBOT_UI_VERSION = '1.2.3';
+export const TOMTOM_CHATBOT_UI_VERSION = '1.3.0';
 
 export const OPENAI_DEFAULT_SYSTEM_PROMPT =
   process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ||
