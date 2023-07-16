@@ -44,7 +44,7 @@ export const OpenAIStream = async (
   console.info(`HTTP POST ${url}`);
   console.info('  Content-Type: application/json');
   console.info(`  ${(OPENAI_API_TYPE === 'openai' && 'Authorization: Bearer... (openai)') || (OPENAI_API_TYPE === 'azure' && 'api-key: ... (azure)')}`);
-  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, '${messages[messages.length - 1].content.length} chars'>]}`);
+  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, '${messages[messages.length - 1].content}'>]}`);
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
