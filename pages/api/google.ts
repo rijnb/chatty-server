@@ -141,7 +141,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         messages: [
           {
             role: 'system',
-            content: 'Use the sources to provide an accurate response. Respond in markdown format. Cite the sources you used as [1](link), etc., as you use them. Maximum 5 sentences. End the response with "[Powered by Google]" in italics.',
+            content: 'Use the sources to provide an accurate response. Respond in markdown format. Cite the sources you used as [1](link), etc., as you use them. Maximum 5 sentences. End the response with "Powered by Google" in brackets, in italics.',
           },
           answerMessage,
         ],
