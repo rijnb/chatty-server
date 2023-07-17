@@ -43,7 +43,7 @@ export const OpenAIStream = async (
   }
   console.info(`Server: ${OPENAI_API_TYPE}`);
   console.info(`  HTTP POST ${url}`);
-  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, '${messages[messages.length - 1].content.length} chars'>]}`);
+  console.info(`  { model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, stream=true, messages:[<${messages.length}, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars: '${messages[messages.length - 1].content.substring(0, 9)}...'>]}`);
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
