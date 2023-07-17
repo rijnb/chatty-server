@@ -271,12 +271,12 @@ const Home = ({
       dispatch({ field: 'apiKey', value: apiKey });
     }
 
-    const pluginKeys = JSON.parse(localStorage.getItem('pluginKeys')?.toString() || '[]');
+    const pluginKeys = localStorage.getItem('pluginKeys');
     if (serverSidePluginKeysSet) {
       dispatch({ field: 'pluginKeys', value: [] });
       localStorage.removeItem('pluginKeys');
     } else if (pluginKeys) {
-      dispatch({ field: 'pluginKeys', value: pluginKeys });
+      dispatch({ field: 'pluginKeys', value: JSON.parse(pluginKeys) });
     }
 
     if (window.innerWidth < 640) {
@@ -286,12 +286,12 @@ const Home = ({
 
     const showChatbar = localStorage.getItem('showChatbar');
     if (showChatbar) {
-      dispatch({ field: 'showChatbar', value: showChatbar === 'true' });
+      dispatch({ field: 'showChatbar', value: JSON.parse(showChatbar)});
     }
 
     const showPromptbar = localStorage.getItem('showPromptbar');
     if (showPromptbar) {
-      dispatch({ field: 'showPromptbar', value: showPromptbar === 'true' });
+      dispatch({ field: 'showPromptbar', value: JSON.parse(showPromptbar)});
     }
 
     const folders = localStorage.getItem('folders');
@@ -306,8 +306,7 @@ const Home = ({
 
     const conversationHistory = localStorage.getItem('conversationHistory');
     if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] =
-        JSON.parse(conversationHistory);
+      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory);
       const cleanedConversationHistory = cleanConversationHistory(
         parsedConversationHistory,
       );
@@ -317,23 +316,19 @@ const Home = ({
 
     const selectedConversation = localStorage.getItem('selectedConversation');
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation =
-        JSON.parse(selectedConversation);
+      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation);
       const cleanedSelectedConversation = cleanSelectedConversation(
         parsedSelectedConversation,
       );
 
-      dispatch({
-        field: 'selectedConversation',
-        value: cleanedSelectedConversation,
-      });
+      dispatch({ field: 'selectedConversation', value: cleanedSelectedConversation });
     } else {
       const lastConversation = conversations[conversations.length - 1];
       dispatch({
         field: 'selectedConversation',
         value: {
           id: uuidv4(),
-          name: t('New Conversation'),
+          name: t('New conversation'),
           messages: [],
           model: OpenAIModels[defaultModelId],
           prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
