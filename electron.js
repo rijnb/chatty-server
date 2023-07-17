@@ -8,36 +8,9 @@ const serverURL = 'http://localhost:3000';
 
 let mainWindow;
 
-async function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 1000,
-    icon: path.join(__dirname, 'assets/icons/icon.icns'),
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-
-  console.info(`Set icon...`);
-  const dockIcon = path.join(__dirname, 'assets/icons/icon.icns');
-  app.dock.setIcon(dockIcon);
-
-  // Start the main window.
-  console.info(`Start main window...`);
-  await mainWindow.loadURL(serverURL);
-
-  // Quit the app when the main window is closed.
-  mainWindow.on('closed', () => {
-    console.info(`closed)`);
-    app.quit();
-  });
-}
-
 // Store process ID of the Next.js server.
 let nextServerProcess;
-
-app.whenReady().then(async () => {
+const startServerProcess = async () => {
   // Start the Next.js server as a child process
   console.info(`TomTom ChatBot UI - Electron ${process.versions.electron}`);
   console.info('Starting Next.js server (using npm)...');
@@ -64,14 +37,55 @@ app.whenReady().then(async () => {
   console.info(`Wait for Next.js server at ${serverURL}...}`);
   try {
     await waitOn({resources: [serverURL], timeout: 30000});
+    console.info(`Next.js server is available at ${serverURL}`);
   } catch (error) {
-    console.error(`Next.js server not available at ${serverURL}:`, error);
+    console.error(`Next.js server NOT available at ${serverURL}:`, error);
     app.quit();
-    return;
   }
-  console.info(`Next.js server is available at ${serverURL}`);
+}
 
-  // Start the main window
+const killServerProcess = () => {
+  if (nextServerProcess) {
+    console.info(`kill next process (${nextServerProcess.pid}, and children)`);
+    killTree(nextServerProcess.pid, 'SIGTERM', (error) => {
+      if (error) {
+        console.error(`Failed to kill Next.js server process ${nextServerProcess.pid}:`, error);
+      }
+    });
+    nextServerProcess = null;
+  }
+}
+
+async function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1400,
+    height: 1000,
+    icon: path.join(__dirname, 'assets/icons/icon.icns'),
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  console.info(`Set icon...`);
+  const dockIcon = path.join(__dirname, 'assets/icons/icon.icns');
+  app.dock.setIcon(dockIcon);
+
+  // Start the main window.
+  console.info(`Start main window...`);
+  await mainWindow.loadURL(serverURL);
+
+  // Quit the app when the main window is closed.
+  mainWindow.on('closed', () => {
+    console.info(`closed)`);
+    app.quit();
+  });
+}
+
+app.whenReady().then(async () => {
+  // Start the Next.js server as a child process
+  console.info(`TomTom ChatBot UI - Electron ${process.versions.electron}`);
+  await startServerProcess();
   createWindow();
 });
 
@@ -94,13 +108,6 @@ app.on('window-all-closed', () => {
 
 app.on('before-quit', () => {
   console.info(`before-quit`);
-  if (nextServerProcess) {
-    console.info(`kill next process (${nextServerProcess.pid}, and children)`);
-    killTree(nextServerProcess.pid, 'SIGTERM', (error) => {
-      if (error) {
-        console.error(`Failed to kill Next.js server process ${nextServerProcess.pid}:`, error);
-      }
-    });
-    nextServerProcess = null;
-  }
+  killServerProcess();
 });
+
