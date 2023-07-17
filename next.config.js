@@ -8,7 +8,6 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: '/tomtom-chatbot-ui-1',
 
   webpack(config, { isServer, dev }) {
     config.experiments = {
