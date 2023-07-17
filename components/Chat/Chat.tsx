@@ -39,7 +39,6 @@ import { TemperatureSlider } from './Temperature';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
 import {Prism as SyntaxHighlighter} from "react-syntax-highlighter";
 import {oneDark} from "react-syntax-highlighter/dist/cjs/styles/prism";
-import {OPENAI_API_TYPE, TOMTOM_CHATBOT_UI_VERSION} from "@/utils/app/const";
 import { toPng } from 'html-to-image';
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -364,19 +363,13 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     };
   }, [messagesEndRef]);
 
-  const zshenvExample = "# Include in ~/.zshenv:\n" +
-      "export OPENAI_API_TYPE=...             (openai|azure)\n" +
-      "export OPENAI_API_KEY=...              (your API key)\n" +
-      "export OPENAI_API_HOST=...             (https://api.openai.com|Azure URL)\n" +
-      "export OPENAI_AZURE_DEPLOYMENT_ID=...\n" +
-      "export OPENAI_DEFAULT_MODEL=...        (gpt-3.5-turbo|gpt-4-32k)";
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
       {!((!serverSideGuestCodeIsSet || guestCode) &&
           (apiKey || serverSideApiKeyIsSet)) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-black dark:text-white">
-            TomTom ChatBot UI {TOMTOM_CHATBOT_UI_VERSION}
+            TomTom ChatBot UI
           </div>
           <div className="text-center text-lg text-black dark:text-white">
             <div className="mb-8">{`TomTom Chatbot UI is an open source clone of OpenAI's ChatGPT UI.`}</div>
@@ -394,31 +387,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
               with their API.
             </div>
             <div className="mb-2">
-              All you need to do to use the TomTom Azure OpenAI instance, is copy the API key in the
-              bottom left of the sidebar.
-              Alternatively, you can set an environment variable in `.zshenv`, that will be picked up
-              by the TomTom ChatBot UI:
-              <div className="codeblock relative font-sans text-[10px]">
-                <SyntaxHighlighter language='zsh'>{zshenvExample}</SyntaxHighlighter>
-                <div className="mb-2">
-                  Other environment variables you may want to set, are: GOOGLE_API_KEY, GOOGLE_CSE_ID.
-                  These are optional. They allow you to perform Google searches from within the chatbot.
-                </div>
-              </div>
-              {t(
-                '>> Please set your Azure OpenAI API key in the bottom left of the sidebar. <<',
-              )}
-            </div>
-            <div>
-              {t("If you don't have an OpenAI API key, you can get one here: ")}
-              <a
-                href="https://platform.openai.com/account/api-keys"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                openai.com
-              </a>
+              All you need to do to use the TomTom Azure OpenAI instance, is click on OpenAI API key
+              in the bottom left of the sidebar and provide your key.
             </div>
           </div>
         </div>
@@ -439,9 +409,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       <div>
                         <Spinner size="16px" className="mx-auto" />
                       </div>
-                    ) : (
-                        "TomTom ChatBot UI " + TOMTOM_CHATBOT_UI_VERSION
-                    )}
+                    ) : ("TomTom ChatBot UI")}
                   </div>
 
                   {models.length > 0 && (

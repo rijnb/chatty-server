@@ -15,7 +15,7 @@ import {
   cleanConversationHistory,
   cleanSelectedConversation,
 } from '@/utils/app/clean';
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE, TOMTOM_CHATBOT_UI_VERSION} from '@/utils/app/const';
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from '@/utils/app/const';
 import {
   saveConversation,
   saveConversations,
@@ -369,7 +369,7 @@ const Home = ({
     serverSidePluginKeysSet,
   ]);
 
-  const title = "TomTom ChatBot UI " + TOMTOM_CHATBOT_UI_VERSION;
+  const title = "TomTom ChatBot UI";
   return (
     <HomeContext.Provider
       value={{
