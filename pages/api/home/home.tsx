@@ -44,6 +44,7 @@ import {Settings} from "@/types/settings";
 
 interface Props {
   serverSideApiKeyIsSet: boolean;
+  serverSideGuestCodeIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: OpenAIModelID;
 }
@@ -51,6 +52,7 @@ interface Props {
 const Home = ({
   serverSideApiKeyIsSet,
   serverSidePluginKeysSet,
+  serverSideGuestCodeIsSet,
   defaultModelId,
 }: Props) => {
   const { t } = useTranslation('chat');
@@ -65,6 +67,7 @@ const Home = ({
   const {
     state: {
       apiKey,
+      guestCode,
       lightMode,
       folders,
       conversations,
@@ -78,14 +81,16 @@ const Home = ({
   const stopConversationRef = useRef<boolean>(false);
 
   const { data, error, refetch } = useQuery(
-    ['GetModels', apiKey, serverSideApiKeyIsSet],
+      [ 'GetModels', apiKey, serverSideApiKeyIsSet, guestCode, !serverSideGuestCodeIsSet ],
     ({ signal }) => {
       if (!apiKey && !serverSideApiKeyIsSet) return null;
+      if (!guestCode && serverSideGuestCodeIsSet) return null;
 
       return getModels(
         {
           key: apiKey,
         },
+          guestCode,
         signal,
       );
     },
@@ -248,7 +253,17 @@ const Home = ({
         field: 'serverSidePluginKeysSet',
         value: serverSidePluginKeysSet,
       });
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet]);
+    serverSideGuestCodeIsSet &&
+    dispatch({
+      field: 'serverSideGuestCodeIsSet',
+      value: serverSideGuestCodeIsSet,
+    });
+  }, [
+    defaultModelId,
+    serverSideApiKeyIsSet,
+    serverSidePluginKeysSet,
+    serverSideGuestCodeIsSet,
+  ]);
 
   // ON LOAD --------------------------------------------
 
@@ -262,6 +277,7 @@ const Home = ({
     }
 
     const apiKey = localStorage.getItem('apiKey');
+    const guestCode = localStorage.getItem('guestCode');
 
     if (serverSideApiKeyIsSet) {
       dispatch({ field: 'apiKey', value: '' });
@@ -269,6 +285,14 @@ const Home = ({
       localStorage.removeItem('apiKey');
     } else if (apiKey) {
       dispatch({ field: 'apiKey', value: apiKey });
+    }
+
+    if (!serverSideGuestCodeIsSet) {
+      dispatch({ field: 'guestCode', value: '' });
+
+      localStorage.removeItem('guestCode');
+    } else if (guestCode) {
+      dispatch({ field: 'guestCode', value: guestCode });
     }
 
     const pluginKeys = localStorage.getItem('pluginKeys');
@@ -341,6 +365,7 @@ const Home = ({
     defaultModelId,
     dispatch,
     serverSideApiKeyIsSet,
+    serverSideGuestCodeIsSet,
     serverSidePluginKeysSet,
   ]);
 
@@ -414,6 +439,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
+      serverSideGuestCodeIsSet: !!process.env.OPENAI_GUEST_CODE,
       defaultModelId,
       serverSidePluginKeysSet,
       ...(await serverSideTranslations(locale ?? 'en', [

@@ -54,8 +54,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       conversations,
       models,
       apiKey,
+      guestCode,
       pluginKeys,
       serverSideApiKeyIsSet,
+      serverSideGuestCodeIsSet,
       messageIsStreaming,
       modelError,
       loading,
@@ -127,6 +129,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...(guestCode && { Authorization: `Bearer ${guestCode}` }),
           },
           signal: controller.signal,
           body,
@@ -369,7 +372,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       "export OPENAI_DEFAULT_MODEL=...        (gpt-3.5-turbo|gpt-4-32k)";
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
-      {!(apiKey || serverSideApiKeyIsSet) ? (
+      {!((!serverSideGuestCodeIsSet || guestCode) &&
+          (apiKey || serverSideApiKeyIsSet)) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-black dark:text-white">
             TomTom ChatBot UI {TOMTOM_CHATBOT_UI_VERSION}

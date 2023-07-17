@@ -7,6 +7,7 @@ import HomeContext from '@/pages/api/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
 
+import { GuestCode } from '../../Settings/GuestCode';
 import { Import } from '../../Settings/Import';
 import { Key } from '../../Settings/Key';
 import { SidebarButton } from '../../Sidebar/SidebarButton';
@@ -21,8 +22,10 @@ export const ChatbarSettings = () => {
   const {
     state: {
       apiKey,
+      guestCode,
       lightMode,
       serverSideApiKeyIsSet,
+      serverSideGuestCodeIsSet,
       serverSidePluginKeysSet,
       conversations,
     },
@@ -35,12 +38,13 @@ export const ChatbarSettings = () => {
     handleExportData,
     handleExportMarkdown,
     handleApiKeyChange,
+    handleGuestCodeChange,
   } = useContext(ChatbarContext);
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
       {conversations.length > 0 ? (
-        <ClearConversations onClearConversations={handleClearConversations} />
+          <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
 
       <SidebarButton
@@ -75,6 +79,13 @@ export const ChatbarSettings = () => {
           setIsSettingDialog(false);
         }}
       />
+
+      {serverSideGuestCodeIsSet ? (
+        <GuestCode
+          guestCode={guestCode}
+          onGuestCodeChange={handleGuestCodeChange}
+        />
+      ) : null}
     </div>
   );
 };

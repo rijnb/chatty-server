@@ -46,6 +46,7 @@ Supported environment variables:
 # ChatBot UI/OpenAI Azure:
 export OPENAI_API_KEY=YOUR_AZURE_OPENAI_KEY
 export OPENAI_DEFAULT_TEMPERATURE=0.8
+export OPENAI_GUEST_CODE=1234
 export OPENAI_API_HOST=YOUR_AZURE_OPENAI_HOST
 export OPENAI_API_TYPE=azure
 export OPENAI_API_VERSION=2023-05-15
@@ -58,6 +59,15 @@ export OPENAI_DEFAULT_MODEL=gpt-4-32k
 ```
 
 ## Release notes (newest on top)
+
+### 1.3.0
+
+* Added features
+    * Prepared to work on shared Node.js server, instead of just stand-alone.
+    * Added guest code to protect site.
+
+* Fixed bugs
+    * Fixed reading Google API key second time (would crash client).
 
 ### 1.2.3
 
