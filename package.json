@@ -9,6 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
+    "start-local": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "test": "vitest",
@@ -24,7 +25,7 @@
       "buildResources": "assets"
     },
     "files": [
-      ".next/**/*",
+      "_static/**/*",
       "node_modules/**/*",
       "electron.js",
       "package.json"

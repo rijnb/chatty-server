@@ -10,16 +10,15 @@ let mainWindow;
 
 // Store process ID of the Next.js server.
 let nextServerProcess;
-const startServerProcess = async () => {
+const startServerProcess = () => {
   // Start the Next.js server as a child process
-  console.info(`TomTom ChatBot UI - Electron ${process.versions.electron}`);
   console.info('Starting Next.js server (using npm)...');
 
   const envWithCustomPaths = {
     ...process.env,
     PATH: process.env.PATH + ':/usr/local/bin:/opt/homebrew/bin'
   };
-  const nextServerProcess = spawn('npm', ['run', 'start'], {env: envWithCustomPaths, shell: true});
+  const nextServerProcess = spawn('npm', ['run', 'start-local'], {env: envWithCustomPaths, shell: true});
 
   nextServerProcess.stdout.on('data', (data) => {
     console.log(`${data.toString().replace(/\n$/, '')}`);
@@ -28,20 +27,6 @@ const startServerProcess = async () => {
   nextServerProcess.stderr.on('data', (data) => {
     console.error(`${data.toString().replace(/\n$/, '')}`);
   });
-
-  nextServerProcess.on('exit', (code) => {
-    console.info(`Child ${nextServerProcess.pid} exited with code ${code}`);
-  });
-
-  // Wait until the Next.js server is ready
-  console.info(`Wait for Next.js server at ${serverURL}...}`);
-  try {
-    await waitOn({resources: [serverURL], timeout: 30000});
-    console.info(`Next.js server is available at ${serverURL}`);
-  } catch (error) {
-    console.error(`Next.js server NOT available at ${serverURL}:`, error);
-    app.quit();
-  }
 }
 
 const killServerProcess = () => {
@@ -71,6 +56,16 @@ async function createWindow() {
   const dockIcon = path.join(__dirname, 'assets/icons/icon.icns');
   app.dock.setIcon(dockIcon);
 
+  startServerProcess();
+  try {
+    console.info(`Wait for Next.js server at ${serverURL}...}`);
+    await waitOn({resources: [serverURL], timeout: 30000});
+    console.info(`Next.js server is available at ${serverURL}`);
+  } catch (error) {
+    console.error(`Next.js server NOT available at ${serverURL}:`, error);
+    app.quit();
+  }
+
   // Start the main window.
   console.info(`Start main window...`);
   await mainWindow.loadURL(serverURL);
@@ -85,7 +80,6 @@ async function createWindow() {
 app.whenReady().then(async () => {
   // Start the Next.js server as a child process
   console.info(`TomTom ChatBot UI - Electron ${process.versions.electron}`);
-  await startServerProcess();
   createWindow();
 });
 
