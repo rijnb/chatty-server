@@ -40,7 +40,7 @@ const useApiService = () => {
 
   return {
     getModels,
-  };
-};
+  }
+}
 
 export default useApiService;

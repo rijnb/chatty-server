@@ -1,6 +1,5 @@
 import {
   OPENAI_API_HOST,
-  OPENAI_API_MAX_TOKENS,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
   OPENAI_ORGANIZATION
@@ -10,7 +9,7 @@ import { OpenAIModel, OpenAIModelID, OpenAIModels } from '@/types/openai';
 
 export const config = {
   runtime: 'edge',
-};
+}
 
 const handler = async (req: Request): Promise<Response> => {
   try {
@@ -42,13 +41,14 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (response.status === 401) {
+      console.error(`${OPENAI_API_TYPE} returned an error 401`);
       return new Response(response.body, {
         status: 500,
         headers: response.headers,
       });
     } else if (response.status !== 200) {
       console.error(
-        `OpenAI API returned an error ${
+        `${OPENAI_API_TYPE} returned an error ${
           response.status
         }: ${await response.text()}`,
       );
@@ -75,9 +75,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify(models), { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error(`Error: ${error}`);
     return new Response('Error', { status: 500 });
   }
-};
+}
 
 export default handler;
