@@ -8,13 +8,13 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: '100%'
-          }
-        }
-      }
+    //   typography: {
+    //     DEFAULT: {
+    //       css: {
+    //         maxWidth: '100%'
+    //       }
+    //     }
+    //   }
     },
   },
   variants: {

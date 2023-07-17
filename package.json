@@ -15,7 +15,7 @@
     "coverage": "vitest run --coverage",
     "electron-start": "electron .",
     "dist": "npm run build && electron-builder",
-    "package": "npm run build && electron-packager . --overwrite --platform=win32,linux,darwin --arch=x64 --icon=public/icon.png --prune=true --out=release-builds"
+    "package": "npm run build && electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/icon.icns --prune=true --out=release-builds"
   },
   "build": {
     "appId": "com.info.tomtom-chatbot-ui",
@@ -39,7 +39,7 @@
       "sign": false
     },
     "generateUpdatesFilesForAllChannels": false,
-    "asar": false
+    "asar": true
   },
   "dependencies": {
     "@dqbd/tiktoken": "^1.0.2",
