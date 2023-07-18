@@ -48,7 +48,7 @@ export const ChatbarSettings = () => {
       ) : null}
 
       <SidebarButton
-        text={t('Export Conversations as Markdown')}
+        text={t('Export Markdown')}
         icon={<IconMarkdown size={18} />}
         onClick={handleExportMarkdown}
       />
