@@ -73,14 +73,17 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
 
     if (findIndex < 0) return;
 
-    if (
-      findIndex < messages.length - 1 &&
-      messages[findIndex + 1].role === 'assistant'
-    ) {
-      messages.splice(findIndex, 2);
-    } else {
+    if (messages[findIndex].role === 'assistant') {
       messages.splice(findIndex, 1);
     }
+    else {
+      if (findIndex < messages.length - 1 && messages[findIndex + 1].role === 'assistant') {
+        messages.splice(findIndex, 2);
+      } else {
+        messages.splice(findIndex, 1);
+      }
+    }
+
     const updatedConversation = {
       ...selectedConversation,
       messages,
@@ -273,12 +276,20 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                     className="text-green-500 dark:text-green-400"
                   />
                 ) : (
-                  <button
-                    className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={copyOnClick}
-                  >
-                    <IconCopy size={20} />
-                  </button>
+                  <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
+                    <button
+                        className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        onClick={copyOnClick}
+                    >
+                      <IconCopy size={20} />
+                    </button>
+                    <button
+                        className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        onClick={handleDeleteMessage}
+                    >
+                      <IconTrash size={20} />
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
