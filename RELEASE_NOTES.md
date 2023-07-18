@@ -45,13 +45,15 @@ Supported environment variables:
 ```
 # ChatBot UI/OpenAI Azure:
 export OPENAI_API_KEY=YOUR_AZURE_OPENAI_KEY
-export OPENAI_DEFAULT_TEMPERATURE=0.8
-export OPENAI_GUEST_CODE=1234
-export OPENAI_API_HOST=YOUR_AZURE_OPENAI_HOST
-export OPENAI_API_TYPE=azure
-export OPENAI_API_VERSION=2023-05-15
-export OPENAI_AZURE_DEPLOYMENT_ID=YOUR
-export OPENAI_DEFAULT_MODEL=gpt-4-32k
+
+# You can specify these, but they are optional (defaults are OK).
+# export OPENAI_DEFAULT_TEMPERATURE=0.8
+# export OPENAI_GUEST_CODE=1234
+# export OPENAI_API_HOST=YOUR_AZURE_OPENAI_HOST
+# export OPENAI_API_TYPE=azure
+# export OPENAI_API_VERSION=2023-05-15
+# export OPENAI_AZURE_DEPLOYMENT_ID=YOUR
+# export OPENAI_DEFAULT_MODEL=gpt-4-32k
 
 # If you have Google keys for search/CSE, you can add them here:
 # export GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
@@ -64,7 +66,7 @@ export OPENAI_DEFAULT_MODEL=gpt-4-32k
 
 * Added features
     * Prepared to work on shared Node.js server, instead of just stand-alone.
-    * Added guest code to protect site.
+    * Added guest code to protect site. Use OPENAI_GUEST_CODE on server to set code.
 
 * Fixed bugs
     * Fixed reading Google API key second time (would crash client).

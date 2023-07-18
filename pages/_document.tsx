@@ -1,7 +1,6 @@
 import { DocumentProps, Head, Html, Main, NextScript } from 'next/document';
 
 import i18nextConfig from '../next-i18next.config';
-import {TOMTOM_CHATBOT_UI_VERSION} from "@/utils/app/const";
 
 type Props = DocumentProps & {
   // add custom document props
@@ -14,7 +13,7 @@ export default function Document(props: Props) {
     <Html lang={currentLocale}>
       <Head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="TomTom ChatBot UI {TOMTOM_CHATBOT_UI_TITLE}"></meta>
+        <meta name="apple-mobile-web-app-title" content="TomTom ChatBot UI"></meta>
       </Head>
       <body>
         <Main />

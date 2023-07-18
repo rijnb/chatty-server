@@ -1,5 +1,3 @@
-export const TOMTOM_CHATBOT_UI_VERSION = '1.3.0';
-
 export const OPENAI_DEFAULT_SYSTEM_PROMPT =
   process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ||
   "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.";
