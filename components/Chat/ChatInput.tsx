@@ -110,7 +110,7 @@ export const ChatInput = ({
     stopConversationRef.current = true;
     setTimeout(() => {
       stopConversationRef.current = false;
-    }, 1000);
+    }, 3000);
   };
 
   const isMobile = () => {
