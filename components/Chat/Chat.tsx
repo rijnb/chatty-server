@@ -368,27 +368,36 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       {!((!serverSideGuestCodeIsSet || guestCode) &&
           (apiKey || serverSideApiKeyIsSet)) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
-          <div className="text-center text-4xl font-bold text-black dark:text-white">
-            TomTom ChatBot UI
+          <div className="text-center text-4xl font-bold text-red-800 dark:text-red-400">
+            Chatty
           </div>
-          <div className="text-center text-lg text-black dark:text-white">
-            <div className="mb-8">{`TomTom Chatbot UI is an open source clone of OpenAI's ChatGPT UI.`}</div>
+          <div className="text-center text-2xl font-bold text-black dark:text-white">
+            Conversational Host At TomTom...Yes!
+          </div>
+          <div className="text-center text-lg text-gray-500 dark:text-gray-400">
+            <div className="mb-8">{`Chatty is an open source clone of OpenAI's ChatGPT UI.`}</div>
             <div className="mb-2 font-bold">
-              Important: TomTom Chatbot UI is 100% unaffiliated with OpenAI.
+              Important: Chatty is 100% unaffiliated with OpenAI.
             </div>
           </div>
           <div className="text-center text-gray-500 dark:text-gray-400">
             <div className="mb-2">
-              TomTom Chatbot UI allows you to plug in your API key to use this UI with
-              their API.
+              All you need to do to use an (Azure) OpenAI instance, is click on OpenAI API key
+              in the bottom left of the sidebar and provide your key.
             </div>
             <div className="mb-2">
-              It is <span className="italic">only</span> used to communicate
+              The key is <span className="italic">only</span> used to communicate
               with their API.
             </div>
+          </div>
+          <div className="text-center text-cyan-700 ">
             <div className="mb-2">
-              All you need to do to use the TomTom Azure OpenAI instance, is click on OpenAI API key
-              in the bottom left of the sidebar and provide your key.
+              Chatty was developed by Rijn Buve.
+            </div>
+            <div className="mb-2">
+              Chatty is based on 'chatbot-ui' by Mckay Wrigley and includes features from
+              many contributors to 'chatbot-ui'. Many thanks to all.
+              Chatty is licensed under the MIT license.
             </div>
           </div>
         </div>
@@ -409,7 +418,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       <div>
                         <Spinner size="16px" className="mx-auto" />
                       </div>
-                    ) : ("TomTom ChatBot UI")}
+                    ) : ("Chatty")}
                   </div>
 
                   {models.length > 0 && (

@@ -8,7 +8,7 @@ import HomeContext from '@/pages/api/home/home.context';
 
 import { SidebarButton } from '@/components/Sidebar/SidebarButton';
 
-import ChatbarContext from '../Chatbar.context';
+import ChatbarContext from '@/components/Chatbar/Chatbar.context';
 
 export const PluginKeys = () => {
   const { t } = useTranslation('sidebar');

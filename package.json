@@ -1,6 +1,6 @@
 {
-  "name": "tomtom-chatbot-ui",
-  "productName": "TomTom ChatBot UI",
+  "name": "chatty",
+  "productName": "Chatty",
   "version": "1.3.0",
   "license": "MIT",
   "main": "electron.js",
@@ -19,8 +19,8 @@
     "package": "npm run build && electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/icon.icns --prune=true --out=release-builds"
   },
   "build": {
-    "appId": "com.info.tomtom-chatbot-ui",
-    "productName": "TomTom ChatBot UI",
+    "appId": "com.info.chatty",
+    "productName": "Chatty",
     "directories": {
       "buildResources": "assets"
     },

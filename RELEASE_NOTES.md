@@ -1,6 +1,8 @@
-# TomTom ChatBot UI (release notes)
+# Chatty (release notes)
 
-The TomTom ChatBot UI is a fork of the much appreciated ChatBot UI repository.
+Chatty is our "Conversational Host At TomTom... Yes!".
+
+The Chatty is a fork of the much appreciated ChatBot UI repository.
 The text of the original `README.md` can be found below.
 
 Important: Normally, you should use the app WITHOUT the console. Only start the app with

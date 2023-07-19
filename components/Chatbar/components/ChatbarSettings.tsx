@@ -7,11 +7,11 @@ import HomeContext from '@/pages/api/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
 
-import { GuestCode } from '../../Settings/GuestCode';
-import { Import } from '../../Settings/Import';
-import { Key } from '../../Settings/Key';
-import { SidebarButton } from '../../Sidebar/SidebarButton';
-import ChatbarContext from '../Chatbar.context';
+import { GuestCode } from '@/components/Settings/GuestCode';
+import { Import } from '@/components/Settings/Import';
+import { Key } from '@/components/Settings/Key';
+import { SidebarButton } from '@/components/Sidebar/SidebarButton';
+import ChatbarContext from '@/components/Chatbar/Chatbar.context';
 import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
 

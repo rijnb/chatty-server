@@ -79,7 +79,7 @@ async function createWindow() {
 
 app.whenReady().then(async () => {
   // Start the Next.js server as a child process
-  console.info(`TomTom ChatBot UI - Electron ${process.versions.electron}`);
+  console.info(`Chatty - Electron ${process.versions.electron}`);
   createWindow();
 });
 

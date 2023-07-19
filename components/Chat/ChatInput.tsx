@@ -390,11 +390,11 @@ export const ChatInput = ({
           rel="noreferrer"
           className="underline"
         >
-          TomTom ChatBot UI
+          Chatty
         </a>
         .{' '}
         {t(
-          "TomTom Chatbot UI is a frontend for OpenAI's chat models, for use in TomTom.",
+          "Chatty is a frontend for OpenAI's chat models.",
         )}
       </div>
     </div>

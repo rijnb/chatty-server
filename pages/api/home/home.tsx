@@ -369,7 +369,7 @@ const Home = ({
     serverSidePluginKeysSet,
   ]);
 
-  const title = "TomTom ChatBot UI";
+  const title = "Chatty";
   return (
     <HomeContext.Provider
       value={{
