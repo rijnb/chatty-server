@@ -73,13 +73,13 @@ const handler = async (req: Request): Promise<Response> => {
     console.info(`Using first ${tokenCount} tokens from a conversation of ${totalTokenCount} tokens in total (server limit: ${tokenLimit})`);
 
     const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend);
-
     return new Response(stream, { headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
   } catch (error) {
-    console.error(error);
     if (error instanceof OpenAIError) {
+      console.error(`OpenAI stream error: ${error}`);
       return new Response('Error', {status: 500, statusText: error.message});
     } else {
+      console.error(`Other stream error: ${error}`);
       return new Response('Error', {status: 500});
     }
   }

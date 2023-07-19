@@ -71,15 +71,6 @@ export const OpenAIStream = async (
       temperature: temperature,
       stream: true,
     }),
-  })
-  //!!
-  .catch(async (err) => {
-    const contentType = err.headers.get('content-type');
-    const errResult =
-        contentType && contentType?.indexOf('application/problem+json') !== -1
-            ? await err.json()
-            : err;
-    throw errResult;
   });
 
   const encoder = new TextEncoder();
@@ -96,7 +87,7 @@ export const OpenAIStream = async (
       );
     } else {
       throw new Error(
-        `OpenAI API returned an error: ${
+        `${OPENAI_API_TYPE} returned an error (1): ${
           decoder.decode(result?.value) || result.statusText
         }`,
       );

@@ -69,7 +69,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
           const virtualConsole = new jsdom.VirtualConsole();
           virtualConsole.on('error', (error) => {
             if (!error.message.includes('Could not parse CSS stylesheet')) {
-              console.error(error);
+              console.error(`[Google search] ${error}`);
             }
           });
 
@@ -90,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
           return null;
         } catch (error) {
-          console.error(error);
+          console.error(`[Google search] ${error}`);
           return null;
         }
       }),
@@ -164,7 +164,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
     res.status(200).json({ answer });
   } catch (error) {
-    console.error(error);
+    console.error(`[Google search] ${error}`);
     res.status(500).json({ error: 'Error'})
   }
 };

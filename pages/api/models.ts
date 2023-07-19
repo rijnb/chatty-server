@@ -49,18 +49,14 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (response.status === 401) {
-      console.error(`${OPENAI_API_TYPE} returned an error 401`);
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`);
       return new Response(response.body, {
         status: 500,
         headers: response.headers,
       });
     } else if (response.status !== 200) {
-      console.error(
-        `${OPENAI_API_TYPE} returned an error ${
-          response.status
-        }: ${await response.text()}`,
-      );
-      throw new Error('OpenAI API returned an error');
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`);
+      throw new Error(`${OPENAI_API_TYPE} returned an error,:  status:${response.status}`);
     }
 
     const json = await response.json();
