@@ -4,11 +4,6 @@ import { OpenAIModelID, OpenAIModels } from '@/types/openai';
 import { OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE } from './const';
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
-  // added model for each conversation (3/20/23)
-  // added system prompt for each conversation (3/21/23)
-  // added folders (3/23/23)
-  // added prompts (3/26/23)
-  // added messages (4/16/23)
 
   let updatedConversation = conversation;
 
