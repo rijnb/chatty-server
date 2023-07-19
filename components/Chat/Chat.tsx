@@ -371,7 +371,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           <div className="text-center text-4xl font-bold text-red-800 dark:text-red-400">
             Chatty
           </div>
-          <div className="text-center text-2xl font-bold text-black dark:text-white">
+          <div className="text-center text-xl font-bold text-gray-700 dark:text-gray-400">
             Conversational Host At TomTom...Yes!
           </div>
           <div className="text-center text-lg text-gray-500 dark:text-gray-400">
@@ -418,7 +418,14 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                       <div>
                         <Spinner size="16px" className="mx-auto" />
                       </div>
-                    ) : ("Chatty")}
+                    ) : (
+                      <div className="text-center text-4xl font-bold text-red-800 dark:text-red-400">
+                        Chatty
+                        <div className="text-center text-xl font-bold text-gray-700 dark:text-gray-400">
+                          Conversational Host At TomTom...Yes!
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {models.length > 0 && (

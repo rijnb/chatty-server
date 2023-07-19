@@ -1,13 +1,12 @@
+# Chatty
+
+Chatty is originally based on chatbot-ui by Mckay Wrigley. The original documentation is below.
+
+---
+
 # Chatbot UI
 
 Chatbot UI is an open source chat UI for AI models.
-
----
-
-**NOTE:** Read the `RELEASE_NOTES.md` file for important information about the latest release. This
-also contains info on how to start the bundled app, if it causes problems.
-
----
 
 See a [demo](https://twitter.com/mckaywrigley/status/1640380021423603713?s=46&t=AowqkodyK6B4JccSOxSPew).
 
