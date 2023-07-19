@@ -1,4 +1,4 @@
-import { Prompt } from '@/types/prompt';
+import {Prompt} from '@/types/prompt';
 
 export interface PromptbarInitialState {
   searchTerm: string;

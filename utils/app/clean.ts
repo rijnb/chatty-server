@@ -1,7 +1,7 @@
-import { Conversation } from '@/types/chat';
-import { OpenAIModelID, OpenAIModels } from '@/types/openai';
+import {Conversation} from '@/types/chat';
+import {OpenAIModelID, OpenAIModels} from '@/types/openai';
 
-import { OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE } from './const';
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from './const';
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
 
@@ -85,8 +85,8 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       return acc;
     } catch (error) {
       console.warn(
-        `error while cleaning conversations' history. Removing culprit`,
-        error,
+          `error while cleaning conversations' history. Removing culprit`,
+          error,
       );
     }
     return acc;

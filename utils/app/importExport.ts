@@ -1,5 +1,4 @@
-import Zip from 'adm-zip';
-import { Conversation } from '@/types/chat';
+import {Conversation} from '@/types/chat';
 import {
   ExportFormatV1,
   ExportFormatV2,
@@ -8,10 +7,11 @@ import {
   LatestExportFormat,
   SupportedExportFormats,
 } from '@/types/export';
-import { FolderInterface } from '@/types/folder';
-import { Prompt } from '@/types/prompt';
+import {FolderInterface} from '@/types/folder';
+import {Prompt} from '@/types/prompt';
+import Zip from 'adm-zip';
 
-import { cleanConversationHistory } from './clean';
+import {cleanConversationHistory} from './clean';
 
 export function isExportFormatV1(obj: any): obj is ExportFormatV1 {
   return Array.isArray(obj);
@@ -55,7 +55,7 @@ export function cleanData(data: SupportedExportFormats): LatestExportFormat {
   }
 
   if (isExportFormatV3(data)) {
-    return { ...data, version: 4, prompts: [] };
+    return {...data, version: 4, prompts: []};
   }
 
   if (isExportFormatV4(data)) {
@@ -84,7 +84,7 @@ export const exportMarkdown = () => {
   const conversations: Conversation[] = conversationsString ? JSON.parse(conversationsString) as Conversation[] : [];
   const foldersString = localStorage.getItem('folders');
   const folders: FolderInterface[] = (foldersString ? JSON.parse(foldersString) as FolderInterface[] : [])
-    .filter((folder) => folder.type === 'chat');
+  .filter((folder) => folder.type === 'chat');
   const zip = new Zip();
 
   // add folders as directories
@@ -96,11 +96,11 @@ export const exportMarkdown = () => {
 
 // Filter "chat" type folders and create an object with ids as keys and names as values
   const chatFolderNames: { [id: string]: string } = folders
-    .filter((folder) => folder.type === "chat")
-    .reduce((accumulator: { [id: string]: string }, folder) => {
-      accumulator[folder.id] = sanitizeFilename(folder.name);
-      return accumulator;
-    }, {});
+  .filter((folder) => folder.type === "chat")
+  .reduce((accumulator: { [id: string]: string }, folder) => {
+    accumulator[folder.id] = sanitizeFilename(folder.name);
+    return accumulator;
+  }, {});
 
   // add conversations as Markdown files
   if (conversations) {
@@ -175,27 +175,27 @@ export const exportData = () => {
 };
 
 export const importData = (
-  data: SupportedExportFormats,
+    data: SupportedExportFormats,
 ): LatestExportFormat => {
-  const { history, folders, prompts } = cleanData(data);
+  const {history, folders, prompts} = cleanData(data);
 
   const oldConversations = localStorage.getItem('conversationHistory');
   const oldConversationsParsed = oldConversations
-    ? JSON.parse(oldConversations)
-    : [];
+      ? JSON.parse(oldConversations)
+      : [];
 
   const newHistory: Conversation[] = [
     ...oldConversationsParsed,
     ...history,
   ].filter(
-    (conversation, index, self) =>
-      index === self.findIndex((c) => c.id === conversation.id),
+      (conversation, index, self) =>
+          index === self.findIndex((c) => c.id === conversation.id),
   );
   localStorage.setItem('conversationHistory', JSON.stringify(newHistory));
   if (newHistory.length > 0) {
     localStorage.setItem(
-      'selectedConversation',
-      JSON.stringify(newHistory[newHistory.length - 1]),
+        'selectedConversation',
+        JSON.stringify(newHistory[newHistory.length - 1]),
     );
   } else {
     localStorage.removeItem('selectedConversation');
@@ -207,16 +207,16 @@ export const importData = (
     ...oldFoldersParsed,
     ...folders,
   ].filter(
-    (folder, index, self) =>
-      index === self.findIndex((f) => f.id === folder.id),
+      (folder, index, self) =>
+          index === self.findIndex((f) => f.id === folder.id),
   );
   localStorage.setItem('folders', JSON.stringify(newFolders));
 
   const oldPrompts = localStorage.getItem('prompts');
   const oldPromptsParsed = oldPrompts ? JSON.parse(oldPrompts) : [];
   const newPrompts: Prompt[] = [...oldPromptsParsed, ...prompts].filter(
-    (prompt, index, self) =>
-      index === self.findIndex((p) => p.id === prompt.id),
+      (prompt, index, self) =>
+          index === self.findIndex((p) => p.id === prompt.id),
   );
   localStorage.setItem('prompts', JSON.stringify(newPrompts));
 

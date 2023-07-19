@@ -1,4 +1,4 @@
-import { Settings } from '@/types/settings';
+import {Settings} from '@/types/settings';
 
 const STORAGE_KEY = 'settings';
 

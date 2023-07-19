@@ -1,5 +1,3 @@
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const";
-
 export interface ProcessEnv {
   OPENAI_API_KEY: string;
   OPENAI_API_HOST?: string;

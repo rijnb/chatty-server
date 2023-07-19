@@ -1,6 +1,6 @@
 export const OPENAI_DEFAULT_SYSTEM_PROMPT =
-  process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ||
-  "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.";
+    process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ||
+    "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.";
 
 export const OPENAI_DEFAULT_TEMPERATURE =
     parseFloat(process.env.OPENAI_DEFAULT_TEMPERATURE || '0.8');
@@ -18,10 +18,10 @@ export const OPENAI_API_MAX_TOKENS =
     parseInt(process.env.OPENAI_MAX_TOKENS || '1000');
 
 export const OPENAI_ORGANIZATION =
-  process.env.OPENAI_ORGANIZATION || '';
+    process.env.OPENAI_ORGANIZATION || '';
 
 export const OPENAI_AZURE_DEPLOYMENT_ID =
-  process.env.OPENAI_AZURE_DEPLOYMENT_ID || '';
+    process.env.OPENAI_AZURE_DEPLOYMENT_ID || '';
 
 // Not included in source code:
 // OPENAI_API_KEY

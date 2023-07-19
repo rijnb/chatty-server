@@ -1,20 +1,16 @@
-import { Message } from '@/types/chat';
-import { OpenAIModel } from '@/types/openai';
+import {Message} from '@/types/chat';
+import {OpenAIModel} from '@/types/openai';
+
+import {createParser, ParsedEvent, ReconnectInterval,} from 'eventsource-parser';
 
 import {
-  OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
+  OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from '../app/const';
-
-import {
-  ParsedEvent,
-  ReconnectInterval,
-  createParser,
-} from 'eventsource-parser';
 
 export class OpenAIError extends Error {
   type: string;
@@ -31,11 +27,11 @@ export class OpenAIError extends Error {
 }
 
 export const OpenAIStream = async (
-  model: OpenAIModel,
-  systemPrompt: string,
-  temperature : number,
-  key: string,
-  messages: Message[],
+    model: OpenAIModel,
+    systemPrompt: string,
+    temperature: number,
+    key: string,
+    messages: Message[],
 ) => {
   let url = `${OPENAI_API_HOST}/v1/chat/completions`;
   if (OPENAI_API_TYPE === 'azure') {
@@ -80,16 +76,16 @@ export const OpenAIStream = async (
     const result = await res.json();
     if (result.error) {
       throw new OpenAIError(
-        result.error.message,
-        result.error.type,
-        result.error.param,
-        result.error.code,
+          result.error.message,
+          result.error.type,
+          result.error.param,
+          result.error.code,
       );
     } else {
       throw new Error(
-        `${OPENAI_API_TYPE} returned an error (1): ${
-          decoder.decode(result?.value) || result.statusText
-        }`,
+          `${OPENAI_API_TYPE} returned an error (1): ${
+              decoder.decode(result?.value) || result.statusText
+          }`,
       );
     }
   }

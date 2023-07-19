@@ -1,9 +1,8 @@
+import {SupportedExportFormats} from '@/types/export';
 import {IconFileImport} from '@tabler/icons-react';
-import {FC, useState} from 'react';
 
 import {useTranslation} from 'next-i18next';
-
-import {SupportedExportFormats} from '@/types/export';
+import {FC, useState} from 'react';
 
 import {SidebarButton} from '../Sidebar/SidebarButton';
 

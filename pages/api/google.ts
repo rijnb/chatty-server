@@ -1,19 +1,19 @@
-import {NextApiRequest, NextApiResponse} from 'next';
+import {Message} from '@/types/chat';
+import {GoogleBody, GoogleSource} from '@/types/google';
 
 import {
-  OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
+  OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from '@/utils/app/const';
 import {cleanSourceText} from '@/utils/server/google';
-import {Message} from '@/types/chat';
-import {GoogleBody, GoogleSource} from '@/types/google';
-import {auth} from './auth';
 import {Readability} from '@mozilla/readability';
 import endent from 'endent';
 import jsdom, {JSDOM} from 'jsdom';
+import {NextApiRequest, NextApiResponse} from 'next';
+import {auth} from './auth';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
