@@ -1,21 +1,19 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import {NextApiRequest, NextApiResponse} from 'next';
 
 import {
-    OPENAI_AZURE_DEPLOYMENT_ID,
-    OPENAI_API_HOST,
-    OPENAI_API_TYPE,
-    OPENAI_API_VERSION,
-    OPENAI_ORGANIZATION
+  OPENAI_AZURE_DEPLOYMENT_ID,
+  OPENAI_API_HOST,
+  OPENAI_API_TYPE,
+  OPENAI_API_VERSION,
+  OPENAI_ORGANIZATION
 } from '@/utils/app/const';
-import { cleanSourceText } from '@/utils/server/google';
-
-import { Message } from '@/types/chat';
-import { GoogleBody, GoogleSource } from '@/types/google';
-
-import { auth } from './auth';
-import { Readability } from '@mozilla/readability';
+import {cleanSourceText} from '@/utils/server/google';
+import {Message} from '@/types/chat';
+import {GoogleBody, GoogleSource} from '@/types/google';
+import {auth} from './auth';
+import {Readability} from '@mozilla/readability';
 import endent from 'endent';
-import jsdom, { JSDOM } from 'jsdom';
+import jsdom, {JSDOM} from 'jsdom';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
@@ -26,22 +24,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         statusText: authResult.statusText,
       });
     }
-    const { messages, key, model, googleAPIKey, googleCSEId } =
-      req.body as GoogleBody;
+    const {messages, key, model, googleAPIKey, googleCSEId} =
+        req.body as GoogleBody;
 
-    const userMessage = messages[messages.length - 1];
-    const query = encodeURIComponent(userMessage.content.trim());
+    const userMessage = messages[messages.length - 1].content.trim();
+    const query = encodeURIComponent(userMessage);
 
+    console.info(`[Google search] ${userMessage.substring(0, 8)}...`)
     const googleRes = await fetch(
-      `https://customsearch.googleapis.com/customsearch/v1?key=${
-        googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
-      }&cx=${
-        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
-      }&q=${query}&num=5`,
+        `https://customsearch.googleapis.com/customsearch/v1?key=${
+            googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
+        }&cx=${
+            googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+        }&q=${query}&num=5`,
     );
-
     const googleData = await googleRes.json();
-
     const sources: GoogleSource[] = googleData.items.map((item: any) => ({
       title: item.title,
       link: item.link,
@@ -50,56 +47,47 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       image: item.pagemap?.cse_image?.[0]?.src,
       text: '',
     }));
-
     const sourcesWithText: any = await Promise.all(
-      sources.map(async (source) => {
-        try {
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Request timed out')), 5000),
-          );
-
-          const res = (await Promise.race([
-            fetch(source.link),
-            timeoutPromise,
-          ])) as any;
-
-          // if (res) {
-          const html = await res.text();
-
-          const virtualConsole = new jsdom.VirtualConsole();
-          virtualConsole.on('error', (error) => {
-            if (!error.message.includes('Could not parse CSS stylesheet')) {
-              console.error(`[Google search] ${error}`);
+        sources.map(async (source) => {
+          try {
+            console.info(`[Google search] get URL '${source.link.substring(0, 16)}...'`)
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Google search request timed out')), 5000),
+            );
+            const res = (await Promise.race([fetch(source.link), timeoutPromise])) as any;
+            const html = await res.text();
+            const virtualConsole = new jsdom.VirtualConsole();
+            virtualConsole.on('error', (error) => {
+              if (!error.message.includes('Could not parse CSS stylesheet')) {
+                console.error(`[Google search] ${error}`);
+              }
+            });
+            const dom = new JSDOM(html, {virtualConsole});
+            const doc = dom.window.document;
+            const parsed = new Readability(doc).parse();
+            if (parsed) {
+              let sourceText = cleanSourceText(parsed.textContent);
+              return {
+                ...source,
+                // TODO: switch to tokens
+                text: sourceText.slice(0, 2000),
+              } as GoogleSource;
             }
-          });
-
-          const dom = new JSDOM(html, { virtualConsole });
-          const doc = dom.window.document;
-          const parsed = new Readability(doc).parse();
-
-          if (parsed) {
-            let sourceText = cleanSourceText(parsed.textContent);
-
-            return {
-              ...source,
-              // TODO: switch to tokens
-              text: sourceText.slice(0, 2000),
-            } as GoogleSource;
+            return null;
+          } catch (error) {
+            console.error(`[Google search] ${error}`);
+            return null;
           }
-          // }
-
-          return null;
-        } catch (error) {
-          console.error(`[Google search] ${error}`);
-          return null;
-        }
-      }),
+        }),
     );
-
     const filteredSources: GoogleSource[] = sourcesWithText.filter(Boolean);
-
     const answerPrompt = endent`
-    Provide me with the information I requested. Use the sources to provide an accurate response. Respond in markdown format. Cite the sources you used as a markdown link as you use them at the end of each sentence by number of the source (ex: [[1]](link.com)). Provide an accurate response and then stop. Today's date is ${new Date().toLocaleDateString()}.
+    Provide me with the information I requested. Use the sources to provide an accurate response.
+    Respond in markdown format. Cite the sources you used as a markdown link as you use them at the 
+    end of each sentence by number of the source (example: [[1]](link.com)). 
+    Provide an accurate response and then stop. Maximum 10 sentences. 
+    End this answer with "(Powered by Google) in italics.
+    Today's date is ${new Date().toLocaleDateString()}.
 
     Example Input:
     What's the weather in San Francisco today?
@@ -111,7 +99,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     It's 70 degrees and sunny in San Francisco today. [[1]](https://www.google.com/search?q=weather+san+francisco)
 
     Input:
-    ${userMessage.content.trim()}
+    ${userMessage}
 
     Sources:
     ${filteredSources.map((source) => {
@@ -123,49 +111,42 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
     Response:
     `;
+    const answerMessage: Message = {role: 'user', content: answerPrompt};
 
-    const answerMessage: Message = { role: 'user', content: answerPrompt };
-
-      let url = `${OPENAI_API_HOST}/v1/chat/completions?api-version=${OPENAI_API_VERSION}`;
-      if (OPENAI_API_TYPE === 'azure') {
-          url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
-      }
-      const answerRes = await fetch(`${url}`, {
+    let url = `${OPENAI_API_HOST}/v1/chat/completions?api-version=${OPENAI_API_VERSION}`;
+    if (OPENAI_API_TYPE === 'azure') {
+      url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`;
+    }
+    console.info(`[Google search] POST result to ${OPENAI_API_TYPE}`)
+    const answerRes = await fetch(`${url}`, {
       headers: {
-          'Content-Type': 'application/json',
-          ...(OPENAI_API_TYPE === 'openai' && {
-              Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
-          }),
-          ...(OPENAI_API_TYPE === 'azure' && {
-              'api-key': `${key ? key : process.env.OPENAI_API_KEY}`
-          }),
-          ...((OPENAI_API_TYPE === 'openai' && OPENAI_ORGANIZATION) && {
-              'OpenAI-Organization': OPENAI_ORGANIZATION,
-          }),
+        'Content-Type': 'application/json',
+        ...(OPENAI_API_TYPE === 'openai' && {
+          Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
+        }),
+        ...(OPENAI_API_TYPE === 'azure' && {
+          'api-key': `${key ? key : process.env.OPENAI_API_KEY}`
+        }),
+        ...((OPENAI_API_TYPE === 'openai' && OPENAI_ORGANIZATION) && {
+          'OpenAI-Organization': OPENAI_ORGANIZATION,
+        }),
       },
       method: 'POST',
       body: JSON.stringify({
         model: model.id,
-        messages: [
-          {
-            role: 'system',
-            content: 'Use the sources to provide an accurate response. Respond in markdown format. Cite the sources you used as [1](link), etc., as you use them. Maximum 5 sentences. End the response with "Powered by Google" in brackets, in italics.',
-          },
-          answerMessage,
-        ],
+        messages: [answerMessage],
         max_tokens: 1000,
         temperature: 1,
         stream: false,
       }),
     });
-
-    const { choices: choices2 } = await answerRes.json();
-    const answer = choices2[0].message.content;
-
-    res.status(200).json({ answer });
+    const {choices: choices} = await answerRes.json();
+    const answer = choices[0].message.content;
+    console.info(`[Google search] Got result '${answer.substring(0, 8)}...'`)
+    res.status(200).json({answer});
   } catch (error) {
-    console.error(`[Google search] ${error}`);
-    res.status(500).json({ error: 'Error'})
+    console.error(`[Google search] Error: ${error}`);
+    res.status(500).json({error: 'Google search error'})
   }
 };
 
