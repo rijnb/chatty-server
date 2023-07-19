@@ -395,8 +395,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
               Chatty was developed by Rijn Buve.
             </div>
             <div className="mb-2">
-              Chatty is based on 'chatbot-ui' by Mckay Wrigley and includes features from
-              many contributors to 'chatbot-ui'. Many thanks to all.
+              Chatty is based on chatbot-ui by Mckay Wrigley and includes features from
+              many contributors to chatbot-ui. Many thanks to all.
               Chatty is licensed under the MIT license.
             </div>
           </div>
