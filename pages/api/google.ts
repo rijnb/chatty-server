@@ -21,8 +21,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
     const authResult = auth(req);
     if (authResult.error) {
-      return new Response('Unauthorized', {
-        status: authResult.status,
+      return new Response('Error: You are not authorized to use the service', {
+        status: 200, //!! TODO Should be authResult.status
         statusText: authResult.statusText,
       });
     }

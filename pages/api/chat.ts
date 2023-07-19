@@ -18,8 +18,8 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const authResult = auth(req);
     if (authResult.error) {
-      return new Response('Unauthorized', {
-        status: authResult.status,
+      return new Response('Error: You are not authorized to use the service', {
+        status: 200, //!! TODO Should be authResult.status
         statusText: authResult.statusText,
       });
     }
@@ -77,10 +77,10 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error) {
     if (error instanceof OpenAIError) {
       console.error(`Error in OpenAI stream, message:${error.message}`);
-      return new Response('Error', {status: 500, statusText: error.message});
+      return new Response(`Error: ${error.message}`, {status: 200, statusText: error.message}); //!! TODO Should be 500
     } else {
       console.error(`Other stream error, error:${error}`);
-      return new Response('Error', {status: 500});
+      return new Response('Error: Server responded with an error', {status: 200}); //!! TODO Should be 500
     }
   }
 };
