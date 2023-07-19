@@ -1,11 +1,11 @@
-import {OpenAIModel} from './openai';
+import {OpenAIModel} from "./openai";
 
 export interface Message {
   role: Role;
   content: string;
 }
 
-export type Role = 'assistant' | 'user';
+export type Role = "assistant" | "user";
 
 export interface ChatBody {
   model: OpenAIModel;

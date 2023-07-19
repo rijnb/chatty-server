@@ -1,5 +1,5 @@
-import {Prompt} from '@/types/prompt';
-import {FC, KeyboardEvent, useEffect, useRef, useState} from 'react';
+import {Prompt} from "@/types/prompt";
+import {FC, KeyboardEvent, useEffect, useRef, useState} from "react";
 
 interface Props {
   prompt: Prompt;
@@ -12,17 +12,17 @@ export const VariableModal: FC<Props> = ({
                                            prompt,
                                            variables,
                                            onSubmit,
-                                           onClose,
+                                           onClose
                                          }) => {
   const [updatedVariables, setUpdatedVariables] = useState<
       { key: string; value: string }[]
   >(
       variables
-      .map((variable) => ({key: variable, value: ''}))
+      .map((variable) => ({key: variable, value: ""}))
       .filter(
           (item, index, array) =>
-              array.findIndex((t) => t.key === item.key) === index,
-      ),
+              array.findIndex((t) => t.key === item.key) === index
+      )
   );
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -37,8 +37,8 @@ export const VariableModal: FC<Props> = ({
   };
 
   const handleSubmit = () => {
-    if (updatedVariables.some((variable) => variable.value === '')) {
-      alert('Please fill out all variables');
+    if (updatedVariables.some((variable) => variable.value === "")) {
+      alert("Please fill out all variables");
       return;
     }
 
@@ -47,10 +47,10 @@ export const VariableModal: FC<Props> = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       onClose();
     }
   };
@@ -62,10 +62,10 @@ export const VariableModal: FC<Props> = ({
       }
     };
 
-    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick);
 
     return () => {
-      window.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener("click", handleOutsideClick);
     };
   }, [onClose]);
 
@@ -102,7 +102,7 @@ export const VariableModal: FC<Props> = ({
                 <textarea
                     ref={index === 0 ? nameInputRef : undefined}
                     className="mt-1 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-                    style={{resize: 'none'}}
+                    style={{resize: "none"}}
                     placeholder={`Enter a value for ${variable.key}...`}
                     value={variable.value}
                     onChange={(e) => handleChange(index, e.target.value)}

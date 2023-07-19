@@ -1,10 +1,10 @@
-const {app, BrowserWindow} = require('electron');
-const path = require('path');
-const {spawn} = require('child_process');
-const waitOn = require('wait-on');
-const killTree = require('tree-kill');
+const {app, BrowserWindow} = require("electron");
+const path = require("path");
+const {spawn} = require("child_process");
+const waitOn = require("wait-on");
+const killTree = require("tree-kill");
 
-const serverURL = 'http://localhost:3000';
+const serverURL = "http://localhost:3000";
 
 let mainWindow;
 
@@ -12,48 +12,48 @@ let mainWindow;
 let nextServerProcess;
 const startServerProcess = () => {
   // Start the Next.js server as a child process
-  console.info('Starting Next.js server (using npm)...');
+  console.info("Starting Next.js server (using npm)...");
 
   const envWithCustomPaths = {
     ...process.env,
-    PATH: process.env.PATH + ':/usr/local/bin:/opt/homebrew/bin'
+    PATH: process.env.PATH + ":/usr/local/bin:/opt/homebrew/bin"
   };
-  const nextServerProcess = spawn('npm', ['run', 'start-local'], {env: envWithCustomPaths, shell: true});
+  const nextServerProcess = spawn("npm", ["run", "start-local"], {env: envWithCustomPaths, shell: true});
 
-  nextServerProcess.stdout.on('data', (data) => {
-    console.log(`${data.toString().replace(/\n$/, '')}`);
+  nextServerProcess.stdout.on("data", (data) => {
+    console.log(`${data.toString().replace(/\n$/, "")}`);
   });
 
-  nextServerProcess.stderr.on('data', (data) => {
-    console.error(`${data.toString().replace(/\n$/, '')}`);
+  nextServerProcess.stderr.on("data", (data) => {
+    console.error(`${data.toString().replace(/\n$/, "")}`);
   });
-}
+};
 
 const killServerProcess = () => {
   if (nextServerProcess) {
     console.info(`kill next process (${nextServerProcess.pid}, and children)`);
-    killTree(nextServerProcess.pid, 'SIGTERM', (error) => {
+    killTree(nextServerProcess.pid, "SIGTERM", (error) => {
       if (error) {
         console.error(`Failed to kill Next.js server process ${nextServerProcess.pid}:`, error);
       }
     });
     nextServerProcess = null;
   }
-}
+};
 
 async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 1000,
-    icon: path.join(__dirname, 'assets/icons/icon.icns'),
+    icon: path.join(__dirname, "assets/icons/icon.icns"),
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
-    },
+      contextIsolation: false
+    }
   });
 
   console.info(`Set icon...`);
-  const dockIcon = path.join(__dirname, 'assets/icons/icon.icns');
+  const dockIcon = path.join(__dirname, "assets/icons/icon.icns");
   app.dock.setIcon(dockIcon);
 
   startServerProcess();
@@ -71,7 +71,7 @@ async function createWindow() {
   await mainWindow.loadURL(serverURL);
 
   // Quit the app when the main window is closed.
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     console.info(`closed)`);
     app.quit();
   });
@@ -83,7 +83,7 @@ app.whenReady().then(async () => {
   createWindow();
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   console.info(`activate`);
   if (BrowserWindow.getAllWindows().length === 0) {
     console.info(`create window`);
@@ -95,12 +95,12 @@ app.on('activate', () => {
   }
 });
 
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
   console.info(`window-all-closed`);
   app.quit();
 });
 
-app.on('before-quit', () => {
+app.on("before-quit", () => {
   console.info(`before-quit`);
   killServerProcess();
 });

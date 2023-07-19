@@ -1,9 +1,9 @@
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from "@/pages/api/home/home.context";
 
-import {OPENAI_DEFAULT_TEMPERATURE} from '@/utils/app/const';
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const";
 
-import {useTranslation} from 'next-i18next';
-import {FC, useContext, useState} from 'react';
+import {useTranslation} from "next-i18next";
+import {FC, useContext, useState} from "react";
 
 interface Props {
   label: string;
@@ -12,16 +12,16 @@ interface Props {
 
 export const TemperatureSlider: FC<Props> = ({
                                                label,
-                                               onChangeTemperature,
+                                               onChangeTemperature
                                              }) => {
   const {
-    state: {conversations},
+    state: {conversations}
   } = useContext(HomeContext);
   const lastConversation = conversations[conversations.length - 1];
   const [temperature, setTemperature] = useState(
-      lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+      lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
   );
-  const {t} = useTranslation('chat');
+  const {t} = useTranslation("chat");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(event.target.value);
     setTemperature(newValue);
@@ -35,7 +35,7 @@ export const TemperatureSlider: FC<Props> = ({
         </label>
         <span className="text-[12px] text-black/50 dark:text-white/50 text-sm">
         {t(
-            'Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.',
+            "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
         )}
       </span>
         <span className="mt-2 mb-1 text-center text-neutral-900 dark:text-neutral-100">
@@ -52,13 +52,13 @@ export const TemperatureSlider: FC<Props> = ({
         />
         <ul className="w mt-2 pb-8 flex justify-between px-[24px] text-neutral-900 dark:text-neutral-100">
           <li className="flex justify-center">
-            <span className="absolute">{t('Precise')}</span>
+            <span className="absolute">{t("Precise")}</span>
           </li>
           <li className="flex justify-center">
-            <span className="absolute">{t('Neutral')}</span>
+            <span className="absolute">{t("Neutral")}</span>
           </li>
           <li className="flex justify-center">
-            <span className="absolute">{t('Creative')}</span>
+            <span className="absolute">{t("Creative")}</span>
           </li>
         </ul>
       </div>

@@ -1,7 +1,7 @@
-import {Conversation} from '@/types/chat';
-import {OpenAIModelID, OpenAIModels} from '@/types/openai';
+import {Conversation} from "@/types/chat";
+import {OpenAIModelID, OpenAIModels} from "@/types/openai";
 
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from './const';
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const";
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
 
@@ -11,7 +11,7 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
   if (!updatedConversation.model) {
     updatedConversation = {
       ...updatedConversation,
-      model: updatedConversation.model || OpenAIModels[OpenAIModelID.GPT_3_5],
+      model: updatedConversation.model || OpenAIModels[OpenAIModelID.GPT_3_5]
     };
   }
 
@@ -19,28 +19,28 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
   if (!updatedConversation.prompt) {
     updatedConversation = {
       ...updatedConversation,
-      prompt: updatedConversation.prompt || OPENAI_DEFAULT_SYSTEM_PROMPT,
+      prompt: updatedConversation.prompt || OPENAI_DEFAULT_SYSTEM_PROMPT
     };
   }
 
   if (updatedConversation.temperature === undefined || updatedConversation.temperature === null) {
     updatedConversation = {
       ...updatedConversation,
-      temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE,
+      temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE
     };
   }
 
   if (!updatedConversation.folderId) {
     updatedConversation = {
       ...updatedConversation,
-      folderId: updatedConversation.folderId || null,
+      folderId: updatedConversation.folderId || null
     };
   }
 
   if (!updatedConversation.messages) {
     updatedConversation = {
       ...updatedConversation,
-      messages: updatedConversation.messages || [],
+      messages: updatedConversation.messages || []
     };
   }
 
@@ -55,7 +55,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
   // added messages (4/16/23)
 
   if (!Array.isArray(history)) {
-    console.warn('history is not an array. Returning an empty array.');
+    console.warn("history is not an array. Returning an empty array.");
     return [];
   }
 
@@ -86,7 +86,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
     } catch (error) {
       console.warn(
           `error while cleaning conversations' history. Removing culprit`,
-          error,
+          error
       );
     }
     return acc;

@@ -1,32 +1,32 @@
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from "@/pages/api/home/home.context";
 
-import {Message} from '@/types/chat';
+import {Message} from "@/types/chat";
 
-import {updateConversation} from '@/utils/app/conversation';
-import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser,} from '@tabler/icons-react';
+import {updateConversation} from "@/utils/app/conversation";
+import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser} from "@tabler/icons-react";
 
-import {useTranslation} from 'next-i18next';
-import {FC, memo, useContext, useEffect, useRef, useState} from 'react';
+import {useTranslation} from "next-i18next";
+import {FC, memo, useContext, useEffect, useRef, useState} from "react";
 
-import rehypeMathjax from 'rehype-mathjax';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
+import rehypeMathjax from "rehype-mathjax";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 
-import {CodeBlock} from '../Markdown/CodeBlock';
-import {MemoizedReactMarkdown} from '../Markdown/MemoizedReactMarkdown';
+import {CodeBlock} from "../Markdown/CodeBlock";
+import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown";
 
 export interface Props {
   message: Message;
   messageIndex: number;
-  onEdit?: (editedMessage: Message) => void
+  onEdit?: (editedMessage: Message) => void;
 }
 
 export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => {
-  const {t} = useTranslation('chat');
+  const {t} = useTranslation("chat");
 
   const {
     state: {selectedConversation, conversations, currentMessage, messageIsStreaming},
-    dispatch: homeDispatch,
+    dispatch: homeDispatch
   } = useContext(HomeContext);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessageContent(event.target.value);
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
@@ -65,10 +65,10 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
     if (findIndex < 0) return;
 
-    if (messages[findIndex].role === 'assistant') {
+    if (messages[findIndex].role === "assistant") {
       messages.splice(findIndex, 1);
     } else {
-      if (findIndex < messages.length - 1 && messages[findIndex + 1].role === 'assistant') {
+      if (findIndex < messages.length - 1 && messages[findIndex + 1].role === "assistant") {
         messages.splice(findIndex, 2);
       } else {
         messages.splice(findIndex, 1);
@@ -77,19 +77,19 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
     const updatedConversation = {
       ...selectedConversation,
-      messages,
+      messages
     };
 
     const {single, all} = updateConversation(
         updatedConversation,
-        conversations,
+        conversations
     );
-    homeDispatch({field: 'selectedConversation', value: single});
-    homeDispatch({field: 'conversations', value: all});
+    homeDispatch({field: "selectedConversation", value: single});
+    homeDispatch({field: "conversations", value: all});
   };
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !isTyping && !e.shiftKey) {
+    if (e.key === "Enter" && !isTyping && !e.shiftKey) {
       e.preventDefault();
       handleEditMessage();
     }
@@ -113,7 +113,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [isEditing]);
@@ -121,16 +121,16 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
   return (
       <div
           className={`group md:px-4 ${
-              message.role === 'assistant'
-                  ? 'border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100'
-                  : 'border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100'
+              message.role === "assistant"
+                  ? "border-b border-black/10 bg-gray-50 text-gray-800 dark:border-gray-900/50 dark:bg-[#444654] dark:text-gray-100"
+                  : "border-b border-black/10 bg-white text-gray-800 dark:border-gray-900/50 dark:bg-[#343541] dark:text-gray-100"
           }`}
-          style={{overflowWrap: 'anywhere'}}
+          style={{overflowWrap: "anywhere"}}
       >
         <div
             className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
           <div className="min-w-[40px] text-right font-bold">
-            {message.role === 'assistant' ? (
+            {message.role === "assistant" ? (
                 <IconRobot size={30}/>
             ) : (
                 <IconUser size={30}/>
@@ -138,7 +138,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
           </div>
 
           <div className="prose mt-[-2px] w-full dark:prose-invert">
-            {message.role === 'user' ? (
+            {message.role === "user" ? (
                 <div className="flex w-full">
                   {isEditing ? (
                       <div className="flex w-full flex-col">
@@ -151,12 +151,12 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                       onCompositionStart={() => setIsTyping(true)}
                       onCompositionEnd={() => setIsTyping(false)}
                       style={{
-                        fontFamily: 'inherit',
-                        fontSize: 'inherit',
-                        lineHeight: 'inherit',
-                        padding: '0',
-                        margin: '0',
-                        overflow: 'hidden',
+                        fontFamily: "inherit",
+                        fontSize: "inherit",
+                        lineHeight: "inherit",
+                        padding: "0",
+                        margin: "0",
+                        overflow: "hidden"
                       }}
                   />
 
@@ -166,7 +166,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                               onClick={handleEditMessage}
                               disabled={messageContent.trim().length <= 0}
                           >
-                            {t('Save & Submit')}
+                            {t("Save & Submit")}
                           </button>
                           <button
                               className="h-[40px] rounded-md border border-neutral-300 px-4 py-1 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
@@ -175,7 +175,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                                 setIsEditing(false);
                               }}
                           >
-                            {t('Cancel')}
+                            {t("Cancel")}
                           </button>
                         </div>
                       </div>
@@ -213,7 +213,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                                       {children}
                                     </td>
                                 );
-                              },
+                              }
                             }}
                         >
                           {`${message.content}`}
@@ -248,18 +248,18 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                       components={{
                         code({node, inline, className, children, ...props}) {
                           if (children.length) {
-                            if (children[0] == '▍') {
-                              return <span className="animate-pulse cursor-default mt-1">▍</span>
+                            if (children[0] == "▍") {
+                              return <span className="animate-pulse cursor-default mt-1">▍</span>;
                             }
-                            children[0] = (children[0] as string).replace("`▍`", "▍")
+                            children[0] = (children[0] as string).replace("`▍`", "▍");
                           }
 
-                          const match = /language-(\w+)/.exec(className || '');
+                          const match = /language-(\w+)/.exec(className || "");
                           return !inline ? (
                               <CodeBlock
                                   key={Math.random()}
-                                  language={(match && match[1]) || ''}
-                                  value={String(children).replace(/\n$/, '')}
+                                  language={(match && match[1]) || ""}
+                                  value={String(children).replace(/\n$/, "")}
                                   {...props}
                               />
                           ) : (
@@ -288,11 +288,11 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                                 {children}
                               </td>
                           );
-                        },
+                        }
                       }}
                   >
                     {`${message.content}${
-                        messageIsStreaming && messageIndex == (selectedConversation?.messages.length ?? 0) - 1 ? '`▍`' : ''
+                        messageIsStreaming && messageIndex == (selectedConversation?.messages.length ?? 0) - 1 ? "`▍`" : ""
                     }`}
                   </MemoizedReactMarkdown>
 
@@ -328,4 +328,4 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
       </div>
   );
 });
-ChatMessage.displayName = 'ChatMessage';
+ChatMessage.displayName = "ChatMessage";

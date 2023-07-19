@@ -1,18 +1,18 @@
-import {OpenAIModel, OpenAIModelID, OpenAIModels} from '@/types/openai';
-import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from '@/utils/app/const';
-import {auth} from './auth';
+import {OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai";
+import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const";
+import {auth} from "./auth";
 
 export const config = {
-  runtime: 'edge',
-}
+  runtime: "edge"
+};
 
 const handler = async (req: Request): Promise<Response> => {
   try {
     const authResult = auth(req);
     if (authResult.error) {
-      return new Response('Error: You are not authorized to use the service', {
+      return new Response("Error: You are not authorized to use the service", {
         status: 200, //!! TODO Should be authResult.status,
-        statusText: authResult.statusText,
+        statusText: authResult.statusText
       });
     }
     const {key} = (await req.json()) as {
@@ -20,33 +20,33 @@ const handler = async (req: Request): Promise<Response> => {
     };
 
     let url = `${OPENAI_API_HOST}/v1/models`;
-    if (OPENAI_API_TYPE === 'azure') {
+    if (OPENAI_API_TYPE === "azure") {
       url = `${OPENAI_API_HOST}/openai/models?api-version=${OPENAI_API_VERSION}`;
     }
     console.info(`HTTP GET ${url}`);
-    console.info('  Content-Type: application/json');
-    console.info(`  ${(OPENAI_API_TYPE === 'openai' && 'Authorization: Bearer... (openai)') || (OPENAI_API_TYPE === 'azure' && 'api-key: ... (azure)')}`);
+    console.info("  Content-Type: application/json");
+    console.info(`  ${(OPENAI_API_TYPE === "openai" && "Authorization: Bearer... (openai)") || (OPENAI_API_TYPE === "azure" && "api-key: ... (azure)")}`);
 
     const response = await fetch(url, {
       headers: {
-        'Content-Type': 'application/json',
-        ...(OPENAI_API_TYPE === 'openai' && {
+        "Content-Type": "application/json",
+        ...(OPENAI_API_TYPE === "openai" && {
           Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
         }),
-        ...(OPENAI_API_TYPE === 'azure' && {
-          'api-key': `${key ? key : process.env.OPENAI_API_KEY}`
+        ...(OPENAI_API_TYPE === "azure" && {
+          "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
         }),
-        ...((OPENAI_API_TYPE === 'openai' && OPENAI_ORGANIZATION) && {
-          'OpenAI-Organization': OPENAI_ORGANIZATION,
-        }),
-      },
+        ...((OPENAI_API_TYPE === "openai" && OPENAI_ORGANIZATION) && {
+          "OpenAI-Organization": OPENAI_ORGANIZATION
+        })
+      }
     });
 
     if (response.status === 401) {
       console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`);
       return new Response(response.body, {
         status: 500,
-        headers: response.headers,
+        headers: response.headers
       });
     } else if (response.status !== 200) {
       console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`);
@@ -61,7 +61,7 @@ const handler = async (req: Request): Promise<Response> => {
         if (value === model.id) {
           return {
             id: model.id,
-            name: OpenAIModels[value].name + ' (' + OPENAI_API_TYPE + ')',
+            name: OpenAIModels[value].name + " (" + OPENAI_API_TYPE + ")"
           };
         }
       }
@@ -74,8 +74,8 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(JSON.stringify(models), {status: 200});
   } catch (error) {
     console.error(`Error: ${error}`);
-    return new Response('Error', {status: 500});
+    return new Response("Error", {status: 500});
   }
-}
+};
 
 export default handler;

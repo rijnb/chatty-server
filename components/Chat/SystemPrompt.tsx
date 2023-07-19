@@ -1,13 +1,13 @@
-import {Conversation} from '@/types/chat';
-import {Prompt} from '@/types/prompt';
+import {Conversation} from "@/types/chat";
+import {Prompt} from "@/types/prompt";
 
-import {OPENAI_DEFAULT_SYSTEM_PROMPT} from '@/utils/app/const';
+import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "@/utils/app/const";
 
-import {useTranslation} from 'next-i18next';
-import {FC, KeyboardEvent, useCallback, useEffect, useRef, useState,} from 'react';
+import {useTranslation} from "next-i18next";
+import {FC, KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
 
-import {PromptList} from './PromptList';
-import {VariableModal} from './VariableModal';
+import {PromptList} from "./PromptList";
+import {VariableModal} from "./VariableModal";
 
 interface Props {
   conversation: Conversation;
@@ -18,14 +18,14 @@ interface Props {
 export const SystemPrompt: FC<Props> = ({
                                           conversation,
                                           prompts,
-                                          onChangePrompt,
+                                          onChangePrompt
                                         }) => {
-  const {t} = useTranslation('chat');
+  const {t} = useTranslation("chat");
 
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>("");
   const [activePromptIndex, setActivePromptIndex] = useState(0);
   const [showPromptList, setShowPromptList] = useState(false);
-  const [promptInputValue, setPromptInputValue] = useState('');
+  const [promptInputValue, setPromptInputValue] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -33,7 +33,7 @@ export const SystemPrompt: FC<Props> = ({
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
   const filteredPrompts = prompts.filter((prompt) =>
-      prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()),
+      prompt.name.toLowerCase().includes(promptInputValue.toLowerCase())
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -44,8 +44,8 @@ export const SystemPrompt: FC<Props> = ({
       alert(
           t(
               `Prompt limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-              {maxLength, valueLength: value.length},
-          ),
+              {maxLength, valueLength: value.length}
+          )
       );
       return;
     }
@@ -88,7 +88,7 @@ export const SystemPrompt: FC<Props> = ({
       setPromptInputValue(match[0].slice(1));
     } else {
       setShowPromptList(false);
-      setPromptInputValue('');
+      setPromptInputValue("");
     }
   }, []);
 
@@ -124,25 +124,25 @@ export const SystemPrompt: FC<Props> = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
         setActivePromptIndex((prevIndex) =>
-            prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex,
+            prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex
         );
-      } else if (e.key === 'ArrowUp') {
+      } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setActivePromptIndex((prevIndex) =>
-            prevIndex > 0 ? prevIndex - 1 : prevIndex,
+            prevIndex > 0 ? prevIndex - 1 : prevIndex
         );
-      } else if (e.key === 'Tab') {
+      } else if (e.key === "Tab") {
         e.preventDefault();
         setActivePromptIndex((prevIndex) =>
-            prevIndex < prompts.length - 1 ? prevIndex + 1 : 0,
+            prevIndex < prompts.length - 1 ? prevIndex + 1 : 0
         );
-      } else if (e.key === 'Enter') {
+      } else if (e.key === "Enter") {
         e.preventDefault();
         handleInitModal();
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         e.preventDefault();
         setShowPromptList(false);
       } else {
@@ -153,7 +153,7 @@ export const SystemPrompt: FC<Props> = ({
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
     }
   }, [value]);
@@ -176,35 +176,35 @@ export const SystemPrompt: FC<Props> = ({
       }
     };
 
-    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick);
 
     return () => {
-      window.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener("click", handleOutsideClick);
     };
   }, []);
 
   return (
       <div className="flex flex-col">
         <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
-          {t('System Prompt')}
+          {t("System Prompt")}
         </label>
         <textarea
             ref={textareaRef}
             className="w-full rounded-lg border border-neutral-200 bg-transparent px-4 py-3 text-neutral-900 dark:border-neutral-600 dark:text-neutral-100"
             style={{
-              resize: 'none',
+              resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
-              maxHeight: '300px',
+              maxHeight: "300px",
               overflow: `${
                   textareaRef.current && textareaRef.current.scrollHeight > 400
-                      ? 'auto'
-                      : 'hidden'
-              }`,
+                      ? "auto"
+                      : "hidden"
+              }`
             }}
             placeholder={
-                t(`Enter a prompt or type "/" to select a prompt...`) || ''
+                t(`Enter a prompt or type "/" to select a prompt...`) || ""
             }
-            value={t(value) || ''}
+            value={t(value) || ""}
             rows={1}
             onChange={handleChange}
             onKeyDown={handleKeyDown}

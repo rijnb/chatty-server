@@ -1,19 +1,19 @@
-import ChatbarContext from '@/components/Chatbar/Chatbar.context';
+import ChatbarContext from "@/components/Chatbar/Chatbar.context";
 
-import {SidebarButton} from '@/components/Sidebar/SidebarButton';
+import {SidebarButton} from "@/components/Sidebar/SidebarButton";
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from "@/pages/api/home/home.context";
 
-import {PluginID, PluginKey} from '@/types/plugin';
-import {IconKey} from '@tabler/icons-react';
-import {KeyboardEvent, useContext, useEffect, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import {PluginID, PluginKey} from "@/types/plugin";
+import {IconKey} from "@tabler/icons-react";
+import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react";
+import {useTranslation} from "react-i18next";
 
 export const PluginKeys = () => {
-  const {t} = useTranslation('sidebar');
+  const {t} = useTranslation("sidebar");
 
   const {
-    state: {pluginKeys},
+    state: {pluginKeys}
   } = useContext(HomeContext);
 
   const {handlePluginKeyChange, handleClearPluginKey} =
@@ -24,7 +24,7 @@ export const PluginKeys = () => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       setIsChanging(false);
     }
@@ -33,26 +33,26 @@ export const PluginKeys = () => {
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener("mouseup", handleMouseUp);
       }
     };
 
     const handleMouseUp = (e: MouseEvent) => {
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mouseup", handleMouseUp);
       setIsChanging(false);
     };
 
-    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener("mousedown", handleMouseDown);
 
     return () => {
-      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener("mousedown", handleMouseDown);
     };
   }, []);
 
   return (
       <>
         <SidebarButton
-            text={t('Google API Key')}
+            text={t("Google API Key")}
             icon={<IconKey size={18}/>}
             onClick={() => setIsChanging(true)}
         />
@@ -93,32 +93,32 @@ export const PluginKeys = () => {
                           value={
                             pluginKeys
                             .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                            ?.requiredKeys.find((k) => k.key === 'GOOGLE_API_KEY')
+                            ?.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")
                                 ?.value
                           }
                           onChange={(e) => {
                             const pluginKey = pluginKeys.find(
-                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH,
+                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH
                             );
 
                             if (pluginKey) {
                               const requiredKey = pluginKey.requiredKeys.find(
-                                  (k) => k.key === 'GOOGLE_API_KEY',
+                                  (k) => k.key === "GOOGLE_API_KEY"
                               );
 
                               if (requiredKey) {
                                 const updatedPluginKey = {
                                   ...pluginKey,
                                   requiredKeys: pluginKey.requiredKeys.map((k) => {
-                                    if (k.key === 'GOOGLE_API_KEY') {
+                                    if (k.key === "GOOGLE_API_KEY") {
                                       return {
                                         ...k,
-                                        value: e.target.value,
+                                        value: e.target.value
                                       };
                                     }
 
                                     return k;
-                                  }),
+                                  })
                                 };
 
                                 handlePluginKeyChange(updatedPluginKey);
@@ -128,14 +128,14 @@ export const PluginKeys = () => {
                                 pluginId: PluginID.GOOGLE_SEARCH,
                                 requiredKeys: [
                                   {
-                                    key: 'GOOGLE_API_KEY',
-                                    value: e.target.value,
+                                    key: "GOOGLE_API_KEY",
+                                    value: e.target.value
                                   },
                                   {
-                                    key: 'GOOGLE_CSE_ID',
-                                    value: '',
-                                  },
-                                ],
+                                    key: "GOOGLE_CSE_ID",
+                                    value: ""
+                                  }
+                                ]
                               };
 
                               handlePluginKeyChange(newPluginKey);
@@ -152,32 +152,32 @@ export const PluginKeys = () => {
                           value={
                             pluginKeys
                             .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                            ?.requiredKeys.find((k) => k.key === 'GOOGLE_CSE_ID')
+                            ?.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")
                                 ?.value
                           }
                           onChange={(e) => {
                             const pluginKey = pluginKeys.find(
-                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH,
+                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH
                             );
 
                             if (pluginKey) {
                               const requiredKey = pluginKey.requiredKeys.find(
-                                  (k) => k.key === 'GOOGLE_CSE_ID',
+                                  (k) => k.key === "GOOGLE_CSE_ID"
                               );
 
                               if (requiredKey) {
                                 const updatedPluginKey = {
                                   ...pluginKey,
                                   requiredKeys: pluginKey.requiredKeys.map((k) => {
-                                    if (k.key === 'GOOGLE_CSE_ID') {
+                                    if (k.key === "GOOGLE_CSE_ID") {
                                       return {
                                         ...k,
-                                        value: e.target.value,
+                                        value: e.target.value
                                       };
                                     }
 
                                     return k;
-                                  }),
+                                  })
                                 };
 
                                 handlePluginKeyChange(updatedPluginKey);
@@ -187,14 +187,14 @@ export const PluginKeys = () => {
                                 pluginId: PluginID.GOOGLE_SEARCH,
                                 requiredKeys: [
                                   {
-                                    key: 'GOOGLE_API_KEY',
-                                    value: '',
+                                    key: "GOOGLE_API_KEY",
+                                    value: ""
                                   },
                                   {
-                                    key: 'GOOGLE_CSE_ID',
-                                    value: e.target.value,
-                                  },
-                                ],
+                                    key: "GOOGLE_CSE_ID",
+                                    value: e.target.value
+                                  }
+                                ]
                               };
 
                               handlePluginKeyChange(newPluginKey);
@@ -206,7 +206,7 @@ export const PluginKeys = () => {
                           className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
                           onClick={() => {
                             const pluginKey = pluginKeys.find(
-                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH,
+                                (p) => p.pluginId === PluginID.GOOGLE_SEARCH
                             );
 
                             if (pluginKey) {
@@ -223,7 +223,7 @@ export const PluginKeys = () => {
                         className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
                         onClick={() => setIsChanging(false)}
                     >
-                      {t('Save')}
+                      {t("Save")}
                     </button>
                   </div>
                 </div>

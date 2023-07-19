@@ -1,10 +1,10 @@
-import {Settings} from '@/types/settings';
+import {Settings} from "@/types/settings";
 
-const STORAGE_KEY = 'settings';
+const STORAGE_KEY = "settings";
 
 export const getSettings = (): Settings => {
   let settings: Settings = {
-    theme: 'dark',
+    theme: "dark"
   };
   const settingsJson = localStorage.getItem(STORAGE_KEY);
   if (settingsJson) {

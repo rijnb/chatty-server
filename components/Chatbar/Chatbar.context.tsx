@@ -1,11 +1,11 @@
-import {ActionType} from '@/hooks/useCreateReducer';
+import {ActionType} from "@/hooks/useCreateReducer";
 
-import {Conversation} from '@/types/chat';
-import {SupportedExportFormats} from '@/types/export';
-import {PluginKey} from '@/types/plugin';
-import {createContext, Dispatch} from 'react';
+import {Conversation} from "@/types/chat";
+import {SupportedExportFormats} from "@/types/export";
+import {PluginKey} from "@/types/plugin";
+import {createContext, Dispatch} from "react";
 
-import {ChatbarInitialState} from './Chatbar.state';
+import {ChatbarInitialState} from "./Chatbar.state";
 
 export interface ChatbarContextProps {
   state: ChatbarInitialState;

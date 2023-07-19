@@ -1,4 +1,4 @@
-import {KeyValuePair} from './data';
+import {KeyValuePair} from "./data";
 
 export interface Plugin {
   id: PluginID;
@@ -12,11 +12,11 @@ export interface PluginKey {
 }
 
 export enum PluginID {
-  GOOGLE_SEARCH = 'google-search',
+  GOOGLE_SEARCH = "google-search",
 }
 
 export enum PluginName {
-  GOOGLE_SEARCH = 'Google Search',
+  GOOGLE_SEARCH = "Google Search",
 }
 
 export const Plugins: Record<PluginID, Plugin> = {
@@ -25,15 +25,15 @@ export const Plugins: Record<PluginID, Plugin> = {
     name: PluginName.GOOGLE_SEARCH,
     requiredKeys: [
       {
-        key: 'GOOGLE_API_KEY',
-        value: '',
+        key: "GOOGLE_API_KEY",
+        value: ""
       },
       {
-        key: 'GOOGLE_CSE_ID',
-        value: '',
-      },
-    ],
-  },
+        key: "GOOGLE_CSE_ID",
+        value: ""
+      }
+    ]
+  }
 };
 
 export const PluginList = Object.values(Plugins);

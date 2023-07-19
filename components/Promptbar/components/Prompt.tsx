@@ -1,11 +1,11 @@
-import SidebarActionButton from '@/components/Buttons/SidebarActionButton';
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton";
 
-import {Prompt} from '@/types/prompt';
-import {IconBulbFilled, IconCheck, IconTrash, IconX,} from '@tabler/icons-react';
-import {DragEvent, MouseEventHandler, useContext, useEffect, useState,} from 'react';
+import {Prompt} from "@/types/prompt";
+import {IconBulbFilled, IconCheck, IconTrash, IconX} from "@tabler/icons-react";
+import {DragEvent, MouseEventHandler, useContext, useEffect, useState} from "react";
 
-import PromptbarContext from '../PromptBar.context';
-import {PromptModal} from './PromptModal';
+import PromptbarContext from "../PromptBar.context";
+import {PromptModal} from "./PromptModal";
 
 interface Props {
   prompt: Prompt;
@@ -15,17 +15,17 @@ export const PromptComponent = ({prompt}: Props) => {
   const {
     dispatch: promptDispatch,
     handleUpdatePrompt,
-    handleDeletePrompt,
+    handleDeletePrompt
   } = useContext(PromptbarContext);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState('');
+  const [renameValue, setRenameValue] = useState("");
 
   const handleUpdate = (prompt: Prompt) => {
     handleUpdatePrompt(prompt);
-    promptDispatch({field: 'searchTerm', value: ''});
+    promptDispatch({field: "searchTerm", value: ""});
   };
 
   const handleDelete: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -33,7 +33,7 @@ export const PromptComponent = ({prompt}: Props) => {
 
     if (isDeleting) {
       handleDeletePrompt(prompt);
-      promptDispatch({field: 'searchTerm', value: ''});
+      promptDispatch({field: "searchTerm", value: ""});
     }
 
     setIsDeleting(false);
@@ -51,7 +51,7 @@ export const PromptComponent = ({prompt}: Props) => {
 
   const handleDragStart = (e: DragEvent<HTMLButtonElement>, prompt: Prompt) => {
     if (e.dataTransfer) {
-      e.dataTransfer.setData('prompt', JSON.stringify(prompt));
+      e.dataTransfer.setData("prompt", JSON.stringify(prompt));
     }
   };
 
@@ -76,7 +76,7 @@ export const PromptComponent = ({prompt}: Props) => {
             onMouseLeave={() => {
               setIsDeleting(false);
               setIsRenaming(false);
-              setRenameValue('');
+              setRenameValue("");
             }}
         >
           <IconBulbFilled size={18}/>

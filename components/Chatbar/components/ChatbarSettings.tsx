@@ -1,22 +1,22 @@
-import ChatbarContext from '@/components/Chatbar/Chatbar.context';
+import ChatbarContext from "@/components/Chatbar/Chatbar.context";
 
-import {GuestCode} from '@/components/Settings/GuestCode';
-import {Import} from '@/components/Settings/Import';
-import {Key} from '@/components/Settings/Key';
+import {GuestCode} from "@/components/Settings/GuestCode";
+import {Import} from "@/components/Settings/Import";
+import {Key} from "@/components/Settings/Key";
 
-import {SettingDialog} from '@/components/Settings/SettingDialog';
-import {SidebarButton} from '@/components/Sidebar/SidebarButton';
+import {SettingDialog} from "@/components/Settings/SettingDialog";
+import {SidebarButton} from "@/components/Sidebar/SidebarButton";
 
-import HomeContext from '@/pages/api/home/home.context';
-import {IconFileExport, IconMarkdown, IconSettings} from '@tabler/icons-react';
+import HomeContext from "@/pages/api/home/home.context";
+import {IconFileExport, IconMarkdown, IconSettings} from "@tabler/icons-react";
 
-import {useTranslation} from 'next-i18next';
-import {useContext, useState} from 'react';
-import {ClearConversations} from './ClearConversations';
-import {PluginKeys} from './PluginKeys';
+import {useTranslation} from "next-i18next";
+import {useContext, useState} from "react";
+import {ClearConversations} from "./ClearConversations";
+import {PluginKeys} from "./PluginKeys";
 
 export const ChatbarSettings = () => {
-  const {t} = useTranslation('sidebar');
+  const {t} = useTranslation("sidebar");
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
 
   const {
@@ -27,9 +27,9 @@ export const ChatbarSettings = () => {
       serverSideApiKeyIsSet,
       serverSideGuestCodeIsSet,
       serverSidePluginKeysSet,
-      conversations,
+      conversations
     },
-    dispatch: homeDispatch,
+    dispatch: homeDispatch
   } = useContext(HomeContext);
 
   const {
@@ -38,7 +38,7 @@ export const ChatbarSettings = () => {
     handleExportData,
     handleExportMarkdown,
     handleApiKeyChange,
-    handleGuestCodeChange,
+    handleGuestCodeChange
   } = useContext(ChatbarContext);
 
   return (
@@ -48,7 +48,7 @@ export const ChatbarSettings = () => {
         ) : null}
 
         <SidebarButton
-            text={t('Export Markdown')}
+            text={t("Export Markdown")}
             icon={<IconMarkdown size={18}/>}
             onClick={handleExportMarkdown}
         />
@@ -56,13 +56,13 @@ export const ChatbarSettings = () => {
         <Import onImport={handleImportConversations}/>
 
         <SidebarButton
-            text={t('Export config')}
+            text={t("Export config")}
             icon={<IconFileExport size={18}/>}
             onClick={() => handleExportData()}
         />
 
         <SidebarButton
-            text={t('Settings')}
+            text={t("Settings")}
             icon={<IconSettings size={18}/>}
             onClick={() => setIsSettingDialog(true)}
         />

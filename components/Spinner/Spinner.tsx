@@ -3,7 +3,7 @@ interface Props {
   className?: string;
 }
 
-const Spinner = ({size = '1em', className = ''}: Props) => {
+const Spinner = ({size = "1em", className = ""}: Props) => {
   return (
       <svg
           stroke="currentColor"

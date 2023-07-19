@@ -1,11 +1,11 @@
-import SidebarActionButton from '@/components/Buttons/SidebarActionButton';
-import ChatbarContext from '@/components/Chatbar/Chatbar.context';
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton";
+import ChatbarContext from "@/components/Chatbar/Chatbar.context";
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from "@/pages/api/home/home.context";
 
-import {Conversation} from '@/types/chat';
-import {IconCheck, IconMessage, IconPencil, IconTrash, IconX,} from '@tabler/icons-react';
-import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState,} from 'react';
+import {Conversation} from "@/types/chat";
+import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react";
+import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react";
 
 interface Props {
   conversation: Conversation;
@@ -15,17 +15,17 @@ export const ConversationComponent = ({conversation}: Props) => {
   const {
     state: {selectedConversation, messageIsStreaming},
     handleSelectConversation,
-    handleUpdateConversation,
+    handleUpdateConversation
   } = useContext(HomeContext);
 
   const {handleDeleteConversation} = useContext(ChatbarContext);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState('');
+  const [renameValue, setRenameValue] = useState("");
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       selectedConversation && handleRename(selectedConversation);
     }
@@ -33,20 +33,20 @@ export const ConversationComponent = ({conversation}: Props) => {
 
   const handleDragStart = (
       e: DragEvent<HTMLButtonElement>,
-      conversation: Conversation,
+      conversation: Conversation
   ) => {
     if (e.dataTransfer) {
-      e.dataTransfer.setData('conversation', JSON.stringify(conversation));
+      e.dataTransfer.setData("conversation", JSON.stringify(conversation));
     }
   };
 
   const handleRename = (conversation: Conversation) => {
     if (renameValue.trim().length > 0) {
       handleUpdateConversation(conversation, {
-        key: 'name',
-        value: renameValue,
+        key: "name",
+        value: renameValue
       });
-      setRenameValue('');
+      setRenameValue("");
       setIsRenaming(false);
     }
   };
@@ -103,11 +103,11 @@ export const ConversationComponent = ({conversation}: Props) => {
         ) : (
             <button
                 className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
-                    messageIsStreaming ? 'disabled:cursor-not-allowed' : ''
+                    messageIsStreaming ? "disabled:cursor-not-allowed" : ""
                 } ${
                     selectedConversation?.id === conversation.id
-                        ? 'bg-[#343541]/90'
-                        : ''
+                        ? "bg-[#343541]/90"
+                        : ""
                 }`}
                 onClick={() => handleSelectConversation(conversation)}
                 disabled={messageIsStreaming}
@@ -117,7 +117,7 @@ export const ConversationComponent = ({conversation}: Props) => {
               <IconMessage size={18}/>
               <div
                   className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-4 ${
-                      selectedConversation?.id === conversation.id ? 'pr-12' : 'pr-1'
+                      selectedConversation?.id === conversation.id ? "pr-12" : "pr-1"
                   }`}
               >
                 {conversation.name}
@@ -125,7 +125,7 @@ export const ConversationComponent = ({conversation}: Props) => {
                     <div className="block text-[12.5px] text-gray-400">
                       {conversation?.time
                           ? new Date(conversation?.time).toLocaleString()
-                          : ''}
+                          : ""}
                     </div>
                 )}
               </div>

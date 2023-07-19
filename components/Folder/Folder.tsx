@@ -1,10 +1,10 @@
-import SidebarActionButton from '@/components/Buttons/SidebarActionButton';
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton";
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from "@/pages/api/home/home.context";
 
-import {FolderInterface} from '@/types/folder';
-import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX,} from '@tabler/icons-react';
-import {KeyboardEvent, ReactElement, useContext, useEffect, useState,} from 'react';
+import {FolderInterface} from "@/types/folder";
+import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react";
+import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react";
 
 interface Props {
   currentFolder: FolderInterface;
@@ -17,17 +17,17 @@ const Folder = ({
                   currentFolder,
                   searchTerm,
                   handleDrop,
-                  folderComponent,
+                  folderComponent
                 }: Props) => {
   const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState('');
+  const [renameValue, setRenameValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleRename();
     }
@@ -35,7 +35,7 @@ const Folder = ({
 
   const handleRename = () => {
     handleUpdateFolder(currentFolder.id, renameValue);
-    setRenameValue('');
+    setRenameValue("");
     setIsRenaming(false);
   };
 
@@ -45,7 +45,7 @@ const Folder = ({
 
       handleDrop(e, currentFolder);
 
-      e.target.style.background = 'none';
+      e.target.style.background = "none";
     }
   };
 
@@ -54,11 +54,11 @@ const Folder = ({
   };
 
   const highlightDrop = (e: any) => {
-    e.target.style.background = '#343541';
+    e.target.style.background = "#343541";
   };
 
   const removeHighlight = (e: any) => {
-    e.target.style.background = 'none';
+    e.target.style.background = "none";
   };
 
   useEffect(() => {

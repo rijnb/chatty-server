@@ -1,7 +1,7 @@
-import {Plugin, PluginList} from '@/types/plugin';
+import {Plugin, PluginList} from "@/types/plugin";
 
-import {useTranslation} from 'next-i18next';
-import {FC, useEffect, useRef} from 'react';
+import {useTranslation} from "next-i18next";
+import {FC, useEffect, useRef} from "react";
 
 interface Props {
   plugin: Plugin | null;
@@ -12,9 +12,9 @@ interface Props {
 export const PluginSelect: FC<Props> = ({
                                           plugin,
                                           onPluginChange,
-                                          onKeyDown,
+                                          onKeyDown
                                         }) => {
-  const {t} = useTranslation('chat');
+  const {t} = useTranslation("chat");
 
   const selectRef = useRef<HTMLSelectElement>(null);
 
@@ -22,31 +22,31 @@ export const PluginSelect: FC<Props> = ({
     const selectElement = selectRef.current;
     const optionCount = selectElement?.options.length || 0;
 
-    if (e.key === '/' && e.metaKey) {
+    if (e.key === "/" && e.metaKey) {
       e.preventDefault();
       if (selectElement) {
         selectElement.selectedIndex =
             (selectElement.selectedIndex + 1) % optionCount;
-        selectElement.dispatchEvent(new Event('change'));
+        selectElement.dispatchEvent(new Event("change"));
       }
-    } else if (e.key === '/' && e.shiftKey && e.metaKey) {
+    } else if (e.key === "/" && e.shiftKey && e.metaKey) {
       e.preventDefault();
       if (selectElement) {
         selectElement.selectedIndex =
             (selectElement.selectedIndex - 1 + optionCount) % optionCount;
-        selectElement.dispatchEvent(new Event('change'));
+        selectElement.dispatchEvent(new Event("change"));
       }
-    } else if (e.key === 'Enter') {
+    } else if (e.key === "Enter") {
       e.preventDefault();
       if (selectElement) {
-        selectElement.dispatchEvent(new Event('change'));
+        selectElement.dispatchEvent(new Event("change"));
       }
 
       onPluginChange(
           PluginList.find(
               (plugin) =>
-                  plugin.name === selectElement?.selectedOptions[0].innerText,
-          ) as Plugin,
+                  plugin.name === selectElement?.selectedOptions[0].innerText
+          ) as Plugin
       );
     } else {
       onKeyDown(e);
@@ -66,13 +66,13 @@ export const PluginSelect: FC<Props> = ({
           <select
               ref={selectRef}
               className="w-full cursor-pointer bg-transparent p-2"
-              placeholder={t('Select a plugin') || ''}
-              value={plugin?.id || ''}
+              placeholder={t("Select a plugin") || ""}
+              value={plugin?.id || ""}
               onChange={(e) => {
                 onPluginChange(
                     PluginList.find(
-                        (plugin) => plugin.id === e.target.value,
-                    ) as Plugin,
+                        (plugin) => plugin.id === e.target.value
+                    ) as Plugin
                 );
               }}
               onKeyDown={(e) => {

@@ -1,4 +1,4 @@
-import {Conversation} from '@/types/chat';
+import {Conversation} from "@/types/chat";
 
 export interface ChatbarInitialState {
   searchTerm: string;
@@ -6,6 +6,6 @@ export interface ChatbarInitialState {
 }
 
 export const initialState: ChatbarInitialState = {
-  searchTerm: '',
-  filteredConversations: [],
+  searchTerm: "",
+  filteredConversations: []
 };

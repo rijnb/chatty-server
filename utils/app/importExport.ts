@@ -1,24 +1,24 @@
-import {Conversation} from '@/types/chat';
+import {Conversation} from "@/types/chat";
 import {
   ExportFormatV1,
   ExportFormatV2,
   ExportFormatV3,
   ExportFormatV4,
   LatestExportFormat,
-  SupportedExportFormats,
-} from '@/types/export';
-import {FolderInterface} from '@/types/folder';
-import {Prompt} from '@/types/prompt';
-import Zip from 'adm-zip';
+  SupportedExportFormats
+} from "@/types/export";
+import {FolderInterface} from "@/types/folder";
+import {Prompt} from "@/types/prompt";
+import Zip from "adm-zip";
 
-import {cleanConversationHistory} from './clean';
+import {cleanConversationHistory} from "./clean";
 
 export function isExportFormatV1(obj: any): obj is ExportFormatV1 {
   return Array.isArray(obj);
 }
 
 export function isExportFormatV2(obj: any): obj is ExportFormatV2 {
-  return !('version' in obj) && 'folders' in obj && 'history' in obj;
+  return !("version" in obj) && "folders" in obj && "history" in obj;
 }
 
 export function isExportFormatV3(obj: any): obj is ExportFormatV3 {
@@ -37,7 +37,7 @@ export function cleanData(data: SupportedExportFormats): LatestExportFormat {
       version: 4,
       history: cleanConversationHistory(data),
       folders: [],
-      prompts: [],
+      prompts: []
     };
   }
 
@@ -48,9 +48,9 @@ export function cleanData(data: SupportedExportFormats): LatestExportFormat {
       folders: (data.folders || []).map((chatFolder) => ({
         id: chatFolder.id.toString(),
         name: chatFolder.name,
-        type: 'chat',
+        type: "chat"
       })),
-      prompts: [],
+      prompts: []
     };
   }
 
@@ -62,29 +62,29 @@ export function cleanData(data: SupportedExportFormats): LatestExportFormat {
     return data;
   }
 
-  throw new Error('Unsupported data format');
+  throw new Error("Unsupported data format");
 }
 
 function createFilename(kind: string, extension: string): string {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const day = String(currentDate.getDate()).padStart(2, '0');
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
   return `tomtom_chatbot_ui_${year}${month}${day}_${kind}.${extension}`;
 }
 
 // replace common problematic filename characters
 function sanitizeFilename(filename: string): string {
   const regex = /[\/\\:\*\?"<>\|]+/g;
-  return filename.replace(regex, '_');
+  return filename.replace(regex, "_");
 }
 
 export const exportMarkdown = () => {
-  const conversationsString = localStorage.getItem('conversationHistory');
+  const conversationsString = localStorage.getItem("conversationHistory");
   const conversations: Conversation[] = conversationsString ? JSON.parse(conversationsString) as Conversation[] : [];
-  const foldersString = localStorage.getItem('folders');
+  const foldersString = localStorage.getItem("folders");
   const folders: FolderInterface[] = (foldersString ? JSON.parse(foldersString) as FolderInterface[] : [])
-  .filter((folder) => folder.type === 'chat');
+  .filter((folder) => folder.type === "chat");
   const zip = new Zip();
 
   // add folders as directories
@@ -105,28 +105,28 @@ export const exportMarkdown = () => {
   // add conversations as Markdown files
   if (conversations) {
     for (const conversation of conversations) {
-      let markdownContent = '';
+      let markdownContent = "";
       for (const message of conversation.messages) {
         markdownContent += `## ${message.role.charAt(0).toUpperCase() + message.role.slice(1)}\n\n${message.content}\n\n`;
       }
-      const folderId = conversation.folderId ?? '';
-      const directory = folderId in chatFolderNames ? chatFolderNames[folderId] : '';
-      const filename = `${sanitizeFilename(conversation.name)}.md`
-      zip.addFile(directory + '/' + filename, Buffer.from(markdownContent));
+      const folderId = conversation.folderId ?? "";
+      const directory = folderId in chatFolderNames ? chatFolderNames[folderId] : "";
+      const filename = `${sanitizeFilename(conversation.name)}.md`;
+      zip.addFile(directory + "/" + filename, Buffer.from(markdownContent));
     }
   }
 
   const zipDownload = zip.toBuffer();
   const url = URL.createObjectURL(new Blob([zipDownload]));
-  const link = document.createElement('a');
-  link.download = createFilename('markdown', 'zip')
+  const link = document.createElement("a");
+  link.download = createFilename("markdown", "zip");
   link.href = url;
-  link.style.display = 'none';
+  link.style.display = "none";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-}
+};
 
 function currentDate() {
   const date = new Date();
@@ -136,9 +136,9 @@ function currentDate() {
 }
 
 export const exportData = () => {
-  let history = localStorage.getItem('conversationHistory');
-  let folders = localStorage.getItem('folders');
-  let prompts = localStorage.getItem('prompts');
+  let history = localStorage.getItem("conversationHistory");
+  let folders = localStorage.getItem("folders");
+  let prompts = localStorage.getItem("prompts");
 
   if (history) {
     history = JSON.parse(history);
@@ -156,18 +156,18 @@ export const exportData = () => {
     version: 4,
     history: history || [],
     folders: folders || [],
-    prompts: prompts || [],
+    prompts: prompts || []
   } as LatestExportFormat;
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: 'application/json',
+    type: "application/json"
   });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.download = createFilename('config', 'json')
+  const link = document.createElement("a");
+  link.download = createFilename("config", "json");
 
   link.href = url;
-  link.style.display = 'none';
+  link.style.display = "none";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -175,55 +175,55 @@ export const exportData = () => {
 };
 
 export const importData = (
-    data: SupportedExportFormats,
+    data: SupportedExportFormats
 ): LatestExportFormat => {
   const {history, folders, prompts} = cleanData(data);
 
-  const oldConversations = localStorage.getItem('conversationHistory');
+  const oldConversations = localStorage.getItem("conversationHistory");
   const oldConversationsParsed = oldConversations
       ? JSON.parse(oldConversations)
       : [];
 
   const newHistory: Conversation[] = [
     ...oldConversationsParsed,
-    ...history,
+    ...history
   ].filter(
       (conversation, index, self) =>
-          index === self.findIndex((c) => c.id === conversation.id),
+          index === self.findIndex((c) => c.id === conversation.id)
   );
-  localStorage.setItem('conversationHistory', JSON.stringify(newHistory));
+  localStorage.setItem("conversationHistory", JSON.stringify(newHistory));
   if (newHistory.length > 0) {
     localStorage.setItem(
-        'selectedConversation',
-        JSON.stringify(newHistory[newHistory.length - 1]),
+        "selectedConversation",
+        JSON.stringify(newHistory[newHistory.length - 1])
     );
   } else {
-    localStorage.removeItem('selectedConversation');
+    localStorage.removeItem("selectedConversation");
   }
 
-  const oldFolders = localStorage.getItem('folders');
+  const oldFolders = localStorage.getItem("folders");
   const oldFoldersParsed = oldFolders ? JSON.parse(oldFolders) : [];
   const newFolders: FolderInterface[] = [
     ...oldFoldersParsed,
-    ...folders,
+    ...folders
   ].filter(
       (folder, index, self) =>
-          index === self.findIndex((f) => f.id === folder.id),
+          index === self.findIndex((f) => f.id === folder.id)
   );
-  localStorage.setItem('folders', JSON.stringify(newFolders));
+  localStorage.setItem("folders", JSON.stringify(newFolders));
 
-  const oldPrompts = localStorage.getItem('prompts');
+  const oldPrompts = localStorage.getItem("prompts");
   const oldPromptsParsed = oldPrompts ? JSON.parse(oldPrompts) : [];
   const newPrompts: Prompt[] = [...oldPromptsParsed, ...prompts].filter(
       (prompt, index, self) =>
-          index === self.findIndex((p) => p.id === prompt.id),
+          index === self.findIndex((p) => p.id === prompt.id)
   );
-  localStorage.setItem('prompts', JSON.stringify(newPrompts));
+  localStorage.setItem("prompts", JSON.stringify(newPrompts));
 
   return {
     version: 4,
     history: newHistory,
     folders: newFolders,
-    prompts: newPrompts,
+    prompts: newPrompts
   };
 };

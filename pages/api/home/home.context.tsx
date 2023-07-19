@@ -1,11 +1,11 @@
-import {ActionType} from '@/hooks/useCreateReducer';
+import {ActionType} from "@/hooks/useCreateReducer";
 
-import {Conversation} from '@/types/chat';
-import {KeyValuePair} from '@/types/data';
-import {FolderType} from '@/types/folder';
-import {createContext, Dispatch} from 'react';
+import {Conversation} from "@/types/chat";
+import {KeyValuePair} from "@/types/data";
+import {FolderType} from "@/types/folder";
+import {createContext, Dispatch} from "react";
 
-import {HomeInitialState} from './home.state';
+import {HomeInitialState} from "./home.state";
 
 export interface HomeContextProps {
   state: HomeInitialState;
@@ -17,7 +17,7 @@ export interface HomeContextProps {
   handleSelectConversation: (conversation: Conversation) => void;
   handleUpdateConversation: (
       conversation: Conversation,
-      data: KeyValuePair,
+      data: KeyValuePair
   ) => void;
 }
 

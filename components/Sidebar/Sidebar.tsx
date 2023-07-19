@@ -1,15 +1,15 @@
-import {IconFolderPlus, IconMistOff, IconPlus} from '@tabler/icons-react';
-import {ReactNode} from 'react';
-import {useTranslation} from 'react-i18next';
+import {IconFolderPlus, IconMistOff, IconPlus} from "@tabler/icons-react";
+import {ReactNode} from "react";
+import {useTranslation} from "react-i18next";
 
-import Search from '../Search';
+import Search from "../Search";
 
-import {CloseSidebarButton, OpenSidebarButton,} from './components/OpenCloseButton';
+import {CloseSidebarButton, OpenSidebarButton} from "./components/OpenCloseButton";
 
 interface Props<T> {
   isOpen: boolean;
   addItemButtonTitle: string;
-  side: 'left' | 'right';
+  side: "left" | "right";
   items: T[];
   itemComponent: ReactNode;
   folderComponent: ReactNode;
@@ -35,20 +35,20 @@ const Sidebar = <T, >({
                         toggleOpen,
                         handleCreateItem,
                         handleCreateFolder,
-                        handleDrop,
+                        handleDrop
                       }: Props<T>) => {
-  const {t} = useTranslation('promptbar');
+  const {t} = useTranslation("promptbar");
 
   const allowDrop = (e: any) => {
     e.preventDefault();
   };
 
   const highlightDrop = (e: any) => {
-    e.target.style.background = '#343541';
+    e.target.style.background = "#343541";
   };
 
   const removeHighlight = (e: any) => {
-    e.target.style.background = 'none';
+    e.target.style.background = "none";
   };
 
   return isOpen ? (
@@ -61,7 +61,7 @@ const Sidebar = <T, >({
                 className="text-sidebar flex w-[190px] flex-shrink-0 cursor-pointer select-none items-center gap-3 rounded-md border border-white/20 p-3 text-white transition-colors duration-200 hover:bg-gray-500/10"
                 onClick={() => {
                   handleCreateItem();
-                  handleSearchTerm('');
+                  handleSearchTerm("");
                 }}
             >
               <IconPlus size={16}/>
@@ -76,7 +76,7 @@ const Sidebar = <T, >({
             </button>
           </div>
           <Search
-              placeholder={t('Search...') || ''}
+              placeholder={t("Search...") || ""}
               searchTerm={searchTerm}
               onSearch={handleSearchTerm}
           />
@@ -102,7 +102,7 @@ const Sidebar = <T, >({
                 <div className="mt-8 select-none text-center text-white opacity-50">
                   <IconMistOff className="mx-auto mb-3"/>
                   <span className="text-[14px] leading-normal">
-                {t('No data.')}
+                {t("No data.")}
               </span>
                 </div>
             )}

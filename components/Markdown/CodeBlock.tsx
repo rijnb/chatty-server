@@ -1,10 +1,10 @@
-import {generateRandomString, programmingLanguages,} from '@/utils/app/codeblock';
-import {IconCheck, IconClipboard, IconDownload} from '@tabler/icons-react';
+import {generateRandomString, programmingLanguages} from "@/utils/app/codeblock";
+import {IconCheck, IconClipboard, IconDownload} from "@tabler/icons-react";
 
-import {useTranslation} from 'next-i18next';
-import {FC, memo, useState} from 'react';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {oneDark} from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import {useTranslation} from "next-i18next";
+import {FC, memo, useState} from "react";
+import {Prism as SyntaxHighlighter} from "react-syntax-highlighter";
+import {oneDark} from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 interface Props {
   language: string;
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const CodeBlock: FC<Props> = memo(({language, value}) => {
-  const {t} = useTranslation('markdown');
+  const {t} = useTranslation("markdown");
   const [isCopied, setIsCopied] = useState<Boolean>(false);
 
   const copyToClipboard = () => {
@@ -29,14 +29,14 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
     });
   };
   const downloadAsFile = () => {
-    const fileExtension = programmingLanguages[language] || '.txt';
+    const fileExtension = programmingLanguages[language] || ".txt";
     const suggestedFileName = `file-${generateRandomString(
         5,
-        true,
+        true
     )}${fileExtension}`;
     const fileName = window.prompt(
-        t('Enter file name') || '',
-        suggestedFileName,
+        t("Enter file name") || "",
+        suggestedFileName
     );
 
     if (!fileName) {
@@ -44,12 +44,12 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
       return;
     }
 
-    const blob = new Blob([value], {type: 'text/plain'});
+    const blob = new Blob([value], {type: "text/plain"});
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.download = fileName;
     link.href = url;
-    link.style.display = 'none';
+    link.style.display = "none";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -66,7 +66,7 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
                 onClick={copyToClipboard}
             >
               {isCopied ? <IconCheck size={18}/> : <IconClipboard size={18}/>}
-              {isCopied ? t('Copied!') : t('Copy code')}
+              {isCopied ? t("Copied!") : t("Copy code")}
             </button>
             <button
                 className="flex items-center rounded bg-none p-1 text-xs text-white"
@@ -87,4 +87,4 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
       </div>
   );
 });
-CodeBlock.displayName = 'CodeBlock';
+CodeBlock.displayName = "CodeBlock";

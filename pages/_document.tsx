@@ -1,5 +1,5 @@
-import i18nextConfig from '@/next-i18next.config';
-import {DocumentProps, Head, Html, Main, NextScript} from 'next/document';
+import i18nextConfig from "@/next-i18next.config";
+import {DocumentProps, Head, Html, Main, NextScript} from "next/document";
 
 type Props = DocumentProps & {
   // add custom document props
