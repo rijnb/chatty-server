@@ -76,10 +76,10 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(stream, { headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } });
   } catch (error) {
     if (error instanceof OpenAIError) {
-      console.error(`OpenAI stream error: ${error}`);
+      console.error(`OpenAI stream error: ${error}, "{error.message}"`);
       return new Response('Error', {status: 500, statusText: error.message});
     } else {
-      console.error(`Other stream error: ${error}`);
+      console.error(`Other stream error: ${error}, "{error.message}`);
       return new Response('Error', {status: 500});
     }
   }
