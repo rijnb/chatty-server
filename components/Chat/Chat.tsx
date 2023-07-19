@@ -146,6 +146,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             let text = "";
             while (!done) {
               if (stopConversationRef.current) {
+                console.info("Stopped conversation...")
                 controller.abort();
                 done = true;
                 break;

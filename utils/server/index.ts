@@ -1,5 +1,6 @@
 import {Message} from "@/types/chat";
 import {OpenAIModel} from "@/types/openai";
+import {randomInt} from "crypto";
 
 import {createParser, ParsedEvent, ReconnectInterval} from "eventsource-parser";
 
