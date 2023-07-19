@@ -36,9 +36,7 @@ export const useFetch = () => {
 
         const contentType = response.headers.get('content-type');
         const contentDisposition = response.headers.get('content-disposition');
-
         const headers = response.headers;
-
         const result =
           contentType &&
           (contentType?.indexOf('application/json') !== -1 ||
@@ -52,12 +50,10 @@ export const useFetch = () => {
       })
       .catch(async (err) => {
         const contentType = err.headers.get('content-type');
-
         const errResult =
           contentType && contentType?.indexOf('application/problem+json') !== -1
             ? await err.json()
             : err;
-
         throw errResult;
       });
   };
