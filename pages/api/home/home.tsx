@@ -82,17 +82,10 @@ const Home = ({
 
   const { data, error, refetch } = useQuery(
       [ 'GetModels', apiKey, serverSideApiKeyIsSet, guestCode, !serverSideGuestCodeIsSet ],
-    ({ signal }) => {
-      if (!apiKey && !serverSideApiKeyIsSet) return null;
+      ({ signal }) => {
       if (!guestCode && serverSideGuestCodeIsSet) return null;
-
-      return getModels(
-        {
-          key: apiKey,
-        },
-          guestCode,
-        signal,
-      );
+      if (!apiKey && !serverSideApiKeyIsSet) return null;
+      return getModels({ key: apiKey}, guestCode, signal);
     },
     { enabled: true, refetchOnMount: false },
   );
@@ -103,7 +96,7 @@ const Home = ({
 
   useEffect(() => {
     dispatch({ field: 'modelError', value: getModelsError(error) });
-  }, [dispatch, error, getModelsError]);
+  }, [error, dispatch, getModelsError]);
 
   // FETCH MODELS ----------------------------------------------
 

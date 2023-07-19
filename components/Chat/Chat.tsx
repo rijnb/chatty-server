@@ -136,7 +136,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         if (!response.ok) {
           homeDispatch({ field: 'loading', value: false });
           homeDispatch({ field: 'messageIsStreaming', value: false });
-          toast.error(response.statusText);
+          toast.error(`Error: ${response.statusText}\n\nStatus code: ${response.status}` );
           return;
         }
         const data = response.body;
@@ -254,7 +254,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         }
       }
     },
-    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef],
+    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, guestCode],
   );
 
   const scrollToBottom = useCallback(() => {

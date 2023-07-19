@@ -8,8 +8,8 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  // basePath: '/chat',
-  // assetPrefix: '/chat',
+  // basePath: '/',
+  // assetPrefix: '/',
 
   webpack(config, { isServer, dev }) {
     config.experiments = {
