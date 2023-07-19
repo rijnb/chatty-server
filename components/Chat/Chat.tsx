@@ -136,7 +136,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         if (!response.ok) {
           homeDispatch({ field: 'loading', value: false });
           homeDispatch({ field: 'messageIsStreaming', value: false });
-          toast.error(`Error: ${response.statusText}\n\nStatus code: ${response.status}` );
+          console.log(`HTTP response, statusText:${response.statusText}, status:${response.status}, body:${response.body}, headers:${response.headers}`)
+          toast.error(`Error: ${response.statusText}\n\nStatus: ${response.status}`);
           return;
         }
         const data = response.body;
