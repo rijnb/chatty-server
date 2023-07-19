@@ -5,6 +5,11 @@ Chatty is our "Conversational Host At TomTom... Yes!".
 The Chatty is a fork of the much appreciated ChatBot UI repository.
 The text of the original `README.md` can be found below.
 
+The information below is outdated, as the new Chatty works only with a thin
+client - not an integrated browser. The text needs to be updated still, though.
+
+---
+
 Important: Normally, you should use the app WITHOUT the console. Only start the app with
 the console if it fails to load. The very first load time may be very long (minutes).
 Hang in there.
