@@ -202,18 +202,15 @@ export const importData = (
 
   const oldFolders = localStorage.getItem("folders")
   const oldFoldersParsed = oldFolders ? JSON.parse(oldFolders) : []
-  const newFolders: FolderInterface[] = [
-    ...oldFoldersParsed,
-    ...folders
-  ].filter(
+  const newFolders: FolderInterface[] = [...folders, ...oldFoldersParsed].filter(
       (folder, index, self) =>
-          index === self.findIndex((f) => f.id === folder.id)
+          index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
   )
   localStorage.setItem("folders", JSON.stringify(newFolders))
 
   const oldPrompts = localStorage.getItem("prompts")
   const oldPromptsParsed = oldPrompts ? JSON.parse(oldPrompts) : []
-  const newPrompts: Prompt[] = [...oldPromptsParsed, ...prompts].filter(
+  const newPrompts: Prompt[] = [...prompts, ...oldPromptsParsed].filter(
       (prompt, index, self) =>
           index === self.findIndex((p) => p.id === prompt.id)
   )
