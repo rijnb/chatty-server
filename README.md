@@ -1,6 +1,6 @@
 # chatty-server
 
-`chatty-server` is originally based on chatbot-ui by Mckay Wrigley. The original documentation is below.
+The `chatty-server` is originally based on chatbot-ui by Mckay Wrigley. The original documentation is below.
 
 ---
 
