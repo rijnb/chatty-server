@@ -23,10 +23,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (OPENAI_API_TYPE === "azure") {
       url = `${OPENAI_API_HOST}/openai/models?api-version=${OPENAI_API_VERSION}`
     }
-    console.info(`HTTP GET ${url}`)
-    console.info("  Content-Type: application/json")
-    console.info(`  ${(OPENAI_API_TYPE === "openai" && "Authorization: Bearer... (openai)") || (OPENAI_API_TYPE === "azure" && "api-key: ... (azure)")}`)
-
+    console.info(`Get models from ${OPENAI_API_TYPE}: ${url}`)
     const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
@@ -79,3 +76,4 @@ const handler = async (req: Request): Promise<Response> => {
 }
 
 export default handler
+
