@@ -1,12 +1,12 @@
-# Contributing Guidelines
+# Contributing guidelines
 
-**Welcome to Chatbot UI!**
+**Welcome to `chatty-server`!**
 
 We appreciate your interest in contributing to our project.
 
 Before you get started, please read our guidelines for contributing.
 
-## Types of Contributions
+## Types of contributions
 
 We welcome the following types of contributions:
 
@@ -19,18 +19,20 @@ We welcome the following types of contributions:
 
 ## Getting Started
 
-To get started, fork the project on GitHub and clone it locally on your machine. Then, create a new branch to work on your changes.
+To get started, fork the project on GitHub and clone it locally on your machine. 
+Then, create a new branch to work on your changes.
 
 ```
-git clone https://github.com/mckaywrigley/chatbot-ui.git
-cd chatbot-ui
+git clone https://github.com/rijnb/chatty-server.git
+cd chatty-server
 git checkout -b my-branch-name
 
 ```
 
-Before submitting your pull request, please make sure your changes pass our automated tests and adhere to our code style guidelines.
+Before submitting your pull request, please make sure your changes pass our 
+automated tests and adhere to our code style guidelines.
 
-## Pull Request Process
+## Pull request process
 
 1. Fork the project on GitHub.
 2. Clone your forked repository locally on your machine.
@@ -42,4 +44,5 @@ Before submitting your pull request, please make sure your changes pass our auto
 
 ## Contact
 
-If you have any questions or need help getting started, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley).
+If you have any questions or need help getting started, 
+feel free to reach out to me via [mail](mail:rijn@buve.nl).
