@@ -111,11 +111,10 @@ export const ChatInput = ({
     const selectedPrompt = filteredPrompts[activePromptIndex]
     if (selectedPrompt) {
       setContent((prevContent) => {
-        const newContent = prevContent?.replace(
+        return prevContent?.replace(
             /\/\w*$/,
             selectedPrompt.content
         )
-        return newContent
       })
       handlePromptSelect(selectedPrompt)
     }
@@ -189,8 +188,7 @@ export const ChatInput = ({
       setIsModalVisible(true)
     } else {
       setContent((prevContent) => {
-        const updatedContent = prevContent?.replace(/\/\w*$/, prompt.content)
-        return updatedContent
+        return prevContent?.replace(/\/\w*$/, prompt.content)
       })
       updatePromptListVisibility(prompt.content)
     }

@@ -58,8 +58,7 @@ export const SystemPrompt: FC<Props> = ({
   const handleInitModal = () => {
     const selectedPrompt = filteredPrompts[activePromptIndex]
     setValue((prevVal) => {
-      const newContent = prevVal?.replace(/\/\w*$/, selectedPrompt.content)
-      return newContent
+      return prevVal?.replace(/\/\w*$/, selectedPrompt.content)
     })
     handlePromptSelect(selectedPrompt)
     setShowPromptList(false)

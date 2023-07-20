@@ -15,13 +15,11 @@ export const useFetch = () => {
       signal?: AbortSignal
   ) => {
     const requestUrl = request?.params ? `${url}${request.params}` : url
-
     const requestBody = request?.body
         ? request.body instanceof FormData
             ? {...request, body: request.body}
             : {...request, body: JSON.stringify(request.body)}
         : request
-
     const headers = {
       ...(request?.headers
           ? request.headers
@@ -29,34 +27,30 @@ export const useFetch = () => {
               ? {}
               : {"Content-type": "application/json"})
     }
-
     return fetch(requestUrl, {...requestBody, headers, signal})
     .then((response) => {
       if (!response.ok) {
+        console.info(`  HTTP status:${response.status}, statusText:${response.statusText}`)
         throw response
       }
-
       const contentType = response.headers.get("content-type")
       const contentDisposition = response.headers.get("content-disposition")
       const headers = response.headers
-      const result =
-          contentType &&
-          (contentType?.indexOf("application/json") !== -1 ||
-              contentType?.indexOf("text/plain") !== -1)
-              ? response.json()
-              : contentDisposition?.indexOf("attachment") !== -1
-                  ? response.blob()
-                  : response
-
-      return result
+      const data = contentType && (contentType?.indexOf("application/json") !== -1 || contentType?.indexOf("text/plain") !== -1)
+          ? response.json()
+          : contentDisposition?.indexOf("attachment") !== -1
+              ? response.blob()
+              : response
+      console.info(`  HTTP response` )
+      return data
     })
-    .catch(async (err) => {
-      const contentType = err.headers.get("content-type")
-      const errResult =
-          contentType && contentType?.indexOf("application/problem+json") !== -1
-              ? await err.json()
-              : err
-      throw errResult
+    .catch(async (error) => {
+      const contentType = error.headers.get("content-type")
+      const errContent = contentType && contentType?.indexOf("application/problem+json") !== -1
+          ? await error.json()
+          : error
+      console.info(`  HTTP status:${error.status}, statusText:${error.statusText}`)
+      throw errContent
     })
   }
 
@@ -80,7 +74,7 @@ export const useFetch = () => {
       return handleFetch(url, {...request, method: "patch"})
     },
     delete: async <T>(url: string, request?: RequestModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "delete"});
+      return handleFetch(url, {...request, method: "delete"})
     }
-  };
-};
+  }
+}

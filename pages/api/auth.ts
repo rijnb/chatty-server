@@ -31,7 +31,7 @@ export function auth(req: Request | NextApiRequest) {
     }
   }
 
-  let authToken = ""
+  let authToken: string
 
   // Check if it's a NextApiRequest (Next.js) or a Request (Express.js)
   if (typeof req.headers.get === "function") {

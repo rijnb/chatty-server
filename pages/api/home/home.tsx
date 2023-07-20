@@ -20,7 +20,7 @@ import {GetServerSideProps} from "next"
 import {useTranslation} from "next-i18next"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations"
 import Head from "next/head"
-import {useEffect, useRef, useState} from "react"
+import {useEffect, useRef} from "react"
 import {useQuery} from "react-query"
 import {v4 as uuidv4} from "uuid"
 import HomeContext from "./home.context"
@@ -42,8 +42,6 @@ const Home = ({
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
-  const [initialRender, setInitialRender] = useState<boolean>(true)
-
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState
   })
@@ -221,7 +219,7 @@ const Home = ({
     if (window.innerWidth < 640) {
       dispatch({field: "showChatbar", value: false})
     }
-  }, [selectedConversation])
+  }, [selectedConversation, dispatch])
 
   useEffect(() => {
     defaultModelId &&
@@ -245,7 +243,8 @@ const Home = ({
     defaultModelId,
     serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
-    serverSideGuestCodeIsSet
+    serverSideGuestCodeIsSet,
+    dispatch
   ])
 
   // ON LOAD --------------------------------------------
@@ -349,7 +348,8 @@ const Home = ({
     dispatch,
     serverSideApiKeyIsSet,
     serverSideGuestCodeIsSet,
-    serverSidePluginKeysSet
+    serverSidePluginKeysSet,
+    dispatch
   ])
 
   const title = "Chatty"
@@ -372,7 +372,7 @@ const Home = ({
               name="viewport"
               content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
           />
-          <link rel="icon" href="/chatty/favicon.ico"/>
+          <link rel="icon" href="/favicon.ico"/>
         </Head>
         {selectedConversation && (
             <main
@@ -434,5 +434,5 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
         "settings"
       ]))
     }
-  };
-};
+  }
+}

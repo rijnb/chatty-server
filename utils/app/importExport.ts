@@ -74,7 +74,7 @@ function createFilename(kind: string, extension: string): string {
 
 // replace common problematic filename characters
 function sanitizeFilename(filename: string): string {
-  const regex = /[\/\\:\*\?"<>\|]+/g
+  const regex = /[\/\\:*?"<>|]+/g
   return filename.replace(regex, "_")
 }
 
@@ -125,13 +125,6 @@ export const exportMarkdown = () => {
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
-}
-
-function currentDate() {
-  const date = new Date()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  return `${month}-${day}`
 }
 
 export const exportData = () => {
