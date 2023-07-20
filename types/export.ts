@@ -1,6 +1,6 @@
-import {Conversation, Message} from "./chat";
-import {FolderInterface} from "./folder";
-import {Prompt} from "./prompt";
+import {Conversation, Message} from "./chat"
+import {FolderInterface} from "./folder"
+import {Prompt} from "./prompt"
 
 export type SupportedExportFormats =
     | ExportFormatV1

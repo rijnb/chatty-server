@@ -1,45 +1,39 @@
-import {useCreateReducer} from "@/hooks/useCreateReducer";
-
-import HomeContext from "@/pages/api/home/home.context";
-
-import {OpenAIModels} from "@/types/openai";
-import {Prompt} from "@/types/prompt";
-
-import {savePrompts} from "@/utils/app/prompts";
-import {useContext, useEffect} from "react";
-import {useTranslation} from "react-i18next";
-
-import {v4 as uuidv4} from "uuid";
-
-import Sidebar from "../Sidebar";
-
-import {PromptFolders} from "./components/PromptFolders";
-import {Prompts} from "./components/Prompts";
-import PromptbarContext from "./PromptBar.context";
-import {initialState, PromptbarInitialState} from "./Promptbar.state";
+import {useCreateReducer} from "@/hooks/useCreateReducer"
+import HomeContext from "@/pages/api/home/home.context"
+import {OpenAIModels} from "@/types/openai"
+import {Prompt} from "@/types/prompt"
+import {savePrompts} from "@/utils/app/prompts"
+import {useContext, useEffect} from "react"
+import {useTranslation} from "react-i18next"
+import {v4 as uuidv4} from "uuid"
+import Sidebar from "../Sidebar"
+import {PromptFolders} from "./components/PromptFolders"
+import {Prompts} from "./components/Prompts"
+import PromptbarContext from "./PromptBar.context"
+import {initialState, PromptbarInitialState} from "./Promptbar.state"
 
 const Promptbar = () => {
-  const {t} = useTranslation("promptbar");
+  const {t} = useTranslation("promptbar")
 
   const promptBarContextValue = useCreateReducer<PromptbarInitialState>({
     initialState
-  });
+  })
 
   const {
     state: {prompts, defaultModelId, showPromptbar},
     dispatch: homeDispatch,
     handleCreateFolder
-  } = useContext(HomeContext);
+  } = useContext(HomeContext)
 
   const {
     state: {searchTerm, filteredPrompts},
     dispatch: promptDispatch
-  } = promptBarContextValue;
+  } = promptBarContextValue
 
   const handleTogglePromptbar = () => {
-    homeDispatch({field: "showPromptbar", value: !showPromptbar});
-    localStorage.setItem("showPromptbar", JSON.stringify(!showPromptbar));
-  };
+    homeDispatch({field: "showPromptbar", value: !showPromptbar})
+    localStorage.setItem("showPromptbar", JSON.stringify(!showPromptbar))
+  }
 
   const handleCreatePrompt = () => {
     if (defaultModelId) {
@@ -50,50 +44,50 @@ const Promptbar = () => {
         content: "",
         model: OpenAIModels[defaultModelId],
         folderId: null
-      };
+      }
 
-      const updatedPrompts = [...prompts, newPrompt];
+      const updatedPrompts = [...prompts, newPrompt]
 
-      homeDispatch({field: "prompts", value: updatedPrompts});
+      homeDispatch({field: "prompts", value: updatedPrompts})
 
-      savePrompts(updatedPrompts);
+      savePrompts(updatedPrompts)
     }
-  };
+  }
 
   const handleDeletePrompt = (prompt: Prompt) => {
-    const updatedPrompts = prompts.filter((p) => p.id !== prompt.id);
+    const updatedPrompts = prompts.filter((p) => p.id !== prompt.id)
 
-    homeDispatch({field: "prompts", value: updatedPrompts});
-    savePrompts(updatedPrompts);
-  };
+    homeDispatch({field: "prompts", value: updatedPrompts})
+    savePrompts(updatedPrompts)
+  }
 
   const handleUpdatePrompt = (prompt: Prompt) => {
     const updatedPrompts = prompts.map((p) => {
       if (p.id === prompt.id) {
-        return prompt;
+        return prompt
       }
 
-      return p;
-    });
-    homeDispatch({field: "prompts", value: updatedPrompts});
+      return p
+    })
+    homeDispatch({field: "prompts", value: updatedPrompts})
 
-    savePrompts(updatedPrompts);
-  };
+    savePrompts(updatedPrompts)
+  }
 
   const handleDrop = (e: any) => {
     if (e.dataTransfer) {
-      const prompt = JSON.parse(e.dataTransfer.getData("prompt"));
+      const prompt = JSON.parse(e.dataTransfer.getData("prompt"))
 
       const updatedPrompt = {
         ...prompt,
         folderId: e.target.dataset.folderId
-      };
+      }
 
-      handleUpdatePrompt(updatedPrompt);
+      handleUpdatePrompt(updatedPrompt)
 
-      e.target.style.background = "none";
+      e.target.style.background = "none"
     }
-  };
+  }
 
   useEffect(() => {
     if (searchTerm) {
@@ -105,14 +99,14 @@ const Promptbar = () => {
               " " +
               prompt.description.toLowerCase() +
               " " +
-              prompt.content.toLowerCase();
-          return searchable.includes(searchTerm.toLowerCase());
+              prompt.content.toLowerCase()
+          return searchable.includes(searchTerm.toLowerCase())
         })
-      });
+      })
     } else {
-      promptDispatch({field: "filteredPrompts", value: prompts});
+      promptDispatch({field: "filteredPrompts", value: prompts})
     }
-  }, [searchTerm, prompts]);
+  }, [searchTerm, prompts])
 
   return (
       <PromptbarContext.Provider
@@ -144,7 +138,7 @@ const Promptbar = () => {
             handleDrop={handleDrop}
         />
       </PromptbarContext.Provider>
-  );
-};
+  )
+}
 
-export default Promptbar;
+export default Promptbar

@@ -1,7 +1,6 @@
-import {Prompt} from "@/types/prompt";
-
-import {useTranslation} from "next-i18next";
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react";
+import {Prompt} from "@/types/prompt"
+import {useTranslation} from "next-i18next"
+import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
 
 interface Props {
   prompt: Prompt;
@@ -10,43 +9,43 @@ interface Props {
 }
 
 export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
-  const {t} = useTranslation("promptbar");
-  const [name, setName] = useState(prompt.name);
-  const [description, setDescription] = useState(prompt.description);
-  const [content, setContent] = useState(prompt.content);
+  const {t} = useTranslation("promptbar")
+  const [name, setName] = useState(prompt.name)
+  const [description, setDescription] = useState(prompt.description)
+  const [content, setContent] = useState(prompt.content)
 
-  const modalRef = useRef<HTMLDivElement>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      onUpdatePrompt({...prompt, name, description, content: content.trim()});
-      onClose();
+      onUpdatePrompt({...prompt, name, description, content: content.trim()})
+      onClose()
     }
-  };
+  }
 
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        window.addEventListener("mouseup", handleMouseUp);
+        window.addEventListener("mouseup", handleMouseUp)
       }
-    };
+    }
 
     const handleMouseUp = (e: MouseEvent) => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      onClose();
-    };
+      window.removeEventListener("mouseup", handleMouseUp)
+      onClose()
+    }
 
-    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousedown", handleMouseDown)
 
     return () => {
-      window.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [onClose]);
+      window.removeEventListener("mousedown", handleMouseDown)
+    }
+  }, [onClose])
 
   useEffect(() => {
-    nameInputRef.current?.focus();
-  }, []);
+    nameInputRef.current?.focus()
+  }, [])
 
   return (
       <div
@@ -113,10 +112,10 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
                       name,
                       description,
                       content: content.trim()
-                    };
+                    }
 
-                    onUpdatePrompt(updatedPrompt);
-                    onClose();
+                    onUpdatePrompt(updatedPrompt)
+                    onClose()
                   }}
               >
                 {t("Save")}
@@ -125,5 +124,5 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
           </div>
         </div>
       </div>
-  );
-};
+  )
+}

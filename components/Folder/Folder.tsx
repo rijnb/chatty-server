@@ -1,10 +1,8 @@
-import SidebarActionButton from "@/components/Buttons/SidebarActionButton";
-
-import HomeContext from "@/pages/api/home/home.context";
-
-import {FolderInterface} from "@/types/folder";
-import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react";
-import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react";
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
+import HomeContext from "@/pages/api/home/home.context"
+import {FolderInterface} from "@/types/folder"
+import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
+import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
 
 interface Props {
   currentFolder: FolderInterface;
@@ -19,63 +17,63 @@ const Folder = ({
                   handleDrop,
                   folderComponent
                 }: Props) => {
-  const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext);
+  const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext)
 
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isRenaming, setIsRenaming] = useState(false)
+  const [renameValue, setRenameValue] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      handleRename();
+      e.preventDefault()
+      handleRename()
     }
-  };
+  }
 
   const handleRename = () => {
-    handleUpdateFolder(currentFolder.id, renameValue);
-    setRenameValue("");
-    setIsRenaming(false);
-  };
+    handleUpdateFolder(currentFolder.id, renameValue)
+    setRenameValue("")
+    setIsRenaming(false)
+  }
 
   const dropHandler = (e: any) => {
     if (e.dataTransfer) {
-      setIsOpen(true);
+      setIsOpen(true)
 
-      handleDrop(e, currentFolder);
+      handleDrop(e, currentFolder)
 
-      e.target.style.background = "none";
+      e.target.style.background = "none"
     }
-  };
+  }
 
   const allowDrop = (e: any) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const highlightDrop = (e: any) => {
-    e.target.style.background = "#343541";
-  };
+    e.target.style.background = "#343541"
+  }
 
   const removeHighlight = (e: any) => {
-    e.target.style.background = "none";
-  };
+    e.target.style.background = "none"
+  }
 
   useEffect(() => {
     if (isRenaming) {
-      setIsDeleting(false);
+      setIsDeleting(false)
     } else if (isDeleting) {
-      setIsRenaming(false);
+      setIsRenaming(false)
     }
-  }, [isRenaming, isDeleting]);
+  }, [isRenaming, isDeleting])
 
   useEffect(() => {
     if (searchTerm) {
-      setIsOpen(true);
+      setIsOpen(true)
     } else {
-      setIsOpen(false);
+      setIsOpen(false)
     }
-  }, [searchTerm]);
+  }, [searchTerm])
 
   return (
       <>
@@ -122,25 +120,25 @@ const Folder = ({
               <div className="absolute right-1 z-10 flex text-gray-300">
                 <SidebarActionButton
                     handleClick={(e) => {
-                      e.stopPropagation();
+                      e.stopPropagation()
 
                       if (isDeleting) {
-                        handleDeleteFolder(currentFolder.id);
+                        handleDeleteFolder(currentFolder.id)
                       } else if (isRenaming) {
-                        handleRename();
+                        handleRename()
                       }
 
-                      setIsDeleting(false);
-                      setIsRenaming(false);
+                      setIsDeleting(false)
+                      setIsRenaming(false)
                     }}
                 >
                   <IconCheck size={18}/>
                 </SidebarActionButton>
                 <SidebarActionButton
                     handleClick={(e) => {
-                      e.stopPropagation();
-                      setIsDeleting(false);
-                      setIsRenaming(false);
+                      e.stopPropagation()
+                      setIsDeleting(false)
+                      setIsRenaming(false)
                     }}
                 >
                   <IconX size={18}/>
@@ -152,17 +150,17 @@ const Folder = ({
               <div className="absolute right-1 z-10 flex text-gray-300">
                 <SidebarActionButton
                     handleClick={(e) => {
-                      e.stopPropagation();
-                      setIsRenaming(true);
-                      setRenameValue(currentFolder.name);
+                      e.stopPropagation()
+                      setIsRenaming(true)
+                      setRenameValue(currentFolder.name)
                     }}
                 >
                   <IconPencil size={18}/>
                 </SidebarActionButton>
                 <SidebarActionButton
                     handleClick={(e) => {
-                      e.stopPropagation();
-                      setIsDeleting(true);
+                      e.stopPropagation()
+                      setIsDeleting(true)
                     }}
                 >
                   <IconTrash size={18}/>
@@ -173,7 +171,7 @@ const Folder = ({
 
         {isOpen ? folderComponent : null}
       </>
-  );
-};
+  )
+}
 
-export default Folder;
+export default Folder

@@ -1,11 +1,9 @@
-import {ActionType} from "@/hooks/useCreateReducer";
-
-import {Conversation} from "@/types/chat";
-import {SupportedExportFormats} from "@/types/export";
-import {PluginKey} from "@/types/plugin";
-import {createContext, Dispatch} from "react";
-
-import {ChatbarInitialState} from "./Chatbar.state";
+import {ActionType} from "@/hooks/useCreateReducer"
+import {Conversation} from "@/types/chat"
+import {SupportedExportFormats} from "@/types/export"
+import {PluginKey} from "@/types/plugin"
+import {createContext, Dispatch} from "react"
+import {ChatbarInitialState} from "./Chatbar.state"
 
 export interface ChatbarContextProps {
   state: ChatbarInitialState;
@@ -21,6 +19,6 @@ export interface ChatbarContextProps {
   handleGuestCodeChange: (guestCode: string) => void;
 }
 
-const ChatbarContext = createContext<ChatbarContextProps>(undefined!);
+const ChatbarContext = createContext<ChatbarContextProps>(undefined!)
 
-export default ChatbarContext;
+export default ChatbarContext

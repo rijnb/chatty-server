@@ -1,23 +1,19 @@
-import ChatbarContext from "@/components/Chatbar/Chatbar.context";
-
-import {GuestCode} from "@/components/Settings/GuestCode";
-import {Import} from "@/components/Settings/Import";
-import {Key} from "@/components/Settings/Key";
-
-import {SettingDialog} from "@/components/Settings/SettingDialog";
-import {SidebarButton} from "@/components/Sidebar/SidebarButton";
-
-import HomeContext from "@/pages/api/home/home.context";
-import {IconFileExport, IconMarkdown, IconSettings} from "@tabler/icons-react";
-
-import {useTranslation} from "next-i18next";
-import {useContext, useState} from "react";
-import {ClearConversations} from "./ClearConversations";
-import {PluginKeys} from "./PluginKeys";
+import ChatbarContext from "@/components/Chatbar/Chatbar.context"
+import {GuestCode} from "@/components/Settings/GuestCode"
+import {Import} from "@/components/Settings/Import"
+import {Key} from "@/components/Settings/Key"
+import {SettingDialog} from "@/components/Settings/SettingDialog"
+import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import HomeContext from "@/pages/api/home/home.context"
+import {IconFileExport, IconMarkdown, IconSettings} from "@tabler/icons-react"
+import {useTranslation} from "next-i18next"
+import {useContext, useState} from "react"
+import {ClearConversations} from "./ClearConversations"
+import {PluginKeys} from "./PluginKeys"
 
 export const ChatbarSettings = () => {
-  const {t} = useTranslation("sidebar");
-  const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
+  const {t} = useTranslation("sidebar")
+  const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false)
 
   const {
     state: {
@@ -30,7 +26,7 @@ export const ChatbarSettings = () => {
       conversations
     },
     dispatch: homeDispatch
-  } = useContext(HomeContext);
+  } = useContext(HomeContext)
 
   const {
     handleClearConversations,
@@ -39,7 +35,7 @@ export const ChatbarSettings = () => {
     handleExportMarkdown,
     handleApiKeyChange,
     handleGuestCodeChange
-  } = useContext(ChatbarContext);
+  } = useContext(ChatbarContext)
 
   return (
       <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
@@ -76,7 +72,7 @@ export const ChatbarSettings = () => {
         <SettingDialog
             open={isSettingDialogOpen}
             onClose={() => {
-              setIsSettingDialog(false);
+              setIsSettingDialog(false)
             }}
         />
 
@@ -87,5 +83,5 @@ export const ChatbarSettings = () => {
             />
         ) : null}
       </div>
-  );
-};
+  )
+}

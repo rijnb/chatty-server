@@ -1,53 +1,50 @@
-import ChatbarContext from "@/components/Chatbar/Chatbar.context";
-
-import {SidebarButton} from "@/components/Sidebar/SidebarButton";
-
-import HomeContext from "@/pages/api/home/home.context";
-
-import {PluginID, PluginKey} from "@/types/plugin";
-import {IconKey} from "@tabler/icons-react";
-import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react";
-import {useTranslation} from "react-i18next";
+import ChatbarContext from "@/components/Chatbar/Chatbar.context"
+import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import HomeContext from "@/pages/api/home/home.context"
+import {PluginID, PluginKey} from "@/types/plugin"
+import {IconKey} from "@tabler/icons-react"
+import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react"
+import {useTranslation} from "react-i18next"
 
 export const PluginKeys = () => {
-  const {t} = useTranslation("sidebar");
+  const {t} = useTranslation("sidebar")
 
   const {
     state: {pluginKeys}
-  } = useContext(HomeContext);
+  } = useContext(HomeContext)
 
   const {handlePluginKeyChange, handleClearPluginKey} =
-      useContext(ChatbarContext);
+      useContext(ChatbarContext)
 
-  const [isChanging, setIsChanging] = useState(false);
+  const [isChanging, setIsChanging] = useState(false)
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null)
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      setIsChanging(false);
+      e.preventDefault()
+      setIsChanging(false)
     }
-  };
+  }
 
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        window.addEventListener("mouseup", handleMouseUp);
+        window.addEventListener("mouseup", handleMouseUp)
       }
-    };
+    }
 
     const handleMouseUp = (e: MouseEvent) => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      setIsChanging(false);
-    };
+      window.removeEventListener("mouseup", handleMouseUp)
+      setIsChanging(false)
+    }
 
-    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousedown", handleMouseDown)
 
     return () => {
-      window.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, []);
+      window.removeEventListener("mousedown", handleMouseDown)
+    }
+  }, [])
 
   return (
       <>
@@ -99,12 +96,12 @@ export const PluginKeys = () => {
                           onChange={(e) => {
                             const pluginKey = pluginKeys.find(
                                 (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                            );
+                            )
 
                             if (pluginKey) {
                               const requiredKey = pluginKey.requiredKeys.find(
                                   (k) => k.key === "GOOGLE_API_KEY"
-                              );
+                              )
 
                               if (requiredKey) {
                                 const updatedPluginKey = {
@@ -114,14 +111,14 @@ export const PluginKeys = () => {
                                       return {
                                         ...k,
                                         value: e.target.value
-                                      };
+                                      }
                                     }
 
-                                    return k;
+                                    return k
                                   })
-                                };
+                                }
 
-                                handlePluginKeyChange(updatedPluginKey);
+                                handlePluginKeyChange(updatedPluginKey)
                               }
                             } else {
                               const newPluginKey: PluginKey = {
@@ -136,9 +133,9 @@ export const PluginKeys = () => {
                                     value: ""
                                   }
                                 ]
-                              };
+                              }
 
-                              handlePluginKeyChange(newPluginKey);
+                              handlePluginKeyChange(newPluginKey)
                             }
                           }}
                       />
@@ -158,12 +155,12 @@ export const PluginKeys = () => {
                           onChange={(e) => {
                             const pluginKey = pluginKeys.find(
                                 (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                            );
+                            )
 
                             if (pluginKey) {
                               const requiredKey = pluginKey.requiredKeys.find(
                                   (k) => k.key === "GOOGLE_CSE_ID"
-                              );
+                              )
 
                               if (requiredKey) {
                                 const updatedPluginKey = {
@@ -173,14 +170,14 @@ export const PluginKeys = () => {
                                       return {
                                         ...k,
                                         value: e.target.value
-                                      };
+                                      }
                                     }
 
-                                    return k;
+                                    return k
                                   })
-                                };
+                                }
 
-                                handlePluginKeyChange(updatedPluginKey);
+                                handlePluginKeyChange(updatedPluginKey)
                               }
                             } else {
                               const newPluginKey: PluginKey = {
@@ -195,9 +192,9 @@ export const PluginKeys = () => {
                                     value: e.target.value
                                   }
                                 ]
-                              };
+                              }
 
-                              handlePluginKeyChange(newPluginKey);
+                              handlePluginKeyChange(newPluginKey)
                             }
                           }}
                       />
@@ -207,10 +204,10 @@ export const PluginKeys = () => {
                           onClick={() => {
                             const pluginKey = pluginKeys.find(
                                 (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                            );
+                            )
 
                             if (pluginKey) {
-                              handleClearPluginKey(pluginKey);
+                              handleClearPluginKey(pluginKey)
                             }
                           }}
                       >
@@ -231,5 +228,5 @@ export const PluginKeys = () => {
             </div>
         )}
       </>
-  );
-};
+  )
+}

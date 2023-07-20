@@ -1,13 +1,10 @@
-import {Conversation} from "@/types/chat";
-import {Prompt} from "@/types/prompt";
-
-import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "@/utils/app/const";
-
-import {useTranslation} from "next-i18next";
-import {FC, KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
-
-import {PromptList} from "./PromptList";
-import {VariableModal} from "./VariableModal";
+import {Conversation} from "@/types/chat"
+import {Prompt} from "@/types/prompt"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "@/utils/app/const"
+import {useTranslation} from "next-i18next"
+import {FC, KeyboardEvent, useCallback, useEffect, useRef, useState} from "react"
+import {PromptList} from "./PromptList"
+import {VariableModal} from "./VariableModal"
 
 interface Props {
   conversation: Conversation;
@@ -20,25 +17,25 @@ export const SystemPrompt: FC<Props> = ({
                                           prompts,
                                           onChangePrompt
                                         }) => {
-  const {t} = useTranslation("chat");
+  const {t} = useTranslation("chat")
 
-  const [value, setValue] = useState<string>("");
-  const [activePromptIndex, setActivePromptIndex] = useState(0);
-  const [showPromptList, setShowPromptList] = useState(false);
-  const [promptInputValue, setPromptInputValue] = useState("");
-  const [variables, setVariables] = useState<string[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [value, setValue] = useState<string>("")
+  const [activePromptIndex, setActivePromptIndex] = useState(0)
+  const [showPromptList, setShowPromptList] = useState(false)
+  const [promptInputValue, setPromptInputValue] = useState("")
+  const [variables, setVariables] = useState<string[]>([])
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const promptListRef = useRef<HTMLUListElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const promptListRef = useRef<HTMLUListElement | null>(null)
 
   const filteredPrompts = prompts.filter((prompt) =>
       prompt.name.toLowerCase().includes(promptInputValue.toLowerCase())
-  );
+  )
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    const maxLength = conversation.model.maxLength;
+    const value = e.target.value
+    const maxLength = conversation.model.maxLength
 
     if (value.length > maxLength) {
       alert(
@@ -46,125 +43,125 @@ export const SystemPrompt: FC<Props> = ({
               `Prompt limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
               {maxLength, valueLength: value.length}
           )
-      );
-      return;
+      )
+      return
     }
 
-    setValue(value);
-    updatePromptListVisibility(value);
+    setValue(value)
+    updatePromptListVisibility(value)
 
     if (value.length > 0) {
-      onChangePrompt(value);
+      onChangePrompt(value)
     }
-  };
+  }
 
   const handleInitModal = () => {
-    const selectedPrompt = filteredPrompts[activePromptIndex];
+    const selectedPrompt = filteredPrompts[activePromptIndex]
     setValue((prevVal) => {
-      const newContent = prevVal?.replace(/\/\w*$/, selectedPrompt.content);
-      return newContent;
-    });
-    handlePromptSelect(selectedPrompt);
-    setShowPromptList(false);
-  };
+      const newContent = prevVal?.replace(/\/\w*$/, selectedPrompt.content)
+      return newContent
+    })
+    handlePromptSelect(selectedPrompt)
+    setShowPromptList(false)
+  }
 
   const parseVariables = (content: string) => {
-    const regex = /{{(.*?)}}/g;
-    const foundVariables = [];
-    let match;
+    const regex = /{{(.*?)}}/g
+    const foundVariables = []
+    let match
 
     while ((match = regex.exec(content)) !== null) {
-      foundVariables.push(match[1]);
+      foundVariables.push(match[1])
     }
 
-    return foundVariables;
-  };
+    return foundVariables
+  }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = text.match(/\/\w*$/);
+    const match = text.match(/\/\w*$/)
 
     if (match) {
-      setShowPromptList(true);
-      setPromptInputValue(match[0].slice(1));
+      setShowPromptList(true)
+      setPromptInputValue(match[0].slice(1))
     } else {
-      setShowPromptList(false);
-      setPromptInputValue("");
+      setShowPromptList(false)
+      setPromptInputValue("")
     }
-  }, []);
+  }, [])
 
   const handlePromptSelect = (prompt: Prompt) => {
-    const parsedVariables = parseVariables(prompt.content);
-    setVariables(parsedVariables);
+    const parsedVariables = parseVariables(prompt.content)
+    setVariables(parsedVariables)
 
     if (parsedVariables.length > 0) {
-      setIsModalVisible(true);
+      setIsModalVisible(true)
     } else {
-      const updatedContent = value?.replace(/\/\w*$/, prompt.content);
+      const updatedContent = value?.replace(/\/\w*$/, prompt.content)
 
-      setValue(updatedContent);
-      onChangePrompt(updatedContent);
+      setValue(updatedContent)
+      onChangePrompt(updatedContent)
 
-      updatePromptListVisibility(prompt.content);
+      updatePromptListVisibility(prompt.content)
     }
-  };
+  }
 
   const handleSubmit = (updatedVariables: string[]) => {
     const newContent = value?.replace(/{{(.*?)}}/g, (match, variable) => {
-      const index = variables.indexOf(variable);
-      return updatedVariables[index];
-    });
+      const index = variables.indexOf(variable)
+      return updatedVariables[index]
+    })
 
-    setValue(newContent);
-    onChangePrompt(newContent);
+    setValue(newContent)
+    onChangePrompt(newContent)
 
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.focus();
+      textareaRef.current.focus()
     }
-  };
+  }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
       if (e.key === "ArrowDown") {
-        e.preventDefault();
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
             prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex
-        );
+        )
       } else if (e.key === "ArrowUp") {
-        e.preventDefault();
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
             prevIndex > 0 ? prevIndex - 1 : prevIndex
-        );
+        )
       } else if (e.key === "Tab") {
-        e.preventDefault();
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
             prevIndex < prompts.length - 1 ? prevIndex + 1 : 0
-        );
+        )
       } else if (e.key === "Enter") {
-        e.preventDefault();
-        handleInitModal();
+        e.preventDefault()
+        handleInitModal()
       } else if (e.key === "Escape") {
-        e.preventDefault();
-        setShowPromptList(false);
+        e.preventDefault()
+        setShowPromptList(false)
       } else {
-        setActivePromptIndex(0);
+        setActivePromptIndex(0)
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "inherit";
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
+      textareaRef.current.style.height = "inherit"
+      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`
     }
-  }, [value]);
+  }, [value])
 
   useEffect(() => {
     if (conversation.prompt) {
-      setValue(conversation.prompt);
+      setValue(conversation.prompt)
     } else {
-      setValue(OPENAI_DEFAULT_SYSTEM_PROMPT);
+      setValue(OPENAI_DEFAULT_SYSTEM_PROMPT)
     }
-  }, [conversation]);
+  }, [conversation])
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -172,16 +169,16 @@ export const SystemPrompt: FC<Props> = ({
           promptListRef.current &&
           !promptListRef.current.contains(e.target as Node)
       ) {
-        setShowPromptList(false);
+        setShowPromptList(false)
       }
-    };
+    }
 
-    window.addEventListener("click", handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick)
 
     return () => {
-      window.removeEventListener("click", handleOutsideClick);
-    };
-  }, []);
+      window.removeEventListener("click", handleOutsideClick)
+    }
+  }, [])
 
   return (
       <div className="flex flex-col">
@@ -231,5 +228,5 @@ export const SystemPrompt: FC<Props> = ({
             />
         )}
       </div>
-  );
-};
+  )
+}

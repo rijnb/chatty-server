@@ -1,9 +1,7 @@
-import HomeContext from "@/pages/api/home/home.context";
-
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const";
-
-import {useTranslation} from "next-i18next";
-import {FC, useContext, useState} from "react";
+import HomeContext from "@/pages/api/home/home.context"
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {useTranslation} from "next-i18next"
+import {FC, useContext, useState} from "react"
 
 interface Props {
   label: string;
@@ -16,17 +14,17 @@ export const TemperatureSlider: FC<Props> = ({
                                              }) => {
   const {
     state: {conversations}
-  } = useContext(HomeContext);
-  const lastConversation = conversations[conversations.length - 1];
+  } = useContext(HomeContext)
+  const lastConversation = conversations[conversations.length - 1]
   const [temperature, setTemperature] = useState(
       lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
-  );
-  const {t} = useTranslation("chat");
+  )
+  const {t} = useTranslation("chat")
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(event.target.value);
-    setTemperature(newValue);
-    onChangeTemperature(newValue);
-  };
+    const newValue = parseFloat(event.target.value)
+    setTemperature(newValue)
+    onChangeTemperature(newValue)
+  }
 
   return (
       <div className="flex flex-col">
@@ -62,5 +60,5 @@ export const TemperatureSlider: FC<Props> = ({
           </li>
         </ul>
       </div>
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-import {Prompt} from "@/types/prompt";
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react";
+import {Prompt} from "@/types/prompt"
+import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
 
 interface Props {
   prompt: Prompt;
@@ -23,57 +23,57 @@ export const VariableModal: FC<Props> = ({
           (item, index, array) =>
               array.findIndex((t) => t.key === item.key) === index
       )
-  );
+  )
 
-  const modalRef = useRef<HTMLDivElement>(null);
-  const nameInputRef = useRef<HTMLTextAreaElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null)
+  const nameInputRef = useRef<HTMLTextAreaElement>(null)
 
   const handleChange = (index: number, value: string) => {
     setUpdatedVariables((prev) => {
-      const updated = [...prev];
-      updated[index].value = value;
-      return updated;
-    });
-  };
+      const updated = [...prev]
+      updated[index].value = value
+      return updated
+    })
+  }
 
   const handleSubmit = () => {
     if (updatedVariables.some((variable) => variable.value === "")) {
-      alert("Please fill out all variables");
-      return;
+      alert("Please fill out all variables")
+      return
     }
 
-    onSubmit(updatedVariables.map((variable) => variable.value));
-    onClose();
-  };
+    onSubmit(updatedVariables.map((variable) => variable.value))
+    onClose()
+  }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
+      e.preventDefault()
+      handleSubmit()
     } else if (e.key === "Escape") {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
+        onClose()
       }
-    };
+    }
 
-    window.addEventListener("click", handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick)
 
     return () => {
-      window.removeEventListener("click", handleOutsideClick);
-    };
-  }, [onClose]);
+      window.removeEventListener("click", handleOutsideClick)
+    }
+  }, [onClose])
 
   useEffect(() => {
     if (nameInputRef.current) {
-      nameInputRef.current.focus();
+      nameInputRef.current.focus()
     }
-  }, []);
+  }, [])
 
   return (
       <div
@@ -119,5 +119,5 @@ export const VariableModal: FC<Props> = ({
           </button>
         </div>
       </div>
-  );
-};
+  )
+}

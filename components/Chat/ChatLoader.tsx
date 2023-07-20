@@ -1,5 +1,5 @@
-import {IconRobot} from "@tabler/icons-react";
-import {FC} from "react";
+import {IconRobot} from "@tabler/icons-react"
+import {FC} from "react"
 
 interface Props {
 }
@@ -18,5 +18,5 @@ export const ChatLoader: FC<Props> = () => {
           <span className="animate-pulse cursor-default mt-1">▍</span>
         </div>
       </div>
-  );
-};
+  )
+}

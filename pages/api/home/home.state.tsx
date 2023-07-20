@@ -1,9 +1,9 @@
-import {Conversation, Message} from "@/types/chat";
-import {ErrorMessage} from "@/types/error";
-import {FolderInterface} from "@/types/folder";
-import {OpenAIModel, OpenAIModelID} from "@/types/openai";
-import {PluginKey} from "@/types/plugin";
-import {Prompt} from "@/types/prompt";
+import {Conversation, Message} from "@/types/chat"
+import {ErrorMessage} from "@/types/error"
+import {FolderInterface} from "@/types/folder"
+import {OpenAIModel, OpenAIModelID} from "@/types/openai"
+import {PluginKey} from "@/types/plugin"
+import {Prompt} from "@/types/prompt"
 
 export interface HomeInitialState {
   apiKey: string;
@@ -55,4 +55,4 @@ export const initialState: HomeInitialState = {
   serverSideApiKeyIsSet: false,
   serverSideGuestCodeIsSet: false,
   serverSidePluginKeysSet: false
-};
+}

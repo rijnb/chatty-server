@@ -1,13 +1,9 @@
-import {useCreateReducer} from "@/hooks/useCreateReducer";
-
-import HomeContext from "@/pages/api/home/home.context";
-
-import {Settings} from "@/types/settings";
-
-import {getSettings, saveSettings} from "@/utils/app/settings";
-
-import {useTranslation} from "next-i18next";
-import {FC, useContext, useEffect, useRef} from "react";
+import {useCreateReducer} from "@/hooks/useCreateReducer"
+import HomeContext from "@/pages/api/home/home.context"
+import {Settings} from "@/types/settings"
+import {getSettings, saveSettings} from "@/utils/app/settings"
+import {useTranslation} from "next-i18next"
+import {FC, useContext, useEffect, useRef} from "react"
 
 interface Props {
   open: boolean;
@@ -15,41 +11,41 @@ interface Props {
 }
 
 export const SettingDialog: FC<Props> = ({open, onClose}) => {
-  const {t} = useTranslation("settings");
-  const settings: Settings = getSettings();
+  const {t} = useTranslation("settings")
+  const settings: Settings = getSettings()
   const {state, dispatch} = useCreateReducer<Settings>({
     initialState: settings
-  });
-  const {dispatch: homeDispatch} = useContext(HomeContext);
-  const modalRef = useRef<HTMLDivElement>(null);
+  })
+  const {dispatch: homeDispatch} = useContext(HomeContext)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        window.addEventListener("mouseup", handleMouseUp);
+        window.addEventListener("mouseup", handleMouseUp)
       }
-    };
+    }
 
     const handleMouseUp = (e: MouseEvent) => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      onClose();
-    };
+      window.removeEventListener("mouseup", handleMouseUp)
+      onClose()
+    }
 
-    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousedown", handleMouseDown)
 
     return () => {
-      window.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [onClose]);
+      window.removeEventListener("mousedown", handleMouseDown)
+    }
+  }, [onClose])
 
   const handleSave = () => {
-    homeDispatch({field: "lightMode", value: state.theme});
-    saveSettings(state);
-  };
+    homeDispatch({field: "lightMode", value: state.theme})
+    saveSettings(state)
+  }
 
   // Render nothing if the dialog is not open.
   if (!open) {
-    return <></>;
+    return <></>
   }
 
   // Render the dialog.
@@ -90,8 +86,8 @@ export const SettingDialog: FC<Props> = ({open, onClose}) => {
                   type="button"
                   className="w-full px-4 py-2 mt-6 border rounded-lg shadow border-neutral-500 text-neutral-900 hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
                   onClick={() => {
-                    handleSave();
-                    onClose();
+                    handleSave()
+                    onClose()
                   }}
               >
                 {t("Save")}
@@ -100,5 +96,5 @@ export const SettingDialog: FC<Props> = ({open, onClose}) => {
           </div>
         </div>
       </div>
-  );
-};
+  )
+}

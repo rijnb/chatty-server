@@ -1,4 +1,4 @@
-import {KeyValuePair} from "./data";
+import {KeyValuePair} from "./data"
 
 export interface Plugin {
   id: PluginID;
@@ -34,6 +34,6 @@ export const Plugins: Record<PluginID, Plugin> = {
       }
     ]
   }
-};
+}
 
-export const PluginList = Object.values(Plugins);
+export const PluginList = Object.values(Plugins)

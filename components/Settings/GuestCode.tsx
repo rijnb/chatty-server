@@ -1,9 +1,7 @@
-import {IconCheck, IconKey, IconX} from "@tabler/icons-react";
-
-import {useTranslation} from "next-i18next";
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react";
-
-import {SidebarButton} from "../Sidebar/SidebarButton";
+import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
+import {useTranslation} from "next-i18next"
+import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {SidebarButton} from "../Sidebar/SidebarButton"
 
 interface Props {
   guestCode: string;
@@ -11,28 +9,28 @@ interface Props {
 }
 
 export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
-  const {t} = useTranslation("sidebar");
-  const [isChanging, setIsChanging] = useState(false);
-  const [newKey, setNewKey] = useState(guestCode);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const {t} = useTranslation("sidebar")
+  const [isChanging, setIsChanging] = useState(false)
+  const [newKey, setNewKey] = useState(guestCode)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      handleUpdateKey(newKey);
+      e.preventDefault()
+      handleUpdateKey(newKey)
     }
-  };
+  }
 
   const handleUpdateKey = (newKey: string) => {
-    onGuestCodeChange(newKey.trim());
-    setIsChanging(false);
-  };
+    onGuestCodeChange(newKey.trim())
+    setIsChanging(false)
+  }
 
   useEffect(() => {
     if (isChanging) {
-      inputRef.current?.focus();
+      inputRef.current?.focus()
     }
-  }, [isChanging]);
+  }, [isChanging])
 
   return isChanging ? (
       <div
@@ -54,8 +52,8 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
               className="ml-auto min-w-[20px] text-neutral-400 hover:text-neutral-100"
               size={18}
               onClick={(e) => {
-                e.stopPropagation();
-                handleUpdateKey(newKey);
+                e.stopPropagation()
+                handleUpdateKey(newKey)
               }}
           />
 
@@ -63,9 +61,9 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
               className="ml-auto min-w-[20px] text-neutral-400 hover:text-neutral-100"
               size={18}
               onClick={(e) => {
-                e.stopPropagation();
-                setIsChanging(false);
-                setNewKey(guestCode);
+                e.stopPropagation()
+                setIsChanging(false)
+                setNewKey(guestCode)
               }}
           />
         </div>
@@ -76,5 +74,5 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
           icon={<IconKey size={18}/>}
           onClick={() => setIsChanging(true)}
       />
-  );
-};
+  )
+}

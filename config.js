@@ -1,1 +1,1 @@
-exports.basePath = "/chatty/1/chat";
+exports.basePath = "/chatty/1/chat"

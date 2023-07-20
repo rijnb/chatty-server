@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC} from "react"
 
 interface Props {
   text: string;
@@ -15,5 +15,5 @@ export const SidebarButton: FC<Props> = ({text, icon, onClick}) => {
         <div>{icon}</div>
         <span>{text}</span>
       </button>
-  );
-};
+  )
+}

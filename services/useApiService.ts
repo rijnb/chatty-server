@@ -1,17 +1,17 @@
-import {useFetch} from "@/hooks/useFetch";
-import {useCallback} from "react";
-import { basePath } from "@/config";
+import {basePath} from "@/config"
+import {useFetch} from "@/hooks/useFetch"
+import {useCallback} from "react"
 
 export interface GetModelsRequestProps {
   key: string;
 }
 
 const getApiUrl = (path: string) => {
-  return `${basePath}${path}`;
-};
+  return `${basePath}${path}`
+}
 
 const useApiService = () => {
-  const fetchService = useFetch();
+  const fetchService = useFetch()
 
   const getModels = useCallback(
       (params: GetModelsRequestProps, guestCode = "", signal?: AbortSignal) => {
@@ -22,14 +22,14 @@ const useApiService = () => {
             ...(guestCode && {Authorization: `Bearer ${guestCode}`})
           },
           signal
-        });
+        })
       },
       [fetchService]
-  );
+  )
 
   return {
     getModels
-  };
-};
+  }
+}
 
-export default useApiService;
+export default useApiService

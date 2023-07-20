@@ -19,7 +19,7 @@ We welcome the following types of contributions:
 
 ## Getting Started
 
-To get started, fork the project on GitHub and clone it locally on your machine. 
+To get started, fork the project on GitHub and clone it locally on your machine.
 Then, create a new branch to work on your changes.
 
 ```
@@ -29,7 +29,7 @@ git checkout -b my-branch-name
 
 ```
 
-Before submitting your pull request, please make sure your changes pass our 
+Before submitting your pull request, please make sure your changes pass our
 automated tests and adhere to our code style guidelines.
 
 ## Pull request process
@@ -44,5 +44,5 @@ automated tests and adhere to our code style guidelines.
 
 ## Contact
 
-If you have any questions or need help getting started, 
+If you have any questions or need help getting started,
 feel free to reach out to me via [mail](mail:rijn@buve.nl).

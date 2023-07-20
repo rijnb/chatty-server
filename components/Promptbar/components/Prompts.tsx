@@ -1,7 +1,6 @@
-import {Prompt} from "@/types/prompt";
-import {FC} from "react";
-
-import {PromptComponent} from "./Prompt";
+import {Prompt} from "@/types/prompt"
+import {FC} from "react"
+import {PromptComponent} from "./Prompt"
 
 interface Props {
   prompts: Prompt[];
@@ -17,5 +16,5 @@ export const Prompts: FC<Props> = ({prompts}) => {
             <PromptComponent key={index} prompt={prompt}/>
         ))}
       </div>
-  );
-};
+  )
+}

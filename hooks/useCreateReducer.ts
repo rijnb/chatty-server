@@ -1,4 +1,4 @@
-import {useMemo, useReducer} from "react";
+import {useMemo, useReducer} from "react"
 
 // Extracts property names from initial state of reducer to allow typesafe dispatch objects
 export type FieldNames<T> = {
@@ -17,14 +17,18 @@ export const useCreateReducer = <T>({initialState}: { initialState: T }) => {
       | { type?: "change"; field: FieldNames<T>; value: any };
 
   const reducer = (state: T, action: Action) => {
-    if (!action.type) return {...state, [action.field]: action.value};
+    if (!action.type) {
+      return {...state, [action.field]: action.value}
+    }
 
-    if (action.type === "reset") return initialState;
+    if (action.type === "reset") {
+      return initialState
+    }
 
-    throw new Error();
-  };
+    throw new Error()
+  }
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   return useMemo(() => ({state, dispatch}), [state, dispatch]);
 };

@@ -1,23 +1,23 @@
-import {Settings} from "@/types/settings";
+import {Settings} from "@/types/settings"
 
-const STORAGE_KEY = "settings";
+const STORAGE_KEY = "settings"
 
 export const getSettings = (): Settings => {
   let settings: Settings = {
     theme: "dark"
-  };
-  const settingsJson = localStorage.getItem(STORAGE_KEY);
+  }
+  const settingsJson = localStorage.getItem(STORAGE_KEY)
   if (settingsJson) {
     try {
-      let savedSettings = JSON.parse(settingsJson) as Settings;
-      settings = Object.assign(settings, savedSettings);
+      let savedSettings = JSON.parse(settingsJson) as Settings
+      settings = Object.assign(settings, savedSettings)
     } catch (error) {
-      console.error(`[Local storage error] ${error}`);
+      console.error(`[Local storage error] ${error}`)
     }
   }
-  return settings;
-};
+  return settings
+}
 
 export const saveSettings = (settings: Settings) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-};
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+}

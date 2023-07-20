@@ -1,9 +1,9 @@
-import {ErrorMessage} from "@/types/error";
-import {useTranslation} from "next-i18next";
-import {useMemo} from "react";
+import {ErrorMessage} from "@/types/error"
+import {useTranslation} from "next-i18next"
+import {useMemo} from "react"
 
 const useErrorService = () => {
-  const {t} = useTranslation("chat");
+  const {t} = useTranslation("chat")
 
   return {
     getModelsError: useMemo(
@@ -19,11 +19,11 @@ const useErrorService = () => {
                       t("Make sure your OpenAI API key is set in the bottom left of the sidebar."),
                       t("If you completed this step, the server may be experiencing issues.")
                     ]
-              } as ErrorMessage);
+              } as ErrorMessage)
         },
         [t]
     )
-  };
-};
+  }
+}
 
-export default useErrorService;
+export default useErrorService

@@ -1,6 +1,5 @@
-import {Conversation} from "@/types/chat";
-
-import {ConversationComponent} from "./Conversation";
+import {Conversation} from "@/types/chat"
+import {ConversationComponent} from "./Conversation"
 
 interface Props {
   conversations: Conversation[];
@@ -17,5 +16,5 @@ export const Conversations = ({conversations}: Props) => {
             <ConversationComponent key={index} conversation={conversation}/>
         ))}
       </div>
-  );
-};
+  )
+}

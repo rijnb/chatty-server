@@ -1,19 +1,17 @@
-import HomeContext from "@/pages/api/home/home.context";
-
-import {OpenAIModel} from "@/types/openai";
-import {IconExternalLink} from "@tabler/icons-react";
-
-import {useTranslation} from "next-i18next";
-import {useContext} from "react";
+import HomeContext from "@/pages/api/home/home.context"
+import {OpenAIModel} from "@/types/openai"
+import {IconExternalLink} from "@tabler/icons-react"
+import {useTranslation} from "next-i18next"
+import {useContext} from "react"
 
 export const ModelSelect = () => {
-  const {t} = useTranslation("chat");
+  const {t} = useTranslation("chat")
 
   const {
     state: {selectedConversation, models, defaultModelId},
     handleUpdateConversation,
     dispatch: homeDispatch
-  } = useContext(HomeContext);
+  } = useContext(HomeContext)
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectedConversation &&
@@ -22,8 +20,8 @@ export const ModelSelect = () => {
       value: models.find(
           (model) => model.id === e.target.value
       ) as OpenAIModel
-    });
-  };
+    })
+  }
 
   return (
       <div className="flex flex-col">
@@ -62,5 +60,5 @@ export const ModelSelect = () => {
           </a>
         </div>
       </div>
-  );
-};
+  )
+}

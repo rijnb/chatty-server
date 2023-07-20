@@ -1,37 +1,30 @@
-import {Chat} from "@/components/Chat/Chat";
-import {Chatbar} from "@/components/Chatbar/Chatbar";
-import {Navbar} from "@/components/Mobile/Navbar";
-import Promptbar from "@/components/Promptbar";
-
-import {useCreateReducer} from "@/hooks/useCreateReducer";
-
-import useErrorService from "@/services/errorService";
-import useApiService from "@/services/useApiService";
-
-import {Conversation} from "@/types/chat";
-import {KeyValuePair} from "@/types/data";
-import {FolderInterface, FolderType} from "@/types/folder";
-import {fallbackModelID, OpenAIModelID, OpenAIModels} from "@/types/openai";
-import {Prompt} from "@/types/prompt";
-
-import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean";
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const";
-import {saveConversation, saveConversations, updateConversation} from "@/utils/app/conversation";
-import {saveFolders} from "@/utils/app/folders";
-import {savePrompts} from "@/utils/app/prompts";
-import {getSettings} from "@/utils/app/settings";
-
-import {GetServerSideProps} from "next";
-import {useTranslation} from "next-i18next";
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import Head from "next/head";
-import {useEffect, useRef, useState} from "react";
-import {useQuery} from "react-query";
-
-import {v4 as uuidv4} from "uuid";
-
-import HomeContext from "./home.context";
-import {HomeInitialState, initialState} from "./home.state";
+import {Chat} from "@/components/Chat/Chat"
+import {Chatbar} from "@/components/Chatbar/Chatbar"
+import {Navbar} from "@/components/Mobile/Navbar"
+import Promptbar from "@/components/Promptbar"
+import {useCreateReducer} from "@/hooks/useCreateReducer"
+import useErrorService from "@/services/errorService"
+import useApiService from "@/services/useApiService"
+import {Conversation} from "@/types/chat"
+import {KeyValuePair} from "@/types/data"
+import {FolderInterface, FolderType} from "@/types/folder"
+import {fallbackModelID, OpenAIModelID, OpenAIModels} from "@/types/openai"
+import {Prompt} from "@/types/prompt"
+import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {saveConversation, saveConversations, updateConversation} from "@/utils/app/conversation"
+import {saveFolders} from "@/utils/app/folders"
+import {savePrompts} from "@/utils/app/prompts"
+import {getSettings} from "@/utils/app/settings"
+import {GetServerSideProps} from "next"
+import {useTranslation} from "next-i18next"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations"
+import Head from "next/head"
+import {useEffect, useRef, useState} from "react"
+import {useQuery} from "react-query"
+import {v4 as uuidv4} from "uuid"
+import HomeContext from "./home.context"
+import {HomeInitialState, initialState} from "./home.state"
 
 interface Props {
   serverSideApiKeyIsSet: boolean;
@@ -46,14 +39,14 @@ const Home = ({
                 serverSideGuestCodeIsSet,
                 defaultModelId
               }: Props) => {
-  const {t} = useTranslation("chat");
-  const {getModels} = useApiService();
-  const {getModelsError} = useErrorService();
-  const [initialRender, setInitialRender] = useState<boolean>(true);
+  const {t} = useTranslation("chat")
+  const {getModels} = useApiService()
+  const {getModelsError} = useErrorService()
+  const [initialRender, setInitialRender] = useState<boolean>(true)
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState
-  });
+  })
 
   const {
     state: {
@@ -67,27 +60,33 @@ const Home = ({
       temperature
     },
     dispatch
-  } = contextValue;
+  } = contextValue
 
-  const stopConversationRef = useRef<boolean>(false);
+  const stopConversationRef = useRef<boolean>(false)
 
   const {data, error, refetch} = useQuery(
       ["GetModels", apiKey, serverSideApiKeyIsSet, guestCode, !serverSideGuestCodeIsSet],
       ({signal}) => {
-        if (!guestCode && serverSideGuestCodeIsSet) return null;
-        if (!apiKey && !serverSideApiKeyIsSet) return null;
-        return getModels({key: apiKey}, guestCode, signal);
+        if (!guestCode && serverSideGuestCodeIsSet) {
+          return null
+        }
+        if (!apiKey && !serverSideApiKeyIsSet) {
+          return null
+        }
+        return getModels({key: apiKey}, guestCode, signal)
       },
       {enabled: true, refetchOnMount: false}
-  );
+  )
 
   useEffect(() => {
-    if (data) dispatch({field: "models", value: data});
-  }, [data, dispatch]);
+    if (data) {
+      dispatch({field: "models", value: data})
+    }
+  }, [data, dispatch])
 
   useEffect(() => {
-    dispatch({field: "modelError", value: getModelsError(error)});
-  }, [error, dispatch, getModelsError]);
+    dispatch({field: "modelError", value: getModelsError(error)})
+  }, [error, dispatch, getModelsError])
 
   // FETCH MODELS ----------------------------------------------
 
@@ -95,10 +94,10 @@ const Home = ({
     dispatch({
       field: "selectedConversation",
       value: conversation
-    });
+    })
 
-    saveConversation(conversation);
-  };
+    saveConversation(conversation)
+  }
 
   // FOLDER OPERATIONS  --------------------------------------------
 
@@ -107,47 +106,47 @@ const Home = ({
       id: uuidv4(),
       name,
       type
-    };
+    }
 
-    const updatedFolders = [...folders, newFolder];
+    const updatedFolders = [...folders, newFolder]
 
-    dispatch({field: "folders", value: updatedFolders});
-    saveFolders(updatedFolders);
-  };
+    dispatch({field: "folders", value: updatedFolders})
+    saveFolders(updatedFolders)
+  }
 
   const handleDeleteFolder = (folderId: string) => {
-    const updatedFolders = folders.filter((f) => f.id !== folderId);
-    dispatch({field: "folders", value: updatedFolders});
-    saveFolders(updatedFolders);
+    const updatedFolders = folders.filter((f) => f.id !== folderId)
+    dispatch({field: "folders", value: updatedFolders})
+    saveFolders(updatedFolders)
 
     const updatedConversations: Conversation[] = conversations.map((c) => {
       if (c.folderId === folderId) {
         return {
           ...c,
           folderId: null
-        };
+        }
       }
 
-      return c;
-    });
+      return c
+    })
 
-    dispatch({field: "conversations", value: updatedConversations});
-    saveConversations(updatedConversations);
+    dispatch({field: "conversations", value: updatedConversations})
+    saveConversations(updatedConversations)
 
     const updatedPrompts: Prompt[] = prompts.map((p) => {
       if (p.folderId === folderId) {
         return {
           ...p,
           folderId: null
-        };
+        }
       }
 
-      return p;
-    });
+      return p
+    })
 
-    dispatch({field: "prompts", value: updatedPrompts});
-    savePrompts(updatedPrompts);
-  };
+    dispatch({field: "prompts", value: updatedPrompts})
+    savePrompts(updatedPrompts)
+  }
 
   const handleUpdateFolder = (folderId: string, name: string) => {
     const updatedFolders = folders.map((f) => {
@@ -155,21 +154,21 @@ const Home = ({
         return {
           ...f,
           name
-        };
+        }
       }
 
-      return f;
-    });
+      return f
+    })
 
-    dispatch({field: "folders", value: updatedFolders});
+    dispatch({field: "folders", value: updatedFolders})
 
-    saveFolders(updatedFolders);
-  };
+    saveFolders(updatedFolders)
+  }
 
   // CONVERSATION OPERATIONS  --------------------------------------------
 
   const handleNewConversation = () => {
-    const lastConversation = conversations[conversations.length - 1];
+    const lastConversation = conversations[conversations.length - 1]
 
     const newConversation: Conversation = {
       id: uuidv4(),
@@ -185,18 +184,18 @@ const Home = ({
       temperature: lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
       folderId: null,
       time: new Date().getTime()
-    };
+    }
 
-    const updatedConversations = [...conversations, newConversation];
+    const updatedConversations = [...conversations, newConversation]
 
-    dispatch({field: "selectedConversation", value: newConversation});
-    dispatch({field: "conversations", value: updatedConversations});
+    dispatch({field: "selectedConversation", value: newConversation})
+    dispatch({field: "conversations", value: updatedConversations})
 
-    saveConversation(newConversation);
-    saveConversations(updatedConversations);
+    saveConversation(newConversation)
+    saveConversations(updatedConversations)
 
-    dispatch({field: "loading", value: false});
-  };
+    dispatch({field: "loading", value: false})
+  }
 
   const handleUpdateConversation = (
       conversation: Conversation,
@@ -205,133 +204,133 @@ const Home = ({
     const updatedConversation = {
       ...conversation,
       [data.key]: data.value
-    };
+    }
 
     const {single, all} = updateConversation(
         updatedConversation,
         conversations
-    );
+    )
 
-    dispatch({field: "selectedConversation", value: single});
-    dispatch({field: "conversations", value: all});
-  };
+    dispatch({field: "selectedConversation", value: single})
+    dispatch({field: "conversations", value: all})
+  }
 
   // EFFECTS  --------------------------------------------
 
   useEffect(() => {
     if (window.innerWidth < 640) {
-      dispatch({field: "showChatbar", value: false});
+      dispatch({field: "showChatbar", value: false})
     }
-  }, [selectedConversation]);
+  }, [selectedConversation])
 
   useEffect(() => {
     defaultModelId &&
-    dispatch({field: "defaultModelId", value: defaultModelId});
+    dispatch({field: "defaultModelId", value: defaultModelId})
     serverSideApiKeyIsSet &&
     dispatch({
       field: "serverSideApiKeyIsSet",
       value: serverSideApiKeyIsSet
-    });
+    })
     serverSidePluginKeysSet &&
     dispatch({
       field: "serverSidePluginKeysSet",
       value: serverSidePluginKeysSet
-    });
+    })
     serverSideGuestCodeIsSet &&
     dispatch({
       field: "serverSideGuestCodeIsSet",
       value: serverSideGuestCodeIsSet
-    });
+    })
   }, [
     defaultModelId,
     serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
     serverSideGuestCodeIsSet
-  ]);
+  ])
 
   // ON LOAD --------------------------------------------
 
   useEffect(() => {
-    const settings = getSettings();
+    const settings = getSettings()
     if (settings.theme) {
       dispatch({
         field: "lightMode",
         value: settings.theme
-      });
+      })
     }
 
-    const apiKey = localStorage.getItem("apiKey");
-    const guestCode = localStorage.getItem("guestCode");
+    const apiKey = localStorage.getItem("apiKey")
+    const guestCode = localStorage.getItem("guestCode")
 
     if (serverSideApiKeyIsSet) {
-      dispatch({field: "apiKey", value: ""});
+      dispatch({field: "apiKey", value: ""})
 
-      localStorage.removeItem("apiKey");
+      localStorage.removeItem("apiKey")
     } else if (apiKey) {
-      dispatch({field: "apiKey", value: apiKey});
+      dispatch({field: "apiKey", value: apiKey})
     }
 
     if (!serverSideGuestCodeIsSet) {
-      dispatch({field: "guestCode", value: ""});
+      dispatch({field: "guestCode", value: ""})
 
-      localStorage.removeItem("guestCode");
+      localStorage.removeItem("guestCode")
     } else if (guestCode) {
-      dispatch({field: "guestCode", value: guestCode});
+      dispatch({field: "guestCode", value: guestCode})
     }
 
-    const pluginKeys = localStorage.getItem("pluginKeys");
+    const pluginKeys = localStorage.getItem("pluginKeys")
     if (serverSidePluginKeysSet) {
-      dispatch({field: "pluginKeys", value: []});
-      localStorage.removeItem("pluginKeys");
+      dispatch({field: "pluginKeys", value: []})
+      localStorage.removeItem("pluginKeys")
     } else if (pluginKeys) {
-      dispatch({field: "pluginKeys", value: JSON.parse(pluginKeys)});
+      dispatch({field: "pluginKeys", value: JSON.parse(pluginKeys)})
     }
 
     if (window.innerWidth < 640) {
-      dispatch({field: "showChatbar", value: false});
-      dispatch({field: "showPromptbar", value: false});
+      dispatch({field: "showChatbar", value: false})
+      dispatch({field: "showPromptbar", value: false})
     }
 
-    const showChatbar = localStorage.getItem("showChatbar");
+    const showChatbar = localStorage.getItem("showChatbar")
     if (showChatbar) {
-      dispatch({field: "showChatbar", value: JSON.parse(showChatbar)});
+      dispatch({field: "showChatbar", value: JSON.parse(showChatbar)})
     }
 
-    const showPromptbar = localStorage.getItem("showPromptbar");
+    const showPromptbar = localStorage.getItem("showPromptbar")
     if (showPromptbar) {
-      dispatch({field: "showPromptbar", value: JSON.parse(showPromptbar)});
+      dispatch({field: "showPromptbar", value: JSON.parse(showPromptbar)})
     }
 
-    const folders = localStorage.getItem("folders");
+    const folders = localStorage.getItem("folders")
     if (folders) {
-      dispatch({field: "folders", value: JSON.parse(folders)});
+      dispatch({field: "folders", value: JSON.parse(folders)})
     }
 
-    const prompts = localStorage.getItem("prompts");
+    const prompts = localStorage.getItem("prompts")
     if (prompts) {
-      dispatch({field: "prompts", value: JSON.parse(prompts)});
+      dispatch({field: "prompts", value: JSON.parse(prompts)})
     }
 
-    const conversationHistory = localStorage.getItem("conversationHistory");
+    const conversationHistory = localStorage.getItem("conversationHistory")
     if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory);
+      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory)
       const cleanedConversationHistory = cleanConversationHistory(
           parsedConversationHistory
-      );
+      )
 
-      dispatch({field: "conversations", value: cleanedConversationHistory});
+      dispatch({field: "conversations", value: cleanedConversationHistory})
     }
 
-    const selectedConversation = localStorage.getItem("selectedConversation");
+    const selectedConversation = localStorage.getItem("selectedConversation")
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation);
+      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation)
       const cleanedSelectedConversation = cleanSelectedConversation(
           parsedSelectedConversation
-      );
+      )
 
-      dispatch({field: "selectedConversation", value: cleanedSelectedConversation});
+      dispatch({field: "selectedConversation", value: cleanedSelectedConversation})
     } else {
-      const lastConversation = conversations[conversations.length - 1];
+      const lastConversation = conversations[conversations.length - 1]
       dispatch({
         field: "selectedConversation",
         value: {
@@ -343,7 +342,7 @@ const Home = ({
           temperature: lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
           folderId: null
         }
-      });
+      })
     }
   }, [
     defaultModelId,
@@ -351,9 +350,9 @@ const Home = ({
     serverSideApiKeyIsSet,
     serverSideGuestCodeIsSet,
     serverSidePluginKeysSet
-  ]);
+  ])
 
-  const title = "Chatty";
+  const title = "Chatty"
   return (
       <HomeContext.Provider
           value={{
@@ -398,9 +397,9 @@ const Home = ({
             </main>
         )}
       </HomeContext.Provider>
-  );
-};
-export default Home;
+  )
+}
+export default Home
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
@@ -409,15 +408,15 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
               process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID
           ) &&
           process.env.OPENAI_DEFAULT_MODEL) ||
-      fallbackModelID;
+      fallbackModelID
 
-  let serverSidePluginKeysSet = false;
+  let serverSidePluginKeysSet = false
 
-  const googleApiKey = process.env.GOOGLE_API_KEY;
-  const googleCSEId = process.env.GOOGLE_CSE_ID;
+  const googleApiKey = process.env.GOOGLE_API_KEY
+  const googleCSEId = process.env.GOOGLE_CSE_ID
 
   if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true;
+    serverSidePluginKeysSet = true
   }
 
   return {

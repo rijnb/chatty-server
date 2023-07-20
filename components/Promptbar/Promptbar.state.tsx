@@ -1,4 +1,4 @@
-import {Prompt} from "@/types/prompt";
+import {Prompt} from "@/types/prompt"
 
 export interface PromptbarInitialState {
   searchTerm: string;
@@ -8,4 +8,4 @@ export interface PromptbarInitialState {
 export const initialState: PromptbarInitialState = {
   searchTerm: "",
   filteredPrompts: []
-};
+}
