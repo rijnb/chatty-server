@@ -144,7 +144,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                       <div className="flex w-full flex-col">
                   <textarea
                       ref={textareaRef}
-                      className="w-full resize-none whitespace-pre-wrap border-none dark:bg-[#343541]"
+                      className="w-full resize-none whitespace-pre-line border-none dark:bg-[#343541]"
                       value={messageContent}
                       onChange={handleInputChange}
                       onKeyDown={handlePressEnter}
@@ -180,7 +180,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                         </div>
                       </div>
                   ) : (
-                      <div className="prose whitespace-pre-wrap dark:prose-invert flex-1">
+                      <div className="prose whitespace-normal dark:prose-invert flex-1">
                         <MemoizedReactMarkdown
                             className="prose dark:prose-invert flex-1"
                             remarkPlugins={[remarkGfm, remarkMath]}
