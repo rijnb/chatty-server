@@ -85,7 +85,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     Respond in markdown format. Cite the sources you used as a markdown link as you use them at the 
     end of each sentence by number of the source (example: [[1]](link.com)). 
     Provide an accurate response and then stop. Maximum 10 sentences. 
-    End this answer with "(Powered by Google) in italics.
     Today's date is ${new Date().toLocaleDateString()}.
 
     Example Input:
