@@ -71,7 +71,7 @@ export const ChatInput = ({
 
   const handleSend = () => {
 
-    function cleanedUpContent(content: string) {
+    function removeEmptyLines(content: string) {
       // Remove trailing whitespace and consecutive newlines.
       return content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n")
     }
@@ -83,7 +83,7 @@ export const ChatInput = ({
       return
     }
 
-    onSend({role: "user", content: cleanedUpContent(content)}, plugin)
+    onSend({role: "user", content: removeEmptyLines(content)}, plugin)
     setContent("")
     setPlugin(null)
 
