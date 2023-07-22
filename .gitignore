@@ -43,4 +43,6 @@ next-env.d.ts
 pnpm-lock.yaml
 
 # JetBrains
-.idea
+/.idea
+!.idea/codeStyles/codeStyleConfig.xml
+!.idea/codeStyles/Project.xml
