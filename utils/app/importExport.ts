@@ -1,3 +1,4 @@
+import {generateFilename} from "@/utils/app/filename"
 import {Conversation} from "@/types/chat"
 import {
   ExportFormatV1,
@@ -64,14 +65,6 @@ export function cleanData(data: SupportedExportFormats): LatestExportFormat {
   throw new Error("Unsupported data format")
 }
 
-function createFilename(kind: string, extension: string): string {
-  const currentDate = new Date()
-  const year = currentDate.getFullYear()
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0")
-  const day = String(currentDate.getDate()).padStart(2, "0")
-  return `tomtom_chatbot_ui_${year}${month}${day}_${kind}.${extension}`
-}
-
 // replace common problematic filename characters
 function sanitizeFilename(filename: string): string {
   const regex = /[\/\\:*?"<>|]+/g
@@ -118,7 +111,7 @@ export const exportMarkdown = () => {
   const zipDownload = zip.toBuffer()
   const url = URL.createObjectURL(new Blob([zipDownload]))
   const link = document.createElement("a")
-  link.download = createFilename("markdown", "zip")
+  link.download = generateFilename("markdown", "zip")
   link.href = url
   link.style.display = "none"
   document.body.appendChild(link)
@@ -156,7 +149,7 @@ export const exportData = () => {
   })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
-  link.download = createFilename("config", "json")
+  link.download = generateFilename("config", "json")
 
   link.href = url
   link.style.display = "none"

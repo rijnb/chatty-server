@@ -1,9 +1,10 @@
-import {generateRandomString, programmingLanguages} from "@/utils/app/codeblock"
+import {programmingLanguages} from "@/utils/app/codeblock"
 import {IconCheck, IconClipboard, IconDownload} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import {FC, memo, useState} from "react"
 import {Prism as SyntaxHighlighter} from "react-syntax-highlighter"
 import {oneDark} from "react-syntax-highlighter/dist/cjs/styles/prism"
+import {generateFilename} from "@/utils/app/filename"
 
 interface Props {
   language: string;
@@ -29,20 +30,7 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
   }
   const downloadAsFile = () => {
     const fileExtension = programmingLanguages[language] || ".txt"
-    const suggestedFileName = `file-${generateRandomString(
-        5,
-        true
-    )}${fileExtension}`
-    const fileName = window.prompt(
-        t("Enter file name") || "",
-        suggestedFileName
-    )
-
-    if (!fileName) {
-      // user pressed cancel on prompt
-      return
-    }
-
+    const fileName = `${generateFilename("code", fileExtension)}`
     const blob = new Blob([value], {type: "text/plain"})
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")

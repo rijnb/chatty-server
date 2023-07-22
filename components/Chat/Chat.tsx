@@ -17,6 +17,7 @@ import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
+import {generateFilename} from "@/utils/app/filename"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -299,7 +300,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     toPng(chatContainerRef.current, {cacheBust: true})
         .then((dataUrl) => {
           const link = document.createElement("a")
-          link.download = `tomtom_chatbot_ui_screenshot_${selectedConversation?.name || "chat"}.png`
+          link.download = `${generateFilename("screenshot", "png")}`
           link.href = dataUrl
           link.click()
           if (chatContainerRef.current) {
