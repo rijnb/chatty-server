@@ -17,7 +17,7 @@
   "AI": "AI",
   "You": "ඔබ",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "ඔබේ OpenAI API යතුර පැති තීරුවේ පහළ වම්පස සකසා ඇති බවට වග බලා ගන්න.",
   "If you completed this step, OpenAI may be experiencing issues.": "ඔබ මෙම පියවර සම්පූර්ණ කළේ නම්, OpenAI හි ගැටලුවක් විය හැකිය.",
   "click if using a .env.local file": "click if using a .env.local file",

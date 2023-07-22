@@ -17,7 +17,7 @@
   "AI": "המערכת",
   "You": "אתה",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "עליך לוודא שמפתח האישי שלך מוזן בתפריט מצד שמאל",
   "If you completed this step, OpenAI may be experiencing issues.": "אם טרם השלמת חלק זה יש סבירות גבוהה להתרחשות תקלה",
   "click if using a .env.local file": "click if using a .env.local file",

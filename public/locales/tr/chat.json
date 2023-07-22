@@ -17,7 +17,7 @@
   "AI": "Yapay Zeka",
   "You": "Sen",
   "Cancel": "İptal",
-  "Save & Submit": "Kaydet ve Gönder",
+  "Save & submit": "Kaydet ve Gönder",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "OpenAI API anahtarınızın yan çubuğun sol altında ayarlandığından emin ol.",
   "If you completed this step, OpenAI may be experiencing issues.": "Bu adımı tamamladıysanız, OpenAI sorun yaşıyor olabilir.",
   "click if using a .env.local file": "Eğer .env.local dosyası kullanıyorsanız tıklayın",

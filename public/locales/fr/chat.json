@@ -17,7 +17,7 @@
   "AI": "IA",
   "You": "Vous",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Assurez-vous que votre clé API OpenAI est définie dans le coin inférieur gauche de la barre latérale.",
   "If you completed this step, OpenAI may be experiencing issues.": "Si vous avez effectué cette étape, OpenAI peut rencontrer des problèmes.",
   "click if using a .env.local file": "click if using a .env.local file",

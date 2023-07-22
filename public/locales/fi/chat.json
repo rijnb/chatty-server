@@ -18,7 +18,7 @@
   "AI": "AI",
   "You": "Sinä",
   "Cancel": "Peruuta",
-  "Save & Submit": "Tallenna & Lähetä",
+  "Save & submit": "Tallenna & Lähetä",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Varmista että OpenAI API-avaimesi on asetettu sivupalkin vasemmassa alareunassa.",
   "If you completed this step, OpenAI may be experiencing issues.": "Jos olet suorittanut tämän kohdan, OpenAI:lla saattaa olla tällä hetkellä ongelmia.",
   "click if using a .env.local file": "klikkaa jos käytät .env.local-tiedostoa",

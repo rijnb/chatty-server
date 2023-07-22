@@ -17,7 +17,7 @@
   "AI": "AI",
   "You": "Du",
   "Cancel": "Avbryt",
-  "Save & Submit": "Spara & Skicka",
+  "Save & submit": "Spara & Skicka",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Se till att du har angett din OpenAI API-nyckel längst ner till vänster i sidofältet.",
   "If you completed this step, OpenAI may be experiencing issues.": "Om du slutförde det här steget kan OpenAI ha problem.",
   "click if using a .env.local file": "klicka om du använder en .env.local-fil",

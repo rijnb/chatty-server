@@ -94,11 +94,11 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             body = JSON.stringify({
               ...chatBody,
               googleAPIKey: pluginKeys
-              .find((key) => key.pluginId === "google-search")
-              ?.requiredKeys.find((key) => key.key === "GOOGLE_API_KEY")?.value,
+                  .find((key) => key.pluginId === "google-search")
+                  ?.requiredKeys.find((key) => key.key === "GOOGLE_API_KEY")?.value,
               googleCSEId: pluginKeys
-              .find((key) => key.pluginId === "google-search")
-              ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
+                  .find((key) => key.pluginId === "google-search")
+                  ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
             })
           }
           const controller = new AbortController()
@@ -297,18 +297,18 @@ export const Chat = memo(({stopConversationRef}: Props) => {
 
     chatContainerRef.current.classList.remove("max-h-full")
     toPng(chatContainerRef.current, {cacheBust: true})
-    .then((dataUrl) => {
-      const link = document.createElement("a")
-      link.download = `tomtom_chatbot_ui_screenshot_${selectedConversation?.name || "chat"}.png`
-      link.href = dataUrl
-      link.click()
-      if (chatContainerRef.current) {
-        chatContainerRef.current.classList.add("max-h-full")
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+        .then((dataUrl) => {
+          const link = document.createElement("a")
+          link.download = `tomtom_chatbot_ui_screenshot_${selectedConversation?.name || "chat"}.png`
+          link.href = dataUrl
+          link.click()
+          if (chatContainerRef.current) {
+            chatContainerRef.current.classList.add("max-h-full")
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
   }
 
   useEffect(() => {
@@ -449,21 +449,18 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                         >
                           <IconSettings size={18}/>
                         </button>
-                        {
-                        //!! TODO re-add clear all and screenshot
-                        // <button
-                        //     className="ml-2 cursor-pointer hover:opacity-50"
-                        //     onClick={onClearAll}
-                        // >
-                        //   <IconClearAll size={18}/>
-                        // </button>
-                        // <button
-                        //     className="ml-2 cursor-pointer hover:opacity-50"
-                        //     onClick={onScreenshot}
-                        // >
-                        //   <IconScreenshot size={18}/>
-                        // </button>
-                        }
+                        <button
+                            className="ml-2 cursor-pointer hover:opacity-50"
+                            onClick={onClearAll}
+                        >
+                          <IconClearAll size={18}/>
+                        </button>
+                        <button
+                            className="ml-2 cursor-pointer hover:opacity-50"
+                            onClick={onScreenshot}
+                        >
+                          <IconScreenshot size={18}/>
+                        </button>
                       </div>
                       {showSettings && (
                           <div

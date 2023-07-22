@@ -19,7 +19,7 @@
   "AI": "AI",
   "You": "你",
   "Cancel": "取消",
-  "Save & Submit": "保存并提交",
+  "Save & submit": "保存并提交",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "请确保您的 OpenAI API 密钥已在侧边栏左下角设置。",
   "If you completed this step, OpenAI may be experiencing issues.": "如果您已完成此步骤，OpenAI 可能遇到了问题。",
   "click if using a .env.local file": "click if using a .env.local file",

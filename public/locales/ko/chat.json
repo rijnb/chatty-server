@@ -17,7 +17,7 @@
   "AI": "인공지능",
   "You": "당신",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "OpenAI API 키가 사이드바 왼쪽 하단에 설정되어 있는지 확인하세요.",
   "If you completed this step, OpenAI may be experiencing issues.": "이 단계를 완료한 경우 OpenAI에 문제가 있을 수도 있습니다.",
   "click if using a .env.local file": "click if using a .env.local file",

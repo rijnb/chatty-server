@@ -17,7 +17,7 @@
   "AI": "الذكاء الاصطناعي",
   "You": "أنت",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "تأكد من تعيين مفتاح واجهة برمجة تطبيقات الخاص بك في الجزء السفلي الأيسر من الشريط",
   "If you completed this step, OpenAI may be experiencing issues.": "من مشاكل OpenAI إذا اكتملت هذه الخطوة، فقد يعاني",
   "click if using a .env.local file": ".env.local انقر إذا كنت تستخدم ملف",

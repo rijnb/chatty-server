@@ -17,7 +17,7 @@
   "AI": "IA",
   "You": "Tu",
   "Cancel": "Cancel·lar",
-  "Save & Submit": "Guardar i enviar",
+  "Save & submit": "Guardar i enviar",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Assegura't que has introduït la clau d'API d'OpenAI a la cantonada inferior esquerra de la barra lateral.",
   "If you completed this step, OpenAI may be experiencing issues.": "Si has completat aquest pas, OpenAI podria estar experimentant problemes.",
   "click if using a .env.local file": "fes clic si estàs utilitzant un fitxer .env.local",

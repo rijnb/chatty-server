@@ -17,7 +17,7 @@
   "AI": "SI",
   "You": "Ty",
   "Cancel": "Anuluj",
-  "Save & Submit": "Zapisz i wyślij",
+  "Save & submit": "Zapisz i wyślij",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Upewnij się, że wprowadziłeś swój klucz do OpenAI API na pasku bocznym w lewym dolnym rogu",
   "If you completed this step, OpenAI may be experiencing issues.": "Jeśli wykonałeś ten krok to oznacza, że mogą występować problemy po stronie OpenAI.",
   "click if using a .env.local file": "kliknij jeśli używasz pliku .env.local",

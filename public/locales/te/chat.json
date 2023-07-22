@@ -17,7 +17,7 @@
   "AI": "AI",
   "You": "నీవు",
   "Cancel": "Cancel",
-  "Save & Submit": "Save & Submit",
+  "Save & submit": "Save & submit",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "మీరు ఖాళీలో ఎడమ ఎరుగులో మీ OpenAI API కీను సెట్ చేస్తున్నారని ఖచ్చితం చేయండి.",
   "If you completed this step, OpenAI may be experiencing issues.": "మీరు ఈ హంతం పూర్తి చేసినా, OpenAI సమస్యలు ఉన్నట్లు ఉంటాయి.",
   "click if using a .env.local file": "click if using a .env.local file",

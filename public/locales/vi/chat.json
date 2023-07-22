@@ -17,7 +17,7 @@
   "AI": "AI",
   "You": "Bạn",
   "Cancel": "Hủy",
-  "Save & Submit": "Lưu & Gửi",
+  "Save & submit": "Lưu & Gửi",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Hãy đảm bảo rằng khóa API từ tài khoản OpenAI của bạn đã được nhập vào ô dưới cùng của thanh bên trái.",
   "If you completed this step, OpenAI may be experiencing issues.": "Nếu bạn đã hoàn thành bước này, OpenAI có thể đang gặp sự cố.",
   "click if using a .env.local file": "Bấm vào đây nếu dùng tệp .env.local",

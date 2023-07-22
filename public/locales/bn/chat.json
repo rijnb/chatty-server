@@ -17,7 +17,7 @@
   "AI": "AI",
   "You": "তুমি",
   "Cancel": "বাতিল করুন",
-  "Save & Submit": "সংরক্ষণ করুন এবং জমা দিন",
+  "Save & submit": "সংরক্ষণ করুন এবং জমা দিন",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "নিশ্চিত করুন যে আপনার OpenAI API key সাইডবারের নীচে বাম দিকে সেট করা আছে।",
   "If you completed this step, OpenAI may be experiencing issues.": "আপনি এই ধাপটি সম্পন্ন করে থাকলে, হতে পারে যে OpenAI কোনো সমস্যার সম্মুখীন হয়েছে।",
   "click if using a .env.local file": "একটি .env.local ফাইল ব্যবহার করলে এখানে ক্লিক করুন",

@@ -17,7 +17,7 @@
   "AI": "Бот",
   "You": "Вы",
   "Cancel": "Отмена",
-  "Save & Submit": "Отредактировать",
+  "Save & submit": "Отредактировать",
   "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Убедитесь, что вы ввели API-ключ OpenAI.",
   "If you completed this step, OpenAI may be experiencing issues.": "Если вы выполнили этот шаг, то возможно OpenAI может испытывать проблемы",
   "click if using a .env.local file": "click if using a .env.local file",
