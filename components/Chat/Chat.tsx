@@ -4,7 +4,7 @@ import {Plugin} from "@/types/plugin"
 import {getEndpoint} from "@/utils/app/api"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
 import {throttle} from "@/utils/data/throttle"
-import {IconClearAll, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import {IconEraser, IconScreenshot, IconSettings} from "@tabler/icons-react"
 import {toPng} from "html-to-image"
 import {useTranslation} from "next-i18next"
 import {memo, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
@@ -454,7 +454,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                             className="ml-2 cursor-pointer hover:opacity-50"
                             onClick={onClearAll}
                         >
-                          <IconClearAll size={18}/>
+                          <IconEraser size={18}/>
                         </button>
                         <button
                             className="ml-2 cursor-pointer hover:opacity-50"
