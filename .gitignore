@@ -44,5 +44,3 @@ pnpm-lock.yaml
 
 # JetBrains
 /.idea
-!.idea/codeStyles/codeStyleConfig.xml
-!.idea/codeStyles/Project.xml
