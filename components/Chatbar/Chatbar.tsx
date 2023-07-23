@@ -9,7 +9,7 @@ import {
   OPENAI_DEFAULT_TEMPERATURE
 } from "@/utils/app/const"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
-import {exportData, exportMarkdown} from "@/utils/app/export"
+import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
 
@@ -28,10 +28,7 @@ import Sidebar from "../Sidebar"
 import ChatbarContext from "./Chatbar.context"
 import {ChatbarInitialState, initialState} from "./Chatbar.state"
 
-
-
-import { v4 as uuidv4 } from "uuid";
-
+import {v4 as uuidv4} from "uuid"
 
 export const Chatbar = () => {
   const {t} = useTranslation("sidebar")
@@ -149,9 +146,6 @@ export const Chatbar = () => {
     exportData("conversations", "chat")
   }
 
-  const handleExportMarkdown = () => {
-    exportMarkdown()
-  }
   const handleDeleteConversation = (conversation: Conversation) => {
     const updatedConversations = conversations.filter(
       (c) => c.id !== conversation.id
@@ -179,7 +173,8 @@ export const Chatbar = () => {
             model: OpenAIModels[defaultModelId],
             prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
             temperature: OPENAI_DEFAULT_TEMPERATURE,
-            folderId: null
+            folderId: null,
+            time: new Date().getTime()
           }
         })
 
@@ -229,7 +224,6 @@ export const Chatbar = () => {
         handleClearConversations,
         handleImportConversations,
         handleExportConversations,
-        handleExportMarkdown,
         handlePluginKeyChange,
         handleClearPluginKey,
         handleApiKeyChange,

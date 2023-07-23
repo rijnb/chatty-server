@@ -1,4 +1,4 @@
-import {IconFileExport, IconMarkdown, IconSettings} from "@tabler/icons-react"
+import {IconFileExport, IconSettings} from "@tabler/icons-react"
 import {useContext, useState} from "react"
 
 import {useTranslation} from "next-i18next"
@@ -36,7 +36,6 @@ export const ChatbarSettings = () => {
     handleClearConversations,
     handleImportConversations,
     handleExportConversations,
-    handleExportMarkdown,
     handleApiKeyChange,
     handleGuestCodeChange
   } = useContext(ChatbarContext)
@@ -57,14 +56,6 @@ export const ChatbarSettings = () => {
           text={t("Export conversations")}
           icon={<IconFileExport size={18} />}
           onClick={() => handleExportConversations()}
-        />
-      ) : null}
-
-      {conversations.length > 0 ? (
-        <SidebarButton
-          text={t("Export Markdown")}
-          icon={<IconMarkdown size={18} />}
-          onClick={handleExportMarkdown}
         />
       ) : null}
 

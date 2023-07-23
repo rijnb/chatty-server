@@ -1,4 +1,9 @@
-import {IconEraser, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import {
+  IconEraser,
+  IconMarkdown,
+  IconScreenshot,
+  IconSettings
+} from "@tabler/icons-react"
 import {
   MutableRefObject,
   memo,
@@ -31,10 +36,7 @@ import {ModelSelect} from "./ModelSelect"
 import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
 
-
-
-import { toPng } from "html-to-image";
-
+import {toPng} from "html-to-image"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -354,6 +356,29 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       })
   }
 
+  const onMarkdown = () => {
+    if (!selectedConversation) {
+      return
+    }
+
+    let markdownContent =`# ${selectedConversation.name}\n\n(${new Date(selectedConversation.time).toLocaleString()})\n\n`
+    for (const message of selectedConversation.messages) {
+      markdownContent += `## ${
+        message.role.charAt(0).toUpperCase() + message.role.slice(1)
+      }\n\n${message.content}\n\n`
+    }
+
+    const url = URL.createObjectURL(new Blob([markdownContent]))
+    const link = document.createElement("a")
+    link.download = generateFilename("markdown", "md")
+    link.href = url
+    link.style.display = "none"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   useEffect(() => {
     throttledScrollDown()
     selectedConversation &&
@@ -483,7 +508,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             ) : (
               <>
                 <div className="sticky top-0 z-10 flex justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-                  {t("Model")}: {selectedConversation?.model.name} |
+                  {t("Model")}: {selectedConversation?.model.name}{" "}
+                  &nbsp;&nbsp;|&nbsp;
                   <button
                     className="ml-2 cursor-pointer hover:opacity-50"
                     onClick={handleSettings}
@@ -496,12 +522,23 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                   >
                     <IconEraser size={18} />
                   </button>
-                  <button
-                    className="ml-2 cursor-pointer hover:opacity-50"
-                    onClick={onScreenshot}
-                  >
-                    <IconScreenshot size={18} />
-                  </button>
+                  &nbsp;&nbsp;|&nbsp;
+                  {selectedConversation ? (
+                    <button
+                      className="ml-2 cursor-pointer hover:opacity-50"
+                      onClick={onScreenshot}
+                    >
+                      <IconScreenshot size={18} />
+                    </button>
+                  ) : null}
+                  {selectedConversation ? (
+                    <button
+                      className="ml-2 cursor-pointer hover:opacity-50"
+                      onClick={onMarkdown}
+                    >
+                      <IconMarkdown size={18} />
+                    </button>
+                  ) : null}
                 </div>
                 {showSettings && (
                   <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
