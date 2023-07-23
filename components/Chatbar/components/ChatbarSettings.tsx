@@ -7,7 +7,7 @@ import HomeContext from "@/pages/api/home/home.context"
 
 import ChatbarContext from "@/components/Chatbar/Chatbar.context"
 import {GuestCode} from "@/components/Settings/GuestCode"
-import {Import} from "@/components/Settings/Import"
+import {ImportData} from "@/components/Settings/ImportData"
 import {Key} from "@/components/Settings/Key"
 import {SettingDialog} from "@/components/Settings/SettingDialog"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
@@ -35,7 +35,7 @@ export const ChatbarSettings = () => {
   const {
     handleClearConversations,
     handleImportConversations,
-    handleExportData,
+    handleExportConversations,
     handleExportMarkdown,
     handleApiKeyChange,
     handleGuestCodeChange
@@ -47,18 +47,20 @@ export const ChatbarSettings = () => {
         <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
 
+      <ImportData
+          text={t("Import conversations")}
+          onImport={handleImportConversations} />
+
       <SidebarButton
-        text={t("Export Markdown")}
-        icon={<IconMarkdown size={18} />}
-        onClick={handleExportMarkdown}
+        text={t("Export conversations")}
+        icon={<IconFileExport size={18} />}
+        onClick={() => handleExportConversations()}
       />
 
-      <Import onImport={handleImportConversations} />
-
       <SidebarButton
-        text={t("Export config")}
-        icon={<IconFileExport size={18} />}
-        onClick={() => handleExportData()}
+          text={t("Export Markdown")}
+          icon={<IconMarkdown size={18} />}
+          onClick={handleExportMarkdown}
       />
 
       <SidebarButton

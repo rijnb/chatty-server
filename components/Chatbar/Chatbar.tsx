@@ -9,8 +9,9 @@ import {
   OPENAI_DEFAULT_TEMPERATURE
 } from "@/utils/app/const"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
+import {exportConversations, exportMarkdown} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
-import {exportData, exportMarkdown, importData} from "@/utils/app/importExport"
+import {importConversations} from "@/utils/app/import"
 
 import {Conversation} from "@/types/chat"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
@@ -106,15 +107,15 @@ export const Chatbar = () => {
     localStorage.setItem("pluginKeys", JSON.stringify(updatedPluginKeys))
   }
 
-  const handleExportData = () => {
-    exportData()
+  const handleExportConversations = () => {
+    exportConversations()
   }
 
   const handleExportMarkdown = () => {
     exportMarkdown()
   }
   const handleImportConversations = (data: SupportedExportFormats) => {
-    const {history, folders, prompts}: LatestExportFormat = importData(data)
+    const {history, folders, prompts}: LatestExportFormat = importConversations(data)
     homeDispatch({field: "conversations", value: history})
     homeDispatch({
       field: "selectedConversation",
@@ -226,7 +227,7 @@ export const Chatbar = () => {
         handleDeleteConversation,
         handleClearConversations,
         handleImportConversations,
-        handleExportData,
+        handleExportConversations,
         handleExportMarkdown,
         handlePluginKeyChange,
         handleClearPluginKey,

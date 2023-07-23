@@ -4,38 +4,9 @@ import {Prompt} from "./prompt"
 
 
 export type SupportedExportFormats =
-  | ExportFormatV1
-  | ExportFormatV2
-  | ExportFormatV3
-  | ExportFormatV4
+  | ExportFormatV4  // Older format not supported.
+
 export type LatestExportFormat = ExportFormatV4
-
-////////////////////////////////////////////////////////////////////////////////////////////
-interface ConversationV1 {
-  id: number
-  name: string
-  messages: Message[]
-}
-
-export type ExportFormatV1 = ConversationV1[]
-
-////////////////////////////////////////////////////////////////////////////////////////////
-interface ChatFolder {
-  id: number
-  name: string
-}
-
-export interface ExportFormatV2 {
-  history: Conversation[] | null
-  folders: ChatFolder[] | null
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
-export interface ExportFormatV3 {
-  version: 3
-  history: Conversation[]
-  folders: FolderInterface[]
-}
 
 export interface ExportFormatV4 {
   version: 4
