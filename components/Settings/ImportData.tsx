@@ -26,27 +26,30 @@ export const ImportData: FC<Props> = ({text, onImport}) => {
         tabIndex={-1}
         type="file"
         accept=".json"
+        multiple
         onChange={(e) => {
           if (!e.target.files?.length) {
             return
           }
-          const file = e.target.files[0]
-          const reader = new FileReader()
-          reader.onload = (e) => {
-            try {
-              let json = JSON.parse(e.target?.result as string)
-              const validationResult = isValidFile(json)
-              if (validationResult.length === 0) {
-                onImport(json)
-                setErrors([])
-              } else {
-                setErrors(validationResult)
+
+          Array.from(e.target.files).forEach((file) => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              try {
+                let json = JSON.parse(e.target?.result as string)
+                const validationResult = isValidFile(json)
+                if (validationResult.length === 0) {
+                  onImport(json)
+                  setErrors([])
+                } else {
+                  setErrors(validationResult)
+                }
+              } catch (error) {
+                setErrors(["Invalid JSON file"])
               }
-            } catch (error) {
-              setErrors(["Invalid JSON file"])
             }
-          }
-          reader.readAsText(file)
+            reader.readAsText(file)
+          })
         }}
       />
 
