@@ -3,9 +3,12 @@ import {useTranslation} from "react-i18next"
 
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 
+import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
+import {importData} from "@/utils/app/import"
 import {savePrompts} from "@/utils/app/prompts"
 
+import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 
@@ -106,6 +109,17 @@ const Promptbar = () => {
     }
   }
 
+  const handleImportPrompts = (data: SupportedExportFormats) => {
+    const {folders, prompts}: LatestExportFormat = importData(data)
+    homeDispatch({field: "folders", value: folders})
+    homeDispatch({field: "prompts", value: prompts})
+    window.location.reload()
+  }
+
+  const handleExportPrompts = () => {
+    exportData("prompts", "prompt")
+  }
+
   useEffect(() => {
     if (searchTerm) {
       promptDispatch({
@@ -132,7 +146,9 @@ const Promptbar = () => {
         handleCreatePrompt,
         handleDeletePrompt,
         handleUpdatePrompt,
-        handleClearPrompts
+        handleClearPrompts,
+        handleImportPrompts,
+        handleExportPrompts
       }}
     >
       <Sidebar<Prompt>

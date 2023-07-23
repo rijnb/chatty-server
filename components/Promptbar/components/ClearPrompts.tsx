@@ -5,6 +5,7 @@ import {useTranslation} from "next-i18next"
 
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
+
 interface Props {
   onClearPrompts: () => void
 }

@@ -15,6 +15,7 @@ import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 import {ClearConversations} from "./ClearConversations"
 import {PluginKeys} from "./PluginKeys"
 
+
 export const ChatbarSettings = () => {
   const {t} = useTranslation("sidebar")
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false)
@@ -48,8 +49,9 @@ export const ChatbarSettings = () => {
       ) : null}
 
       <ImportData
-          text={t("Import conversations")}
-          onImport={handleImportConversations} />
+        text={t("Import conversations")}
+        onImport={handleImportConversations}
+      />
 
       <SidebarButton
         text={t("Export conversations")}
@@ -58,9 +60,9 @@ export const ChatbarSettings = () => {
       />
 
       <SidebarButton
-          text={t("Export Markdown")}
-          icon={<IconMarkdown size={18} />}
-          onClick={handleExportMarkdown}
+        text={t("Export Markdown")}
+        icon={<IconMarkdown size={18} />}
+        onClick={handleExportMarkdown}
       />
 
       <SidebarButton

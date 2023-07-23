@@ -7,6 +7,7 @@ import {
 import {FolderInterface} from "@/types/folder"
 import {Prompt} from "@/types/prompt"
 
+
 export const isLatestExportFormat = isExportFormatV4
 
 export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
@@ -62,7 +63,7 @@ export const isValidFile = (json: any): string[] => {
   return errors
 }
 
-export const importConversations = (
+export const importData = (
   data: SupportedExportFormats
 ): LatestExportFormat => {
   const {history, folders, prompts} = convertOldDataFormatToNew(data)

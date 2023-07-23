@@ -197,7 +197,7 @@ const Home = ({
 
     const newConversation: Conversation = {
       id: uuidv4(),
-      name: t("New Conversation"),
+      name: t("New conversation"),
       messages: [],
       model: lastConversation?.model || {
         id: OpenAIModels[defaultModelId].id,

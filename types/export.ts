@@ -1,10 +1,9 @@
-import {Conversation, Message} from "./chat"
+import {Conversation} from "./chat"
 import {FolderInterface} from "./folder"
 import {Prompt} from "./prompt"
 
 
-export type SupportedExportFormats =
-  | ExportFormatV4  // Older format not supported.
+export type SupportedExportFormats = ExportFormatV4 // Older format not supported.
 
 export type LatestExportFormat = ExportFormatV4
 

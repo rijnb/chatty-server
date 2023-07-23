@@ -6,6 +6,7 @@ import {FolderInterface} from "@/types/folder"
 
 import Zip from "adm-zip"
 
+
 export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
   return obj.version === 4
 }
@@ -65,28 +66,20 @@ export const exportMarkdown = () => {
   URL.revokeObjectURL(url)
 }
 
-export const exportConversations = () => {
-  let history = localStorage.getItem("conversationHistory")
-  let folders = localStorage.getItem("folders")
-  let prompts = localStorage.getItem("prompts")
-
-  if (history) {
-    history = JSON.parse(history)
-  }
-
-  if (folders) {
-    folders = JSON.parse(folders)
-  }
-
-  if (prompts) {
-    prompts = JSON.parse(prompts)
-  }
+export const exportData = (prefix: string, type: string) => {
+  const c = localStorage.getItem("conversationHistory")
+  let conversations = c ? JSON.parse(c) : []
+  const p = localStorage.getItem("prompts")
+  let prompts = p ? JSON.parse(p) : []
+  const f = localStorage.getItem("folders")
+  let folders: FolderInterface[] = f ? JSON.parse(f) : []
+  folders = folders.filter((folder) => folder.type === type)
 
   const data = {
     version: 4,
-    history: history || [],
-    folders: folders || [],
-    prompts: prompts || []
+    history: type === "chat" ? conversations : [],
+    prompts: type == "prompt" ? prompts : [],
+    folders: folders
   } as LatestExportFormat
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -94,7 +87,7 @@ export const exportConversations = () => {
   })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
-  link.download = generateFilename("config", "json")
+  link.download = generateFilename(prefix, "json")
 
   link.href = url
   link.style.display = "none"

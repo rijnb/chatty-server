@@ -9,9 +9,9 @@ import {
   OPENAI_DEFAULT_TEMPERATURE
 } from "@/utils/app/const"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
-import {exportConversations, exportMarkdown} from "@/utils/app/export"
+import {exportData, exportMarkdown} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
-import {importConversations} from "@/utils/app/import"
+import {importData} from "@/utils/app/import"
 
 import {Conversation} from "@/types/chat"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
@@ -28,7 +28,10 @@ import Sidebar from "../Sidebar"
 import ChatbarContext from "./Chatbar.context"
 import {ChatbarInitialState, initialState} from "./Chatbar.state"
 
-import {v4 as uuidv4} from "uuid"
+
+
+import { v4 as uuidv4 } from "uuid";
+
 
 export const Chatbar = () => {
   const {t} = useTranslation("sidebar")
@@ -107,26 +110,6 @@ export const Chatbar = () => {
     localStorage.setItem("pluginKeys", JSON.stringify(updatedPluginKeys))
   }
 
-  const handleExportConversations = () => {
-    exportConversations()
-  }
-
-  const handleExportMarkdown = () => {
-    exportMarkdown()
-  }
-  const handleImportConversations = (data: SupportedExportFormats) => {
-    const {history, folders, prompts}: LatestExportFormat = importConversations(data)
-    homeDispatch({field: "conversations", value: history})
-    homeDispatch({
-      field: "selectedConversation",
-      value: history[history.length - 1]
-    })
-    homeDispatch({field: "folders", value: folders})
-    homeDispatch({field: "prompts", value: prompts})
-
-    window.location.reload()
-  }
-
   const handleClearConversations = () => {
     defaultModelId &&
       homeDispatch({
@@ -151,6 +134,24 @@ export const Chatbar = () => {
     saveFolders(updatedFolders)
   }
 
+  const handleImportConversations = (data: SupportedExportFormats) => {
+    const {history, folders}: LatestExportFormat = importData(data)
+    homeDispatch({field: "conversations", value: history})
+    homeDispatch({
+      field: "selectedConversation",
+      value: history[history.length - 1]
+    })
+    homeDispatch({field: "folders", value: folders})
+    window.location.reload()
+  }
+
+  const handleExportConversations = () => {
+    exportData("conversations", "chat")
+  }
+
+  const handleExportMarkdown = () => {
+    exportMarkdown()
+  }
   const handleDeleteConversation = (conversation: Conversation) => {
     const updatedConversations = conversations.filter(
       (c) => c.id !== conversation.id
@@ -173,7 +174,7 @@ export const Chatbar = () => {
           field: "selectedConversation",
           value: {
             id: uuidv4(),
-            name: t("New Conversation"),
+            name: t("New conversation"),
             messages: [],
             model: OpenAIModels[defaultModelId],
             prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
