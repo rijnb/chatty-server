@@ -165,7 +165,7 @@ export const ChatInput = ({
       } else {
         setActivePromptIndex(0)
       }
-    } else if (isEnterKey(e) && !isTyping && !isMobile() && !e.shiftKey) {
+    } else if (isEnterKey(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     } else if (e.key === "/" && e.metaKey) {
