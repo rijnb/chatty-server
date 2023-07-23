@@ -73,6 +73,14 @@ export const ChatInput = ({
     prompt.name.toLowerCase().includes(promptInputValue.toLowerCase())
   )
 
+  const isMobile = () => {
+    const userAgent =
+        typeof window.navigator === "undefined" ? "" : navigator.userAgent
+    const mobileRegex =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
+    return mobileRegex.test(userAgent)
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     const maxLength = selectedConversation?.model.maxLength
@@ -118,14 +126,6 @@ export const ChatInput = ({
     setTimeout(() => {
       stopConversationRef.current = false
     }, 3000)
-  }
-
-  const isMobile = () => {
-    const userAgent =
-      typeof window.navigator === "undefined" ? "" : navigator.userAgent
-    const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
-    return mobileRegex.test(userAgent)
   }
 
   const handleInitModal = () => {

@@ -155,7 +155,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               content.length > 30 ? content.substring(0, 30) + "..." : content
             updatedConversation = {
               ...updatedConversation,
-              name: customName
+              name: customName, time: Date.now()
             }
           }
           homeDispatch({field: "loading", value: false})
@@ -335,7 +335,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   }
   const throttledScrollDown = throttle(scrollDown, 250)
 
-  const onScreenshot = () => {
+  const onSaveAsScreenshot = () => {
     if (chatContainerRef.current === null) {
       return
     }
@@ -356,7 +356,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       })
   }
 
-  const onMarkdown = () => {
+  const onSaveAsMarkdown = () => {
     if (!selectedConversation) {
       return
     }
@@ -526,7 +526,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                   {selectedConversation ? (
                     <button
                       className="ml-2 cursor-pointer hover:opacity-50"
-                      onClick={onScreenshot}
+                      onClick={onSaveAsScreenshot}
                     >
                       <IconScreenshot size={18} />
                     </button>
@@ -534,7 +534,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                   {selectedConversation ? (
                     <button
                       className="ml-2 cursor-pointer hover:opacity-50"
-                      onClick={onMarkdown}
+                      onClick={onSaveAsMarkdown}
                     >
                       <IconMarkdown size={18} />
                     </button>
