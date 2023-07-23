@@ -209,7 +209,7 @@ export const ChatInput = ({
 
   useEffect(() => {
     if (promptListRef.current) {
-      promptListRef.current.scrollTop = activePromptIndex * 30
+      promptListRef.current.scrollTop = activePromptIndex * 36
     }
   }, [activePromptIndex])
 
