@@ -18,7 +18,10 @@ const startServerProcess = () => {
     ...process.env,
     PATH: process.env.PATH + ":/usr/local/bin:/opt/homebrew/bin"
   }
-  const nextServerProcess = spawn("npm", ["run", "start-local"], {env: envWithCustomPaths, shell: true})
+  const nextServerProcess = spawn("npm", ["run", "start-local"], {
+    env: envWithCustomPaths,
+    shell: true
+  })
 
   nextServerProcess.stdout.on("data", (data) => {
     console.log(`${data.toString().replace(/\n$/, "")}`)
@@ -34,7 +37,10 @@ const killServerProcess = () => {
     console.info(`kill next process (${nextServerProcess.pid}, and children)`)
     killTree(nextServerProcess.pid, "SIGTERM", (error) => {
       if (error) {
-        console.error(`Failed to kill Next.js server process ${nextServerProcess.pid}:`, error)
+        console.error(
+          `Failed to kill Next.js server process ${nextServerProcess.pid}:`,
+          error
+        )
       }
     })
     nextServerProcess = null
@@ -104,4 +110,3 @@ app.on("before-quit", () => {
   console.info(`before-quit`)
   killServerProcess()
 })
-

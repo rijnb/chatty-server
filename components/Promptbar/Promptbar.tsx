@@ -1,16 +1,26 @@
-import {useCreateReducer} from "@/hooks/useCreateReducer"
-import HomeContext from "@/pages/api/home/home.context"
-import {OpenAIModels} from "@/types/openai"
-import {Prompt} from "@/types/prompt"
-import {savePrompts} from "@/utils/app/prompts"
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
-import {v4 as uuidv4} from "uuid"
-import Sidebar from "../Sidebar"
+
+import {useCreateReducer} from "@/hooks/useCreateReducer"
+
+import {savePrompts} from "@/utils/app/prompts"
+
+import {OpenAIModels} from "@/types/openai"
+import {Prompt} from "@/types/prompt"
+
+import HomeContext from "@/pages/api/home/home.context"
+
 import {PromptFolders} from "./components/PromptFolders"
 import {Prompts} from "./components/Prompts"
+
+import Sidebar from "../Sidebar"
 import PromptbarContext from "./PromptBar.context"
-import {initialState, PromptbarInitialState} from "./Promptbar.state"
+import {PromptbarInitialState, initialState} from "./Promptbar.state"
+
+
+
+import { v4 as uuidv4 } from "uuid";
+
 
 const Promptbar = () => {
   const {t} = useTranslation("promptbar")
@@ -95,11 +105,11 @@ const Promptbar = () => {
         field: "filteredPrompts",
         value: prompts.filter((prompt) => {
           const searchable =
-              prompt.name.toLowerCase() +
-              " " +
-              prompt.description.toLowerCase() +
-              " " +
-              prompt.content.toLowerCase()
+            prompt.name.toLowerCase() +
+            " " +
+            prompt.description.toLowerCase() +
+            " " +
+            prompt.content.toLowerCase()
           return searchable.includes(searchTerm.toLowerCase())
         })
       })
@@ -109,35 +119,35 @@ const Promptbar = () => {
   }, [searchTerm, prompts])
 
   return (
-      <PromptbarContext.Provider
-          value={{
-            ...promptBarContextValue,
-            handleCreatePrompt,
-            handleDeletePrompt,
-            handleUpdatePrompt
-          }}
-      >
-        <Sidebar<Prompt>
-            side={"right"}
-            isOpen={showPromptbar}
-            addItemButtonTitle={t("New prompt")}
-            itemComponent={
-              <Prompts
-                  prompts={filteredPrompts.filter((prompt) => !prompt.folderId)}
-              />
-            }
-            folderComponent={<PromptFolders/>}
-            items={filteredPrompts}
-            searchTerm={searchTerm}
-            handleSearchTerm={(searchTerm: string) =>
-                promptDispatch({field: "searchTerm", value: searchTerm})
-            }
-            toggleOpen={handleTogglePromptbar}
-            handleCreateItem={handleCreatePrompt}
-            handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
-            handleDrop={handleDrop}
-        />
-      </PromptbarContext.Provider>
+    <PromptbarContext.Provider
+      value={{
+        ...promptBarContextValue,
+        handleCreatePrompt,
+        handleDeletePrompt,
+        handleUpdatePrompt
+      }}
+    >
+      <Sidebar<Prompt>
+        side={"right"}
+        isOpen={showPromptbar}
+        addItemButtonTitle={t("New prompt")}
+        itemComponent={
+          <Prompts
+            prompts={filteredPrompts.filter((prompt) => !prompt.folderId)}
+          />
+        }
+        folderComponent={<PromptFolders />}
+        items={filteredPrompts}
+        searchTerm={searchTerm}
+        handleSearchTerm={(searchTerm: string) =>
+          promptDispatch({field: "searchTerm", value: searchTerm})
+        }
+        toggleOpen={handleTogglePromptbar}
+        handleCreateItem={handleCreatePrompt}
+        handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
+        handleDrop={handleDrop}
+      />
+    </PromptbarContext.Provider>
   )
 }
 

@@ -1,6 +1,14 @@
+import {
+  OPENAI_API_HOST,
+  OPENAI_API_TYPE,
+  OPENAI_API_VERSION,
+  OPENAI_ORGANIZATION
+} from "@/utils/app/const"
+
 import {OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
-import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
+
 import {auth} from "./auth"
+
 
 export const config = {
   runtime: "edge"
@@ -16,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
       })
     }
     const {key} = (await req.json()) as {
-      key: string;
+      key: string
     }
 
     let url = `${OPENAI_API_HOST}/v1/models`
@@ -33,40 +41,49 @@ const handler = async (req: Request): Promise<Response> => {
         ...(OPENAI_API_TYPE === "azure" && {
           "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
         }),
-        ...((OPENAI_API_TYPE === "openai" && OPENAI_ORGANIZATION) && {
-          "OpenAI-Organization": OPENAI_ORGANIZATION
-        })
+        ...(OPENAI_API_TYPE === "openai" &&
+          OPENAI_ORGANIZATION && {
+            "OpenAI-Organization": OPENAI_ORGANIZATION
+          })
       }
     })
 
     if (response.status === 401) {
-      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
+      console.error(
+        `${OPENAI_API_TYPE} returned an error, status:${response.status}`
+      )
       return new Response(response.body, {
         status: 500,
         headers: response.headers
       })
     } else if (response.status !== 200) {
-      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`)
-      throw new Error(`${OPENAI_API_TYPE} returned an error,:  status:${response.status}`)
+      console.error(
+        `${OPENAI_API_TYPE} returned an error, status:${
+          response.status
+        }: text:${await response.text()}`
+      )
+      throw new Error(
+        `${OPENAI_API_TYPE} returned an error,:  status:${response.status}`
+      )
     }
 
     const json = await response.json()
 
     const models: OpenAIModel[] = json.data
-    .map((model: any) => {
-      for (const [key, value] of Object.entries(OpenAIModelID)) {
-        if (value === model.id) {
-          return {
-            id: model.id,
-            name: OpenAIModels[value].name + " (" + OPENAI_API_TYPE + ")"
+      .map((model: any) => {
+        for (const [key, value] of Object.entries(OpenAIModelID)) {
+          if (value === model.id) {
+            return {
+              id: model.id,
+              name: OpenAIModels[value].name + " (" + OPENAI_API_TYPE + ")"
+            }
           }
         }
-      }
-    })
-    .filter(Boolean)
-    .filter((obj: any, index: any, self: any) => {
-      return index === self.findIndex((other: any) => other.id === obj.id)
-    })
+      })
+      .filter(Boolean)
+      .filter((obj: any, index: any, self: any) => {
+        return index === self.findIndex((other: any) => other.id === obj.id)
+      })
 
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
@@ -76,4 +93,3 @@ const handler = async (req: Request): Promise<Response> => {
 }
 
 export default handler
-

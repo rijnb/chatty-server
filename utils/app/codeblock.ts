@@ -1,14 +1,14 @@
 interface languageMap {
-  [key: string]: string | undefined;
+  [key: string]: string | undefined
 }
 
 export const programmingLanguages: languageMap = {
-  "bash": ".bash",
+  bash: ".bash",
   "c#": ".cs",
   "c++": ".cpp",
   "objective-c": ".m",
-  "sh": ".sh",
-  "zsh": ".zsh",
+  sh: ".sh",
+  zsh: ".zsh",
   c: ".c",
   cpp: ".cpp",
   css: ".css",

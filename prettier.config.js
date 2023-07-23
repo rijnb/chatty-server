@@ -1,6 +1,19 @@
 module.exports = {
-  trailingComma: "all",
-  singleQuote: true,
+  tabWidth: 2,
+  useTabs: false,
+  semi: false,
+  singleQuote: false,
+  jsxSingleQuote: false,
+  trailingComma: "none",
+  bracketSpacing: false,
+  bracketSameLine: false,
+  jsxBracketSameLine: false,
+  arrowFunctionParentheses: "always",
+  arrowParens: "always",
+  htmlWhitespaceSensitivity: "css",
+  insertPragma: false,
+  proseWrap: "preserve",
+  quoteProps: "as-needed",
   plugins: [
     "prettier-plugin-tailwindcss",
     "@trivago/prettier-plugin-sort-imports"

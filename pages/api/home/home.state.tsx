@@ -5,30 +5,31 @@ import {OpenAIModel, OpenAIModelID} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 
+
 export interface HomeInitialState {
-  apiKey: string;
-  guestCode: string;
-  pluginKeys: PluginKey[];
-  loading: boolean;
-  lightMode: "light" | "dark";
-  messageIsStreaming: boolean;
-  modelError: ErrorMessage | null;
-  models: OpenAIModel[];
-  folders: FolderInterface[];
-  conversations: Conversation[];
-  selectedConversation: Conversation | undefined;
-  currentMessage: Message | undefined;
-  prompts: Prompt[];
-  temperature: number;
-  showChatbar: boolean;
-  showPromptbar: boolean;
-  currentFolder: FolderInterface | undefined;
-  messageError: boolean;
-  searchTerm: string;
-  defaultModelId: OpenAIModelID | undefined;
-  serverSideApiKeyIsSet: boolean;
-  serverSideGuestCodeIsSet: boolean;
-  serverSidePluginKeysSet: boolean;
+  apiKey: string
+  guestCode: string
+  pluginKeys: PluginKey[]
+  loading: boolean
+  lightMode: "light" | "dark"
+  messageIsStreaming: boolean
+  modelError: ErrorMessage | null
+  models: OpenAIModel[]
+  folders: FolderInterface[]
+  conversations: Conversation[]
+  selectedConversation: Conversation | undefined
+  currentMessage: Message | undefined
+  prompts: Prompt[]
+  temperature: number
+  showChatbar: boolean
+  showPromptbar: boolean
+  currentFolder: FolderInterface | undefined
+  messageError: boolean
+  searchTerm: string
+  defaultModelId: OpenAIModelID | undefined
+  serverSideApiKeyIsSet: boolean
+  serverSideGuestCodeIsSet: boolean
+  serverSidePluginKeysSet: boolean
 }
 
 export const initialState: HomeInitialState = {

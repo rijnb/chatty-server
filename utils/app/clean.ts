@@ -1,9 +1,10 @@
 import {Conversation} from "@/types/chat"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
+
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 
-export const cleanSelectedConversation = (conversation: Conversation) => {
 
+export const cleanSelectedConversation = (conversation: Conversation) => {
   let updatedConversation = conversation
 
   // check for model on each conversation
@@ -22,7 +23,10 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
     }
   }
 
-  if (updatedConversation.temperature === undefined || updatedConversation.temperature === null) {
+  if (
+    updatedConversation.temperature === undefined ||
+    updatedConversation.temperature === null
+  ) {
     updatedConversation = {
       ...updatedConversation,
       temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE
@@ -47,7 +51,6 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
 }
 
 export const cleanConversationHistory = (history: any[]): Conversation[] => {
-
   if (!Array.isArray(history)) {
     console.warn("history is not an array. Returning an empty array.")
     return []
@@ -63,7 +66,10 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT
       }
 
-      if (conversation.temperature === undefined || conversation.temperature === null) {
+      if (
+        conversation.temperature === undefined ||
+        conversation.temperature === null
+      ) {
         conversation.temperature = OPENAI_DEFAULT_TEMPERATURE
       }
 
@@ -79,8 +85,8 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       return acc
     } catch (error) {
       console.warn(
-          `error while cleaning conversations' history. Removing culprit`,
-          error
+        `error while cleaning conversations' history. Removing culprit`,
+        error
       )
     }
     return acc

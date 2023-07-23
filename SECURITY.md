@@ -15,10 +15,10 @@ these steps:
 2. **Contact the repository maintainer(s) privately.** Send a private message or email to the maintainer(s) with a
    detailed description of the vulnerability. Include the following information:
 
-    - The affected component(s)
-    - Steps to reproduce the issue
-    - Potential impact of the vulnerability
-    - Any possible mitigations or workarounds
+- The affected component(s)
+- Steps to reproduce the issue
+- Potential impact of the vulnerability
+- Any possible mitigations or workarounds
 
 3. **Wait for a response from the maintainer(s).** Please be patient, as they may need time to investigate and verify
    the issue. The maintainer(s) should acknowledge receipt of your report and provide an estimated time frame for

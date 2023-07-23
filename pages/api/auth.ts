@@ -40,7 +40,7 @@ export function auth(req: Request | NextApiRequest) {
   } else {
     // Request: req.headers.authorization
     authToken =
-        (req as unknown as NextApiRequest).headers["authorization"] ?? ""
+      (req as unknown as NextApiRequest).headers["authorization"] ?? ""
   }
 
   // check if it is openai api key or user token

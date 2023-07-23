@@ -1,22 +1,22 @@
 import {KeyValuePair} from "./data"
 
 export interface Plugin {
-  id: PluginID;
-  name: PluginName;
-  requiredKeys: KeyValuePair[];
+  id: PluginID
+  name: PluginName
+  requiredKeys: KeyValuePair[]
 }
 
 export interface PluginKey {
-  pluginId: PluginID;
-  requiredKeys: KeyValuePair[];
+  pluginId: PluginID
+  requiredKeys: KeyValuePair[]
 }
 
 export enum PluginID {
-  GOOGLE_SEARCH = "google-search",
+  GOOGLE_SEARCH = "google-search"
 }
 
 export enum PluginName {
-  GOOGLE_SEARCH = "Google Search",
+  GOOGLE_SEARCH = "Google Search"
 }
 
 export const Plugins: Record<PluginID, Plugin> = {

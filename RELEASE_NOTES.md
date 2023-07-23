@@ -36,16 +36,15 @@ In that case, go to your `System Settings/Privacy & Security` and scroll down to
 Security. There should be an `Open Anyway` button. You can click that and click
 `Open` when your Mac asks you to open the app anyway.
 
-**Important:** You will need a secret `Unlock code` to issues any prompts. 
+**Important:** You will need a secret `Unlock code` to issues any prompts.
 Contact me directly to get that code.
-
 
 ## If you installed the previous version, TomTom ChatBot UI...
 
 This new version of "chatbot-ui" uses a server and a thin client to use Azure OpenAI.
 You need to provide the Azure OpenAI (and your Google API key and CSE ID) in the application.
 
-None of the environment variables that the old TomTom ChatBot UI used are relevant to end 
+None of the environment variables that the old TomTom ChatBot UI used are relevant to end
 users anymore.
 
 The server is pre-configured for the TomTom Azure end-point, but it does not contain the
@@ -56,13 +55,13 @@ Ping me for that code on Slack.
 
 ## What about sensitive info?
 
-For now, the server is currently a private app server server, running on the Digital 
+For now, the server is currently a private app server server, running on the Digital
 Ocean platform.
 
 The server does NOT store or log any of the prompts, conversations, API keys or other secrets.
-These are all kept client side and stored in browser 'local storage'. 
+These are all kept client side and stored in browser 'local storage'.
 They are sent (through SSL) to the server, of course, but not logged or persisted server-side.
-(Exception: The server logs may contain at most the first 8 characters of your prompts 
+(Exception: The server logs may contain at most the first 8 characters of your prompts
 for debugging purposes, but no more).
 
 ## How was this built?

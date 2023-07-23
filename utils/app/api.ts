@@ -1,5 +1,7 @@
-import {basePath} from "@/config"
 import {Plugin, PluginID} from "@/types/plugin"
+
+import {basePath} from "@/config"
+
 
 const getApiUrl = (path: string) => {
   return `${basePath}${path}`

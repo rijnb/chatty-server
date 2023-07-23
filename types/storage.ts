@@ -3,14 +3,15 @@ import {FolderInterface} from "./folder"
 import {PluginKey} from "./plugin"
 import {Prompt} from "./prompt"
 
+
 export interface LocalStorage {
-  apiKey: string;
-  conversationHistory: Conversation[];
-  selectedConversation: Conversation;
-  theme: "light" | "dark";
-  folders: FolderInterface[];
-  prompts: Prompt[];
-  showChatbar: boolean;
-  showPromptbar: boolean;
-  pluginKeys: PluginKey[];
+  apiKey: string
+  conversationHistory: Conversation[]
+  selectedConversation: Conversation
+  theme: "light" | "dark"
+  folders: FolderInterface[]
+  prompts: Prompt[]
+  showChatbar: boolean
+  showPromptbar: boolean
+  pluginKeys: PluginKey[]
 }

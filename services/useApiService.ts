@@ -1,9 +1,12 @@
-import {basePath} from "@/config"
-import {useFetch} from "@/hooks/useFetch"
 import {useCallback} from "react"
 
+import {useFetch} from "@/hooks/useFetch"
+
+import {basePath} from "@/config"
+
+
 export interface GetModelsRequestProps {
-  key: string;
+  key: string
 }
 
 const getApiUrl = (path: string) => {
@@ -14,17 +17,20 @@ const useApiService = () => {
   const fetchService = useFetch()
 
   const getModels = useCallback(
-      (params: GetModelsRequestProps, guestCode = "", signal?: AbortSignal) => {
-        return fetchService.post<GetModelsRequestProps>(`${getApiUrl("/api/models")}`, {
+    (params: GetModelsRequestProps, guestCode = "", signal?: AbortSignal) => {
+      return fetchService.post<GetModelsRequestProps>(
+        `${getApiUrl("/api/models")}`,
+        {
           body: {key: params.key},
           headers: {
             "Content-Type": "application/json",
             ...(guestCode && {Authorization: `Bearer ${guestCode}`})
           },
           signal
-        })
-      },
-      [fetchService]
+        }
+      )
+    },
+    [fetchService]
   )
 
   return {

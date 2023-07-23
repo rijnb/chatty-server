@@ -4,8 +4,8 @@ import {
   IconBrandGoogle,
   IconPlayerStop,
   IconRepeat,
-  IconSend,
-} from '@tabler/icons-react';
+  IconSend
+} from "@tabler/icons-react"
 import {
   KeyboardEvent,
   MutableRefObject,
@@ -13,30 +13,32 @@ import {
   useContext,
   useEffect,
   useRef,
-  useState,
-} from 'react';
+  useState
+} from "react"
 
-import { useTranslation } from 'next-i18next';
+import {useTranslation} from "next-i18next"
 
-import { Message } from '@/types/chat';
-import { Plugin } from '@/types/plugin';
-import { Prompt } from '@/types/prompt';
-
-import HomeContext from '@/pages/api/home/home.context';
-
-import { ChatInputTokenCount } from './ChatInputTokenCount';
-import { PluginSelect } from './PluginSelect';
-import { PromptList } from './PromptList';
-import { VariableModal } from './VariableModal';
 import {isEnterKey} from "@/utils/app/keys"
 
+import {Message} from "@/types/chat"
+import {Plugin} from "@/types/plugin"
+import {Prompt} from "@/types/prompt"
+
+import HomeContext from "@/pages/api/home/home.context"
+
+import {ChatInputTokenCount} from "./ChatInputTokenCount"
+import {PluginSelect} from "./PluginSelect"
+import {PromptList} from "./PromptList"
+import {VariableModal} from "./VariableModal"
+
+
 interface Props {
-  onSend: (message: Message, plugin: Plugin | null) => void;
-  onRegenerate: () => void;
-  onScrollDownClick: () => void;
-  stopConversationRef: MutableRefObject<boolean>;
-  textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
-  showScrollDownButton: boolean;
+  onSend: (message: Message, plugin: Plugin | null) => void
+  onRegenerate: () => void
+  onScrollDownClick: () => void
+  stopConversationRef: MutableRefObject<boolean>
+  textareaRef: MutableRefObject<HTMLTextAreaElement | null>
+  showScrollDownButton: boolean
 }
 
 export const ChatInput = ({
@@ -45,199 +47,199 @@ export const ChatInput = ({
   onScrollDownClick,
   stopConversationRef,
   textareaRef,
-  showScrollDownButton,
+  showScrollDownButton
 }: Props) => {
-  const { t } = useTranslation('chat');
+  const {t} = useTranslation("chat")
 
   const {
-    state: { selectedConversation, messageIsStreaming, prompts },
+    state: {selectedConversation, messageIsStreaming, prompts},
 
-    dispatch: homeDispatch,
-  } = useContext(HomeContext);
+    dispatch: homeDispatch
+  } = useContext(HomeContext)
 
-  const [content, setContent] = useState<string>();
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [showPromptList, setShowPromptList] = useState(false);
-  const [activePromptIndex, setActivePromptIndex] = useState(0);
-  const [promptInputValue, setPromptInputValue] = useState('');
-  const [variables, setVariables] = useState<string[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showPluginSelect, setShowPluginSelect] = useState(false);
-  const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const [content, setContent] = useState<string>()
+  const [isTyping, setIsTyping] = useState<boolean>(false)
+  const [showPromptList, setShowPromptList] = useState(false)
+  const [activePromptIndex, setActivePromptIndex] = useState(0)
+  const [promptInputValue, setPromptInputValue] = useState("")
+  const [variables, setVariables] = useState<string[]>([])
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [showPluginSelect, setShowPluginSelect] = useState(false)
+  const [plugin, setPlugin] = useState<Plugin | null>(null)
 
-  const promptListRef = useRef<HTMLUListElement | null>(null);
+  const promptListRef = useRef<HTMLUListElement | null>(null)
 
   const filteredPrompts = prompts.filter((prompt) =>
-    prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()),
-  );
+    prompt.name.toLowerCase().includes(promptInputValue.toLowerCase())
+  )
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    const maxLength = selectedConversation?.model.maxLength;
+    const value = e.target.value
+    const maxLength = selectedConversation?.model.maxLength
 
     if (maxLength && value.length > maxLength) {
       alert(
         t(
           `Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-          { maxLength, valueLength: value.length },
-        ),
-      );
-      return;
+          {maxLength, valueLength: value.length}
+        )
+      )
+      return
     }
 
-    setContent(value);
-    updatePromptListVisibility(value);
-  };
+    setContent(value)
+    updatePromptListVisibility(value)
+  }
 
   const handleSend = () => {
     function removeEmptyLines(content: string) {
       // Remove trailing whitespace and consecutive newlines.
-      return content.replace(/\s+$/, '').replace(/\n{3,}/g, '\n');
+      return content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n")
     }
 
     if (messageIsStreaming) {
-      return;
+      return
     }
     if (!content) {
-      return;
+      return
     }
 
-    onSend({ role: 'user', content: removeEmptyLines(content) }, plugin);
-    setContent('');
-    setPlugin(null);
+    onSend({role: "user", content: removeEmptyLines(content)}, plugin)
+    setContent("")
+    setPlugin(null)
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
-      textareaRef.current.blur();
+      textareaRef.current.blur()
     }
-  };
+  }
 
   const handleStopConversation = () => {
-    stopConversationRef.current = true;
+    stopConversationRef.current = true
     setTimeout(() => {
-      stopConversationRef.current = false;
-    }, 3000);
-  };
+      stopConversationRef.current = false
+    }, 3000)
+  }
 
   const isMobile = () => {
     const userAgent =
-      typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
+      typeof window.navigator === "undefined" ? "" : navigator.userAgent
     const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-    return mobileRegex.test(userAgent);
-  };
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
+    return mobileRegex.test(userAgent)
+  }
 
   const handleInitModal = () => {
-    const selectedPrompt = filteredPrompts[activePromptIndex];
+    const selectedPrompt = filteredPrompts[activePromptIndex]
     if (selectedPrompt) {
       setContent((prevContent) => {
-        return prevContent?.replace(/\/\w*$/, selectedPrompt.content);
-      });
-      handlePromptSelect(selectedPrompt);
+        return prevContent?.replace(/\/\w*$/, selectedPrompt.content)
+      })
+      handlePromptSelect(selectedPrompt)
     }
-    setShowPromptList(false);
-  };
+    setShowPromptList(false)
+  }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
+      if (e.key === "ArrowDown") {
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex,
-        );
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
+          prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex
+        )
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : prevIndex,
-        );
-      } else if (e.key === 'Tab') {
-        e.preventDefault();
+          prevIndex > 0 ? prevIndex - 1 : prevIndex
+        )
+      } else if (e.key === "Tab") {
+        e.preventDefault()
         setActivePromptIndex((prevIndex) =>
-          prevIndex < prompts.length - 1 ? prevIndex + 1 : 0,
-        );
+          prevIndex < prompts.length - 1 ? prevIndex + 1 : 0
+        )
       } else if (isEnterKey(e)) {
-        e.preventDefault();
-        handleInitModal();
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        setShowPromptList(false);
+        e.preventDefault()
+        handleInitModal()
+      } else if (e.key === "Escape") {
+        e.preventDefault()
+        setShowPromptList(false)
       } else {
-        setActivePromptIndex(0);
+        setActivePromptIndex(0)
       }
     } else if (isEnterKey(e) && !isTyping && !isMobile() && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    } else if (e.key === '/' && e.metaKey) {
-      e.preventDefault();
-      setShowPluginSelect(!showPluginSelect);
+      e.preventDefault()
+      handleSend()
+    } else if (e.key === "/" && e.metaKey) {
+      e.preventDefault()
+      setShowPluginSelect(!showPluginSelect)
     }
-  };
+  }
 
   const parseVariables = (content: string) => {
-    const regex = /{{(.*?)}}/g;
-    const foundVariables = [];
-    let match;
+    const regex = /{{(.*?)}}/g
+    const foundVariables = []
+    let match
 
     while ((match = regex.exec(content)) !== null) {
-      foundVariables.push(match[1]);
+      foundVariables.push(match[1])
     }
 
-    return foundVariables;
-  };
+    return foundVariables
+  }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = text.match(/\/\w*$/);
+    const match = text.match(/\/\w*$/)
 
     if (match) {
-      setShowPromptList(true);
-      setPromptInputValue(match[0].slice(1));
+      setShowPromptList(true)
+      setPromptInputValue(match[0].slice(1))
     } else {
-      setShowPromptList(false);
-      setPromptInputValue('');
+      setShowPromptList(false)
+      setPromptInputValue("")
     }
-  }, []);
+  }, [])
 
   const handlePromptSelect = (prompt: Prompt) => {
-    const parsedVariables = parseVariables(prompt.content);
-    setVariables(parsedVariables);
+    const parsedVariables = parseVariables(prompt.content)
+    setVariables(parsedVariables)
 
     if (parsedVariables.length > 0) {
-      setIsModalVisible(true);
+      setIsModalVisible(true)
     } else {
       setContent((prevContent) => {
-        return prevContent?.replace(/\/\w*$/, prompt.content);
-      });
-      updatePromptListVisibility(prompt.content);
+        return prevContent?.replace(/\/\w*$/, prompt.content)
+      })
+      updatePromptListVisibility(prompt.content)
     }
-  };
+  }
 
   const handleSubmit = (updatedVariables: string[]) => {
     const newContent = content?.replace(/{{(.*?)}}/g, (match, variable) => {
-      const index = variables.indexOf(variable);
-      return updatedVariables[index];
-    });
+      const index = variables.indexOf(variable)
+      return updatedVariables[index]
+    })
 
-    setContent(newContent);
+    setContent(newContent)
 
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.focus();
+      textareaRef.current.focus()
     }
-  };
+  }
 
   useEffect(() => {
     if (promptListRef.current) {
-      promptListRef.current.scrollTop = activePromptIndex * 36;
+      promptListRef.current.scrollTop = activePromptIndex * 36
     }
-  }, [activePromptIndex]);
+  }, [activePromptIndex])
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
+      textareaRef.current.style.height = "inherit"
+      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`
       textareaRef.current.style.overflow = `${
-        textareaRef?.current?.scrollHeight > 400 ? 'auto' : 'hidden'
-      }`;
+        textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"
+      }`
     }
-  }, [content]);
+  }, [content])
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -245,16 +247,16 @@ export const ChatInput = ({
         promptListRef.current &&
         !promptListRef.current.contains(e.target as Node)
       ) {
-        setShowPromptList(false);
+        setShowPromptList(false)
       }
-    };
+    }
 
-    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener("click", handleOutsideClick)
 
     return () => {
-      window.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
+      window.removeEventListener("click", handleOutsideClick)
+    }
+  }, [])
 
   return (
     <div className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-6 dark:border-white/20 dark:via-[#343541] dark:to-[#343541] md:pt-2">
@@ -264,7 +266,7 @@ export const ChatInput = ({
             className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
             onClick={handleStopConversation}
           >
-            <IconPlayerStop size={16} /> {t('Stop generating')}
+            <IconPlayerStop size={16} /> {t("Stop generating")}
           </button>
         )}
 
@@ -275,7 +277,7 @@ export const ChatInput = ({
               className="absolute top-0 left-0 right-0 mx-auto mb-3 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white py-2 px-4 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2"
               onClick={onRegenerate}
             >
-              <IconRepeat size={16} /> {t('Regenerate response')}
+              <IconRepeat size={16} /> {t("Regenerate response")}
             </button>
           )}
 
@@ -293,18 +295,18 @@ export const ChatInput = ({
               <PluginSelect
                 plugin={plugin}
                 onKeyDown={(e: any) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    setShowPluginSelect(false);
-                    textareaRef.current?.focus();
+                  if (e.key === "Escape") {
+                    e.preventDefault()
+                    setShowPluginSelect(false)
+                    textareaRef.current?.focus()
                   }
                 }}
                 onPluginChange={(plugin: Plugin) => {
-                  setPlugin(plugin);
-                  setShowPluginSelect(false);
+                  setPlugin(plugin)
+                  setShowPluginSelect(false)
 
                   if (textareaRef && textareaRef.current) {
-                    textareaRef.current.focus();
+                    textareaRef.current.focus()
                   }
                 }}
               />
@@ -319,17 +321,17 @@ export const ChatInput = ({
             ref={textareaRef}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
             style={{
-              resize: 'none',
+              resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
-              maxHeight: '400px',
+              maxHeight: "400px",
               overflow: `${
                 textareaRef.current && textareaRef.current.scrollHeight > 400
-                  ? 'auto'
-                  : 'hidden'
-              }`,
+                  ? "auto"
+                  : "hidden"
+              }`
             }}
             placeholder={
-              t('Type a message or type "/" to select a prompt...') || ''
+              t('Type a message or type "/" to select a prompt...') || ""
             }
             value={content}
             rows={1}
@@ -385,7 +387,7 @@ export const ChatInput = ({
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
         {t("Chatty is a frontend for OpenAI's chat models")}
-        {' developed by Rijn Buve, based on '}
+        {" developed by Rijn Buve, based on "}
         <a
           href="https://github.com/mckaywrigley/chatbot-ui"
           target="_blank"
@@ -396,5 +398,5 @@ export const ChatInput = ({
         </a>
       </div>
     </div>
-  );
-};
+  )
+}

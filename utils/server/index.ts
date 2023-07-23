@@ -1,6 +1,6 @@
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
-import {createParser, ParsedEvent, ReconnectInterval} from "eventsource-parser"
+
 import {
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
@@ -9,6 +9,9 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "../app/const"
+
+import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
+
 
 export class OpenAIError extends Error {
   type: string
@@ -25,19 +28,29 @@ export class OpenAIError extends Error {
 }
 
 export const OpenAIStream = async (
-    model: OpenAIModel,
-    systemPrompt: string,
-    temperature: number,
-    key: string,
-    messages: Message[]
+  model: OpenAIModel,
+  systemPrompt: string,
+  temperature: number,
+  key: string,
+  messages: Message[]
 ) => {
   let url = `${OPENAI_API_HOST}/v1/chat/completions`
   if (OPENAI_API_TYPE === "azure") {
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
-  console.info(`Input '${messages[messages.length - 1].content.substring(0, 8)}...'`)
+  console.info(
+    `Input '${messages[messages.length - 1].content.substring(0, 8)}...'`
+  )
   console.info(`  HTTP POST ${url}`)
-  console.info(`  '{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${messages.length}, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars>]}`)
+  console.info(
+    `  '{model:'${
+      model.id
+    }', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${
+      messages.length
+    }, ${messages[messages.length - 1].role}, ${
+      messages[messages.length - 1].content.length
+    } chars>]}`
+  )
   const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
@@ -47,9 +60,10 @@ export const OpenAIStream = async (
       ...(OPENAI_API_TYPE === "azure" && {
         "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
       }),
-      ...((OPENAI_API_TYPE === "openai" && OPENAI_ORGANIZATION) && {
-        "OpenAI-Organization": OPENAI_ORGANIZATION
-      })
+      ...(OPENAI_API_TYPE === "openai" &&
+        OPENAI_ORGANIZATION && {
+          "OpenAI-Organization": OPENAI_ORGANIZATION
+        })
     },
     method: "POST",
     body: JSON.stringify({
@@ -74,16 +88,16 @@ export const OpenAIStream = async (
     const result = await res.json()
     if (result.error) {
       throw new OpenAIError(
-          result.error.message,
-          result.error.type,
-          result.error.param,
-          result.error.code
+        result.error.message,
+        result.error.type,
+        result.error.param,
+        result.error.code
       )
     } else {
       throw new Error(
-          `${OPENAI_API_TYPE} returned an error (1): ${
-              decoder.decode(result?.value) || result.statusText
-          }`
+        `${OPENAI_API_TYPE} returned an error (1): ${
+          decoder.decode(result?.value) || result.statusText
+        }`
       )
     }
   }

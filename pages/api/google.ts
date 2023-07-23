@@ -1,5 +1,5 @@
-import {Message} from "@/types/chat"
-import {GoogleBody, GoogleSource} from "@/types/google"
+import {NextApiRequest, NextApiResponse} from "next"
+
 import {
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
@@ -8,11 +8,16 @@ import {
   OPENAI_ORGANIZATION
 } from "@/utils/app/const"
 import {cleanSourceText} from "@/utils/server/google"
+
+import {Message} from "@/types/chat"
+import {GoogleBody, GoogleSource} from "@/types/google"
+
+import {auth} from "./auth"
+
 import {Readability} from "@mozilla/readability"
 import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
-import {NextApiRequest, NextApiResponse} from "next"
-import {auth} from "./auth"
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
@@ -24,18 +29,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       })
     }
     const {messages, key, model, googleAPIKey, googleCSEId} =
-        req.body as GoogleBody
+      req.body as GoogleBody
 
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
 
     console.info(`[Google search] ${userMessage.substring(0, 8)}...`)
     const googleRes = await fetch(
-        `https://customsearch.googleapis.com/customsearch/v1?key=${
-            googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
-        }&cx=${
-            googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
-        }&q=${query}&num=5`
+      `https://customsearch.googleapis.com/customsearch/v1?key=${
+        googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
+      }&cx=${
+        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+      }&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
     const sources: GoogleSource[] = googleData.items.map((item: any) => ({
@@ -47,37 +52,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       text: ""
     }))
     const sourcesWithText: any = await Promise.all(
-        sources.map(async (source) => {
-          try {
-            console.info(`[Google search] get URL '${source.link.substring(0, 16)}...'`)
-            const timeoutPromise = new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Google search request timed out")), 5000)
+      sources.map(async (source) => {
+        try {
+          console.info(
+            `[Google search] get URL '${source.link.substring(0, 16)}...'`
+          )
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error("Google search request timed out")),
+              5000
             )
-            const res = (await Promise.race([fetch(source.link), timeoutPromise])) as any
-            const html = await res.text()
-            const virtualConsole = new jsdom.VirtualConsole()
-            virtualConsole.on("error", (error) => {
-              if (!error.message.includes("Could not parse CSS stylesheet")) {
-                console.error(`[Google search] ${error}`)
-              }
-            })
-            const dom = new JSDOM(html, {virtualConsole})
-            const doc = dom.window.document
-            const parsed = new Readability(doc).parse()
-            if (parsed) {
-              let sourceText = cleanSourceText(parsed.textContent)
-              return {
-                ...source,
-                // TODO: switch to tokens
-                text: sourceText.slice(0, 3000)
-              } as GoogleSource
+          )
+          const res = (await Promise.race([
+            fetch(source.link),
+            timeoutPromise
+          ])) as any
+          const html = await res.text()
+          const virtualConsole = new jsdom.VirtualConsole()
+          virtualConsole.on("error", (error) => {
+            if (!error.message.includes("Could not parse CSS stylesheet")) {
+              console.error(`[Google search] ${error}`)
             }
-            return null
-          } catch (error) {
-            console.error(`[Google search] ${error}`)
-            return null
+          })
+          const dom = new JSDOM(html, {virtualConsole})
+          const doc = dom.window.document
+          const parsed = new Readability(doc).parse()
+          if (parsed) {
+            let sourceText = cleanSourceText(parsed.textContent)
+            return {
+              ...source,
+              // TODO: switch to tokens
+              text: sourceText.slice(0, 3000)
+            } as GoogleSource
           }
-        })
+          return null
+        } catch (error) {
+          console.error(`[Google search] ${error}`)
+          return null
+        }
+      })
     )
     const filteredSources: GoogleSource[] = sourcesWithText.filter(Boolean)
     const answerPrompt = endent`
@@ -125,9 +138,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         ...(OPENAI_API_TYPE === "azure" && {
           "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
         }),
-        ...((OPENAI_API_TYPE === "openai" && OPENAI_ORGANIZATION) && {
-          "OpenAI-Organization": OPENAI_ORGANIZATION
-        })
+        ...(OPENAI_API_TYPE === "openai" &&
+          OPENAI_ORGANIZATION && {
+            "OpenAI-Organization": OPENAI_ORGANIZATION
+          })
       },
       method: "POST",
       body: JSON.stringify({
