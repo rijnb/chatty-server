@@ -11,7 +11,6 @@ import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
 import {ClearPrompts} from "./ClearPrompts"
 
-
 interface Props {}
 
 export const PromptbarSettings: FC<Props> = () => {
@@ -28,17 +27,17 @@ export const PromptbarSettings: FC<Props> = () => {
     <div>
       {prompts.length > 0 ? (
         <ClearPrompts onClearPrompts={handleClearPrompts} />
-      ) : (
-        ""
-      )}
+      ) : null}
 
       <ImportData text={t("Import prompts")} onImport={handleImportPrompts} />
 
-      <SidebarButton
-        text={t("Export prompts")}
-        icon={<IconFileExport size={18} />}
-        onClick={() => handleExportPrompts()}
-      />
+      {prompts.length > 0 ? (
+        <SidebarButton
+          text={t("Export prompts")}
+          icon={<IconFileExport size={18} />}
+          onClick={() => handleExportPrompts()}
+        />
+      ) : null}
     </div>
   )
 }
