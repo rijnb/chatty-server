@@ -3,6 +3,7 @@ import {useTranslation} from "react-i18next"
 
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 
+import {saveFolders} from "@/utils/app/folders"
 import {savePrompts} from "@/utils/app/prompts"
 
 import {OpenAIModels} from "@/types/openai"
@@ -11,16 +12,14 @@ import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
 
 import {PromptFolders} from "./components/PromptFolders"
+import {PromptbarSettings} from "./components/PromptbarSettings"
 import {Prompts} from "./components/Prompts"
 
 import Sidebar from "../Sidebar"
 import PromptbarContext from "./PromptBar.context"
 import {PromptbarInitialState, initialState} from "./Promptbar.state"
 
-
-
-import { v4 as uuidv4 } from "uuid";
-
+import {v4 as uuidv4} from "uuid"
 
 const Promptbar = () => {
   const {t} = useTranslation("promptbar")
@@ -30,7 +29,7 @@ const Promptbar = () => {
   })
 
   const {
-    state: {prompts, defaultModelId, showPromptbar},
+    state: {prompts, defaultModelId, showPromptbar, folders},
     dispatch: homeDispatch,
     handleCreateFolder
   } = useContext(HomeContext)
@@ -62,6 +61,14 @@ const Promptbar = () => {
 
       savePrompts(updatedPrompts)
     }
+  }
+
+  const handleClearPrompts = () => {
+    homeDispatch({field: "prompts", value: []})
+    localStorage.removeItem("prompts")
+    const updatedFolders = folders.filter((f) => f.type !== "prompt")
+    homeDispatch({field: "folders", value: updatedFolders})
+    saveFolders(updatedFolders)
   }
 
   const handleDeletePrompt = (prompt: Prompt) => {
@@ -124,7 +131,8 @@ const Promptbar = () => {
         ...promptBarContextValue,
         handleCreatePrompt,
         handleDeletePrompt,
-        handleUpdatePrompt
+        handleUpdatePrompt,
+        handleClearPrompts
       }}
     >
       <Sidebar<Prompt>
@@ -146,6 +154,7 @@ const Promptbar = () => {
         handleCreateItem={handleCreatePrompt}
         handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
         handleDrop={handleDrop}
+        footerComponent={<PromptbarSettings />}
       />
     </PromptbarContext.Provider>
   )

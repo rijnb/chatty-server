@@ -27,10 +27,7 @@ import Sidebar from "../Sidebar"
 import ChatbarContext from "./Chatbar.context"
 import {ChatbarInitialState, initialState} from "./Chatbar.state"
 
-
-
-import { v4 as uuidv4 } from "uuid";
-
+import {v4 as uuidv4} from "uuid"
 
 export const Chatbar = () => {
   const {t} = useTranslation("sidebar")
@@ -135,7 +132,7 @@ export const Chatbar = () => {
         field: "selectedConversation",
         value: {
           id: uuidv4(),
-          name: t("New Conversation"),
+          name: t("New conversation"),
           messages: [],
           model: OpenAIModels[defaultModelId],
           prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
@@ -146,12 +143,9 @@ export const Chatbar = () => {
       })
 
     homeDispatch({field: "conversations", value: []})
-
     localStorage.removeItem("conversationHistory")
     localStorage.removeItem("selectedConversation")
-
     const updatedFolders = folders.filter((f) => f.type !== "chat")
-
     homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
   }

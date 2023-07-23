@@ -15,7 +15,6 @@ import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 import {ClearConversations} from "./ClearConversations"
 import {PluginKeys} from "./PluginKeys"
 
-
 export const ChatbarSettings = () => {
   const {t} = useTranslation("sidebar")
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false)
