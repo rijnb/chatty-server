@@ -1,6 +1,7 @@
 import {Plugin, PluginList} from "@/types/plugin"
 import {useTranslation} from "next-i18next"
 import {FC, useEffect, useRef} from "react"
+import {isEnterKey} from "@/utils/app/keys"
 
 interface Props {
   plugin: Plugin | null;
@@ -35,7 +36,7 @@ export const PluginSelect: FC<Props> = ({
             (selectElement.selectedIndex - 1 + optionCount) % optionCount
         selectElement.dispatchEvent(new Event("change"))
       }
-    } else if (e.key === "Enter") {
+    } else if (isEnterKey(e)) {
       e.preventDefault()
       if (selectElement) {
         selectElement.dispatchEvent(new Event("change"))

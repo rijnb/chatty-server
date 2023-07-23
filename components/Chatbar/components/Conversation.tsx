@@ -4,6 +4,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
+import {isEnterKey} from "@/utils/app/keys"
 
 interface Props {
   conversation: Conversation;
@@ -23,7 +24,7 @@ export const ConversationComponent = ({conversation}: Props) => {
   const [renameValue, setRenameValue] = useState("")
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") {
+    if (isEnterKey(e)) {
       e.preventDefault()
       selectedConversation && handleRename(selectedConversation)
     }

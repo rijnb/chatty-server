@@ -3,6 +3,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import {FolderInterface} from "@/types/folder"
 import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
+import {isEnterKey} from "@/utils/app/keys"
 
 interface Props {
   currentFolder: FolderInterface;
@@ -25,7 +26,7 @@ const Folder = ({
   const [isOpen, setIsOpen] = useState(false)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") {
+    if (isEnterKey(e)) {
       e.preventDefault()
       handleRename()
     }

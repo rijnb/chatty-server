@@ -5,6 +5,7 @@ import {PluginID, PluginKey} from "@/types/plugin"
 import {IconKey} from "@tabler/icons-react"
 import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "react-i18next"
+import {isEnterKey} from "@/utils/app/keys"
 
 export const PluginKeys = () => {
   const {t} = useTranslation("sidebar")
@@ -21,7 +22,7 @@ export const PluginKeys = () => {
   const modalRef = useRef<HTMLDivElement>(null)
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (isEnterKey(e) && !e.shiftKey) {
       e.preventDefault()
       setIsChanging(false)
     }

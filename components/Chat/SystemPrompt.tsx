@@ -5,6 +5,7 @@ import {useTranslation} from "next-i18next"
 import {FC, KeyboardEvent, useCallback, useEffect, useRef, useState} from "react"
 import {PromptList} from "./PromptList"
 import {VariableModal} from "./VariableModal"
+import {isEnterKey} from "@/utils/app/keys"
 
 interface Props {
   conversation: Conversation;
@@ -135,7 +136,7 @@ export const SystemPrompt: FC<Props> = ({
         setActivePromptIndex((prevIndex) =>
             prevIndex < prompts.length - 1 ? prevIndex + 1 : 0
         )
-      } else if (e.key === "Enter") {
+      } else if (isEnterKey(e)) {
         e.preventDefault()
         handleInitModal()
       } else if (e.key === "Escape") {

@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import {CodeBlock} from "../Markdown/CodeBlock"
 import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown"
+import {isEnterKey} from "@/utils/app/keys"
 
 export interface Props {
   message: Message;
@@ -86,7 +87,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
   }
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !isTyping && !e.shiftKey) {
+    if (isEnterKey(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
       handleEditMessage()
     }

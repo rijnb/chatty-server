@@ -1,6 +1,7 @@
 import {Prompt} from "@/types/prompt"
 import {useTranslation} from "next-i18next"
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {isEnterKey} from "@/utils/app/keys"
 
 interface Props {
   prompt: Prompt;
@@ -18,7 +19,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (isEnterKey(e) && !e.shiftKey) {
       onUpdatePrompt({...prompt, name, description, content: content.trim()})
       onClose()
     }
