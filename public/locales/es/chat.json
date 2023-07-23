@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "Se requiere la clave de API de OpenAI",
+  "OpenAI API key required": "Se requiere la clave de API de OpenAI",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "Por favor, ingrese su clave de API de OpenAI en la esquina inferior izquierda de la barra lateral.",
   "Stop Generating": "Dejar de generar",
   "Prompt limit is {{maxLength}} characters": "El límite del mensaje es de {{maxLength}} caracteres",

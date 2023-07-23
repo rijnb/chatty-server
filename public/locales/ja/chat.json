@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "OpenAIのAPIキーが必要です",
+  "OpenAI API key required": "OpenAIのAPIキーが必要です",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "左下のサイドバーでOpenAIのAPIキーを設定してください",
   "Stop Generating": "回答をストップ",
   "Prompt limit is {{maxLength}} characters": "プロンプトの文字数は{{maxLength}}文字までです",

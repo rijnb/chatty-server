@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "OpenAI API-nyckel krävs",
+  "OpenAI API key required": "OpenAI API-nyckel krävs",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "Vänligen ange din OpenAI API-nyckel längst ner till vänster i sidofältet.",
   "Stop Generating": "Sluta generera",
   "Prompt limit is {{maxLength}} characters": "Din prompt kan inte ha fler än {{maxLength}} tecken",

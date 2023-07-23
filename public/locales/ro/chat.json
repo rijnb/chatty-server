@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "Este necesară cheia API OpenAI",
+  "OpenAI API key required": "Este necesară cheia API OpenAI",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "Introduceți cheia API OpenAI în partea stângă jos a barei laterale",
   "Stop Generating": "Nu mai generați",
   "Prompt limit is {{maxLength}} characters": "Limita mesajelor este de {{maxLength}} caractere",

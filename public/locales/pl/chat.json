@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "Klucz do OpenAI API jest wymagany",
+  "OpenAI API key required": "Klucz do OpenAI API jest wymagany",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "Proszę wprowadzić swój klucz do OpenAI API na pasku bocznym w lewym dolnym rogu",
   "Stop Generating": "Zatrzymaj generowanie",
   "Prompt limit is {{maxLength}} characters": "Limit prompta wynosi {{maxLength}} znaków",

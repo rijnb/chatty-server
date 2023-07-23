@@ -1,5 +1,5 @@
 {
-  "OpenAI API Key Required": "需要 OpenAI API 密钥",
+  "OpenAI API key required": "需要 OpenAI API 密钥",
   "Please set your OpenAI API key in the bottom left of the sidebar.": "请在侧边栏左下角设置您的 OpenAI API 密钥。",
   "If you don't have an OpenAI API key, you can get one here: ": "如果你没有 OpenAI API 密钥，你可以在此获取：",
   "Stop Generating": "停止生成",

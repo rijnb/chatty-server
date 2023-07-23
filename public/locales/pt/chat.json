@@ -1,6 +1,6 @@
 {
-  "OpenAI API Key Required": "A API Key da OpenAI é necessária",
-  "Please set your OpenAI API key in the bottom left of the sidebar.": "Por favor, insira sua API Key da OpenAI no canto inferior esquerdo da barra lateral.",
+  "OpenAI API key required": "AAPI key da OpenAI é necessária",
+  "Please set your OpenAI API key in the bottom left of the sidebar.": "Por favor, insira suaAPI key da OpenAI no canto inferior esquerdo da barra lateral.",
   "Stop Generating": "Parar de gerar",
   "Prompt limit is {{maxLength}} characters": "O limite da mensagem é de {{maxLength}} caracteres",
   "System Prompt": "Mensagem do sistema",
@@ -18,7 +18,7 @@
   "You": "Você",
   "Cancel": "Cancel",
   "Save & submit": "Save & submit",
-  "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Certifique-se de que sua API Key da OpenAI esteja definida na parte inferior esquerda da barra lateral.",
+  "Make sure your OpenAI API key is set in the bottom left of the sidebar.": "Certifique-se de que suaAPI key da OpenAI esteja definida na parte inferior esquerda da barra lateral.",
   "If you completed this step, OpenAI may be experiencing issues.": "Se você concluiu esta etapa, o OpenAI pode estar com problemas.",
   "click if using a .env.local file": "clique se estiver usando um arquivo .env.local",
   "Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.": "O limite de mensagens é de {{maxLength}} caracteres. Você inseriu {{valueLength}} caracteres",

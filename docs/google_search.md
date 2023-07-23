@@ -12,7 +12,7 @@ Use the Google Search API to search the web in Chatbot UI.
 
 4. Create a new Custom Search Engine at https://cse.google.com/cse/all
 
-5. Add your API Key and your Custom Search Engine ID to your .env.local file
+5. Add yourAPI key and your Custom Search Engine ID to your .env.local file
 
 6. You can now select the Google Search Tool in the search tools dropdown
 

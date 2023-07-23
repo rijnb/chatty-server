@@ -60,9 +60,9 @@ git clone https://github.com/mckaywrigley/chatbot-ui.git
 npm i
 ```
 
-**3. Provide OpenAI API Key**
+**3. Provide OpenAI API key**
 
-Create a .env.local file in the root of the repo with your OpenAI API Key:
+Create a .env.local file in the root of the repo with your OpenAI API key:
 
 ```bash
 OPENAI_API_KEY=YOUR_KEY

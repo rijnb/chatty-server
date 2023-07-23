@@ -3,11 +3,11 @@
   "New conversation": "Uusi keskustelu",
   "No conversations.": "Ei keskusteluja.",
   "Search conversations...": "Hae keskusteluista...",
-  "OpenAI API Key": "OpenAI API-avain",
+  "OpenAI API key": "OpenAI API-avain",
   "Import config": "Tuo keskusteluita",
   "Are you sure?": "Oletko varma?",
   "Clear conversations": "Tyhjennä keskustelut",
   "Export config": "Vie keskustelut",
   "Settings": "Asetukset",
-  "Google API Key": "Plugin-avaimet"
+  "GoogleAPI key": "Plugin-avaimet"
 }
