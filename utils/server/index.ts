@@ -2,6 +2,7 @@ import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 
 import {
+  MSG_CHARS_PRIVACY_LIMIT,
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
   OPENAI_API_TYPE,
@@ -37,7 +38,7 @@ export const OpenAIStream = async (
   if (OPENAI_API_TYPE === "azure") {
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
-  console.info(`Input '${messages[messages.length - 1].content.substring(0, 8)}...'`)
+  console.info(`Input '${messages[messages.length - 1].content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
   console.info(`  HTTP POST ${url}`)
   console.info(
     `  '{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${

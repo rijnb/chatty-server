@@ -1,6 +1,7 @@
 import {NextApiRequest, NextApiResponse} from "next"
 
 import {
+  MSG_CHARS_PRIVACY_LIMIT,
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
@@ -33,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
 
-    console.info(`[Google search] ${userMessage.substring(0, 8)}...`)
+    console.info(`[Google search] ${userMessage.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...`)
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
@@ -51,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const sourcesWithText: any = await Promise.all(
       sources.map(async (source) => {
         try {
-          console.info(`[Google search] get URL '${source.link.substring(0, 16)}...'`)
+          console.info(`[Google search] get URL '${source.link.substring(0, 8 + MSG_CHARS_PRIVACY_LIMIT)}...'`)
           const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Google search request timed out")), 5000)
           )
@@ -143,7 +144,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     })
     const {choices: choices} = await answerRes.json()
     const answer = choices[0].message.content
-    console.info(`[Google search] Got result '${answer.substring(0, 8)}...'`)
+    console.info(`[Google search] Got result '${answer.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
     res.status(200).json({answer})
   } catch (error) {
     console.error(`[Google search] Error: ${error}`)

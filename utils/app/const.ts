@@ -17,3 +17,4 @@ export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID
 
 export const TOAST_DURATION_MS = 8000
 export const RESPONSE_TIMEOUT_MS = 2 * 60 * 1000
+export const MSG_CHARS_PRIVACY_LIMIT = 8

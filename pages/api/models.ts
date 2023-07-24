@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     })
 
     if (!response.ok) {
-      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`)
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
       return new Response(response.body, {
         status: response.status,
         headers: response.headers
