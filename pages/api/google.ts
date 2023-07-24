@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const authResult = auth(req)
     if (authResult.error) {
       return new Response("Error: You are not authorized to use the service", {
-        status: 200, //!! TODO Should be authResult.status
+        status: 401,
         statusText: authResult.statusText
       })
     }

@@ -4,7 +4,6 @@ import {OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 
 import {auth} from "./auth"
 
-
 export const config = {
   runtime: "edge"
 }
@@ -14,7 +13,7 @@ const handler = async (req: Request): Promise<Response> => {
     const authResult = auth(req)
     if (authResult.error) {
       return new Response("Error: You are not authorized to use the service", {
-        status: 200, //!! TODO Should be authResult.status,
+        status: 401,
         statusText: authResult.statusText
       })
     }
@@ -43,19 +42,15 @@ const handler = async (req: Request): Promise<Response> => {
       }
     })
 
-    if (response.status === 401) {
-      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
+    if (!response.ok) {
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`)
       return new Response(response.body, {
-        status: 500,
+        status: response.status,
         headers: response.headers
       })
-    } else if (response.status !== 200) {
-      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`)
-      throw new Error(`${OPENAI_API_TYPE} returned an error,:  status:${response.status}`)
     }
 
     const json = await response.json()
-
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
         for (const [key, value] of Object.entries(OpenAIModelID)) {
@@ -71,11 +66,10 @@ const handler = async (req: Request): Promise<Response> => {
       .filter((obj: any, index: any, self: any) => {
         return index === self.findIndex((other: any) => other.id === obj.id)
       })
-
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
     console.error(`Error: ${error}`)
-    return new Response("Error", {status: 500})
+    return new Response("Error", {status: 500, statusText: error ? error.toString() : ""})
   }
 }
 

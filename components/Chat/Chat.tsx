@@ -1,3 +1,4 @@
+import {TOAST_DURATION_MS} from "@/utils/app/const"
 import {IconEraser, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
 import {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
@@ -23,8 +24,6 @@ import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
-
-
 
 import { toPng } from "html-to-image";
 
@@ -124,10 +123,19 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         if (!response.ok) {
           homeDispatch({field: "loading", value: false})
           homeDispatch({field: "messageIsStreaming", value: false})
+          let errorText = await response.text()
           console.log(
-            `HTTP response, statusText:${response.statusText}, status:${response.status}, body:${response.body}, headers:${response.headers}`
+            `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, body:${response.body}, headers:${response.headers}`
           )
-          toast.error(`Error: ${response.statusText}\n\nStatus: ${response.status}`)
+          // Fall back to statusText if errorText is empty.
+          if (errorText.length == 0) {
+            errorText = response.statusText
+          }
+          // Fall back to other message.
+          if (errorText.length == 0) {
+            errorText = "The server may be too busy or down. Please try again a bit later. You can try resubmitting your previous message if you wish."
+          }
+          toast.error(`Server returned error (${response.status})\n\n${errorText}`, {duration: TOAST_DURATION_MS})
           return
         }
         const data = response.body

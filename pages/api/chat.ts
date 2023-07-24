@@ -11,7 +11,6 @@ import {auth} from "./auth"
 import tiktokenModel from "@dqbd/tiktoken/encoders/cl100k_base.json"
 import {Tiktoken, init} from "@dqbd/tiktoken/lite/init"
 
-
 export const config = {
   runtime: "edge"
 }
@@ -21,12 +20,11 @@ const handler = async (req: Request): Promise<Response> => {
     const authResult = auth(req)
     if (authResult.error) {
       return new Response("Error: You are not authorized to use the service", {
-        status: 200, //!! TODO Should be authResult.status
+        status: 401,
         statusText: authResult.statusText
       })
     }
     const {model, messages, key, prompt, temperature} = (await req.json()) as ChatBody
-
     const {tokenLimit} = OpenAIModels[model.id as OpenAIModelID]
 
     await init((imports) => WebAssembly.instantiate(wasm, imports))
@@ -54,6 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     // _lot_ less than 100.
     const safetyMargin = 100
 
+    // Fill with messages from the end until we reach the token limit. Then start skipping messages.
     for (let i = messages.length - 1; i >= 0; i--) {
       const message = messages[i]
       const msgTokenCount = 4 + encoding.encode(message.content).length + encoding.encode(message.role).length
@@ -69,21 +68,20 @@ const handler = async (req: Request): Promise<Response> => {
     encoding.free()
 
     const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend)
-    return new Response(stream, {
-      headers: {"Content-Type": "text/event-stream; charset=utf-8"}
-    })
+    return new Response(stream, {headers: {"Content-Type": "text/event-stream; charset=utf-8"}})
   } catch (error) {
     if (error instanceof OpenAIError) {
       console.error(`Error in OpenAI stream, message:${error.message}`)
       return new Response(`Error: ${error.message}`, {
-        status: 200,
+        status: 500,
         statusText: error.message
-      }) //!! TODO Should be 500
+      })
     } else {
       console.error(`Other stream error, error:${error}`)
       return new Response("Error: Server responded with an error", {
-        status: 200
-      }) //!! TODO Should be 500
+        status: 500,
+        statusText: "Server responded with an error"
+      })
     }
   }
 }

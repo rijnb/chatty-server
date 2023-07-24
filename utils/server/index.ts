@@ -44,7 +44,7 @@ export const OpenAIStream = async (
       messages.length
     }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars>]}`
   )
-  const res = await fetch(url, {
+  const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
       ...(OPENAI_API_TYPE === "openai" && {
@@ -73,16 +73,15 @@ export const OpenAIStream = async (
       stream: true
     })
   })
-
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
-  if (res.status !== 200) {
-    const result = await res.json()
+  if (response.status !== 200) {
+    const result = await response.json()
     if (result.error) {
       throw new OpenAIError(result.error.message, result.error.type, result.error.param, result.error.code)
     } else {
-      throw new Error(`${OPENAI_API_TYPE} returned an error (1): ${decoder.decode(result?.value) || result.statusText}`)
+      throw new Error(`${OPENAI_API_TYPE} returned an error: ${decoder.decode(result?.value) || result.statusText}`)
     }
   }
 
@@ -109,7 +108,7 @@ export const OpenAIStream = async (
 
       const parser = createParser(onParse)
 
-      for await (const chunk of res.body as any) {
+      for await (const chunk of response.body as any) {
         parser.feed(decoder.decode(chunk))
       }
     }
