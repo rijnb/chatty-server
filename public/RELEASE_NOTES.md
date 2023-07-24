@@ -10,15 +10,20 @@
 * Added Markdown export of current conversation.
 * Added screenshot export of current conversation.
 * Added release notes button.
+* Imported prompts update existing prompts and adds new prompts.
+* Added multi-file selector for importing prompts.
 
 #### Bug fixes
 
-* Full clean up of source code and directory structure.
 * Fixed time stamp bug when creating a new conversation.
-* Improved server error handling.
+* Improved server error handling and exception handling.
+* Improved server timeout handling.
 * Introduced 2 minute timout for really long responses.
 * Fixed token count.
 * Fixed screen width issues.
+* Fixed icon of settings button on top.
+* Improved layout of top bar.
+* Full clean up of source code and directory structure, removal of old files.
 
 ### Found an issue?
 
