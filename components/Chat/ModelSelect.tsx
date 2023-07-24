@@ -15,11 +15,11 @@ export const ModelSelect = () => {
     dispatch: homeDispatch
   } = useContext(HomeContext)
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectedConversation &&
       handleUpdateConversation(selectedConversation, {
         key: "model",
-        value: models.find((model) => model.id === e.target.value) as OpenAIModel
+        value: models.find((model) => model.id === e.target.value)
       })
   }
 
@@ -31,7 +31,7 @@ export const ModelSelect = () => {
           className="w-full bg-transparent p-2"
           placeholder={t("Select a model") || ""}
           value={selectedConversation?.model?.id || defaultModelId}
-          onChange={handleChange}
+          onChange={handleSelectModel}
         >
           {models.map((model) => (
             <option key={model.id} value={model.id} className="dark:bg-[#343541] dark:text-white">

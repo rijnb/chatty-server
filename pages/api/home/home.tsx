@@ -75,6 +75,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
 
   useEffect(() => {
     if (data) {
+      console.log("data", data)
       dispatch({field: "models", value: data})
     }
   }, [data, dispatch])

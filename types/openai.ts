@@ -1,7 +1,7 @@
 export interface OpenAIModel {
   id: string
   name: string
-  maxLength: number // maximum length of a message
+  maxLength: number
   tokenLimit: number
 }
 

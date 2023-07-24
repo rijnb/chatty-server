@@ -41,9 +41,9 @@ export const OpenAIStream = async (
   console.info(`Input '${messages[messages.length - 1].content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
   console.info(`  HTTP POST ${url}`)
   console.info(
-    `  '{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${
-      messages.length
-    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars>]}`
+    `  {model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${
+        messages.length
+    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars (limit is ${model.tokenLimit} tokens)]}`
   )
   const response = await fetch(url, {
     headers: {
