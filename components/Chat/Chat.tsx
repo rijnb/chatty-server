@@ -1,4 +1,3 @@
-import {TOAST_DURATION_MS} from "@/utils/app/const"
 import {IconEraser, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
 import {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
@@ -6,6 +5,7 @@ import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 
 import {getEndpoint} from "@/utils/app/api"
+import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
@@ -25,8 +25,7 @@ import {ModelSelect} from "./ModelSelect"
 import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
 
-import { toPng } from "html-to-image";
-
+import {toPng} from "html-to-image"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -63,187 +62,225 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const timeout = (ms: number) => {
+    return new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), ms))
+  }
+
+  const fetchWithTimeout = async (
+    endpoint: string,
+    init: RequestInit,
+    timeoutDurationMs: number
+  ): Promise<Response> => {
+    const controller = new AbortController()
+    init.signal = controller.signal
+    const timeoutPromise: Promise<Response> = timeout(timeoutDurationMs)
+      .then(() => {
+        throw new Error("Request timeout")
+      })
+      .finally(() => controller.abort())
+    const fetchPromise: Promise<Response> = fetch(endpoint, init)
+    return Promise.race([fetchPromise, timeoutPromise])
+  }
+
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
-      if (selectedConversation) {
-        let updatedConversation: Conversation
-        if (deleteCount) {
-          const updatedMessages = [...selectedConversation.messages]
-          for (let i = 0; i < deleteCount; i++) {
-            updatedMessages.pop()
-          }
-          updatedConversation = {
-            ...selectedConversation,
-            messages: [...updatedMessages, message]
-          }
-        } else {
-          updatedConversation = {
-            ...selectedConversation,
-            messages: [...selectedConversation.messages, message]
-          }
-        }
-        homeDispatch({
-          field: "selectedConversation",
-          value: updatedConversation
-        })
-        homeDispatch({field: "loading", value: true})
-        homeDispatch({field: "messageIsStreaming", value: true})
-        const chatBody: ChatBody = {
-          model: updatedConversation.model,
-          messages: updatedConversation.messages,
-          key: apiKey,
-          prompt: updatedConversation.prompt,
-          temperature: updatedConversation.temperature
-        }
-        const endpoint = getEndpoint(plugin)
-        let body
-        if (!plugin) {
-          body = JSON.stringify(chatBody)
-        } else {
-          body = JSON.stringify({
-            ...chatBody,
-            googleAPIKey: pluginKeys
-              .find((key) => key.pluginId === "google-search")
-              ?.requiredKeys.find((key) => key.key === "GOOGLE_API_KEY")?.value,
-            googleCSEId: pluginKeys
-              .find((key) => key.pluginId === "google-search")
-              ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
-          })
-        }
-        const controller = new AbortController()
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(guestCode && {Authorization: `Bearer ${guestCode}`})
-          },
-          signal: controller.signal,
-          body
-        })
-        if (!response.ok) {
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
-          let errorText = await response.text()
-          console.log(
-            `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, body:${response.body}, headers:${response.headers}`
-          )
-          // Fall back to statusText if errorText is empty.
-          if (errorText.length == 0) {
-            errorText = response.statusText
-          }
-          // Fall back to other message.
-          if (errorText.length == 0) {
-            errorText = "The server may be too busy or down. Please try again a bit later. You can try resubmitting your previous message if you wish."
-          }
-          toast.error(`Server returned error (${response.status})\n\n${errorText}`, {duration: TOAST_DURATION_MS})
-          return
-        }
-        const data = response.body
-        if (!data) {
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
-          return
-        }
-        if (!plugin) {
-          if (updatedConversation.messages.length === 1) {
-            const {content} = message
-            const customName = content.length > 30 ? content.substring(0, 30) + "..." : content
+      try {
+        if (selectedConversation) {
+          let updatedConversation: Conversation
+          if (deleteCount) {
+            const updatedMessages = [...selectedConversation.messages]
+            for (let i = 0; i < deleteCount; i++) {
+              updatedMessages.pop()
+            }
             updatedConversation = {
-              ...updatedConversation,
-              name: customName,
-              time: Date.now()
+              ...selectedConversation,
+              messages: [...updatedMessages, message]
             }
-          }
-          homeDispatch({field: "loading", value: false})
-          const reader = data.getReader()
-          const decoder = new TextDecoder()
-          let done = false
-          let isFirst = true
-          let text = ""
-          while (!done) {
-            if (stopConversationRef.current) {
-              console.info("Stopped conversation...")
-              controller.abort()
-              done = true
-              break
+          } else {
+            updatedConversation = {
+              ...selectedConversation,
+              messages: [...selectedConversation.messages, message]
             }
-            const {value, done: doneReading} = await reader.read()
-            done = doneReading
-            const chunkValue = decoder.decode(value, {stream: true})
-            text += chunkValue
-            if (isFirst) {
-              isFirst = false
-              const updatedMessages: Message[] = [
-                ...updatedConversation.messages,
-                {role: "assistant", content: chunkValue}
-              ]
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages
-              }
-              homeDispatch({
-                field: "selectedConversation",
-                value: updatedConversation
-              })
-            } else {
-              const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
-                if (index === updatedConversation.messages.length - 1) {
-                  return {
-                    ...message,
-                    content: text
-                  }
-                }
-                return message
-              })
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages
-              }
-              homeDispatch({
-                field: "selectedConversation",
-                value: updatedConversation
-              })
-            }
-          }
-          saveConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map((conversation) => {
-            if (conversation.id === selectedConversation.id) {
-              return updatedConversation
-            }
-            return conversation
-          })
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation)
-          }
-          homeDispatch({field: "conversations", value: updatedConversations})
-          saveConversations(updatedConversations)
-          homeDispatch({field: "messageIsStreaming", value: false})
-        } else {
-          const {answer} = await response.json()
-          const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages
           }
           homeDispatch({
             field: "selectedConversation",
             value: updatedConversation
           })
-          saveConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map((conversation) => {
-            if (conversation.id === selectedConversation.id) {
-              return updatedConversation
-            }
-            return conversation
-          })
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation)
+          homeDispatch({field: "loading", value: true})
+          homeDispatch({field: "messageIsStreaming", value: true})
+          const chatBody: ChatBody = {
+            model: updatedConversation.model,
+            messages: updatedConversation.messages,
+            key: apiKey,
+            prompt: updatedConversation.prompt,
+            temperature: updatedConversation.temperature
           }
-          homeDispatch({field: "conversations", value: updatedConversations})
-          saveConversations(updatedConversations)
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
+          const endpoint = getEndpoint(plugin)
+          let body
+          if (!plugin) {
+            body = JSON.stringify(chatBody)
+          } else {
+            body = JSON.stringify({
+              ...chatBody,
+              googleAPIKey: pluginKeys
+                .find((key) => key.pluginId === "google-search")
+                ?.requiredKeys.find((key) => key.key === "GOOGLE_API_KEY")?.value,
+              googleCSEId: pluginKeys
+                .find((key) => key.pluginId === "google-search")
+                ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
+            })
+          }
+          const controller = new AbortController()
+
+          const response = await fetchWithTimeout(
+            endpoint,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(guestCode && {Authorization: `Bearer ${guestCode}`})
+              },
+              signal: controller.signal,
+              body
+            },
+            RESPONSE_TIMEOUT_MS
+          )
+
+          if (!response.ok) {
+            homeDispatch({field: "loading", value: false})
+            homeDispatch({field: "messageIsStreaming", value: false})
+            let errorText = await response.text()
+            console.log(
+              `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, body:${response.body}, headers:${response.headers}`
+            )
+            // Fall back to statusText if errorText is empty.
+            if (errorText.length == 0) {
+              errorText = response.statusText
+            }
+            // Fall back to other message.
+            if (errorText.length == 0) {
+              errorText =
+                "The server may be too busy or down. Please try again a bit later. You can try resubmitting your previous message if you wish."
+            }
+            toast.error(`Server returned error (${response.status})\n\n${errorText}`, {duration: TOAST_DURATION_MS})
+            return
+          }
+          const data = response.body
+          if (!data) {
+            homeDispatch({field: "loading", value: false})
+            homeDispatch({field: "messageIsStreaming", value: false})
+            return
+          }
+          if (!plugin) {
+            if (updatedConversation.messages.length === 1) {
+              const {content} = message
+              const customName = content.length > 30 ? content.substring(0, 30) + "..." : content
+              updatedConversation = {
+                ...updatedConversation,
+                name: customName,
+                time: Date.now()
+              }
+            }
+            homeDispatch({field: "loading", value: false})
+            const reader = data.getReader()
+            const decoder = new TextDecoder()
+            let done = false
+            let isFirst = true
+            let text = ""
+            while (!done) {
+              if (stopConversationRef.current) {
+                console.info("Stopped conversation...")
+                controller.abort()
+                done = true
+                break
+              }
+              const {value, done: doneReading} = await reader.read()
+              done = doneReading
+              const chunkValue = decoder.decode(value, {stream: true})
+              text += chunkValue
+              if (isFirst) {
+                isFirst = false
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {role: "assistant", content: chunkValue}
+                ]
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages
+                }
+                homeDispatch({
+                  field: "selectedConversation",
+                  value: updatedConversation
+                })
+              } else {
+                const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
+                  if (index === updatedConversation.messages.length - 1) {
+                    return {
+                      ...message,
+                      content: text
+                    }
+                  }
+                  return message
+                })
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages
+                }
+                homeDispatch({
+                  field: "selectedConversation",
+                  value: updatedConversation
+                })
+              }
+            }
+            saveConversation(updatedConversation)
+            const updatedConversations: Conversation[] = conversations.map((conversation) => {
+              if (conversation.id === selectedConversation.id) {
+                return updatedConversation
+              }
+              return conversation
+            })
+            if (updatedConversations.length === 0) {
+              updatedConversations.push(updatedConversation)
+            }
+            homeDispatch({field: "conversations", value: updatedConversations})
+            saveConversations(updatedConversations)
+            homeDispatch({field: "messageIsStreaming", value: false})
+          } else {
+            const {answer} = await response.json()
+            const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
+            updatedConversation = {
+              ...updatedConversation,
+              messages: updatedMessages
+            }
+            homeDispatch({
+              field: "selectedConversation",
+              value: updatedConversation
+            })
+            saveConversation(updatedConversation)
+            const updatedConversations: Conversation[] = conversations.map((conversation) => {
+              if (conversation.id === selectedConversation.id) {
+                return updatedConversation
+              }
+              return conversation
+            })
+            if (updatedConversations.length === 0) {
+              updatedConversations.push(updatedConversation)
+            }
+            homeDispatch({field: "conversations", value: updatedConversations})
+            saveConversations(updatedConversations)
+            homeDispatch({field: "loading", value: false})
+            homeDispatch({field: "messageIsStreaming", value: false})
+          }
         }
+      } catch (error) {
+        if (error instanceof Error && error.message === "Request timeout") {
+          toast.error(`Request timed out... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+        } else {
+          toast.error(`Unknown server error... Please try again later.`, {duration: TOAST_DURATION_MS})
+        }
+        homeDispatch({field: "loading", value: false})
+        homeDispatch({field: "messageIsStreaming", value: false})
+        return
       }
     },
     [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, guestCode]
