@@ -1,4 +1,4 @@
-import {IconEraser, IconHelp, IconMarkdown, IconRobot, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import {IconEraser, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import Modal from "react-modal"
@@ -104,26 +104,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     }
   }
 
-  const timeout = (ms: number) => {
-    return new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), ms))
-  }
-
-  const fetchWithTimeout = async (
-    endpoint: string,
-    init: RequestInit,
-    timeoutDurationMs: number
-  ): Promise<Response> => {
-    const controller = new AbortController()
-    init.signal = controller.signal
-    const timeoutPromise: Promise<Response> = timeout(timeoutDurationMs)
-      .then(() => {
-        throw new Error("Request timeout")
-      })
-      .finally(() => controller.abort())
-    const fetchPromise: Promise<Response> = fetch(endpoint, init)
-    return Promise.race([fetchPromise, timeoutPromise])
-  }
-
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
       try {
@@ -174,19 +154,14 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
           const controller = new AbortController()
 
-          const response = await fetchWithTimeout(
-            endpoint,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                ...(guestCode && {Authorization: `Bearer ${guestCode}`})
-              },
-              signal: controller.signal,
-              body
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(guestCode && {Authorization: `Bearer ${guestCode}`})
             },
-            RESPONSE_TIMEOUT_MS
-          )
+            body
+          })
 
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
@@ -237,7 +212,11 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 done = true
                 break
               }
-              const {value, done: doneReading} = await data.read()
+              const chunkResponse = await Promise.race([
+                data.read(),
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), RESPONSE_TIMEOUT_MS))
+              ])
+              const {value, done: doneReading} = chunkResponse
               done = doneReading
               const chunkValue = decoder.decode(value, {stream: true})
               text += chunkValue
