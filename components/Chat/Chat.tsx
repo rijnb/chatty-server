@@ -1,8 +1,10 @@
-import {IconEraser, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
-import {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
+import {IconEraser, IconHelp, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
+import Modal from "react-modal"
 
 import {useTranslation} from "next-i18next"
+import {useRouter} from "next/router"
 
 import {getEndpoint} from "@/utils/app/api"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
@@ -16,6 +18,8 @@ import {Plugin} from "@/types/plugin"
 
 import HomeContext from "@/pages/api/home/home.context"
 
+import {MemoizedReactMarkdown} from "@/components/Markdown/MemoizedReactMarkdown"
+
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
@@ -26,9 +30,25 @@ import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
 
 import {toPng} from "html-to-image"
+import rehypeMathjax from "rehype-mathjax"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
+}
+
+// Inside your Chat component
+const useMarkdownFile = (filename: string) => {
+  const [fileContent, setFileContent] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch(filename)
+      .then((response) => response.text())
+      .then((text) => setFileContent(text))
+      .catch((error) => console.error(`Error fetching markdown file: ${error}`))
+  }, [filename])
+  return fileContent
 }
 
 export const Chat = memo(({stopConversationRef}: Props) => {
@@ -57,10 +77,32 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
   const [showSettings, setShowSettings] = useState<boolean>(false)
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
-
+  const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
+  const router = useRouter()
+  const releaseNotesMarkdown = useMarkdownFile(`${router.basePath}/RELEASE_NOTES.md`)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const customModalStyles = {
+    content: {
+      backgroundColor: "#e6e6e0",
+      color: "#000000",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      padding: "2rem",
+      maxWidth: "50%",
+      maxHeight: "80%",
+      overflow: "auto"
+    },
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)"
+    }
+  }
 
   const timeout = (ms: number) => {
     return new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), ms))
@@ -323,7 +365,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     })
   }
 
-  const handleSettings = () => {
+  const onSettings = () => {
+    setIsReleaseNotesDialogOpen(false)
     if (!showSettings) {
       setAutoScrollEnabled(false)
       handleScrollUp()
@@ -335,6 +378,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   }
 
   const onClearAll = () => {
+    setIsReleaseNotesDialogOpen(false)
     if (confirm(t<string>("Are you sure you want to clear all messages?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, {
         key: "messages",
@@ -351,6 +395,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const throttledScrollDown = throttle(scrollDown, 250)
 
   const onSaveAsScreenshot = () => {
+    setIsReleaseNotesDialogOpen(false)
     if (chatContainerRef.current === null) {
       return
     }
@@ -372,6 +417,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   }
 
   const onSaveAsMarkdown = () => {
+    setIsReleaseNotesDialogOpen(false)
     if (!selectedConversation) {
       return
     }
@@ -392,6 +438,10 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
+
+  const onReleaseNotes = () => {
+    setIsReleaseNotesDialogOpen(!isReleaseNotesDialogOpen)
   }
 
   useEffect(() => {
@@ -506,14 +556,19 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             ) : (
               <>
                 <div className="sticky top-0 z-10 flex justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-                  {t("Model")}: {selectedConversation?.model.name} &nbsp;&nbsp;|&nbsp;
-                  <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleSettings}>
+                  {t("Model")}: {selectedConversation?.model.name}
+                  &nbsp;&nbsp;&nbsp;|&nbsp;
+                  <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onReleaseNotes}>
+                    <IconHelp size={18} />
+                  </button>
+                  &nbsp;&nbsp;&nbsp;|&nbsp;
+                  <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
                     <IconSettings size={18} />
                   </button>
                   <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearAll}>
                     <IconEraser size={18} />
                   </button>
-                  &nbsp;&nbsp;|&nbsp;
+                  &nbsp;&nbsp;&nbsp;|&nbsp;
                   {selectedConversation ? (
                     <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveAsScreenshot}>
                       <IconScreenshot size={18} />
@@ -571,7 +626,54 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           />
         </>
       )}
+      <Modal
+        isOpen={isReleaseNotesDialogOpen}
+        onRequestClose={() => setIsReleaseNotesDialogOpen(false)}
+        style={customModalStyles}
+        contentLabel="Release Notes"
+        ariaHideApp={false}
+      >
+        {/*{releaseNotesMarkdown ? <ReactMarkdown plugins={[gfm]}>{releaseNotesMarkdown}</ReactMarkdown> : <p>Loading release notes...</p>}*/}
+        <MemoizedReactMarkdown
+          className="prose dark:prose-invert flex-1"
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeMathjax]}
+          components={{
+            code({node, inline, className, children, ...props}) {
+              return (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              )
+            },
+            table({children}) {
+              return (
+                <table className="border-collapse border border-black px-3 py-1 dark:border-white">{children}</table>
+              )
+            },
+            th({children}) {
+              return (
+                <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
+                  {children}
+                </th>
+              )
+            },
+            td({children}) {
+              return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
+            }
+          }}
+        >
+          {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
+        </MemoizedReactMarkdown>
+        <button
+          className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
+          onClick={() => setIsReleaseNotesDialogOpen(false)}
+        >
+          Dismiss
+        </button>
+      </Modal>
     </div>
   )
 })
+
 Chat.displayName = "Chat"
