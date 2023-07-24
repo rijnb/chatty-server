@@ -23,6 +23,7 @@ import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
 
 import {ChatBody, Conversation, Message} from "@/types/chat"
+import {fallbackOpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 
 import HomeContext from "@/pages/api/home/home.context"
@@ -155,7 +156,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               content.length > 30 ? content.substring(0, 30) + "..." : content
             updatedConversation = {
               ...updatedConversation,
-              name: customName, time: Date.now()
+              name: customName,
+              time: Date.now()
             }
           }
           homeDispatch({field: "loading", value: false})
@@ -361,7 +363,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       return
     }
 
-    let markdownContent =`# ${selectedConversation.name}\n\n(${new Date(selectedConversation.time).toLocaleString()})\n\n`
+    let markdownContent = `# ${selectedConversation.name}\n\n(${new Date(
+      selectedConversation.time
+    ).toLocaleString()})\n\n`
     for (const message of selectedConversation.messages) {
       markdownContent += `## ${
         message.role.charAt(0).toUpperCase() + message.role.slice(1)
@@ -577,6 +581,11 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           <ChatInput
             stopConversationRef={stopConversationRef}
             textareaRef={textareaRef}
+            model={
+              selectedConversation
+                ? selectedConversation.model
+                : fallbackOpenAIModel
+            }
             onSend={(message, plugin) => {
               setCurrentMessage(message)
               handleSend(message, 0, plugin)

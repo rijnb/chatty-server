@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react"
+import {FC, useContext, useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
 
 import HomeContext from "@/pages/api/home/home.context"
@@ -6,8 +6,12 @@ import HomeContext from "@/pages/api/home/home.context"
 import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json"
 import {Tiktoken} from "@dqbd/tiktoken/lite"
 
+interface Props {
+  content: string | undefined
+  tokenLimit: number
+}
 
-export function ChatInputTokenCount(props: {content: string | undefined}) {
+export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
   const {t} = useTranslation("chat")
   const {
     state: {selectedConversation}
@@ -34,7 +38,7 @@ export function ChatInputTokenCount(props: {content: string | undefined}) {
   const messages: Array<{role: string; content: string}> = [
     {role: "system", content: selectedConversation?.prompt ?? ""},
     ...(selectedConversation?.messages ?? []),
-    {role: "user", content: props.content ?? ""}
+    {role: "user", content: content ?? ""}
   ]
 
   const isGpt3 = selectedConversation?.model.id.startsWith("gpt-3.5-turbo")
@@ -55,9 +59,13 @@ export function ChatInputTokenCount(props: {content: string | undefined}) {
   if (count == null) {
     return null
   }
-  return (
+  return count > tokenLimit ? (
+    <div className="bg-opacity-40 bg-red-500 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
+      {count} / {tokenLimit} tokens
+    </div>
+  ) : (
     <div className="bg-opacity-10 bg-neutral-300 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
-      {t("{{count}} tokens", {count})}
+      {count} / {tokenLimit} tokens
     </div>
   )
 }

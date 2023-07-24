@@ -31,7 +31,7 @@ import {getSettings} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderInterface, FolderType} from "@/types/folder"
-import {OpenAIModelID, OpenAIModels, fallbackModelID} from "@/types/openai"
+import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 
 import {Chat} from "@/components/Chat/Chat"
@@ -437,7 +437,7 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
         process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID
       ) &&
       process.env.OPENAI_DEFAULT_MODEL) ||
-    fallbackModelID
+    fallbackOpenAIModel.id
 
   let serverSidePluginKeysSet = false
 

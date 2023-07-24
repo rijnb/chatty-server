@@ -21,6 +21,7 @@ import {useTranslation} from "next-i18next"
 import {isEnterKey} from "@/utils/app/keys"
 
 import {Message} from "@/types/chat"
+import {OpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 
@@ -31,8 +32,8 @@ import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
 import {VariableModal} from "./VariableModal"
 
-
 interface Props {
+  model: OpenAIModel
   onSend: (message: Message, plugin: Plugin | null) => void
   onRegenerate: () => void
   onScrollDownClick: () => void
@@ -42,6 +43,7 @@ interface Props {
 }
 
 export const ChatInput = ({
+  model,
   onSend,
   onRegenerate,
   onScrollDownClick,
@@ -75,9 +77,9 @@ export const ChatInput = ({
 
   const isMobile = () => {
     const userAgent =
-        typeof window.navigator === "undefined" ? "" : navigator.userAgent
+      typeof window.navigator === "undefined" ? "" : navigator.userAgent
     const mobileRegex =
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
     return mobileRegex.test(userAgent)
   }
 
@@ -314,7 +316,7 @@ export const ChatInput = ({
           )}
 
           <div className="absolute bottom-full md:mb-4 mb-12 mx-auto flex w-full justify-center md:justify-end pointer-events-none">
-            <ChatInputTokenCount content={content} />
+            <ChatInputTokenCount content={content} tokenLimit={model.tokenLimit}/>
           </div>
 
           <textarea
