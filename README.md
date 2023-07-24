@@ -1,6 +1,6 @@
-# chatty-server
+# Chatty Server (`chatty-server`)
 
-Chatty Server is a client interface for GPT-3.5 and GPT-4.  It allows you to use 
+**Chatty Server** is a client interface for GPT-3.5 and GPT-4.  It allows you to use 
 GPT-4 for many tasks. For that, it allows you to store
 "prompts" (in folders), that allows you to quickly have GPT-4 analyze your text
 in a certain way and respond to you.
@@ -16,8 +16,15 @@ select `Summarize mail`.
 Paste the text in the dialog and press Enter. This produces the full prompt you for
 GPT-4. Just press Enter again to execute it.
 
-Chatty Server is work in progress. There a thin client for Mac called
-[ChattyUI](https://github.com/rijnb/ChattyUI) that you may want to check out. 
+## Using a browser or ChattyUI
+
+Chatty Server is a web-based which can be accessed by browser. It is deploy on
+a server with a basepath of `/chatty/1/chat` (for the actual value, check [config.js](./config.js)). 
+So, if you deploy it on `https://myserver.com`, you can access it at `https://myserver.com/chatty/1/chat`.
+
+There a thin client for Mac called [ChattyUI](https://github.com/rijnb/ChattyUI) that you may want 
+to check out. It is a thin wrapper around a web view, that allows you to use Chatty Server as a 
+stand-alone application on a Mac.
 
 If you like it, or if you have comments, reach out to me.
 
@@ -42,7 +49,7 @@ Happy chatting!
 * Full clean up of source code and directory structure.
 * Fixed time stamp bug.
 
-## What about sensitive info?
+## Is it safe to use?
 
 The `chatty-server` can run on any server, but it tries to be as secure as possible.
 It does *not* store or log any of the prompts, conversations, API keys or other secrets
@@ -70,19 +77,19 @@ When deploying `chatty-server`, make sure you set the following environment vari
 
 ## Running Locally
 
-**1. Clone Repo**
+1. Clone Repo
 
 ```bash
 git clone https://github.com/rijnb/chatty-server.git
 ```
 
-**2. Install Dependencies**
+2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-**3. Provide OpenAI API key**
+3. Provide environment variables
 
 Create a `.env.local` file in the root of the repo with the environment variables mentioned above in "Deploy".
 
@@ -91,7 +98,10 @@ export OPENAI_API_TYPE=azure
 ...
 ```
 
-**4. Run App**
+If you do not provide the `OPENAI_API_KEY`, the user will be prompted to provide their own key in the UI. The same
+applies to the Google Search keys.
+
+4. Run App
 
 ```bash
 npm run dev
@@ -120,35 +130,39 @@ When deploying the application, the following environment variables can be set:
 | GOOGLE_CSE_ID                |                                | See [Custom Search JSON API documentation][GCSE]                                                                                          |
 
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
+The same applies to the Google Search keys.
 
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
 
 ## Using the Google Search plugin
 
-Use the Google Search API to search the web in `chatty-server`:
+The application allows you to send queries to OpenAI, or to Google Search first and have the Google results
+interpreted by OpenAI/GPT-4. This is done by using the Google Search plugin.
 
-### How To Enable
+### How to create the keys at Google
 
-1. Create a new project at https://console.developers.google.com/apis/dashboard
+1. Create a new project at https://console.developers.google.com/apis/dashboard.
 
-2. Create a new API key at https://console.developers.google.com/apis/credentials
+2. Create a new API key at https://console.developers.google.com/apis/credentials.
 
-3. Enable the Custom Search API at https://console.developers.google.com/apis/library/customsearch.googleapis.com
+3. Enable the Custom Search API at https://console.developers.google.com/apis/library/customsearch.googleapis.com.
 
-4. Create a new Custom Search Engine at https://cse.google.com/cse/all
+4. Create a new Custom Search Engine at https://cse.google.com/cse/all.
 
-5. Add yourAPI key and your Custom Search Engine ID to your .env.local file
+5. Add your API key and your Custom Search Engine ID to your `.env.local` file (or don't and have the user fill them in, in the UI).
 
-6. You can now select the Google Search Tool in the search tools dropdown
+6. You can now select the Google Search Tool in the search tools dropdown.
 
-### Usage Limits
+### Usage limits
 
 Google gives you 100 free searches per day. You can increase this limit by creating a billing account.
+Please make sure you are aware of the costs before doing so.
 
 ## Acknowledgements
 
-This application is originally based on [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) by Mckay Wrigley. The original documentation is below.
-Significant modifications have been made to the original codebase.
+This application is based on [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) by Mckay Wrigley.
+Many thanks to him for creating the original codebase and to the authors of some of the added functionality
+from PR's in that code base. Significant modifications have been made to the original codebase.
 
 ## Contact
 
