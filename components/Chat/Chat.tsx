@@ -1,4 +1,4 @@
-import {IconEraser, IconHelp, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import {IconEraser, IconHelp, IconMarkdown, IconRobot, IconScreenshot, IconSettings} from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import Modal from "react-modal"
@@ -563,7 +563,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                   </button>
                   &nbsp;&nbsp;&nbsp;|&nbsp;
                   <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
-                    <IconSettings size={18} />
+                    <IconRobot size={18} />
                   </button>
                   <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearAll}>
                     <IconEraser size={18} />

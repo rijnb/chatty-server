@@ -1,4 +1,3 @@
-import {IconExternalLink} from "@tabler/icons-react"
 import {useContext} from "react"
 
 import {useTranslation} from "next-i18next"
@@ -6,7 +5,6 @@ import {useTranslation} from "next-i18next"
 import {OpenAIModel} from "@/types/openai"
 
 import HomeContext from "@/pages/api/home/home.context"
-
 
 export const ModelSelect = () => {
   const {t} = useTranslation("chat")
@@ -42,12 +40,14 @@ export const ModelSelect = () => {
           ))}
         </select>
       </div>
-      <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
-        <a href="https://platform.openai.com/account/usage" target="_blank" className="flex items-center">
-          <IconExternalLink size={18} className={"inline mr-1"} />
-          {t("View Account Usage")}
-        </a>
-      </div>
+      {/**
+         <div className="w-full mt-3 text-left text-neutral-700 dark:text-neutral-400 flex items-center">
+         <a href="https://platform.openai.com/account/usage" target="_blank" className="flex items-center">
+         <IconExternalLink size={18} className={"inline mr-1"} />
+         {t(`View account usage`)}
+         </a>
+         </div>
+         **/}
     </div>
   )
 }
