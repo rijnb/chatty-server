@@ -151,7 +151,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             homeDispatch({field: "messageIsStreaming", value: false})
             let errorText = await response.text()
             console.log(
-              `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, body:${response.body}, headers:${response.headers}`
+              `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, headers:${response.headers}`
             )
             // Fall back to statusText if errorText is empty.
             if (errorText.length == 0) {
@@ -165,7 +165,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             toast.error(`Server returned error (${response.status})\n\n${errorText}`, {duration: TOAST_DURATION_MS})
             return
           }
-          const data = response.body
+
+          // Get response data (as JSON for plugin, as reader for OpenAI).
+          const data = plugin ? await response.json() : await response.body?.getReader()
           if (!data) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
@@ -182,7 +184,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               }
             }
             homeDispatch({field: "loading", value: false})
-            const reader = data.getReader()
             const decoder = new TextDecoder()
             let done = false
             let isFirst = true
@@ -194,7 +195,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 done = true
                 break
               }
-              const {value, done: doneReading} = await reader.read()
+              const {value, done: doneReading} = await data.read()
               done = doneReading
               const chunkValue = decoder.decode(value, {stream: true})
               text += chunkValue
@@ -246,7 +247,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             saveConversations(updatedConversations)
             homeDispatch({field: "messageIsStreaming", value: false})
           } else {
-            const {answer} = await response.json()
+            const {answer} = data
             const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
             updatedConversation = {
               ...updatedConversation,
@@ -274,9 +275,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         }
       } catch (error) {
         if (error instanceof Error && error.message === "Request timeout") {
-          toast.error(`Request timed out... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+          toast.error(`${error}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
         } else {
-          toast.error(`Unknown server error... Please try again later.`, {duration: TOAST_DURATION_MS})
+          toast.error(`${error}... Please try again later.`, {duration: TOAST_DURATION_MS})
         }
         homeDispatch({field: "loading", value: false})
         homeDispatch({field: "messageIsStreaming", value: false})
