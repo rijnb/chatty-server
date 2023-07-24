@@ -1,9 +1,4 @@
-import {
-  OPENAI_API_HOST,
-  OPENAI_API_TYPE,
-  OPENAI_API_VERSION,
-  OPENAI_ORGANIZATION
-} from "@/utils/app/const"
+import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
 import {OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 
@@ -49,22 +44,14 @@ const handler = async (req: Request): Promise<Response> => {
     })
 
     if (response.status === 401) {
-      console.error(
-        `${OPENAI_API_TYPE} returned an error, status:${response.status}`
-      )
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
       return new Response(response.body, {
         status: 500,
         headers: response.headers
       })
     } else if (response.status !== 200) {
-      console.error(
-        `${OPENAI_API_TYPE} returned an error, status:${
-          response.status
-        }: text:${await response.text()}`
-      )
-      throw new Error(
-        `${OPENAI_API_TYPE} returned an error,:  status:${response.status}`
-      )
+      console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}: text:${await response.text()}`)
+      throw new Error(`${OPENAI_API_TYPE} returned an error,:  status:${response.status}`)
     }
 
     const json = await response.json()

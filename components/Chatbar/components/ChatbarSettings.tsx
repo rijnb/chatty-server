@@ -15,6 +15,7 @@ import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 import {ClearConversations} from "./ClearConversations"
 import {PluginKeys} from "./PluginKeys"
 
+
 export const ChatbarSettings = () => {
   const {t} = useTranslation("sidebar")
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false)
@@ -42,14 +43,9 @@ export const ChatbarSettings = () => {
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
-      {conversations.length > 0 ? (
-        <ClearConversations onClearConversations={handleClearConversations} />
-      ) : null}
+      {conversations.length > 0 ? <ClearConversations onClearConversations={handleClearConversations} /> : null}
 
-      <ImportData
-        text={t("Import conversations")}
-        onImport={handleImportConversations}
-      />
+      <ImportData text={t("Import conversations")} onImport={handleImportConversations} />
 
       {conversations.length > 0 ? (
         <SidebarButton
@@ -59,15 +55,9 @@ export const ChatbarSettings = () => {
         />
       ) : null}
 
-      <SidebarButton
-        text={t("Settings")}
-        icon={<IconSettings size={18} />}
-        onClick={() => setIsSettingDialog(true)}
-      />
+      <SidebarButton text={t("Settings")} icon={<IconSettings size={18} />} onClick={() => setIsSettingDialog(true)} />
 
-      {!serverSideApiKeyIsSet ? (
-        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
-      ) : null}
+      {!serverSideApiKeyIsSet ? <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
 
       {!serverSidePluginKeysSet ? <PluginKeys /> : null}
 
@@ -78,12 +68,7 @@ export const ChatbarSettings = () => {
         }}
       />
 
-      {serverSideGuestCodeIsSet ? (
-        <GuestCode
-          guestCode={guestCode}
-          onGuestCodeChange={handleGuestCodeChange}
-        />
-      ) : null}
+      {serverSideGuestCodeIsSet ? <GuestCode guestCode={guestCode} onGuestCodeChange={handleGuestCodeChange} /> : null}
     </div>
   )
 }

@@ -22,7 +22,10 @@ import Sidebar from "../Sidebar"
 import PromptbarContext from "./PromptBar.context"
 import {PromptbarInitialState, initialState} from "./Promptbar.state"
 
-import {v4 as uuidv4} from "uuid"
+
+
+import { v4 as uuidv4 } from "uuid";
+
 
 const Promptbar = () => {
   const {t} = useTranslation("promptbar")
@@ -126,11 +129,7 @@ const Promptbar = () => {
         field: "filteredPrompts",
         value: prompts.filter((prompt) => {
           const searchable =
-            prompt.name.toLowerCase() +
-            " " +
-            prompt.description.toLowerCase() +
-            " " +
-            prompt.content.toLowerCase()
+            prompt.name.toLowerCase() + " " + prompt.description.toLowerCase() + " " + prompt.content.toLowerCase()
           return searchable.includes(searchTerm.toLowerCase())
         })
       })
@@ -155,17 +154,11 @@ const Promptbar = () => {
         side={"right"}
         isOpen={showPromptbar}
         addItemButtonTitle={t("New prompt")}
-        itemComponent={
-          <Prompts
-            prompts={filteredPrompts.filter((prompt) => !prompt.folderId)}
-          />
-        }
+        itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
         folderComponent={<PromptFolders />}
         items={filteredPrompts}
         searchTerm={searchTerm}
-        handleSearchTerm={(searchTerm: string) =>
-          promptDispatch({field: "searchTerm", value: searchTerm})
-        }
+        handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
         toggleOpen={handleTogglePromptbar}
         handleCreateItem={handleCreatePrompt}
         handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}

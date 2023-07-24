@@ -1,18 +1,5 @@
-import {
-  IconCaretDown,
-  IconCaretRight,
-  IconCheck,
-  IconPencil,
-  IconTrash,
-  IconX
-} from "@tabler/icons-react"
-import {
-  KeyboardEvent,
-  ReactElement,
-  useContext,
-  useEffect,
-  useState
-} from "react"
+import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
+import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
 
 import {isEnterKey} from "@/utils/app/keys"
 
@@ -30,12 +17,7 @@ interface Props {
   folderComponent: (ReactElement | undefined)[]
 }
 
-const Folder = ({
-  currentFolder,
-  searchTerm,
-  handleDrop,
-  folderComponent
-}: Props) => {
+const Folder = ({currentFolder, searchTerm, handleDrop, folderComponent}: Props) => {
   const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext)
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -99,11 +81,7 @@ const Folder = ({
       <div className="relative flex items-center">
         {isRenaming ? (
           <div className="flex w-full items-center gap-3 bg-[#343541]/90 p-3">
-            {isOpen ? (
-              <IconCaretDown size={18} />
-            ) : (
-              <IconCaretRight size={18} />
-            )}
+            {isOpen ? <IconCaretDown size={18} /> : <IconCaretRight size={18} />}
             <input
               className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-[12.5px] leading-3 text-white outline-none focus:border-neutral-100"
               type="text"
@@ -122,11 +100,7 @@ const Folder = ({
             onDragEnter={highlightDrop}
             onDragLeave={removeHighlight}
           >
-            {isOpen ? (
-              <IconCaretDown size={18} />
-            ) : (
-              <IconCaretRight size={18} />
-            )}
+            {isOpen ? <IconCaretDown size={18} /> : <IconCaretRight size={18} />}
 
             <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-3">
               {currentFolder.name}

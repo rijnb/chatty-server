@@ -19,8 +19,7 @@ export const PluginKeys = () => {
     state: {pluginKeys}
   } = useContext(HomeContext)
 
-  const {handlePluginKeyChange, handleClearPluginKey} =
-    useContext(ChatbarContext)
+  const {handlePluginKeyChange, handleClearPluginKey} = useContext(ChatbarContext)
 
   const [isChanging, setIsChanging] = useState(false)
 
@@ -54,11 +53,7 @@ export const PluginKeys = () => {
 
   return (
     <>
-      <SidebarButton
-        text={t("Google API key")}
-        icon={<IconKey size={18} />}
-        onClick={() => setIsChanging(true)}
-      />
+      <SidebarButton text={t("Google API key")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
 
       {isChanging && (
         <div
@@ -67,10 +62,7 @@ export const PluginKeys = () => {
         >
           <div className="fixed inset-0 z-10 overflow-hidden">
             <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-              <div
-                className="hidden sm:inline-block sm:h-screen sm:align-middle"
-                aria-hidden="true"
-              />
+              <div className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true" />
 
               <div
                 ref={modalRef}
@@ -82,31 +74,23 @@ export const PluginKeys = () => {
                 <div className="mt-6 rounded border p-4">
                   <div className="text-xl font-bold">Google Search plugin</div>
                   <div className="mt-4 italic">
-                    Please enter your Google API key and Google CSE ID to enable
-                    the Google Search plugin.
+                    Please enter your Google API key and Google CSE ID to enable the Google Search plugin.
                   </div>
 
-                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">
-                    Google API key
-                  </div>
+                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">Google API key</div>
                   <input
                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
                     type="password"
                     value={
                       pluginKeys
                         .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                        ?.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")
-                        ?.value
+                        ?.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")?.value
                     }
                     onChange={(e) => {
-                      const pluginKey = pluginKeys.find(
-                        (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                      )
+                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
 
                       if (pluginKey) {
-                        const requiredKey = pluginKey.requiredKeys.find(
-                          (k) => k.key === "GOOGLE_API_KEY"
-                        )
+                        const requiredKey = pluginKey.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")
 
                         if (requiredKey) {
                           const updatedPluginKey = {
@@ -145,27 +129,20 @@ export const PluginKeys = () => {
                     }}
                   />
 
-                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">
-                    Google CSE ID
-                  </div>
+                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">Google CSE ID</div>
                   <input
                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
                     type="password"
                     value={
                       pluginKeys
                         .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                        ?.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")
-                        ?.value
+                        ?.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")?.value
                     }
                     onChange={(e) => {
-                      const pluginKey = pluginKeys.find(
-                        (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                      )
+                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
 
                       if (pluginKey) {
-                        const requiredKey = pluginKey.requiredKeys.find(
-                          (k) => k.key === "GOOGLE_CSE_ID"
-                        )
+                        const requiredKey = pluginKey.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")
 
                         if (requiredKey) {
                           const updatedPluginKey = {
@@ -207,9 +184,7 @@ export const PluginKeys = () => {
                   <button
                     className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
                     onClick={() => {
-                      const pluginKey = pluginKeys.find(
-                        (p) => p.pluginId === PluginID.GOOGLE_SEARCH
-                      )
+                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
 
                       if (pluginKey) {
                         handleClearPluginKey(pluginKey)

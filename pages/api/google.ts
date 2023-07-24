@@ -28,8 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         statusText: authResult.statusText
       })
     }
-    const {messages, key, model, googleAPIKey, googleCSEId} =
-      req.body as GoogleBody
+    const {messages, key, model, googleAPIKey, googleCSEId} = req.body as GoogleBody
 
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
@@ -38,9 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
-      }&cx=${
-        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
-      }&q=${query}&num=5`
+      }&cx=${googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID}&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
     const sources: GoogleSource[] = googleData.items.map((item: any) => ({
@@ -54,19 +51,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const sourcesWithText: any = await Promise.all(
       sources.map(async (source) => {
         try {
-          console.info(
-            `[Google search] get URL '${source.link.substring(0, 16)}...'`
-          )
+          console.info(`[Google search] get URL '${source.link.substring(0, 16)}...'`)
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(
-              () => reject(new Error("Google search request timed out")),
-              5000
-            )
+            setTimeout(() => reject(new Error("Google search request timed out")), 5000)
           )
-          const res = (await Promise.race([
-            fetch(source.link),
-            timeoutPromise
-          ])) as any
+          const res = (await Promise.race([fetch(source.link), timeoutPromise])) as any
           const html = await res.text()
           const virtualConsole = new jsdom.VirtualConsole()
           virtualConsole.on("error", (error) => {

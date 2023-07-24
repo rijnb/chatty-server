@@ -13,11 +13,7 @@ interface Props {
   onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement>) => void
 }
 
-export const PluginSelect: FC<Props> = ({
-  plugin,
-  onPluginChange,
-  onKeyDown
-}) => {
+export const PluginSelect: FC<Props> = ({plugin, onPluginChange, onKeyDown}) => {
   const {t} = useTranslation("chat")
 
   const selectRef = useRef<HTMLSelectElement>(null)
@@ -29,15 +25,13 @@ export const PluginSelect: FC<Props> = ({
     if (e.key === "/" && e.metaKey) {
       e.preventDefault()
       if (selectElement) {
-        selectElement.selectedIndex =
-          (selectElement.selectedIndex + 1) % optionCount
+        selectElement.selectedIndex = (selectElement.selectedIndex + 1) % optionCount
         selectElement.dispatchEvent(new Event("change"))
       }
     } else if (e.key === "/" && e.shiftKey && e.metaKey) {
       e.preventDefault()
       if (selectElement) {
-        selectElement.selectedIndex =
-          (selectElement.selectedIndex - 1 + optionCount) % optionCount
+        selectElement.selectedIndex = (selectElement.selectedIndex - 1 + optionCount) % optionCount
         selectElement.dispatchEvent(new Event("change"))
       }
     } else if (isEnterKey(e)) {
@@ -46,12 +40,7 @@ export const PluginSelect: FC<Props> = ({
         selectElement.dispatchEvent(new Event("change"))
       }
 
-      onPluginChange(
-        PluginList.find(
-          (plugin) =>
-            plugin.name === selectElement?.selectedOptions[0].innerText
-        ) as Plugin
-      )
+      onPluginChange(PluginList.find((plugin) => plugin.name === selectElement?.selectedOptions[0].innerText) as Plugin)
     } else {
       onKeyDown(e)
     }
@@ -72,30 +61,18 @@ export const PluginSelect: FC<Props> = ({
           placeholder={t("Select a plugin") || ""}
           value={plugin?.id || ""}
           onChange={(e) => {
-            onPluginChange(
-              PluginList.find(
-                (plugin) => plugin.id === e.target.value
-              ) as Plugin
-            )
+            onPluginChange(PluginList.find((plugin) => plugin.id === e.target.value) as Plugin)
           }}
           onKeyDown={(e) => {
             handleKeyDown(e)
           }}
         >
-          <option
-            key="chatgpt"
-            value="chatgpt"
-            className="dark:bg-[#343541] dark:text-white"
-          >
+          <option key="chatgpt" value="chatgpt" className="dark:bg-[#343541] dark:text-white">
             ChatGPT
           </option>
 
           {PluginList.map((plugin) => (
-            <option
-              key={plugin.id}
-              value={plugin.id}
-              className="dark:bg-[#343541] dark:text-white"
-            >
+            <option key={plugin.id} value={plugin.id} className="dark:bg-[#343541] dark:text-white">
               {plugin.name}
             </option>
           ))}

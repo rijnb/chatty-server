@@ -1,11 +1,5 @@
 import {IconBulbFilled, IconCheck, IconTrash, IconX} from "@tabler/icons-react"
-import {
-  DragEvent,
-  MouseEventHandler,
-  useContext,
-  useEffect,
-  useState
-} from "react"
+import {DragEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
 
 import {Prompt} from "@/types/prompt"
 
@@ -20,11 +14,7 @@ interface Props {
 }
 
 export const PromptComponent = ({prompt}: Props) => {
-  const {
-    dispatch: promptDispatch,
-    handleUpdatePrompt,
-    handleDeletePrompt
-  } = useContext(PromptbarContext)
+  const {dispatch: promptDispatch, handleUpdatePrompt, handleDeletePrompt} = useContext(PromptbarContext)
 
   const [showModal, setShowModal] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -114,13 +104,7 @@ export const PromptComponent = ({prompt}: Props) => {
         </div>
       )}
 
-      {showModal && (
-        <PromptModal
-          prompt={prompt}
-          onClose={() => setShowModal(false)}
-          onUpdatePrompt={handleUpdate}
-        />
-      )}
+      {showModal && <PromptModal prompt={prompt} onClose={() => setShowModal(false)} onUpdatePrompt={handleUpdate} />}
     </div>
   )
 }

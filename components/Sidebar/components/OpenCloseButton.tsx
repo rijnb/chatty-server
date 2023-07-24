@@ -18,10 +18,7 @@ export const CloseSidebarButton = ({onClick, side}: Props) => {
       >
         {side === "right" ? <IconArrowBarRight /> : <IconArrowBarLeft />}
       </button>
-      <div
-        onClick={onClick}
-        className="absolute top-0 left-0 z-10 h-full w-full bg-black opacity-70 sm:hidden"
-      ></div>
+      <div onClick={onClick} className="absolute top-0 left-0 z-10 h-full w-full bg-black opacity-70 sm:hidden"></div>
     </>
   )
 }

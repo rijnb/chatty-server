@@ -1,9 +1,5 @@
 import {Conversation} from "@/types/chat"
-import {
-  ExportFormatV4,
-  LatestExportFormat,
-  SupportedExportFormats
-} from "@/types/export"
+import {ExportFormatV4, LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {FolderInterface} from "@/types/folder"
 import {Prompt} from "@/types/prompt"
 
@@ -14,9 +10,7 @@ export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
   return obj.version === 4
 }
 
-export const convertOldDataFormatToNew = (
-  data: SupportedExportFormats
-): LatestExportFormat => {
+export const convertOldDataFormatToNew = (data: SupportedExportFormats): LatestExportFormat => {
   if (isExportFormatV4(data)) {
     return data
   }
@@ -63,41 +57,26 @@ export const isValidFile = (json: any): string[] => {
   return errors
 }
 
-export const importData = (
-  data: SupportedExportFormats
-): LatestExportFormat => {
+export const importData = (data: SupportedExportFormats): LatestExportFormat => {
   const {history, folders, prompts} = convertOldDataFormatToNew(data)
 
   const oldConversations = localStorage.getItem("conversationHistory")
-  const oldConversationsParsed = oldConversations
-    ? JSON.parse(oldConversations)
-    : []
+  const oldConversationsParsed = oldConversations ? JSON.parse(oldConversations) : []
 
-  const newHistory: Conversation[] = [
-    ...oldConversationsParsed,
-    ...history
-  ].filter(
-    (conversation, index, self) =>
-      index === self.findIndex((c) => c.id === conversation.id)
+  const newHistory: Conversation[] = [...oldConversationsParsed, ...history].filter(
+    (conversation, index, self) => index === self.findIndex((c) => c.id === conversation.id)
   )
   localStorage.setItem("conversationHistory", JSON.stringify(newHistory))
   if (newHistory.length > 0) {
-    localStorage.setItem(
-      "selectedConversation",
-      JSON.stringify(newHistory[newHistory.length - 1])
-    )
+    localStorage.setItem("selectedConversation", JSON.stringify(newHistory[newHistory.length - 1]))
   } else {
     localStorage.removeItem("selectedConversation")
   }
 
   const oldFolders = localStorage.getItem("folders")
   const oldFoldersParsed = oldFolders ? JSON.parse(oldFolders) : []
-  const newFolders: FolderInterface[] = [
-    ...folders,
-    ...oldFoldersParsed
-  ].filter(
-    (folder, index, self) =>
-      index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
+  const newFolders: FolderInterface[] = [...folders, ...oldFoldersParsed].filter(
+    (folder, index, self) => index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
   )
   localStorage.setItem("folders", JSON.stringify(newFolders))
 

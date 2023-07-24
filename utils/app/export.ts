@@ -3,6 +3,7 @@ import {generateFilename} from "@/utils/app/filename"
 import {ExportFormatV4, LatestExportFormat} from "@/types/export"
 import {FolderInterface, FolderType} from "@/types/folder"
 
+
 export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
   return obj.version === 4
 }

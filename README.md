@@ -1,77 +1,95 @@
 # chatty-server
 
-The `chatty-server` is originally based on chatbot-ui by Mckay Wrigley. The original documentation is below.
+Chatty Server is a client interface for GPT-3.5 and GPT-4.  It allows you to use 
+GPT-4 for many tasks. For that, it allows you to store
+"prompts" (in folders), that allows you to quickly have GPT-4 analyze your text
+in a certain way and respond to you.
 
----
+I've created a whole bunch of prompts to start with. To use them, import the file
+`examples/example-prompts.json` with `Import prompts`. Then, on the prompt line,
+type `/` and search for a prompt and press enter.
 
-# Chatbot UI
+For example, to summarize a mail thread efficiently, select the entire mail text
+in your mail client, click on the input box in Chatty, press `/`, type `mail` and 
+select `Summarize mail`.
 
-Chatbot UI is an open source chat UI for AI models.
+Paste the text in the dialog and press Enter. This produces the full prompt you for
+GPT-4. Just press Enter again to execute it.
 
-See a [demo](https://twitter.com/mckaywrigley/status/1640380021423603713?s=46&t=AowqkodyK6B4JccSOxSPew).
+Chatty Server is work in progress. There a thin client for Mac called
+[ChattyUI](https://github.com/rijnb/ChattyUI) that you may want to check out. 
 
-![Chatbot UI](./public/screenshots/screenshot-0402023.jpg)
+If you like it, or if you have comments, reach out to me.
 
-## Updates
+Happy chatting!
 
-Chatbot UI will be updated over time.
+**Rijn Buve**
 
-Expect frequent improvements.
+![Chatbot UI](./public/screenshots/screenshot_1.jpg)
 
-**Next up:**
+## Release notes
 
-- [ ] Sharing
-- [ ] "Bots"
+### Recent feature updates
 
-## Deploy
+* Token usage counter that turns red when older messages are being automatically discarded.
+* Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the existing V4 format.
+* Added menu on right side to deal with prompts.
+* Added Markdown export of current conversation.
+* Added screenshot export of current conversation.
 
-**Vercel**
+### Recent bug fixes
 
-Host your own live version of Chatbot UI with Vercel.
+* Full clean up of source code and directory structure.
+* Fixed time stamp bug.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmckaywrigley%2Fchatbot-ui)
+## What about sensitive info?
 
-**Docker**
+The `chatty-server` can run on any server, but it tries to be as secure as possible.
+It does *not* store or log any of the prompts, conversations, API keys or other secrets
+on the server.
 
-Build locally:
+All sensitive information is kept client side and stored in browser 'local storage'.
 
-```shell
-docker build -t chatgpt-ui .
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 chatgpt-ui
-```
+Conversations are sent (through SSL) to the server, of course, but not logged or persisted 
+server-side. (*Exception:* The server logs may contain at most the first 8 characters of 
+your prompts or returned answers for debugging purposes, but never more).
 
-Pull from ghcr:
+## Technical documentation
 
-```
-docker run -e OPENAI_API_KEY=xxxxxxxx -p 3000:3000 ghcr.io/mckaywrigley/chatbot-ui:main
-```
+When deploying `chatty-server`, make sure you set the following environment variables:
+
+| Environment Variable           |
+|--------------------------------|
+| OPENAI_API_TYPE                |
+| OPENAI_API_HOST                | 
+| OPENAI_VERSION                 | 
+| OPENAI_MAX_TOKENS              | 
+| OPENAI_AZURE_DEPLOYMENT_ID     | 
+| OPENAI_DEFAULT_MODEL           |
+| ------------------------------ |
 
 ## Running Locally
 
 **1. Clone Repo**
 
 ```bash
-git clone https://github.com/mckaywrigley/chatbot-ui.git
+git clone https://github.com/rijnb/chatty-server.git
 ```
 
 **2. Install Dependencies**
 
 ```bash
-npm i
+npm install
 ```
 
 **3. Provide OpenAI API key**
 
-Create a .env.local file in the root of the repo with your OpenAI API key:
+Create a `.env.local` file in the root of the repo with the environment variables mentioned above in "Deploy".
 
 ```bash
-OPENAI_API_KEY=YOUR_KEY
+export OPENAI_API_TYPE=azure
+...
 ```
-
-> You can set `OPENAI_API_HOST` where access to the official OpenAI host is restricted or unavailable, allowing users to
-> configure an alternative host for their specific needs.
-
-> Additionally, if you have multiple OpenAI Organizations, you can set `OPENAI_ORGANIZATION` to specify one.
 
 **4. Run App**
 
@@ -81,7 +99,7 @@ npm run dev
 
 **5. Use It**
 
-You should be able to start chatting.
+You should be able to start chatting at `http://localhost:3000/chatty/1/chat`.
 
 ## Configuration
 
@@ -105,8 +123,35 @@ If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have t
 
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
 
+## Using the Google Search plugin
+
+Use the Google Search API to search the web in `chatty-server`:
+
+### How To Enable
+
+1. Create a new project at https://console.developers.google.com/apis/dashboard
+
+2. Create a new API key at https://console.developers.google.com/apis/credentials
+
+3. Enable the Custom Search API at https://console.developers.google.com/apis/library/customsearch.googleapis.com
+
+4. Create a new Custom Search Engine at https://cse.google.com/cse/all
+
+5. Add yourAPI key and your Custom Search Engine ID to your .env.local file
+
+6. You can now select the Google Search Tool in the search tools dropdown
+
+### Usage Limits
+
+Google gives you 100 free searches per day. You can increase this limit by creating a billing account.
+
+## Acknowledgements
+
+This application is originally based on [`chatbot-ui`](https://github.com/mckaywrigley/chatbot-ui) by Mckay Wrigley. The original documentation is below.
+Significant modifications have been made to the original codebase.
+
 ## Contact
 
-If you have any questions, feel free to reach out to Mckay on [Twitter](https://twitter.com/mckaywrigley).
+If you have any questions, feel free to reach out to me via [mail](mailto:rijn@buve.nl).
 
 [GCSE]: https://developers.google.com/custom-search/v1/overview

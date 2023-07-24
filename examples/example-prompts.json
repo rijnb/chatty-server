@@ -1,0 +1,444 @@
+{
+  "version": 4,
+  "history": [],
+  "folders": [
+    {
+      "id": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "name": "Work productivity",
+      "type": "prompt"
+    },
+    {
+      "id": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "name": "Act as...",
+      "type": "prompt"
+    },
+    {
+      "id": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "name": "Fun stuff",
+      "type": "prompt"
+    },
+    {
+      "id": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "name": "Text processing",
+      "type": "prompt"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "828d5c55-84bc-4484-bdd7-5fb53afe3cf2",
+      "name": "Summarize mail thread",
+      "description": "Summarize a mail thread, providing a list of actions and a short summary of every reply.",
+      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 5 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available).\n\nSpecify how many replies there are in the mail thread. \n\nThen summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "9265cd7e-acbb-4bac-a976-2238cedae27e",
+      "name": "Plagiarism checker",
+      "description": "I will check your text for plagiarism and remove them from the text. ",
+      "content": "I want you to act as a plagiarism checker. I provide you a text. You will check the text and respond only with those sentences that are undetected in plagiarism checks, and nothing else. Do not write explanations on replies. \n\nAt the end, provide a section “Possible plagiarisms” that list only the detected plagiarisms and their sources. Make sure the list is complete. \n\nHere the text I want you to check:\n\n{{Text to check for plagiarisms}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "fd7d5fca-20ae-43c9-aab5-190f5535e319",
+      "name": "Prepare a debate",
+      "description": "Give me a statement and I'll provide debating points.",
+      "content": "I want you to act as a debater. I will provide you with some topics related to current events and your task is to research both sides of the debates, present valid arguments for each side, refute opposing points of view, and draw persuasive conclusions based on evidence. Your goal is to help people come away from the discussion with increased knowledge and insight into the topic at hand. Here’s my statement: \n\n{{Statement for debate}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "2bed77d8-64aa-4f64-bfe0-7b52783390eb",
+      "name": "Debater coach",
+      "description": "Provide a statement a I will coach you to successfully debate about this.",
+      "content": "I want you to act as a debate coach. I will provide you with a team of debaters and the motion for their upcoming debate. Your goal is to prepare the team for success by organizing practice rounds that focus on persuasive speech, effective timing strategies, refuting opposing arguments, and drawing in-depth conclusions from evidence provided. Here's a statement I want you to respond on: \n\n{{Statement to start our debating session}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "df8caf99-6861-4868-b425-042da9af2606",
+      "name": "Statistician",
+      "description": "Provide a statement and I will provide you with statistical facts.",
+      "content": "I want to act as a Statistician. I will provide you with details related with statistics. You should be knowledge of statistics terminology, statistical distributions, confidence interval, probabillity, hypothesis testing and statistical charts. Here's a statement I want you to provide statistical facts on:\n\n{{Provide me statistics for this statement}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "a9f1cd42-a70a-46db-b562-479ff5e05ecf",
+      "name": "Tech reviewer",
+      "description": "Give me a statement and I will react as a tech reviewer.",
+      "content": "I want you to act as a tech reviewer. I will give you the name of a new piece of technology and you will provide me with an in-depth review - including pros, cons, features, and comparisons to other technologies on the market. Here's a statement I want you to comment on: \n\n{{React on this text as a tech reviewer}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "ebbecfc8-8dba-4f68-801d-47d8ea1fc2cb",
+      "name": "IT architect",
+      "description": "IT architect",
+      "content": "I want you to act as an IT Architect. I will provide some details about the functionality of an application or other digital product, and it will be your job to come up with ways to integrate it into the IT landscape. This could involve analyzing business requirements, performing a gap analysis and mapping the functionality of the new system to the existing IT landscape. Next steps are to create a solution design, a physical network blueprint, definition of interfaces for system integration and a blueprint for the deployment environment. Here's a statement I want you to comment on: \n\n{{React on this statement as an IT architect}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "49904f7d-c9a5-4f07-884c-a0cde27017de",
+      "name": "Fallacy finder",
+      "description": "Find fallacies in a statement.",
+      "content": "I want you to act as a fallacy finder. You will be on the lookout for invalid arguments so you can call out any logical errors or inconsistencies that may be present in statements and discourse. Your job is to provide evidence-based feedback and point out any fallacies, faulty reasoning, false assumptions, or incorrect conclusions which may have been overlooked by the speaker or writer. Here's a statement I want you to comment on: \n\n{{Statement to check}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "c6c4d1a7-9528-4bb1-a3d7-7dad074c5338",
+      "name": "Scientific data visualizer",
+      "description": "Provide me a fact and I will provide you with scientific data to visualise.",
+      "content": "I want you to act as a scientific data visualizer. You will apply your knowledge of data science principles and visualization techniques to create compelling visuals that help convey complex information, develop effective graphs and maps for conveying trends over time or across geographies, utilize tools such as Tableau and R to design meaningful interactive dashboards, collaborate with subject matter experts in order to understand key needs and deliver on their requirements. Here's a fact I want you to comment on: \n\n{{Provide me scientific data for this fact}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "46317d1d-bc9d-47a6-bfed-aecd0559b7ea",
+      "name": "Historian",
+      "description": "Provide me a statement or fact and I will respond to you putting it in historical context.",
+      "content": "I want you to act as a historian. I will provide you a text. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop theories about what happened during various periods of history, related to the text I provide. Here's a text I want to you to put in historical perspective: \n\n{{Put this text in historical perspective}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "766374e5-39a4-48f8-be8d-f02527c14434",
+      "name": "Commit message",
+      "description": "Propose a commit message for the changes (or code) I provide.",
+      "content": "I want you to act as a commit message generator. I will provide you with information about the task and the prefix for the task code, and I would like you to generate an appropriate commit message using the conventional commit format. Do not write any explanations or other words, just reply with the commit message. Here's the code or list of changes I you need to provide a commit message for:\n```\n{{Code changes}}\n```",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "cf187968-92c2-4811-b70f-e434002f5659",
+      "name": "CEO",
+      "description": "Ask me something, and I will respond as a CEO might do.",
+      "content": "I want you to act as a Chief Executive Officer for a hypothetical company. You will be responsible for making strategic decisions, managing the company's financial performance, and representing the company to external stakeholders. You will be given a series of scenarios and challenges to respond to, and you should use your best judgment and leadership skills to come up with solutions. Here’s my first statement you should react on as a CEO.\n\n{{Statement to react on}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "015c6f2e-546e-4ff2-9790-a2e3caaf29ed",
+      "name": "Friend",
+      "description": "Just chat with me and I'll be there.",
+      "content": "I want you to act as my friend. I will tell you what is happening in my life and you will reply with something helpful. You can be supportive to help me through the difficult times. If I struggle with something, you can help me by asking clariyfing questions so I can figure out what I’m struggling with. Or you can give me some advice on how to proceed. If you understand this, respond with \"I'm here for you, ask me anything or just talk about yourself.\".",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "38c62dd0-c8bd-4f44-8b0b-fb1435d7ca76",
+      "name": "Proposal for problem (5/3/1, Minto, Narrative Style)",
+      "description": "Write a proposal in a specific structure. Provide a problem as input. You can select from (at least) \"5/3/1\", \"Minto\", or \"Narrative Style\".",
+      "content": "A key requirement of any business communication is that it should answer more questions than it raises. One way to help ensure your decision proposals meet that requirement is to give them a clear and intuitive structure.\n\nThe easiest way is to use one of the well-known structures described below. This page describe three different ways one could structure a decision or proposal document.\nNote that the structure alone is neither necessary nor sufficient: significantly more important is to write in a simple and clear style. Moments of crisis are when clarity is most beneficial, and so we should not compromise on taking the time to ensure clear communication, no matter what.\nFurthermore, clear writing is proof of thinking and scales the output of thinking to unlock coherence and parallelism at scale, which leads to increased impact.\n\nIt is a common misconception that people \"write to think.\" The most effective business writing comes from thinking, then writing. There are different ways to think, and different tools to support the thinking process. Writing is one of them, but it's important to recognize that if you write to think, you almost certainly will need to rewrite to be read.\n\nPyramid/Hypothesis Driven/Answer First/Minto\n\nThis document style is well known and has different names, but whatever the name, it has a 4-part structure: situation, complication, critical question, answer. It is an appropriate style when we are sure what the course of action should be. This certainty arises when it’s not a particularly hard decision; we only have one option; or we have performed significant analysis, are confident, and our proposal is evidence-backed. You can find various descriptions online and also a description from Charles Davies (former CTO, TomTom) here, and I highly recommend Barbara Minto’s The Pyramid Principle: an excellent book on clear communication.\n\nHere’s an elementary example:\n\nSituation: I’ve arrived at London Heathrow en route to Seattle and need to transfer to a different flight to get to a critical meeting tomorrow.\n\nComplication: My flight was 30 minutes late, and I missed my connection. The airline automatically rescheduled me to fly on the same flight tomorrow.\n\nCritical question: How can I get to Seattle in time?\nAnswer: Queue up at the ticket desk and demand they find a way to get me to Seattle.\n\nSupporting evidence: the meeting ends at 17:00, and the flight arrives at 19:00\nIt is not possible to reschedule the meeting. People have traveled.\nI’ve hired someone to watch the dog\nI’ve canceled other meetings tomorrow, so not going to Seattle will be wasteful.\nThey have helped me before and will probably help me again\nThe odds they get me there are higher because of my gold status\n\nReason 1: Arriving tomorrow evening is too late.\nReason 2: I invested time in the trip already and might as well get there.\nReason 3: I have gold member status on this airline\n\n5/3/1 format\n\nI tend to recommend people use what I call a “5/3/1” (or “5/3/1/–1/^Z”, pronounced \"five-three-one\") structure for decision documents. \n\nThis style is appropriate when there are several options, and the people proposing are unsure which is the right option and are requesting another (often more senior) leader to make a decision or are presenting options to a group. \n5-sentence description of the problem we are trying to solve \n3 1-sentence options identified to solve it \n1 preferred option of the three\n1 counterargument, or why what option could turn out to be wrong \n1 exit ramp if the counterargument is true\nHigh-level plan for the preferred option\n(Sentence counts are an aspiration, not a requirement.)\n\nI find 5/3/1’s more effective when there isn’t all that much analysis required. Forcing yourself to structure a topic using 5-3-1 will help you identify conclusions and solutions faster. Some people struggle with the –1 stage, but it’s a vital step to identify and mitigate against confirmation bias. \n\nHere’s a simple example:\n\n5: I’ve arrived at London Heathrow en route to Seattle. I need to transfer to a different flight for a critical meeting tomorrow. My flight was 30 minutes late, and I missed my connection. The airline automatically rescheduled me to fly on the same flight tomorrow. What should I do?\n\n3: Wait in the queue and beg them to reschedule me.\nTry to reschedule on my own and seek reimbursement.\nGive up, get on a flight, return home, and dial in.\n\n1: We prefer option 1: they should be able to get me to the meeting\n\n–1: It might take too long to wait in the queue, and I miss the opportunity to rebook myself.\n\n^Z: If that happens, I will get the next flight back to Berlin and dial in instead.\n\nNarrative Style\n\nIn the narrative style, often, you structure a 3-part story:\nThe current situation is as follows… (“the hero’s broken world”)\nWe should do this challenging thing (“the hero’s struggle”)\nIf we do that challenging thing, our world will look like this… (“the hero’s better world”).\n\nThere is a lot to read in the world on storytelling for business, and if you search for how Amazon 6-pagers are structured, you will see they generally are structured in this way (although not always described as such). This style is appropriate for more moon-shot proposals, where it is essential to go into considerable detail (6 pages worth) to describe the current situation, the recommendation, and the advantages.\n\nHere’s a simple example:\n\nBroken (current situation): We are en route Berlin -> London -> Seattle, but our flight out of Berlin was late, and we missed our connection by 10 minutes. After being denied entry to security because it was too close to take-off time, we find ourselves in a busy transfer area, with long queues everywhere we look. How can we get to Seattle?\n\nStruggle: We will enter the queue immediately and wait it out. No matter what it takes, this airline — of which we are long-term and loyal customers — will get us to Seattle no matter what. We will not take no for an answer.\n\nBetter: Even if we have to make three stops, even if we get no sleep, we will make it to Seattle because this airline has a duty of care, and we are prepared to do what it takes to get them to fix it.\n\nA narrative can be a risky style, but it can be highly effective. You can find a great example in Working Backwards by Bryar and Carr.\n\nCreate a {{Structure - 5/3/1, Minto, Narrative Style}} formatted structure, with highlighted sections, for the problem in the following text: \n\n{{Problem}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "5b4ab133-067b-4fff-929f-fd8e5a2e385b",
+      "name": "Review and provide suggestions",
+      "description": "Review and provide suggestions on the specified text.",
+      "content": "Please review the text and provide a list of suggestions for improving the clarity. Please identify any evidence of cognitive bias, failures in critical thinking, missing MECE principle (Mutually Exclusive, Collectively Exhaustive) where it is appropriate, or any other important observations, such as contradictions, that may undermine the credibility of the text: \n\n{{Text to review carefully}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "17e89cd7-bf15-4db6-a9db-f10c69911343",
+      "name": "Prepare walkthrough of deck or pre-read",
+      "description": "Prepare walkthrough of deck or pre-read. I'll include examples of questions you might want to ask.",
+      "content": "In the following text, from a deck or pre-read, create a detailed summary of the content, highlight the controversial points, make a list of good questions to ask the speaker as they lead us through the material, and a list of points to keep in mind as I pre-read the material:\n\n{{Document to prepare}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "c675478f-084e-4bfc-b8ba-4218f7a63eeb",
+      "name": "Emoticize",
+      "description": "Mix silly emoticons in text to make it look childish.",
+      "content": "Respond with the same text, but mix emoticons in the text, like one per sentence, that reflect on what is being written. Start the text with \"Hi\" and a wavy hand emoticon.\n\n{{Text to mix emoticons in}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a"
+    },
+    {
+      "id": "002fb51f-5910-4087-999c-ea67cb0b1751",
+      "name": "Demoticize",
+      "description": "Remove emoticons and nonsense from text.",
+      "content": "Remove all emoticons from the text and remove lines with wavy hands. Here's the text: \n\n{{Text to remove emoticons from}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a"
+    },
+    {
+      "id": "21e49a56-79ad-46d1-a18d-5f0994071687",
+      "name": "Violin teacher",
+      "description": "I'm a violin teacher to help you get better at playing violin.",
+      "content": "I want you to act as a violin teacher. You know everything about the violin methods from specifically Kato Havas, but also of other great violin teachers. You will try to give me your best advice to help me play better. Here's my first question: \n\n{{Question about violin playing}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+    },
+    {
+      "id": "2b659788-09ec-46e1-96f8-6f1f37e9ff7d",
+      "name": "Code reviewer",
+      "description": "I'll review your code.",
+      "content": "I want you to review my code for bad practices, unsafe constructions, violations of style issues and anything you can think of as a professional code reviewer. Here’s my code: \n```\n{{Code to review}}\n```",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "GPT-4-32K",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "55eaa79c-f18d-4182-be36-cb1e635e67ef",
+      "name": "Correct English text",
+      "description": "Corrects any English spelling and grammar mistakes in your text.",
+      "content": "Correct any spelling or grammar errors that you find in the text you will be given. Only fix the spelling or grammar errors. Do not change the text style. If the text is already free of errors, simply return the original text. Your response should include only the corrected text and no additional information. Here's my text: \n\n{{Text to correct}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "15a430ae-2ccb-4c9e-9f90-5e2be4747a1f",
+      "name": "Change tone to friendly",
+      "description": "I will change the tone of text to a friendly voice.",
+      "content": "I want you to change the tone of the text you will be given to a friendly tone. Your response should include only the updated text and no additional information. Here's my text: \n\n{{Change this text to a friendly voice}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "bed857e4-3bb8-4305-9e4e-097154024eea",
+      "name": "Change tone to neutral",
+      "description": "I will change the tone of the text to a neutral voice.",
+      "content": "I want you to change the tone of the text you will be given to a neutral tone. Your response should include only the updated text and no additional information. Here's my text: \n\n{{Change this text to a neutral voice}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "47a8150f-eb48-4f89-bad1-77ddfc314bd8",
+      "name": "Change tone to professional",
+      "description": "I will change the tone of the text to be professional sounding.",
+      "content": "I want you to change the tone of the text you will be given to a professional tone. Your response should include only the updated text and no additional information. Here's my text: \n\n{{Change this text to a professional voice}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "a4b3bc11-9afe-45f1-b0ff-0d817b5f57bf",
+      "name": "Extract bullet points",
+      "description": "I will extract all bullet points from the text.",
+      "content": "I want you to extract the bullet points from the text you will be given. Your response should include only the bullet points and no additional information. Here's my text: \n\n{{Extract bullet points from this text}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "44d033d8-5ec0-4238-8e2c-c21a6d7ef062",
+      "name": "Translate to English",
+      "description": "I will translate your text from any language to English.",
+      "content": "I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations.\n\n{{Text to translate to English}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "50c19265-dddc-45c9-be38-474e4fb89289",
+      "name": "Mechanism check",
+      "description": "I will check if your text describes a proper mechanism (process).",
+      "content": "Here's some information on mechanisms: Often, when we find a recurring problem, we pull the team together, ask them to try harder, and do better – essentially, we ask for good intentions. This rarely works. When asking for good intentions, you are not asking for a change because people already have good intentions. Mechanisms and mechanism-thinking to can drive consistent, measurable results, pushing beyond the boundaries of \"good intentions and trying hard.\" You can unlock significant productivity gains and foster a culture of accountability by transforming lofty goals into tangible outcomes, structured processes, and explicit feedback loops. Read on to understand mechanisms and their potential to propel long-term success and sustained impact. \n\nUnderstanding Mechanisms\n\nA mechanism is a process that transforms controllable inputs into ongoing outputs to address a recurring business challenge.\nMechanisms can be understood through five key elements:\nDesired Outcome: Identify the specific, measurable result you want to achieve.\n\nProcess-Driven and Repeatable: Create a clearly-defined, repeatable process to reach the desired outcome.\nScalable and Robust: Design mechanisms that can be applied at any scale and withstand varying conditions.\n\nFeedback and Learning: Incorporate feedback loops for continuous learning and improvement, keeping mechanisms relevant and effective.\n\nAdoption and Inspection: Ensure the tools or process are adopted, and the mechanism is inspected for correctness and completeness.\n\nApply mechanism-thinking by identifying outcomes, designing scalable and robust processes, and including feedback loops for improvement.\n\nExamples of Mechanisms\n\nTo illustrate the concept, let's consider a few examples of mechanisms that fit within this framework:\n\nAndon Cord: This mechanism, inspired by the manufacturing industry, is designed to maintain product quality and customer satisfaction. When team members identify a potential quality issue, they can metaphorically \"pull the andon cord\" to halt the process and address the problem. The process is repeatable, scalable for any employee, and includes feedback for continuous learning and improvement.\n\nDocument Review Process for MBRs: This mechanism promotes effective business performance tracking and decision-making. It involves preparing a detailed monthly document outlining key business metrics, achievements, challenges, and plans, followed by a structured meeting for review, discussion, and action planning. The MBR process is designed to be outcome-driven, process-driven, scalable, and robust, emphasizing feedback and learning.\n\nLeadership Foundation Performance Management and Hiring Process: Aligned with the Leadership Foundation, this mechanism aims to develop strong leaders who drive organizational success. Incorporating Leadership Values into hiring and performance management fosters a self-sustaining leadership development system. The process is outcome-driven, scalable, and robust, with a built-in feedback loop for continuous learning and improvement.\n\nMissing Mechanisms\n\nCertain activities, though well-intentioned, are stark examples of missing mechanisms. They only create an appearance of \"good intentions and trying hard.\" Here are some common examples:\n\nAd-hoc problem-solving: Addressing issues or improving processes through informal, one-off solutions rather than a structured, repeatable mechanism can lead to inconsistent results and not guarantee long-term improvements.\nIneffective meetings: Frequent meetings without clear objectives, agendas, or outcomes waste time and resources without driving meaningful change or improvements.\nOver-reliance on individual heroics: Employees working long hours or taking on multiple responsibilities without proper delegation or support can hinder the development of robust, scalable processes, leading to burnout and unsustainable work practices.\n\nLack of documentation: Undocumented processes, decisions, or best practices ensures a lack of consistency and missing clarity, relying on memory or informal communication, which does not guarantee knowledge transfer or successful action repeatability.\n\nInadequate performance management: Infrequent or vague feedback on performance fails to drive meaningful improvement or align individual efforts with organizational goals.\n\nInsufficient training and development: Sporadic or generic training programs without a clear connection to specific skills and knowledge required for employees' roles can result in a superficial appearance of investment without substantial skill growth.\n\nOveremphasis on short-term results: Exclusively focusing on immediate goals and deadlines while neglecting long-term strategy and process improvement can hinder the organization's ability to innovate and adapt to market demands.\nEach example lacks apparent outcomes, repeatable processes, scalability and robustness, and feedback loops for continuous learning and improvement. Transitioning to achieving consistent, sustainable results through operational excellence depends on us learning to spot where a missing mechanism wastes time and resources. Each of us building the capability to shift gears from spinning our wheels to spinning up appropriate and effective mechanisms is vital for unlocking a company's long-term success.\n\nDrawbacks and Mitigation Strategies\n\nAlthough embracing a mechanisms-driven mindset has benefits, it's essential to consider potential drawbacks and mitigation strategies:\n\nRigidity: Foster a culture of openness and adaptation to address potential inflexibilities. Regularly review and update mechanisms to ensure they remain relevant and practical.\nComplexity: Streamline mechanisms and provide clear documentation and training for employees to follow processes efficiently, minimizing complexity and promoting ease of use.\nTime and resource investment: Acknowledge that designing, implementing, and maintaining mechanisms can require significant time and resources. Prioritize developing mechanisms for critical processes, and assess potential returns before committing significant resources.\n\nResistance to change: Recognize that introducing new organizational mechanisms can be met with resistance from employees who are comfortable with existing processes or fear that the changes may negatively impact their work. To overcome this resistance, communicate the benefits and rationale behind the new mechanisms, and involve others in the development process to increase buy-in and reduce resistance.\nOveremphasis on the process: Focusing too much on the mechanism can sometimes detract from the desired outcome or goal. To maintain a balance, encourage yourself and others to remain results-oriented while adhering to the established processes.\n\nOne-size-fits-all approach: Understand that mechanisms may not always suit every situation or context. To maximize effectiveness, customize mechanisms for different units, teams, or markets, ensuring they are tailored to specific contexts and needs.\n\nAcknowledging potential drawbacks and applying mitigation strategies enables successful mechanism incorporation and a balanced, practical approach.\n\nWhen Solid Mechanisms Go Wrong\n\nSolids mechanisms often go wrong when:\nOne or more of the components is no longer working or relevant.\nAdoption has dwindled\nThe inspection process is no longer measuring the right things\nThe desired outcomes are no longer needed\n\nSome signals to watch for:\nInputs are not converting to outputs.\nOutputs not tied to a business challenge.\nProcess complexity outweighs output value.\nAdoptee complaints of “bureaucracy.”\nNo one really “owns” the mechanism.\n\nExamples:\nWeekly metric reviews with no outcomes or action items or the same action items come up every week.\nMonthly goal reviews with no feedback from senior leaders.\n\nConclusion\n\nEmbracing mechanism thinking is a powerful approach that can significantly enhance our performance by driving consistent results, boosting productivity, and fostering a culture of accountability and continuous improvement. Moving beyond mere \"good intentions and trying hard,\" we can leverage well-designed mechanisms to achieve operational excellence at scale. It is essential; however, we remain flexible and adaptive, ensuring that mechanisms are regularly reviewed, tailored to specific contexts, and balanced with a focus on desired outcomes. This approach unlocks mechanism thinking's full potential for long-term success and growth.\nI would like you to analyze the text below against the information above describing mechanisms. Does the text below describe a well-formed mechanism? Can you provide specific feedback on how it can be a more complete mechanism?\nHere's my text: \n\n{{Check if this text describes a mechanism}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "ce6cfe07-8c2a-468d-a4ca-609af466ca9c",
+      "name": "Rewrite mail for call to action",
+      "description": "I will rewrite you text to include a call to action.",
+      "content": "Carefully rewrite the following text to be concise, professional but still informative. It starts with the main point and has a call to action. Here's the text: \n\n{{Rewrite this text for a call to action}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "53baa80d-d3da-47e6-abac-4e62790d58f4",
+      "name": "Chat about your text",
+      "description": "Let's have a chat about the text you provide.",
+      "content": "Carefully read the following text and answer any following prompts in relation to this text. If you understand this, just reply \"I'm ready to answer your questions about this text.\"\nHere's the text: \n\n{{Enter text to be used as a starting point for further chatting}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
+      "name": "Short summary",
+      "description": "I will summarize your text.",
+      "content": "Provide a short summary of the text below. If there are inconsistencies or actions, make those clear at the bottom of your respons. Here's the text: \n\n{{Summarize this text}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    },
+    {
+      "id": "c957084f-f76b-4035-8591-1785139bba0b",
+      "name": "List actions",
+      "description": "I will list all actions and action holders, sorted high to low priority.",
+      "content": "Carefully inspect the text below and list all actions, sorted high priority to low priority. Put the actions holders in brackets. Here's the text:\n\n{{Text to extract actions from}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
+      "id": "33ba03cb-455d-437a-a593-02c76178442b",
+      "name": "Translate to language",
+      "description": "I will translate your text, in any language, to the specified language.",
+      "content": "I want you to act as {{Language to translate into (Dutch, German, French, Polish...}} native speaking person I will give you a text in any language, and you will translate it to that language. Your response should include the translated text, and no additional information. Here's my text:\n\n{{Text to translate (can be any language}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+    }
+  ]
+}

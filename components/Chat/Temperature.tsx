@@ -17,9 +17,7 @@ export const TemperatureSlider: FC<Props> = ({label, onChangeTemperature}) => {
     state: {conversations}
   } = useContext(HomeContext)
   const lastConversation = conversations[conversations.length - 1]
-  const [temperature, setTemperature] = useState(
-    lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
-  )
+  const [temperature, setTemperature] = useState(lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE)
   const {t} = useTranslation("chat")
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(event.target.value)
@@ -29,17 +27,13 @@ export const TemperatureSlider: FC<Props> = ({label, onChangeTemperature}) => {
 
   return (
     <div className="flex flex-col">
-      <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">
-        {label}
-      </label>
+      <label className="mb-2 text-left text-neutral-700 dark:text-neutral-400">{label}</label>
       <span className="text-[12px] text-black/50 dark:text-white/50 text-sm">
         {t(
           "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
         )}
       </span>
-      <span className="mt-2 mb-1 text-center text-neutral-900 dark:text-neutral-100">
-        {temperature.toFixed(1)}
-      </span>
+      <span className="mt-2 mb-1 text-center text-neutral-900 dark:text-neutral-100">{temperature.toFixed(1)}</span>
       <input
         className="cursor-pointer"
         type="range"

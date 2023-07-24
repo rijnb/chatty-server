@@ -37,10 +37,7 @@ const killServerProcess = () => {
     console.info(`kill next process (${nextServerProcess.pid}, and children)`)
     killTree(nextServerProcess.pid, "SIGTERM", (error) => {
       if (error) {
-        console.error(
-          `Failed to kill Next.js server process ${nextServerProcess.pid}:`,
-          error
-        )
+        console.error(`Failed to kill Next.js server process ${nextServerProcess.pid}:`, error)
       }
     })
     nextServerProcess = null

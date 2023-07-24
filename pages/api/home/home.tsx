@@ -11,19 +11,9 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
 
-import {
-  cleanConversationHistory,
-  cleanSelectedConversation
-} from "@/utils/app/clean"
-import {
-  OPENAI_DEFAULT_SYSTEM_PROMPT,
-  OPENAI_DEFAULT_TEMPERATURE
-} from "@/utils/app/const"
-import {
-  saveConversation,
-  saveConversations,
-  updateConversation
-} from "@/utils/app/conversation"
+import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {saveConversation, saveConversations, updateConversation} from "@/utils/app/conversation"
 import {saveFolders} from "@/utils/app/folders"
 import {savePrompts} from "@/utils/app/prompts"
 import {getSettings} from "@/utils/app/settings"
@@ -54,12 +44,7 @@ interface Props {
   defaultModelId: OpenAIModelID
 }
 
-const Home = ({
-  serverSideApiKeyIsSet,
-  serverSidePluginKeysSet,
-  serverSideGuestCodeIsSet,
-  defaultModelId
-}: Props) => {
+const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCodeIsSet, defaultModelId}: Props) => {
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -68,29 +53,14 @@ const Home = ({
   })
 
   const {
-    state: {
-      apiKey,
-      guestCode,
-      lightMode,
-      folders,
-      conversations,
-      selectedConversation,
-      prompts,
-      temperature
-    },
+    state: {apiKey, guestCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
     dispatch
   } = contextValue
 
   const stopConversationRef = useRef<boolean>(false)
 
   const {data, error, refetch} = useQuery(
-    [
-      "GetModels",
-      apiKey,
-      serverSideApiKeyIsSet,
-      guestCode,
-      !serverSideGuestCodeIsSet
-    ],
+    ["GetModels", apiKey, serverSideApiKeyIsSet, guestCode, !serverSideGuestCodeIsSet],
     ({signal}) => {
       if (!guestCode && serverSideGuestCodeIsSet) {
         return null
@@ -222,10 +192,7 @@ const Home = ({
     dispatch({field: "loading", value: false})
   }
 
-  const handleUpdateConversation = (
-    conversation: Conversation,
-    data: KeyValuePair
-  ) => {
+  const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
     const updatedConversation = {
       ...conversation,
       [data.key]: data.value
@@ -262,13 +229,7 @@ const Home = ({
         field: "serverSideGuestCodeIsSet",
         value: serverSideGuestCodeIsSet
       })
-  }, [
-    defaultModelId,
-    serverSideApiKeyIsSet,
-    serverSidePluginKeysSet,
-    serverSideGuestCodeIsSet,
-    dispatch
-  ])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCodeIsSet, dispatch])
 
   // ON LOAD --------------------------------------------
 
@@ -335,22 +296,16 @@ const Home = ({
 
     const conversationHistory = localStorage.getItem("conversationHistory")
     if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] =
-        JSON.parse(conversationHistory)
-      const cleanedConversationHistory = cleanConversationHistory(
-        parsedConversationHistory
-      )
+      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory)
+      const cleanedConversationHistory = cleanConversationHistory(parsedConversationHistory)
 
       dispatch({field: "conversations", value: cleanedConversationHistory})
     }
 
     const selectedConversation = localStorage.getItem("selectedConversation")
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation =
-        JSON.parse(selectedConversation)
-      const cleanedSelectedConversation = cleanSelectedConversation(
-        parsedSelectedConversation
-      )
+      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation)
+      const cleanedSelectedConversation = cleanSelectedConversation(parsedSelectedConversation)
 
       dispatch({
         field: "selectedConversation",
@@ -366,20 +321,12 @@ const Home = ({
           messages: [],
           model: OpenAIModels[defaultModelId],
           prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-          temperature:
-            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+          temperature: lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
           folderId: null
         }
       })
     }
-  }, [
-    defaultModelId,
-    dispatch,
-    serverSideApiKeyIsSet,
-    serverSideGuestCodeIsSet,
-    serverSidePluginKeysSet,
-    dispatch
-  ])
+  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSideGuestCodeIsSet, serverSidePluginKeysSet, dispatch])
 
   const title = "Chatty"
   return (
@@ -397,21 +344,13 @@ const Home = ({
       <Head>
         <title>{title}</title>
         <meta name="description" content="ChatGPT but better." />
-        <meta
-          name="viewport"
-          content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
-        />
+        <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <main
-          className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
-        >
+        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}>
           <div className="fixed top-0 w-full sm:hidden">
-            <Navbar
-              selectedConversation={selectedConversation}
-              onNewConversation={handleNewConversation}
-            />
+            <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
           </div>
 
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
@@ -433,9 +372,7 @@ export default Home
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
     (process.env.OPENAI_DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(
-        process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID
-      ) &&
+      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
       process.env.OPENAI_DEFAULT_MODEL) ||
     fallbackOpenAIModel.id
 

@@ -17,10 +17,7 @@ export interface HomeContextProps {
   handleDeleteFolder: (folderId: string) => void
   handleUpdateFolder: (folderId: string, name: string) => void
   handleSelectConversation: (conversation: Conversation) => void
-  handleUpdateConversation: (
-    conversation: Conversation,
-    data: KeyValuePair
-  ) => void
+  handleUpdateConversation: (conversation: Conversation, data: KeyValuePair) => void
 }
 
 const HomeContext = createContext<HomeContextProps>(undefined!)

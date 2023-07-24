@@ -1,18 +1,5 @@
-import {
-  IconCheck,
-  IconMessage,
-  IconPencil,
-  IconTrash,
-  IconX
-} from "@tabler/icons-react"
-import {
-  DragEvent,
-  KeyboardEvent,
-  MouseEventHandler,
-  useContext,
-  useEffect,
-  useState
-} from "react"
+import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
+import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
 
 import {isEnterKey} from "@/utils/app/keys"
 
@@ -48,10 +35,7 @@ export const ConversationComponent = ({conversation}: Props) => {
     }
   }
 
-  const handleDragStart = (
-    e: DragEvent<HTMLButtonElement>,
-    conversation: Conversation
-  ) => {
+  const handleDragStart = (e: DragEvent<HTMLButtonElement>, conversation: Conversation) => {
     if (e.dataTransfer) {
       e.dataTransfer.setData("conversation", JSON.stringify(conversation))
     }
@@ -121,11 +105,7 @@ export const ConversationComponent = ({conversation}: Props) => {
         <button
           className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
             messageIsStreaming ? "disabled:cursor-not-allowed" : ""
-          } ${
-            selectedConversation?.id === conversation.id
-              ? "bg-[#343541]/90"
-              : ""
-          }`}
+          } ${selectedConversation?.id === conversation.id ? "bg-[#343541]/90" : ""}`}
           onClick={() => handleSelectConversation(conversation)}
           disabled={messageIsStreaming}
           draggable="true"
@@ -140,39 +120,34 @@ export const ConversationComponent = ({conversation}: Props) => {
             {conversation.name}
             {selectedConversation?.id === conversation.id && (
               <div className="block text-[12.5px] text-gray-400">
-                {conversation?.time
-                  ? new Date(conversation?.time).toLocaleString()
-                  : ""}
+                {conversation?.time ? new Date(conversation?.time).toLocaleString() : ""}
               </div>
             )}
           </div>
         </button>
       )}
 
-      {(isDeleting || isRenaming) &&
-        selectedConversation?.id === conversation.id && (
-          <div className="absolute right-1 z-10 flex text-gray-300">
-            <SidebarActionButton handleClick={handleConfirm}>
-              <IconCheck size={18} />
-            </SidebarActionButton>
-            <SidebarActionButton handleClick={handleCancel}>
-              <IconX size={18} />
-            </SidebarActionButton>
-          </div>
-        )}
+      {(isDeleting || isRenaming) && selectedConversation?.id === conversation.id && (
+        <div className="absolute right-1 z-10 flex text-gray-300">
+          <SidebarActionButton handleClick={handleConfirm}>
+            <IconCheck size={18} />
+          </SidebarActionButton>
+          <SidebarActionButton handleClick={handleCancel}>
+            <IconX size={18} />
+          </SidebarActionButton>
+        </div>
+      )}
 
-      {selectedConversation?.id === conversation.id &&
-        !isDeleting &&
-        !isRenaming && (
-          <div className="absolute right-1 z-10 flex text-gray-300">
-            <SidebarActionButton handleClick={handleOpenRenameModal}>
-              <IconPencil size={18} />
-            </SidebarActionButton>
-            <SidebarActionButton handleClick={handleOpenDeleteModal}>
-              <IconTrash size={18} />
-            </SidebarActionButton>
-          </div>
-        )}
+      {selectedConversation?.id === conversation.id && !isDeleting && !isRenaming && (
+        <div className="absolute right-1 z-10 flex text-gray-300">
+          <SidebarActionButton handleClick={handleOpenRenameModal}>
+            <IconPencil size={18} />
+          </SidebarActionButton>
+          <SidebarActionButton handleClick={handleOpenDeleteModal}>
+            <IconTrash size={18} />
+          </SidebarActionButton>
+        </div>
+      )}
     </div>
   )
 }

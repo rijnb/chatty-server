@@ -23,10 +23,7 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
     }
   }
 
-  if (
-    updatedConversation.temperature === undefined ||
-    updatedConversation.temperature === null
-  ) {
+  if (updatedConversation.temperature === undefined || updatedConversation.temperature === null) {
     updatedConversation = {
       ...updatedConversation,
       temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE
@@ -66,10 +63,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT
       }
 
-      if (
-        conversation.temperature === undefined ||
-        conversation.temperature === null
-      ) {
+      if (conversation.temperature === undefined || conversation.temperature === null) {
         conversation.temperature = OPENAI_DEFAULT_TEMPERATURE
       }
 
@@ -84,10 +78,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       acc.push(conversation)
       return acc
     } catch (error) {
-      console.warn(
-        `error while cleaning conversations' history. Removing culprit`,
-        error
-      )
+      console.warn(`error while cleaning conversations' history. Removing culprit`, error)
     }
     return acc
   }, [])

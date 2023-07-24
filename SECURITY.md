@@ -1,10 +1,10 @@
-# Security Policy
+# Security policy
 
 This security policy outlines the process for reporting vulnerabilities and secrets found within this GitHub repository.
 It is essential that all contributors and users adhere to this policy in order to maintain a secure and stable
 environment.
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
 If you discover a vulnerability within the code, dependencies, or any other component of this repository, please follow
 these steps:
@@ -30,7 +30,7 @@ these steps:
 5. **Do not disclose the vulnerability until the maintainer(s) have addressed it.** Once the issue has been resolved,
    the maintainer(s) may choose to publicly disclose the vulnerability and credit you for the discovery.
 
-## Reporting Secrets
+## Reporting secrets
 
 If you discover any secrets, such as API keys or passwords, within the repository, follow these steps:
 
@@ -42,13 +42,13 @@ If you discover any secrets, such as API keys or passwords, within the repositor
 
 3. **Wait for a response and further instructions.**
 
-## Responsible Disclosure
+## Responsible disclosure
 
 We encourage responsible disclosure of vulnerabilities and secrets. If you follow the steps outlined in this policy, we
 will work with you to understand and address the issue. We will not take legal action against individuals who discover
 and report vulnerabilities or secrets in accordance with this policy.
 
-## Patching and Updates
+## Patching and updates
 
 We are committed to maintaining the security of our project. When vulnerabilities are reported and confirmed, we will:
 
@@ -57,7 +57,7 @@ We are committed to maintaining the security of our project. When vulnerabilitie
 3. Update the repository with the necessary patches and document the changes in the release notes or changelog.
 4. Credit the reporter for the discovery, if they wish to be acknowledged.
 
-## Contributing to Security
+## Contributing to security
 
 We welcome contributions that help improve the security of our project. If you have suggestions or want to contribute
 code to address security issues, please follow the standard contribution guidelines for this repository. When submitting

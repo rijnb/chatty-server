@@ -73,10 +73,6 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
       </div>
     </div>
   ) : (
-    <SidebarButton
-      text={t("Unlock code")}
-      icon={<IconKey size={18} />}
-      onClick={() => setIsChanging(true)}
-    />
+    <SidebarButton text={t("Unlock code")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
   )
 }

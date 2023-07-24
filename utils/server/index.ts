@@ -38,18 +38,12 @@ export const OpenAIStream = async (
   if (OPENAI_API_TYPE === "azure") {
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
-  console.info(
-    `Input '${messages[messages.length - 1].content.substring(0, 8)}...'`
-  )
+  console.info(`Input '${messages[messages.length - 1].content.substring(0, 8)}...'`)
   console.info(`  HTTP POST ${url}`)
   console.info(
-    `  '{model:'${
-      model.id
-    }', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${
+    `  '{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[<${
       messages.length
-    }, ${messages[messages.length - 1].role}, ${
-      messages[messages.length - 1].content.length
-    } chars>]}`
+    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars>]}`
   )
   const res = await fetch(url, {
     headers: {
@@ -87,18 +81,9 @@ export const OpenAIStream = async (
   if (res.status !== 200) {
     const result = await res.json()
     if (result.error) {
-      throw new OpenAIError(
-        result.error.message,
-        result.error.type,
-        result.error.param,
-        result.error.code
-      )
+      throw new OpenAIError(result.error.message, result.error.type, result.error.param, result.error.code)
     } else {
-      throw new Error(
-        `${OPENAI_API_TYPE} returned an error (1): ${
-          decoder.decode(result?.value) || result.statusText
-        }`
-      )
+      throw new Error(`${OPENAI_API_TYPE} returned an error (1): ${decoder.decode(result?.value) || result.statusText}`)
     }
   }
 

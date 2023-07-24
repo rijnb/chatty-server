@@ -57,9 +57,7 @@ export const ImportData: FC<Props> = ({text, onImport}) => {
         text={text}
         icon={<IconFileImport size={18} />}
         onClick={() => {
-          const importFile = document.querySelector(
-            "#import-file"
-          ) as HTMLInputElement
+          const importFile = document.querySelector("#import-file") as HTMLInputElement
           if (importFile) {
             importFile.click()
           }

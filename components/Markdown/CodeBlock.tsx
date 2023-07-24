@@ -58,20 +58,13 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
             {isCopied ? <IconCheck size={18} /> : <IconClipboard size={18} />}
             {isCopied ? t("Copied!") : t("Copy code")}
           </button>
-          <button
-            className="flex items-center rounded bg-none p-1 text-xs text-white"
-            onClick={downloadAsFile}
-          >
+          <button className="flex items-center rounded bg-none p-1 text-xs text-white" onClick={downloadAsFile}>
             <IconDownload size={18} />
           </button>
         </div>
       </div>
 
-      <SyntaxHighlighter
-        language={language}
-        style={oneDark}
-        customStyle={{margin: 0}}
-      >
+      <SyntaxHighlighter language={language} style={oneDark} customStyle={{margin: 0}}>
         {value}
       </SyntaxHighlighter>
     </div>

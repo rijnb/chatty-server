@@ -15,10 +15,7 @@ module.exports = {
   insertPragma: false,
   proseWrap: "preserve",
   quoteProps: "as-needed",
-  plugins: [
-    "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
-  ],
+  plugins: ["prettier-plugin-tailwindcss", "@trivago/prettier-plugin-sort-imports"],
   importOrder: [
     "react", // React
     "^react-.*$", // React-related imports

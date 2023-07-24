@@ -4,10 +4,7 @@ import {useTranslation} from "next-i18next"
 
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 
-import {
-  OPENAI_DEFAULT_SYSTEM_PROMPT,
-  OPENAI_DEFAULT_TEMPERATURE
-} from "@/utils/app/const"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {saveConversation, saveConversations} from "@/utils/app/conversation"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
@@ -28,7 +25,10 @@ import Sidebar from "../Sidebar"
 import ChatbarContext from "./Chatbar.context"
 import {ChatbarInitialState, initialState} from "./Chatbar.state"
 
-import {v4 as uuidv4} from "uuid"
+
+
+import { v4 as uuidv4 } from "uuid";
+
 
 export const Chatbar = () => {
   const {t} = useTranslation("sidebar")
@@ -84,17 +84,12 @@ export const Chatbar = () => {
     } else {
       homeDispatch({field: "pluginKeys", value: [...pluginKeys, pluginKey]})
 
-      localStorage.setItem(
-        "pluginKeys",
-        JSON.stringify([...pluginKeys, pluginKey])
-      )
+      localStorage.setItem("pluginKeys", JSON.stringify([...pluginKeys, pluginKey]))
     }
   }
 
   const handleClearPluginKey = (pluginKey: PluginKey) => {
-    const updatedPluginKeys = pluginKeys.filter(
-      (key) => key.pluginId !== pluginKey.pluginId
-    )
+    const updatedPluginKeys = pluginKeys.filter((key) => key.pluginId !== pluginKey.pluginId)
 
     if (updatedPluginKeys.length === 0) {
       homeDispatch({field: "pluginKeys", value: []})
@@ -147,9 +142,7 @@ export const Chatbar = () => {
   }
 
   const handleDeleteConversation = (conversation: Conversation) => {
-    const updatedConversations = conversations.filter(
-      (c) => c.id !== conversation.id
-    )
+    const updatedConversations = conversations.filter((c) => c.id !== conversation.id)
 
     homeDispatch({field: "conversations", value: updatedConversations})
     chatDispatch({field: "searchTerm", value: ""})
@@ -238,9 +231,7 @@ export const Chatbar = () => {
         folderComponent={<ChatFolders searchTerm={searchTerm} />}
         items={filteredConversations}
         searchTerm={searchTerm}
-        handleSearchTerm={(searchTerm: string) =>
-          chatDispatch({field: "searchTerm", value: searchTerm})
-        }
+        handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}
         toggleOpen={handleToggleChatbar}
         handleCreateItem={handleNewConversation}
         handleCreateFolder={() => handleCreateFolder(t("New folder"), "chat")}

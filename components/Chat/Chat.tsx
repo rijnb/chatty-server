@@ -1,18 +1,5 @@
-import {
-  IconEraser,
-  IconMarkdown,
-  IconScreenshot,
-  IconSettings
-} from "@tabler/icons-react"
-import {
-  MutableRefObject,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from "react"
+import {IconEraser, IconMarkdown, IconScreenshot, IconSettings} from "@tabler/icons-react"
+import {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
 import {useTranslation} from "next-i18next"
@@ -37,7 +24,10 @@ import {ModelSelect} from "./ModelSelect"
 import {SystemPrompt} from "./SystemPrompt"
 import {TemperatureSlider} from "./Temperature"
 
-import {toPng} from "html-to-image"
+
+
+import { toPng } from "html-to-image";
+
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -68,8 +58,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const [currentMessage, setCurrentMessage] = useState<Message>()
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
   const [showSettings, setShowSettings] = useState<boolean>(false)
-  const [showScrollDownButton, setShowScrollDownButton] =
-    useState<boolean>(false)
+  const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -138,9 +127,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           console.log(
             `HTTP response, statusText:${response.statusText}, status:${response.status}, body:${response.body}, headers:${response.headers}`
           )
-          toast.error(
-            `Error: ${response.statusText}\n\nStatus: ${response.status}`
-          )
+          toast.error(`Error: ${response.statusText}\n\nStatus: ${response.status}`)
           return
         }
         const data = response.body
@@ -152,8 +139,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         if (!plugin) {
           if (updatedConversation.messages.length === 1) {
             const {content} = message
-            const customName =
-              content.length > 30 ? content.substring(0, 30) + "..." : content
+            const customName = content.length > 30 ? content.substring(0, 30) + "..." : content
             updatedConversation = {
               ...updatedConversation,
               name: customName,
@@ -192,16 +178,15 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 value: updatedConversation
               })
             } else {
-              const updatedMessages: Message[] =
-                updatedConversation.messages.map((message, index) => {
-                  if (index === updatedConversation.messages.length - 1) {
-                    return {
-                      ...message,
-                      content: text
-                    }
+              const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
+                if (index === updatedConversation.messages.length - 1) {
+                  return {
+                    ...message,
+                    content: text
                   }
-                  return message
-                })
+                }
+                return message
+              })
               updatedConversation = {
                 ...updatedConversation,
                 messages: updatedMessages
@@ -213,14 +198,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             }
           }
           saveConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return updatedConversation
-              }
-              return conversation
+          const updatedConversations: Conversation[] = conversations.map((conversation) => {
+            if (conversation.id === selectedConversation.id) {
+              return updatedConversation
             }
-          )
+            return conversation
+          })
           if (updatedConversations.length === 0) {
             updatedConversations.push(updatedConversation)
           }
@@ -229,10 +212,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           homeDispatch({field: "messageIsStreaming", value: false})
         } else {
           const {answer} = await response.json()
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            {role: "assistant", content: answer}
-          ]
+          const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
           updatedConversation = {
             ...updatedConversation,
             messages: updatedMessages
@@ -242,14 +222,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             value: updatedConversation
           })
           saveConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return updatedConversation
-              }
-              return conversation
+          const updatedConversations: Conversation[] = conversations.map((conversation) => {
+            if (conversation.id === selectedConversation.id) {
+              return updatedConversation
             }
-          )
+            return conversation
+          })
           if (updatedConversations.length === 0) {
             updatedConversations.push(updatedConversation)
           }
@@ -260,15 +238,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         }
       }
     },
-    [
-      apiKey,
-      conversations,
-      homeDispatch,
-      pluginKeys,
-      selectedConversation,
-      stopConversationRef,
-      guestCode
-    ]
+    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, guestCode]
   )
 
   const scrollToBottom = useCallback(() => {
@@ -319,10 +289,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   }
 
   const onClearAll = () => {
-    if (
-      confirm(t<string>("Are you sure you want to clear all messages?")) &&
-      selectedConversation
-    ) {
+    if (confirm(t<string>("Are you sure you want to clear all messages?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, {
         key: "messages",
         value: []
@@ -367,9 +334,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       selectedConversation.time
     ).toLocaleString()})\n\n`
     for (const message of selectedConversation.messages) {
-      markdownContent += `## ${
-        message.role.charAt(0).toUpperCase() + message.role.slice(1)
-      }\n\n${message.content}\n\n`
+      markdownContent += `## ${message.role.charAt(0).toUpperCase() + message.role.slice(1)}\n\n${message.content}\n\n`
     }
 
     const url = URL.createObjectURL(new Blob([markdownContent]))
@@ -385,10 +350,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
 
   useEffect(() => {
     throttledScrollDown()
-    selectedConversation &&
-      setCurrentMessage(
-        selectedConversation.messages[selectedConversation.messages.length - 2]
-      )
+    selectedConversation && setCurrentMessage(selectedConversation.messages[selectedConversation.messages.length - 2])
   }, [selectedConversation, throttledScrollDown])
 
   useEffect(() => {
@@ -417,40 +379,30 @@ export const Chat = memo(({stopConversationRef}: Props) => {
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
-      {!(
-        (!serverSideGuestCodeIsSet || guestCode) &&
-        (apiKey || serverSideApiKeyIsSet)
-      ) ? (
+      {!((!serverSideGuestCodeIsSet || guestCode) && (apiKey || serverSideApiKeyIsSet)) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
-          <div className="text-center text-4xl font-bold text-blue-800 dark:text-blue-400">
-            Chatty
-          </div>
+          <div className="text-center text-4xl font-bold text-blue-800 dark:text-blue-400">Chatty</div>
           <div className="text-center text-xl font-bold text-yellow-700 dark:text-yellow-100">
             Conversational Host At TomTom...Yes!
           </div>
           <div className="text-center text-lg text-gray-500 dark:text-gray-400">
             <div className="mb-8">{`Chatty is an open source clone of OpenAI's ChatGPT UI.`}</div>
-            <div className="mb-2 font-bold">
-              Important: Chatty is 100% unaffiliated with OpenAI.
-            </div>
+            <div className="mb-2 font-bold">Important: Chatty is 100% unaffiliated with OpenAI.</div>
           </div>
           <div className="text-center text-gray-500 dark:text-gray-400">
             <div className="mb-2">
-              All you need to do to use an (Azure) OpenAI instance, is click on
-              OpenAI API key in the bottom left of the sidebar and provide your
-              key.
+              All you need to do to use an (Azure) OpenAI instance, is click on OpenAI API key in the bottom left of the
+              sidebar and provide your key.
             </div>
             <div className="mb-2">
-              The key is <span className="italic">only</span> used to
-              communicate with their API.
+              The key is <span className="italic">only</span> used to communicate with their API.
             </div>
           </div>
           <div className="text-center text-cyan-700 ">
             <div className="mb-2">Chatty was developed by Rijn Buve.</div>
             <div className="mb-2">
-              Chatty is based on chatbot-ui by Mckay Wrigley and includes
-              features from many contributors to chatbot-ui. Many thanks to all.
-              Chatty is licensed under the MIT license.
+              Chatty is based on chatbot-ui by Mckay Wrigley and includes features from many contributors to chatbot-ui.
+              Many thanks to all. Chatty is licensed under the MIT license.
             </div>
           </div>
         </div>
@@ -458,11 +410,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         <ErrorMessageDiv error={modelError} />
       ) : (
         <>
-          <div
-            className="max-h-full overflow-x-hidden"
-            ref={chatContainerRef}
-            onScroll={handleScroll}
-          >
+          <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
             {selectedConversation?.messages.length === 0 ? (
               <>
                 <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
@@ -512,34 +460,21 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             ) : (
               <>
                 <div className="sticky top-0 z-10 flex justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-                  {t("Model")}: {selectedConversation?.model.name}{" "}
-                  &nbsp;&nbsp;|&nbsp;
-                  <button
-                    className="ml-2 cursor-pointer hover:opacity-50"
-                    onClick={handleSettings}
-                  >
+                  {t("Model")}: {selectedConversation?.model.name} &nbsp;&nbsp;|&nbsp;
+                  <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleSettings}>
                     <IconSettings size={18} />
                   </button>
-                  <button
-                    className="ml-2 cursor-pointer hover:opacity-50"
-                    onClick={onClearAll}
-                  >
+                  <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearAll}>
                     <IconEraser size={18} />
                   </button>
                   &nbsp;&nbsp;|&nbsp;
                   {selectedConversation ? (
-                    <button
-                      className="ml-2 cursor-pointer hover:opacity-50"
-                      onClick={onSaveAsScreenshot}
-                    >
+                    <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveAsScreenshot}>
                       <IconScreenshot size={18} />
                     </button>
                   ) : null}
                   {selectedConversation ? (
-                    <button
-                      className="ml-2 cursor-pointer hover:opacity-50"
-                      onClick={onSaveAsMarkdown}
-                    >
+                    <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveAsMarkdown}>
                       <IconMarkdown size={18} />
                     </button>
                   ) : null}
@@ -560,20 +495,14 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                     onEdit={(editedMessage) => {
                       setCurrentMessage(editedMessage)
                       // discard edited message and the ones that come after then resend
-                      handleSend(
-                        editedMessage,
-                        selectedConversation?.messages.length - index
-                      )
+                      handleSend(editedMessage, selectedConversation?.messages.length - index)
                     }}
                   />
                 ))}
 
                 {loading && <ChatLoader />}
 
-                <div
-                  className="h-[162px] bg-white dark:bg-[#343541]"
-                  ref={messagesEndRef}
-                />
+                <div className="h-[162px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
               </>
             )}
           </div>
@@ -581,11 +510,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           <ChatInput
             stopConversationRef={stopConversationRef}
             textareaRef={textareaRef}
-            model={
-              selectedConversation
-                ? selectedConversation.model
-                : fallbackOpenAIModel
-            }
+            model={selectedConversation ? selectedConversation.model : fallbackOpenAIModel}
             onSend={(message, plugin) => {
               setCurrentMessage(message)
               handleSend(message, 0, plugin)
