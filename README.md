@@ -1,6 +1,6 @@
 # Chatty Server (`chatty-server`)
 
-**Chatty Server** is a client interface for GPT-3.5 and GPT-4.  It allows you to use 
+**Chatty Server** is a client interface for GPT-3.5 and GPT-4. It allows you to use
 GPT-4 for many tasks. For that, it allows you to store
 "prompts" (in folders), that allows you to quickly have GPT-4 analyze your text
 in a certain way and respond to you.
@@ -10,7 +10,7 @@ I've created a whole bunch of prompts to start with. To use them, import the fil
 type `/` and search for a prompt and press enter.
 
 For example, to summarize a mail thread efficiently, select the entire mail text
-in your mail client, click on the input box in Chatty, press `/`, type `mail` and 
+in your mail client, click on the input box in Chatty, press `/`, type `mail` and
 select `Summarize mail`.
 
 Paste the text in the dialog and press Enter. This produces the full prompt you for
@@ -19,11 +19,11 @@ GPT-4. Just press Enter again to execute it.
 ## Using a browser or ChattyUI
 
 Chatty Server is a web-based which can be accessed by browser. It is deploy on
-a server with a basepath of `/chatty/1/chat` (for the actual value, check [config.js](./config.js)). 
+a server with a basepath of `/chatty/1/chat` (for the actual value, check [config.js](./config.js)).
 So, if you deploy it on `https://myserver.com`, you can access it at `https://myserver.com/chatty/1/chat`.
 
-There a thin client for Mac called [ChattyUI](https://github.com/rijnb/ChattyUI) that you may want 
-to check out. It is a thin wrapper around a web view, that allows you to use Chatty Server as a 
+There a thin client for Mac called [ChattyUI](https://github.com/rijnb/ChattyUI) that you may want
+to check out. It is a thin wrapper around a web view, that allows you to use Chatty Server as a
 stand-alone application on a Mac.
 
 If you like it, or if you have comments, reach out to me.
@@ -39,7 +39,8 @@ Happy chatting!
 ### Recent feature updates
 
 * Token usage counter that turns red when older messages are being automatically discarded.
-* Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the existing V4 format.
+* Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the
+  existing V4 format.
 * Added menu on right side to deal with prompts.
 * Added Markdown export of current conversation.
 * Added screenshot export of current conversation.
@@ -57,8 +58,8 @@ on the server.
 
 All sensitive information is kept client side and stored in browser 'local storage'.
 
-Conversations are sent (through SSL) to the server, of course, but not logged or persisted 
-server-side. (*Exception:* The server logs may contain at most the first 8 characters of 
+Conversations are sent (through SSL) to the server, of course, but not logged or persisted
+server-side. (*Exception:* The server logs may contain at most the first 8 characters of
 your prompts or returned answers for debugging purposes, but never more).
 
 ## Technical documentation
@@ -149,7 +150,8 @@ interpreted by OpenAI/GPT-4. This is done by using the Google Search plugin.
 
 4. Create a new Custom Search Engine at https://cse.google.com/cse/all.
 
-5. Add your API key and your Custom Search Engine ID to your `.env.local` file (or don't and have the user fill them in, in the UI).
+5. Add your API key and your Custom Search Engine ID to your `.env.local` file (or don't and have the user fill them in,
+   in the UI).
 
 6. You can now select the Google Search Tool in the search tools dropdown.
 

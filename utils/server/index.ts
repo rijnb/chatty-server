@@ -12,7 +12,6 @@ import {
 
 import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
 
-
 export class OpenAIError extends Error {
   type: string
   param: string
