@@ -15,7 +15,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import {ChatInputTokenCount} from "./ChatInputTokenCount"
 import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
-import {VariableModal} from "./VariableModal"
+import {PromptVariableModal} from "./PromptVariableModal"
 
 
 interface Props {
@@ -50,7 +50,7 @@ export const ChatInput = ({
   const [showPromptList, setShowPromptList] = useState(false)
   const [activePromptIndex, setActivePromptIndex] = useState(0)
   const [promptInputValue, setPromptInputValue] = useState("")
-  const [variables, setVariables] = useState<string[]>([])
+  const [variables, setPromptVariables] = useState<string[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
@@ -152,16 +152,16 @@ export const ChatInput = ({
     }
   }
 
-  const parseVariables = (content: string) => {
+  const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g
-    const foundVariables = []
+    const foundPromptVariables = []
     let match
 
     while ((match = regex.exec(content)) !== null) {
-      foundVariables.push(match[1])
+      foundPromptVariables.push(match[1])
     }
 
-    return foundVariables
+    return foundPromptVariables
   }
 
   const updatePromptListVisibility = useCallback((text: string) => {
@@ -177,10 +177,10 @@ export const ChatInput = ({
   }, [])
 
   const handlePromptSelect = (prompt: Prompt) => {
-    const parsedVariables = parseVariables(prompt.content)
-    setVariables(parsedVariables)
+    const parsedPromptVariables = parsePromptVariables(prompt.content)
+    setPromptVariables(parsedPromptVariables)
 
-    if (parsedVariables.length > 0) {
+    if (parsedPromptVariables.length > 0) {
       setIsModalVisible(true)
     } else {
       setContent((prevContent) => {
@@ -190,10 +190,10 @@ export const ChatInput = ({
     }
   }
 
-  const handleSubmit = (updatedVariables: string[]) => {
-    const newContent = content?.replace(/{{(.*?)}}/g, (match, variable) => {
-      const index = variables.indexOf(variable)
-      return updatedVariables[index]
+  const handleSubmit = (updatedPromptVariables: string[]) => {
+    const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
+      const index = variables.indexOf(promptVariable)
+      return updatedPromptVariables[index]
     })
 
     setContent(newContent)
@@ -348,9 +348,9 @@ export const ChatInput = ({
           )}
 
           {isModalVisible && (
-            <VariableModal
+            <PromptVariableModal
               prompt={filteredPrompts[activePromptIndex]}
-              variables={variables}
+              promptVariables={variables}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
               onClose={() => setIsModalVisible(false)}
