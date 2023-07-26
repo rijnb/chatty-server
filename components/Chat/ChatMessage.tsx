@@ -1,3 +1,4 @@
+import {MSG_CHARS_PRIVACY_LIMIT} from "@/utils/app/const"
 import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser} from "@tabler/icons-react"
 import React, {FC, memo, useContext, useEffect, useRef, useState} from "react"
 
@@ -6,7 +7,7 @@ import {useTranslation} from "next-i18next"
 import {updateConversation} from "@/utils/app/conversation"
 import {isEnterKey} from "@/utils/app/keys"
 
-import {Message} from "@/types/chat"
+import {Message, isSame} from "@/types/chat"
 
 import HomeContext from "@/pages/api/home/home.context"
 
@@ -60,13 +61,14 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
   const handleDeleteMessage = () => {
     if (!selectedConversation) {
+      console.info("handleDeleteMessage: No conversation selected")
       return
     }
 
     const {messages} = selectedConversation
-    const findIndex = messages.findIndex((elm) => elm === message)
-
+    const findIndex = messages.findIndex((elm) => isSame(elm, message))
     if (findIndex < 0) {
+      console.info(`handleDeleteMessage: Message not found for: "${message.content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}..."`)
       return
     }
 

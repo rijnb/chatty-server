@@ -42,7 +42,7 @@ export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
     {role: "user", content: content ?? ""}
   ]
 
-  const isGpt3 = selectedConversation?.model.id.startsWith("gpt-3.5-turbo")
+  const isGpt3 = selectedConversation?.model.id.startsWith("gpt-3")
   const msgSep = isGpt3 ? "\n" : ""
   const roleSep = isGpt3 ? "\n" : "<|im_sep|>"
 
