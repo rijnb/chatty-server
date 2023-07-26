@@ -58,7 +58,7 @@ export const PluginSelect: FC<Props> = ({plugin, onPluginChange, onKeyDown}) => 
         <select
           ref={selectRef}
           className="w-full cursor-pointer bg-transparent p-2"
-          placeholder={t("Select a plugin") || ""}
+          placeholder={t("Select a plugin")}
           value={plugin?.id || ""}
           onChange={(e) => {
             onPluginChange(PluginList.find((plugin) => plugin.id === e.target.value) as Plugin)

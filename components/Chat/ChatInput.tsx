@@ -127,13 +127,13 @@ export const ChatInput = ({
     if (showPromptList) {
       if (e.key === "ArrowDown") {
         e.preventDefault()
-        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex))
+        setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : prevIndex))
       } else if (e.key === "ArrowUp") {
         e.preventDefault()
         setActivePromptIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
       } else if (e.key === "Tab") {
         e.preventDefault()
-        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : 0))
+        setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : 0))
       } else if (isEnterKey(e)) {
         e.preventDefault()
         handleInitModal()
@@ -165,7 +165,7 @@ export const ChatInput = ({
   }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = text.match(/\/\w*$/)
+    const match = text.match(/^\/(.*)$/)
 
     if (match) {
       setShowPromptList(true)
@@ -297,7 +297,7 @@ export const ChatInput = ({
               maxHeight: "400px",
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
             }}
-            placeholder={t('Type a message or type "/" to select a prompt...') || ""}
+            placeholder={t('Type a message or type "/" to select a prompt...')}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}

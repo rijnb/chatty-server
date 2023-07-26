@@ -7,6 +7,10 @@
 * Improved welcome screen and handling of API key, unlock code and loading models. 
 * Top status now always visible, to choose model and show release notes. 
 
+#### Bug fixes
+
+* Fixed prompts selector. Only works on start of line and cannot scroll below list.
+
 ### 2023-07-24
 
 #### Features
