@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
     const authResult = auth(req)
     if (authResult.error) {
-      return new Response("Error: You are not authorized to use the service", {
+      return new Response("Error: You are not authorized to use the service. Check your Unlock code and API key.", {
         status: 401,
         statusText: authResult.statusText
       })

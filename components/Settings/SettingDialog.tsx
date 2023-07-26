@@ -67,9 +67,7 @@ export const SettingDialog: FC<Props> = ({open, onClose}) => {
             role="dialog"
           >
             <div className="text-lg pb-4 font-bold text-black dark:text-neutral-200">{t("Settings")}</div>
-
             <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">{t("Theme")}</div>
-
             <select
               className="w-full cursor-pointer bg-transparent p-2 text-neutral-700 dark:text-neutral-200"
               value={state.theme}
