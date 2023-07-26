@@ -3,7 +3,6 @@ import {FC} from "react"
 
 import {useTranslation} from "next-i18next"
 
-
 interface Props {
   placeholder: string
   searchTerm: string

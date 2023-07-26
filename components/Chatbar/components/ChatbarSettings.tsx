@@ -7,8 +7,8 @@ import HomeContext from "@/pages/api/home/home.context"
 
 import ChatbarContext from "@/components/Chatbar/Chatbar.context"
 import {ImportData} from "@/components/Settings/ImportData"
-import {Key} from "@/components/Settings/Key"
-import {SettingDialog} from "@/components/Settings/SettingDialog"
+import {ApiKey} from "@/components/Settings/ApiKey"
+import {SettingsDialog} from "@/components/Settings/SettingsDialog"
 import {UnlockCode} from "@/components/Settings/UnlockCode"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
@@ -56,11 +56,11 @@ export const ChatbarSettings = () => {
 
       <SidebarButton text={t("Settings")} icon={<IconSettings size={18} />} onClick={() => setIsSettingDialog(true)} />
 
-      {!serverSideApiKeyIsSet ? <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
+      {!serverSideApiKeyIsSet ? <ApiKey apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
 
       {!serverSidePluginKeysSet ? <PluginKeys /> : null}
 
-      <SettingDialog
+      <SettingsDialog
         open={isSettingDialogOpen}
         onClose={() => {
           setIsSettingDialog(false)

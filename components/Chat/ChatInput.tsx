@@ -17,7 +17,6 @@ import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
 import {PromptVariableModal} from "./PromptVariableModal"
 
-
 interface Props {
   model: OpenAIModel
   onSend: (message: Message, plugin: Plugin | null) => void
@@ -304,7 +303,7 @@ export const ChatInput = ({
               maxHeight: "400px",
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
             }}
-            placeholder={t('Type a message or type "/" to select a prompt...')}
+            placeholder={(prompts.length > 0) ? t('Type a message or type "/" to select a prompt...') : t('Type a message...')}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}
@@ -359,9 +358,11 @@ export const ChatInput = ({
         </div>
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-        {t("Chatty is a frontend for OpenAI's chat models")}
-        {" developed by Rijn Buve, based on "}
-        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" rel="noreferrer" className="underline">
+        <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
+          Chatty
+        </a>
+        &nbsp;was developed by Rijn Buve, originally based on the works of Mckay Wrigley and others on&nbsp;
+        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">
           chatbot-ui
         </a>
       </div>
