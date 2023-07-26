@@ -21,11 +21,9 @@ export const WelcomeMessage: FC<Props> = () => {
           </div>
           <div className="text-center text-gray-700 dark:text-gray-400">
             <div className="mb-2 text-gray-800 dark:text-gray-200">Chatty was developed by Rijn Buve.</div>
-            <div className="mb-2">
-              Chatty is 100% unaffiliated with OpenAI. It is based on <span className="italic"> chatbot-ui </span>
-              by Mckay Wrigley and includes features from many contributors to{" "}
-              <span className="italic">chatbot-ui</span>. Many thanks to all. Chatty is licensed under the MIT license.
-            </div>
+            Chatty is 100% unaffiliated with OpenAI. It is based on <span className="italic"> chatbot-ui </span>
+            by Mckay Wrigley and includes features from many contributors to <span className="italic">chatbot-ui</span>.
+            Many thanks to all. Chatty is licensed under the MIT license.
           </div>
         </div>
       </div>
