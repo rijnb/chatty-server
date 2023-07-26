@@ -2,9 +2,9 @@
 
 ### 2023-07-26
 
-#### Bug fixes
+#### Features
 
-* Improved handling of unlock code. 
+* Improved welcome screen and handling of API key, unlock code and loading models. 
 
 ### 2023-07-24
 
