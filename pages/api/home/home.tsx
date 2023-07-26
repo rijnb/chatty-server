@@ -227,8 +227,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       })
     serverSideUnlockCodeIsSet &&
       dispatch({
-        field: "serverSideUnlock" +
-            "CodeIsSet",
+        field: "serverSideUnlockCodeIsSet",
         value: serverSideUnlockCodeIsSet
       })
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, dispatch])
