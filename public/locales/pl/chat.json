@@ -13,7 +13,7 @@
   "OR": "LUB",
   "Loading...": "Ładowanie...",
   "Type a message...": "Napisz wiadomość...",
-  "Error fetching models.": "Błąd podczas pobierania modelu",
+  "Error fetching conversation models.": "Błąd podczas pobierania modelu",
   "AI": "SI",
   "You": "Ty",
   "Cancel": "Anuluj",

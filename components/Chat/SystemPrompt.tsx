@@ -5,24 +5,16 @@ import {useTranslation} from "next-i18next"
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "@/utils/app/const"
 
 import {Conversation} from "@/types/chat"
-import {Prompt} from "@/types/prompt"
-
-import {VariableModal} from "./VariableModal"
 
 interface Props {
   conversation: Conversation
-  prompts: Prompt[]
   onChangePrompt: (prompt: string) => void
 }
 
-export const SystemPrompt: FC<Props> = ({conversation, prompts, onChangePrompt}) => {
+export const SystemPrompt: FC<Props> = ({conversation, onChangePrompt}) => {
   const {t} = useTranslation("chat")
 
   const [value, setValue] = useState<string>("")
-  const [activePromptIndex, setActivePromptIndex] = useState(0)
-  const [promptInputValue, setPromptInputValue] = useState("")
-  const [variables, setVariables] = useState<string[]>([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -43,46 +35,6 @@ export const SystemPrompt: FC<Props> = ({conversation, prompts, onChangePrompt})
     setValue(value)
     if (value.length > 0) {
       onChangePrompt(value)
-    }
-  }
-
-  const parseVariables = (content: string) => {
-    const regex = /{{(.*?)}}/g
-    const foundVariables = []
-    let match
-
-    while ((match = regex.exec(content)) !== null) {
-      foundVariables.push(match[1])
-    }
-
-    return foundVariables
-  }
-
-  const handlePromptSelect = (prompt: Prompt) => {
-    const parsedVariables = parseVariables(prompt.content)
-    setVariables(parsedVariables)
-
-    if (parsedVariables.length > 0) {
-      setIsModalVisible(true)
-    } else {
-      const updatedContent = value?.replace(/\/\w*$/, prompt.content)
-
-      setValue(updatedContent)
-      onChangePrompt(updatedContent)
-    }
-  }
-
-  const handleSubmit = (updatedVariables: string[]) => {
-    const newContent = value?.replace(/{{(.*?)}}/g, (match, variable) => {
-      const index = variables.indexOf(variable)
-      return updatedVariables[index]
-    })
-
-    setValue(newContent)
-    onChangePrompt(newContent)
-
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.focus()
     }
   }
 
@@ -118,15 +70,6 @@ export const SystemPrompt: FC<Props> = ({conversation, prompts, onChangePrompt})
         rows={1}
         onChange={handleChange}
       />
-
-      {isModalVisible && (
-        <VariableModal
-          prompt={prompts[activePromptIndex]}
-          variables={variables}
-          onSubmit={handleSubmit}
-          onClose={() => setIsModalVisible(false)}
-        />
-      )}
     </div>
   )
 }

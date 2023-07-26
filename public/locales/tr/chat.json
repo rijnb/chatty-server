@@ -13,7 +13,7 @@
   "OR": "VEYA",
   "Loading...": "Yükleniyor...",
   "Type a message...": "Bir mesaj yazın...",
-  "Error fetching models.": "Modeller getirilirken hata oluştu.",
+  "Error fetching conversation models.": "Modeller getirilirken hata oluştu.",
   "AI": "Yapay Zeka",
   "You": "Sen",
   "Cancel": "İptal",

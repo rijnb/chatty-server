@@ -14,7 +14,7 @@
   "Loading...": "Ladataan...",
   "Type a message...": "Kirjoita viesti...",
   "Type a message or type \"/\" to select a prompt...": "Kirjoita viesti tai \"/\" valitaksesi promptin...",
-  "Error fetching models.": "Virhe malleja haettaessa.",
+  "Error fetching conversation models.": "Virhe malleja haettaessa.",
   "AI": "AI",
   "You": "Sinä",
   "Cancel": "Peruuta",

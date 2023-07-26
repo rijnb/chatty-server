@@ -13,7 +13,7 @@
   "OR": "ELLER",
   "Loading...": "Laddar...",
   "Type a message...": "Skriv ett meddelande...",
-  "Error fetching models.": "Det gick inte att hämta modeller.",
+  "Error fetching conversation models.": "Det gick inte att hämta modeller.",
   "AI": "AI",
   "You": "Du",
   "Cancel": "Avbryt",

@@ -14,7 +14,7 @@ const useErrorService = () => {
         return !error
           ? null
           : ({
-              title: t("Error fetching models."),
+              title: t("Error fetching conversation models."),
               code: error.status || "unknown",
               messageLines: error.statusText
                 ? [error.statusText]

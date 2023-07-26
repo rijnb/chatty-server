@@ -13,7 +13,7 @@
   "OR": "ИЛИ",
   "Loading...": "Пожалуйста подождите...",
   "Type a message...": "Введите сообщение...",
-  "Error fetching models.": "Ошибка при получении списка моделей",
+  "Error fetching conversation models.": "Ошибка при получении списка моделей",
   "AI": "Бот",
   "You": "Вы",
   "Cancel": "Отмена",

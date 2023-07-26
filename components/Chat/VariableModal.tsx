@@ -10,9 +10,10 @@ interface Props {
   variables: string[]
   onSubmit: (updatedVariables: string[]) => void
   onClose: () => void
+  onCancel: () => void
 }
 
-export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose}) => {
+export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose, onCancel}) => {
   const [updatedVariables, setUpdatedVariables] = useState<{key: string; value: string}[]>(
     variables
       .map((variable) => ({key: variable, value: ""}))
@@ -45,23 +46,21 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
       e.preventDefault()
       handleSubmit()
     } else if (e.key === "Escape") {
-      onClose()
+      onCancel()
     }
   }
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose()
+        onCancel()
       }
     }
-
     window.addEventListener("click", handleOutsideClick)
-
     return () => {
       window.removeEventListener("click", handleOutsideClick)
     }
-  }, [onClose])
+  }, [onCancel])
 
   useEffect(() => {
     if (nameInputRef.current) {
@@ -80,7 +79,6 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
         role="dialog"
       >
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>
-
         <div className="mb-4 text-sm italic text-black dark:text-neutral-200">{prompt.description}</div>
 
         {updatedVariables.map((variable, index) => (

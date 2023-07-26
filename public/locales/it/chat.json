@@ -13,7 +13,7 @@
   "OR": "O",
   "Loading...": "Caricamento...",
   "Type a message...": "Digita un messaggio...",
-  "Error fetching models.": "Si è verificato un errore nel recupero dei modelli.",
+  "Error fetching conversation models.": "Si è verificato un errore nel recupero dei modelli.",
   "AI": "IA",
   "You": "Tu",
   "Cancel": "Annulla",

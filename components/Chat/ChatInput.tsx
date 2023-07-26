@@ -197,7 +197,14 @@ export const ChatInput = ({
     })
 
     setContent(newContent)
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }
 
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setContent("")
     if (textareaRef && textareaRef.current) {
       textareaRef.current.focus()
     }
@@ -345,6 +352,7 @@ export const ChatInput = ({
               prompt={filteredPrompts[activePromptIndex]}
               variables={variables}
               onSubmit={handleSubmit}
+              onCancel={handleCancel}
               onClose={() => setIsModalVisible(false)}
             />
           )}
