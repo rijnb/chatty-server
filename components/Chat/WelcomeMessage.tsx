@@ -1,3 +1,4 @@
+import {IconHelp} from "@tabler/icons-react"
 import {FC, useContext} from "react"
 
 import HomeContext from "@/pages/api/home/home.context"
@@ -25,6 +26,13 @@ export const WelcomeMessage: FC<Props> = () => {
             <div>&nbsp;</div>
             <div className="font-light">
               Chatty is 100% unaffiliated with OpenAI.
+            </div>
+            <div>&nbsp;</div>
+            <div className="font-light">
+              You can start chatting in the box below or
+            </div>
+            <div className="font-light">
+              click on (?) in the top menu to read the release notes.
             </div>
           </div>
           <div className="text-center text-gray-600 dark:text-gray-400">- = o O o = -</div>
