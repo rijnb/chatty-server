@@ -16,7 +16,7 @@ export const WelcomeMessage: FC<Props> = () => {
       <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
         <div className="mx-auto flex flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-mono font-extrabold text-gray-700 dark:text-gray-100">
-            <span className="text-red-500">CHATTY</span>&nbsp;
+            <span className="text-red-500">C</span>&nbsp;
             <span className="text-orange-500">H</span>&nbsp;
             <span className="text-yellow-500">A</span>&nbsp;
             <span className="text-green-700">T</span>&nbsp;
