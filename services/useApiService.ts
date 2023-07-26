@@ -17,12 +17,12 @@ const useApiService = () => {
   const fetchService = useFetch()
 
   const getModels = useCallback(
-    (params: GetModelsRequestProps, guestCode = "", signal?: AbortSignal) => {
+    (params: GetModelsRequestProps, unlockCode = "", signal?: AbortSignal) => {
       return fetchService.post<GetModelsRequestProps>(`${getApiUrl("/api/models")}`, {
         body: {key: params.key},
         headers: {
           "Content-Type": "application/json",
-          ...(guestCode && {Authorization: `Bearer ${guestCode}`})
+          ...(unlockCode && {Authorization: `Bearer ${unlockCode}`})
         },
         signal
       })

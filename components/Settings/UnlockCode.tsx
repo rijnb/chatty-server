@@ -9,14 +9,14 @@ import {SidebarButton} from "../Sidebar/SidebarButton"
 
 
 interface Props {
-  guestCode: string
-  onGuestCodeChange: (apiKey: string) => void
+  unlockCode: string
+  onUnlockCodeChange: (apiKey: string) => void
 }
 
-export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
+export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
   const {t} = useTranslation("sidebar")
   const [isChanging, setIsChanging] = useState(false)
-  const [newKey, setNewKey] = useState(guestCode)
+  const [newKey, setNewKey] = useState(unlockCode)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -27,7 +27,7 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
   }
 
   const handleUpdateKey = (newKey: string) => {
-    onGuestCodeChange(newKey.trim())
+    onUnlockCodeChange(newKey.trim())
     setIsChanging(false)
   }
 
@@ -48,7 +48,7 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
         value={newKey}
         onChange={(e) => setNewKey(e.target.value)}
         onKeyDown={handleEnterDown}
-        placeholder={t("Enter Guest Code") || "Enter Guest Code"}
+        placeholder={t("Enter unlock code")}
       />
 
       <div className="flex w-[40px]">
@@ -67,7 +67,7 @@ export const GuestCode: FC<Props> = ({guestCode, onGuestCodeChange}) => {
           onClick={(e) => {
             e.stopPropagation()
             setIsChanging(false)
-            setNewKey(guestCode)
+            setNewKey(unlockCode)
           }}
         />
       </div>

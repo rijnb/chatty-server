@@ -1,5 +1,11 @@
 ## Release notes
 
+### 2023-07-26
+
+#### Bug fixes
+
+* Improved handling of unlock code. 
+
 ### 2023-07-24
 
 #### Features

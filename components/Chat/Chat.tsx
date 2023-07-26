@@ -31,8 +31,9 @@ import {TemperatureSlider} from "./Temperature"
 
 import {toPng} from "html-to-image"
 import rehypeMathjax from "rehype-mathjax"
-import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -60,10 +61,10 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       conversations,
       models,
       apiKey,
-      guestCode,
+      unlockCode,
       pluginKeys,
       serverSideApiKeyIsSet,
-      serverSideGuestCodeIsSet,
+      serverSideUnlockCodeIsSet,
       messageIsStreaming,
       modelError,
       loading,
@@ -158,7 +159,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              ...(guestCode && {Authorization: `Bearer ${guestCode}`})
+              ...(unlockCode && {Authorization: `Bearer ${unlockCode}`})
             },
             body
           })
@@ -305,7 +306,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         return
       }
     },
-    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, guestCode]
+    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, unlockCode]
   )
 
   const scrollToBottom = useCallback(() => {
@@ -454,7 +455,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
-      {!((!serverSideGuestCodeIsSet || guestCode) && (apiKey || serverSideApiKeyIsSet)) ? (
+      {!((!serverSideUnlockCodeIsSet || unlockCode) && (apiKey || serverSideApiKeyIsSet)) ? (
         <div className="mx-auto flex h-full w-[300px] flex-col justify-center space-y-6 sm:w-[600px]">
           <div className="text-center text-4xl font-bold text-blue-800 dark:text-blue-400">Chatty</div>
           <div className="text-center text-xl font-bold text-yellow-700 dark:text-yellow-100">
@@ -472,6 +473,11 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             <div className="mb-2">
               The key is <span className="italic">only</span> used to communicate with their API.
             </div>
+            {serverSideUnlockCodeIsSet ? (
+              <div className="mb-2 text-red-900 dark:text-red-400">
+                Also make sure you entered the correct unlock code in the bottom left of the sidebar.
+              </div>
+            ) : null}
           </div>
           <div className="text-center text-cyan-700 ">
             <div className="mb-2">Chatty was developed by Rijn Buve.</div>

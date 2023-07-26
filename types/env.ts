@@ -9,7 +9,7 @@ export interface ProcessEnv {
   OPENAI_DEFAULT_TEMPERATURE?: string
   OPENAI_DEFAULT_MODEL?: string
   OPENAI_AZURE_DEPLOYMENT_ID?: string
-  OPENAI_GUEST_CODE?: string
+  OPENAI_UNLOCK_CODE?: string
   GOOGLE_API_KEY?: string
   GOOGLE_CSE_ID?: string
 }

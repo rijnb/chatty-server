@@ -39,12 +39,12 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   serverSideApiKeyIsSet: boolean
-  serverSideGuestCodeIsSet: boolean
+  serverSideUnlockCodeIsSet: boolean
   serverSidePluginKeysSet: boolean
   defaultModelId: OpenAIModelID
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCodeIsSet, defaultModelId}: Props) => {
+const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, defaultModelId}: Props) => {
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -53,22 +53,22 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
   })
 
   const {
-    state: {apiKey, guestCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
+    state: {apiKey, unlockCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
     dispatch
   } = contextValue
 
   const stopConversationRef = useRef<boolean>(false)
 
   const {data, error, refetch} = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet, guestCode, !serverSideGuestCodeIsSet],
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
     ({signal}) => {
-      if (!guestCode && serverSideGuestCodeIsSet) {
+      if (!unlockCode && serverSideUnlockCodeIsSet) {
         return null
       }
       if (!apiKey && !serverSideApiKeyIsSet) {
         return null
       }
-      return getModels({key: apiKey}, guestCode, signal)
+      return getModels({key: apiKey}, unlockCode, signal)
     },
     {enabled: true, refetchOnMount: false}
   )
@@ -225,12 +225,13 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
-    serverSideGuestCodeIsSet &&
+    serverSideUnlockCodeIsSet &&
       dispatch({
-        field: "serverSideGuestCodeIsSet",
-        value: serverSideGuestCodeIsSet
+        field: "serverSideUnlock" +
+            "CodeIsSet",
+        value: serverSideUnlockCodeIsSet
       })
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCodeIsSet, dispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, dispatch])
 
   // ON LOAD --------------------------------------------
 
@@ -244,7 +245,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
     }
 
     const apiKey = localStorage.getItem("apiKey")
-    const guestCode = localStorage.getItem("guestCode")
+    const unlockCode = localStorage.getItem("unlockCode")
 
     if (serverSideApiKeyIsSet) {
       dispatch({field: "apiKey", value: ""})
@@ -254,12 +255,12 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
       dispatch({field: "apiKey", value: apiKey})
     }
 
-    if (!serverSideGuestCodeIsSet) {
-      dispatch({field: "guestCode", value: ""})
+    if (!serverSideUnlockCodeIsSet) {
+      dispatch({field: "unlockCode", value: ""})
 
-      localStorage.removeItem("guestCode")
-    } else if (guestCode) {
-      dispatch({field: "guestCode", value: guestCode})
+      localStorage.removeItem("unlockCode")
+    } else if (unlockCode) {
+      dispatch({field: "unlockCode", value: unlockCode})
     }
 
     const pluginKeys = localStorage.getItem("pluginKeys")
@@ -327,7 +328,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideGuestCo
         }
       })
     }
-  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSideGuestCodeIsSet, serverSidePluginKeysSet, dispatch])
+  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, dispatch])
 
   const title = "Chatty"
   return (
@@ -389,7 +390,7 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      serverSideGuestCodeIsSet: !!process.env.OPENAI_GUEST_CODE,
+      serverSideUnlockCodeIsSet: !!process.env.OPENAI_UNLOCK_CODE,
       defaultModelId,
       serverSidePluginKeysSet,
       ...(await serverSideTranslations(locale ?? "en", [

@@ -6,15 +6,14 @@ import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 
 import ChatbarContext from "@/components/Chatbar/Chatbar.context"
-import {GuestCode} from "@/components/Settings/GuestCode"
 import {ImportData} from "@/components/Settings/ImportData"
 import {Key} from "@/components/Settings/Key"
 import {SettingDialog} from "@/components/Settings/SettingDialog"
+import {UnlockCode} from "@/components/Settings/UnlockCode"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
 import {ClearConversations} from "./ClearConversations"
 import {PluginKeys} from "./PluginKeys"
-
 
 export const ChatbarSettings = () => {
   const {t} = useTranslation("sidebar")
@@ -23,10 +22,10 @@ export const ChatbarSettings = () => {
   const {
     state: {
       apiKey,
-      guestCode,
+      unlockCode,
       lightMode,
       serverSideApiKeyIsSet,
-      serverSideGuestCodeIsSet,
+      serverSideUnlockCodeIsSet,
       serverSidePluginKeysSet,
       conversations
     },
@@ -38,7 +37,7 @@ export const ChatbarSettings = () => {
     handleImportConversations,
     handleExportConversations,
     handleApiKeyChange,
-    handleGuestCodeChange
+    handleUnlockCodeChange
   } = useContext(ChatbarContext)
 
   return (
@@ -68,7 +67,9 @@ export const ChatbarSettings = () => {
         }}
       />
 
-      {serverSideGuestCodeIsSet ? <GuestCode guestCode={guestCode} onGuestCodeChange={handleGuestCodeChange} /> : null}
+      {serverSideUnlockCodeIsSet ? (
+        <UnlockCode unlockCode={unlockCode} onUnlockCodeChange={handleUnlockCodeChange} />
+      ) : null}
     </div>
   )
 }

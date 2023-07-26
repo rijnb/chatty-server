@@ -8,7 +8,7 @@ import {Prompt} from "@/types/prompt"
 
 export interface HomeInitialState {
   apiKey: string
-  guestCode: string
+  unlockCode: string
   pluginKeys: PluginKey[]
   loading: boolean
   lightMode: "light" | "dark"
@@ -28,13 +28,13 @@ export interface HomeInitialState {
   searchTerm: string
   defaultModelId: OpenAIModelID | undefined
   serverSideApiKeyIsSet: boolean
-  serverSideGuestCodeIsSet: boolean
+  serverSideUnlockCodeIsSet: boolean
   serverSidePluginKeysSet: boolean
 }
 
 export const initialState: HomeInitialState = {
   apiKey: "",
-  guestCode: "",
+  unlockCode: "",
   loading: false,
   pluginKeys: [],
   lightMode: "dark",
@@ -54,6 +54,6 @@ export const initialState: HomeInitialState = {
   searchTerm: "",
   defaultModelId: undefined,
   serverSideApiKeyIsSet: false,
-  serverSideGuestCodeIsSet: false,
+  serverSideUnlockCodeIsSet: false,
   serverSidePluginKeysSet: false
 }

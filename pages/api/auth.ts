@@ -4,7 +4,7 @@ function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim()
 
   return {
-    guestCode: token
+    unlockCode: token
   }
 }
 
@@ -23,9 +23,9 @@ function timingSafeEqual(a: string, b: string) {
 }
 
 export function auth(req: Request | NextApiRequest) {
-  const SERVER_GUEST_CODE = process.env.OPENAI_GUEST_CODE ?? ""
+  const SERVER_UNLOCK_CODE = process.env.OPENAI_UNLOCK_CODE ?? ""
 
-  if (!SERVER_GUEST_CODE) {
+  if (!SERVER_UNLOCK_CODE) {
     return {
       error: false
     }
@@ -43,12 +43,12 @@ export function auth(req: Request | NextApiRequest) {
   }
 
   // check if it is openai api key or user token
-  const {guestCode} = parseApiKey(authToken)
+  const {unlockCode} = parseApiKey(authToken)
 
   // Compare buffer with two codes
-  const isGuestCodeValid = timingSafeEqual(guestCode, SERVER_GUEST_CODE)
+  const isUnlockCodeValid = timingSafeEqual(unlockCode, SERVER_UNLOCK_CODE)
 
-  if (!isGuestCodeValid) {
+  if (!isUnlockCodeValid) {
     return {
       error: true,
       status: 401,
