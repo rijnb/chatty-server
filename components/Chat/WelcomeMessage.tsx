@@ -24,7 +24,7 @@ export const WelcomeMessage: FC<Props> = () => {
             <span className="text-indigo-700">Y</span>&nbsp;
           </div>
           <div className="text-center text-xl font-mono font-bold text-gray-800 dark:text-gray-400">
-            A better interface for
+            Just a better interface for
             <p />
             Azure and OpenAI GPT-3/GPT-4
           </div>
