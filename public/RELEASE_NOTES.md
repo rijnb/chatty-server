@@ -12,6 +12,7 @@
 
 * Fixed prompts selector. Only works on start of line and cannot scroll below list.
 * Fixed cancelling prompt. Now empties input bar.
+* Fixed message delete, which sometimes failed.
 
 ### 2023-07-24
 
