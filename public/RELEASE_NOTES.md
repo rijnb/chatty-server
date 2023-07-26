@@ -5,6 +5,7 @@
 #### Features
 
 * Improved welcome screen and handling of API key, unlock code and loading models. 
+* Top status now always visible, to choose model and show release notes. 
 
 ### 2023-07-24
 
