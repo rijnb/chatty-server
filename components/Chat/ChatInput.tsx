@@ -17,6 +17,7 @@ import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
 import {PromptVariableModal} from "./PromptVariableModal"
 
+
 interface Props {
   model: OpenAIModel
   onSend: (message: Message, plugin: Plugin | null) => void
@@ -39,9 +40,7 @@ export const ChatInput = ({
   const {t} = useTranslation("chat")
 
   const {
-    state: {selectedConversation, messageIsStreaming, prompts},
-
-    dispatch: homeDispatch
+    state: {selectedConversation, messageIsStreaming, prompts}
   } = useContext(HomeContext)
 
   const [content, setContent] = useState<string>()
@@ -57,12 +56,6 @@ export const ChatInput = ({
   const promptListRef = useRef<HTMLUListElement | null>(null)
 
   const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()))
-
-  const isMobile = () => {
-    const userAgent = typeof window.navigator === "undefined" ? "" : navigator.userAgent
-    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i
-    return mobileRegex.test(userAgent)
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -262,7 +255,6 @@ export const ChatInput = ({
           <button
             className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={() => setShowPluginSelect(!showPluginSelect)}
-            onKeyDown={(e) => {}}
           >
             {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
           </button>
@@ -303,7 +295,9 @@ export const ChatInput = ({
               maxHeight: "400px",
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
             }}
-            placeholder={(prompts.length > 0) ? t('Type a message or type "/" to select a prompt...') : t('Type a message...')}
+            placeholder={
+              prompts.length > 0 ? t('Type a message or type "/" to select a prompt...') : t("Type a message...")
+            }
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}

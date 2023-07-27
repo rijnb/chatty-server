@@ -38,14 +38,11 @@ export const PluginKeys = () => {
         window.addEventListener("mouseup", handleMouseUp)
       }
     }
-
     const handleMouseUp = (e: MouseEvent) => {
       window.removeEventListener("mouseup", handleMouseUp)
       setIsChanging(false)
     }
-
     window.addEventListener("mousedown", handleMouseDown)
-
     return () => {
       window.removeEventListener("mousedown", handleMouseDown)
     }
@@ -102,11 +99,9 @@ export const PluginKeys = () => {
                                   value: e.target.value
                                 }
                               }
-
                               return k
                             })
                           }
-
                           handlePluginKeyChange(updatedPluginKey)
                         }
                       } else {
@@ -123,7 +118,6 @@ export const PluginKeys = () => {
                             }
                           ]
                         }
-
                         handlePluginKeyChange(newPluginKey)
                       }
                     }}
@@ -154,11 +148,9 @@ export const PluginKeys = () => {
                                   value: e.target.value
                                 }
                               }
-
                               return k
                             })
                           }
-
                           handlePluginKeyChange(updatedPluginKey)
                         }
                       } else {
@@ -175,12 +167,10 @@ export const PluginKeys = () => {
                             }
                           ]
                         }
-
                         handlePluginKeyChange(newPluginKey)
                       }
                     }}
                   />
-
                   <button
                     className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
                     onClick={() => {
@@ -194,7 +184,6 @@ export const PluginKeys = () => {
                     Clear Google Search API key
                   </button>
                 </div>
-
                 <button
                   type="button"
                   className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"

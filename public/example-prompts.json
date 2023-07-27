@@ -523,10 +523,10 @@
       "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
     },
     {
-      "id": "b04c38b5-594f-42be-8594-c5f79d2d8ba6",
+      "id": "273b7b10-a735-4360-a9d4-da9d4ea64435",
       "name": "Add code to chat",
-      "description": "This prompt allows you to paste code into the context pf the chat, without immediately asking something in this prompt. Ideal for adding multiple files into the context.",
-      "content": "I have the following code below. Just respond with “OK, you can ask me about this code.” if you get this.\n```\n{{Paste your code or file here}}\n```",
+      "description": "Paste code snippets or complete files to this chat so we can use it in our chat.",
+      "content": "I have this code. Just respond with “OK, ask me about your code.” if you get this.\n```\n{{Paste a code snippet or complete file}}\n```",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",

@@ -16,7 +16,6 @@ interface Props {
 }
 
 export const ImportData: FC<Props> = ({text, onImport}) => {
-  const {t} = useTranslation("sidebar")
   const [errors, setErrors] = useState<string[]>([])
   return (
     <>

@@ -1,4 +1,4 @@
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {FC, KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
 
 import {useTranslation} from "next-i18next"
 
@@ -22,7 +22,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
 
-  const updatedPrompt = {...prompt, name, description, content: content.trim()}
+  const updatedPrompt = useMemo(() => ({...prompt, name, description, content}), [prompt, name, description, content])
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isEnterKey(e) && !e.shiftKey) {

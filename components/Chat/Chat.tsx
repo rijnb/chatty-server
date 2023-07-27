@@ -63,10 +63,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       pluginKeys,
       serverSideApiKeyIsSet,
       serverSideUnlockCodeIsSet,
-      messageIsStreaming,
       modelError,
-      loading,
-      prompts
+      loading
     },
     handleUpdateConversation,
     dispatch: homeDispatch
@@ -183,7 +181,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
 
           // Get response data (as JSON for plugin, as reader for OpenAI).
-          const data = plugin ? await response.json() : await response.body?.getReader()
+          const data = plugin ? await response.json() : response.body?.getReader()
           if (!data) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
@@ -306,13 +304,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     },
     [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, unlockCode]
   )
-
-  const scrollToBottom = useCallback(() => {
-    if (autoScrollEnabled) {
-      messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
-      textareaRef.current?.focus()
-    }
-  }, [autoScrollEnabled])
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
@@ -558,7 +549,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         contentLabel="Release Notes"
         ariaHideApp={false}
       >
-        {/*{releaseNotesMarkdown ? <ReactMarkdown plugins={[gfm]}>{releaseNotesMarkdown}</ReactMarkdown> : <p>Loading release notes...</p>}*/}
+
         <MemoizedReactMarkdown
           className="prose dark:prose-invert flex-1"
           remarkPlugins={[remarkGfm, remarkMath]}

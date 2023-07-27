@@ -10,8 +10,7 @@ export const ModelSelect = () => {
 
   const {
     state: {selectedConversation, models, defaultModelId},
-    handleUpdateConversation,
-    dispatch: homeDispatch
+    handleUpdateConversation
   } = useContext(HomeContext)
 
   const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {

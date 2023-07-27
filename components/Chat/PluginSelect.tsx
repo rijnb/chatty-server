@@ -1,4 +1,4 @@
-import {FC, useEffect, useRef} from "react"
+import React, {FC, useEffect, useRef} from "react"
 
 import {useTranslation} from "next-i18next"
 

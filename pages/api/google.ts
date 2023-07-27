@@ -20,7 +20,7 @@ import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const authResult = auth(req)
     if (authResult.error) {

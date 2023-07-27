@@ -23,13 +23,11 @@ export const ChatbarSettings = () => {
     state: {
       apiKey,
       unlockCode,
-      lightMode,
       serverSideApiKeyIsSet,
       serverSideUnlockCodeIsSet,
       serverSidePluginKeysSet,
       conversations
-    },
-    dispatch: homeDispatch
+    }
   } = useContext(HomeContext)
 
   const {

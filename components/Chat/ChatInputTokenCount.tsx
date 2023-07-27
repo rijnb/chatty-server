@@ -62,11 +62,11 @@ export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
   }
   return count > tokenLimit ? (
     <div className="bg-opacity-40 bg-red-500 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
-      {count} / {tokenLimit} tokens
+      {count} / {tokenLimit} {t("tokens")}
     </div>
   ) : (
     <div className="bg-opacity-10 bg-neutral-300 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
-      {count} / {tokenLimit} tokens
+      {count} / {tokenLimit} {t("tokens")}
     </div>
   )
 }

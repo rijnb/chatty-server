@@ -31,7 +31,6 @@ export const useFetch = () => {
         }
         const contentType = response.headers.get("content-type")
         const contentDisposition = response.headers.get("content-disposition")
-        const headers = response.headers
         const data =
           contentType && (contentType?.indexOf("application/json") !== -1 || contentType?.indexOf("text/plain") !== -1)
             ? response.json()
@@ -63,8 +62,5 @@ export const useFetch = () => {
     patch: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
       return handleFetch(url, {...request, method: "patch"})
     },
-    delete: async <T>(url: string, request?: RequestModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "delete"})
-    }
   }
 }

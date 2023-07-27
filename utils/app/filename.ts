@@ -8,9 +8,3 @@ export const generateFilename = (prefix: string, suffix: string) => {
   const seconds = String(now.getSeconds()).padStart(2, "0")
   return `${prefix}_${year}${month}${day}_${hours}${minutes}${seconds}${suffix.startsWith(".") ? "" : "."}${suffix}`
 }
-
-// replace common problematic filename characters
-export const sanitizeFilename = (filename: string): string => {
-  const regex = /[\/\\:*?"<>|]+/g
-  return filename.replace(regex, "_")
-}

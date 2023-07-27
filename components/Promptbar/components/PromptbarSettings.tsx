@@ -17,8 +17,7 @@ interface Props {}
 export const PromptbarSettings: FC<Props> = () => {
   const {t} = useTranslation("sidebar")
   const {
-    state: {prompts},
-    dispatch: homeDispatch
+    state: {prompts}
   } = useContext(HomeContext)
 
   const {handleClearPrompts, handleImportPrompts, handleExportPrompts} = useContext(PromptbarContext)
