@@ -6,7 +6,6 @@ import {isEnterKey} from "@/utils/app/keys"
 
 import {Prompt} from "@/types/prompt"
 
-
 interface Props {
   prompt: Prompt
   onClose: () => void
@@ -22,9 +21,14 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
 
-  const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
+  const updatedPrompt = {...prompt, name, description, content: content.trim()}
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isEnterKey(e) && !e.shiftKey) {
-      onUpdatePrompt({...prompt, name, description, content: content.trim()})
+      e.preventDefault()
+      onUpdatePrompt(updatedPrompt)
+      onClose()
+    } else if (e.key === "Escape") {
       onClose()
     }
   }
@@ -35,14 +39,11 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
         window.addEventListener("mouseup", handleMouseUp)
       }
     }
-
     const handleMouseUp = (e: MouseEvent) => {
       window.removeEventListener("mouseup", handleMouseUp)
       onClose()
     }
-
     window.addEventListener("mousedown", handleMouseDown)
-
     return () => {
       window.removeEventListener("mousedown", handleMouseDown)
     }
@@ -53,7 +54,10 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   }, [])
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onKeyDown={handleEnter}>
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onKeyDown={handleKeyDown}
+    >
       <div className="fixed inset-0 z-10 overflow-hidden">
         <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <div className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true" />
@@ -76,7 +80,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
             <textarea
               className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
               style={{resize: "none"}}
-              placeholder={t("A description for your prompt.") || ""}
+              placeholder={t("A description for your prompt.")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -86,9 +90,9 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
             <textarea
               className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
               style={{resize: "none"}}
-              placeholder={
-                t("Prompt content. Use {{}} to denote a variable. Ex: {{name}} is a {{adjective}} {{noun}}") || ""
-              }
+              placeholder={t(
+                "Prompt content. Use {{}} to denote variables. For example: {{Translate this text}} {{Into this language}}"
+              )}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={10}
@@ -98,13 +102,6 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               type="button"
               className="w-full px-4 py-2 mt-6 border rounded-lg shadow border-neutral-500 text-neutral-900 hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
               onClick={() => {
-                const updatedPrompt = {
-                  ...prompt,
-                  name,
-                  description,
-                  content: content.trim()
-                }
-
                 onUpdatePrompt(updatedPrompt)
                 onClose()
               }}
