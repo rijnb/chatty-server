@@ -76,7 +76,7 @@ const Sidebar = <T,>({
             <IconFolderPlus size={16} />
           </button>
         </div>
-        <Search placeholder={t("Search...") || ""} searchTerm={searchTerm} onSearch={handleSearchTerm} />
+        <Search placeholder={t("Search...")} searchTerm={searchTerm} onSearch={handleSearchTerm} />
 
         <div className="flex-grow overflow-auto">
           {items?.length > 0 && <div className="flex border-b border-white/20 pb-2">{folderComponent}</div>}

@@ -13,7 +13,7 @@
   "OR": "또는",
   "Loading...": "로드 중...",
   "Type a message...": "메시지를 입력하세요...",
-  "Error fetching models.": "모델을 가져오는 중 오류가 발생했습니다.",
+  "Error fetching conversation models.": "모델을 가져오는 중 오류가 발생했습니다.",
   "AI": "인공지능",
   "You": "당신",
   "Cancel": "Cancel",

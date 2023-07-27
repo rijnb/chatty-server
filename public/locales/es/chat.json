@@ -13,7 +13,7 @@
   "OR": "O",
   "Loading...": "Cargando...",
   "Type a message...": "Escriba un mensaje...",
-  "Error fetching models.": "Error al obtener los modelos.",
+  "Error fetching conversation models.": "Error al obtener los modelos.",
   "AI": "IA",
   "You": "Tú",
   "Cancel": "Cancel",

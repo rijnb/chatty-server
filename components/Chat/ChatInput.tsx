@@ -15,8 +15,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import {ChatInputTokenCount} from "./ChatInputTokenCount"
 import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
-import {VariableModal} from "./VariableModal"
-
+import {PromptVariableModal} from "./PromptVariableModal"
 
 interface Props {
   model: OpenAIModel
@@ -50,7 +49,7 @@ export const ChatInput = ({
   const [showPromptList, setShowPromptList] = useState(false)
   const [activePromptIndex, setActivePromptIndex] = useState(0)
   const [promptInputValue, setPromptInputValue] = useState("")
-  const [variables, setVariables] = useState<string[]>([])
+  const [variables, setPromptVariables] = useState<string[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
@@ -127,13 +126,13 @@ export const ChatInput = ({
     if (showPromptList) {
       if (e.key === "ArrowDown") {
         e.preventDefault()
-        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : prevIndex))
+        setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : prevIndex))
       } else if (e.key === "ArrowUp") {
         e.preventDefault()
         setActivePromptIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
       } else if (e.key === "Tab") {
         e.preventDefault()
-        setActivePromptIndex((prevIndex) => (prevIndex < prompts.length - 1 ? prevIndex + 1 : 0))
+        setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : 0))
       } else if (isEnterKey(e)) {
         e.preventDefault()
         handleInitModal()
@@ -152,20 +151,20 @@ export const ChatInput = ({
     }
   }
 
-  const parseVariables = (content: string) => {
+  const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g
-    const foundVariables = []
+    const foundPromptVariables = []
     let match
 
     while ((match = regex.exec(content)) !== null) {
-      foundVariables.push(match[1])
+      foundPromptVariables.push(match[1])
     }
 
-    return foundVariables
+    return foundPromptVariables
   }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = text.match(/\/\w*$/)
+    const match = text.match(/^\/(.*)$/)
 
     if (match) {
       setShowPromptList(true)
@@ -177,10 +176,10 @@ export const ChatInput = ({
   }, [])
 
   const handlePromptSelect = (prompt: Prompt) => {
-    const parsedVariables = parseVariables(prompt.content)
-    setVariables(parsedVariables)
+    const parsedPromptVariables = parsePromptVariables(prompt.content)
+    setPromptVariables(parsedPromptVariables)
 
-    if (parsedVariables.length > 0) {
+    if (parsedPromptVariables.length > 0) {
       setIsModalVisible(true)
     } else {
       setContent((prevContent) => {
@@ -190,14 +189,21 @@ export const ChatInput = ({
     }
   }
 
-  const handleSubmit = (updatedVariables: string[]) => {
-    const newContent = content?.replace(/{{(.*?)}}/g, (match, variable) => {
-      const index = variables.indexOf(variable)
-      return updatedVariables[index]
+  const handleSubmit = (updatedPromptVariables: string[]) => {
+    const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
+      const index = variables.indexOf(promptVariable)
+      return updatedPromptVariables[index]
     })
 
     setContent(newContent)
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }
 
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setContent("")
     if (textareaRef && textareaRef.current) {
       textareaRef.current.focus()
     }
@@ -297,7 +303,7 @@ export const ChatInput = ({
               maxHeight: "400px",
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
             }}
-            placeholder={t('Type a message or type "/" to select a prompt...') || ""}
+            placeholder={(prompts.length > 0) ? t('Type a message or type "/" to select a prompt...') : t('Type a message...')}
             value={content}
             rows={1}
             onCompositionStart={() => setIsTyping(true)}
@@ -341,19 +347,22 @@ export const ChatInput = ({
           )}
 
           {isModalVisible && (
-            <VariableModal
+            <PromptVariableModal
               prompt={filteredPrompts[activePromptIndex]}
-              variables={variables}
+              promptVariables={variables}
               onSubmit={handleSubmit}
+              onCancel={handleCancel}
               onClose={() => setIsModalVisible(false)}
             />
           )}
         </div>
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-        {t("Chatty is a frontend for OpenAI's chat models")}
-        {" developed by Rijn Buve, based on "}
-        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" rel="noreferrer" className="underline">
+        <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
+          Chatty
+        </a>
+        &nbsp;was developed by Rijn Buve, originally based on the works of Mckay Wrigley and others on&nbsp;
+        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">
           chatbot-ui
         </a>
       </div>

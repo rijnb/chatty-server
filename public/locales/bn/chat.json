@@ -13,7 +13,7 @@
   "OR": "অথবা",
   "Loading...": "লোড হচ্ছে...",
   "Type a message...": "কোনো মেসেজ লিখুন...",
-  "Error fetching models.": "মডেল পেতে সমস্যা হচ্ছে।",
+  "Error fetching conversation models.": "মডেল পেতে সমস্যা হচ্ছে।",
   "AI": "AI",
   "You": "তুমি",
   "Cancel": "বাতিল করুন",

@@ -6,6 +6,13 @@
 
 * Improved welcome screen and handling of API key, unlock code and loading models. 
 * Top status now always visible, to choose model and show release notes. 
+* Improved message input box to only show "/" if applicable.
+
+#### Bug fixes
+
+* Fixed prompts selector. Only works on start of line and cannot scroll below list.
+* Fixed cancelling prompt. Now empties input bar.
+* Fixed message delete, which sometimes failed.
 
 ### 2023-07-24
 

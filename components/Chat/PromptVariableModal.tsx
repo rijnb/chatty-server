@@ -7,15 +7,16 @@ import {Prompt} from "@/types/prompt"
 
 interface Props {
   prompt: Prompt
-  variables: string[]
-  onSubmit: (updatedVariables: string[]) => void
+  promptVariables: string[]
+  onSubmit: (updatedPromptVariables: string[]) => void
   onClose: () => void
+  onCancel: () => void
 }
 
-export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose}) => {
-  const [updatedVariables, setUpdatedVariables] = useState<{key: string; value: string}[]>(
-    variables
-      .map((variable) => ({key: variable, value: ""}))
+export const PromptVariableModal: FC<Props> = ({prompt, promptVariables, onSubmit, onClose, onCancel}) => {
+  const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
+    promptVariables
+      .map((promptVariable) => ({key: promptVariable, value: ""}))
       .filter((item, index, array) => array.findIndex((t) => t.key === item.key) === index)
   )
 
@@ -23,7 +24,7 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
   const nameInputRef = useRef<HTMLTextAreaElement>(null)
 
   const handleChange = (index: number, value: string) => {
-    setUpdatedVariables((prev) => {
+    setUpdatedPromptVariables((prev) => {
       const updated = [...prev]
       updated[index].value = value
       return updated
@@ -31,12 +32,12 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
   }
 
   const handleSubmit = () => {
-    if (updatedVariables.some((variable) => variable.value === "")) {
-      alert("Please fill out all variables")
+    if (updatedPromptVariables.some((variable) => variable.value === "")) {
+      alert("Please fill out all prompt variables")
       return
     }
 
-    onSubmit(updatedVariables.map((variable) => variable.value))
+    onSubmit(updatedPromptVariables.map((variable) => variable.value))
     onClose()
   }
 
@@ -45,23 +46,21 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
       e.preventDefault()
       handleSubmit()
     } else if (e.key === "Escape") {
-      onClose()
+      onCancel()
     }
   }
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose()
+        onCancel()
       }
     }
-
     window.addEventListener("click", handleOutsideClick)
-
     return () => {
       window.removeEventListener("click", handleOutsideClick)
     }
-  }, [onClose])
+  }, [onCancel])
 
   useEffect(() => {
     if (nameInputRef.current) {
@@ -80,10 +79,9 @@ export const VariableModal: FC<Props> = ({prompt, variables, onSubmit, onClose})
         role="dialog"
       >
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>
-
         <div className="mb-4 text-sm italic text-black dark:text-neutral-200">{prompt.description}</div>
 
-        {updatedVariables.map((variable, index) => (
+        {updatedPromptVariables.map((variable, index) => (
           <div className="mb-4" key={index}>
             <div className="mb-2 text-sm font-bold text-neutral-200">{variable.key}</div>
 

@@ -13,7 +13,7 @@
   "OR": "ODER",
   "Loading...": "Laden...",
   "Type a message...": "Schreibe eine Nachricht...",
-  "Error fetching models.": "Fehler beim Abrufen der Sprachmodelle.",
+  "Error fetching conversation models.": "Fehler beim Abrufen der Sprachmodelle.",
   "AI": "KI",
   "You": "Du",
   "Cancel": "Cancel",

@@ -13,7 +13,7 @@
   "OR": "أو",
   "Loading...": "...جاري التحميل",
   "Type a message...": "...اكتب رسالة",
-  "Error fetching models.": "خطأ في جلب النماذج",
+  "Error fetching conversation models.": "خطأ في جلب النماذج",
   "AI": "الذكاء الاصطناعي",
   "You": "أنت",
   "Cancel": "Cancel",
