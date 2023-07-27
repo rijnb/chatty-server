@@ -79,20 +79,20 @@ export const PromptVariableModal: FC<Props> = ({prompt, promptVariables, onSubmi
         role="dialog"
       >
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>
-        <div className="mb-4 text-sm italic text-black dark:text-neutral-200">{prompt.description}</div>
+        <div className="mb-4 text-sm text-black dark:text-neutral-200">{prompt.description}</div>
 
         {updatedPromptVariables.map((variable, index) => (
           <div className="mb-4" key={index}>
-            <div className="mb-2 text-sm font-bold text-neutral-200">{variable.key}</div>
+            <div className="mb-2 text-sm font-bold text-neutral-200">{variable.key}:</div>
 
             <textarea
               ref={index === 0 ? nameInputRef : undefined}
               className="mt-1 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
               style={{resize: "none"}}
-              placeholder={`${variable.key}`}
+              placeholder={`${variable.key}...`}
               value={variable.value}
               onChange={(e) => handleChange(index, e.target.value)}
-              rows={3}
+              rows={5}
             />
           </div>
         ))}
