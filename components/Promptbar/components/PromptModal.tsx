@@ -6,6 +6,7 @@ import {isEnterKey} from "@/utils/app/keys"
 
 import {Prompt} from "@/types/prompt"
 
+
 interface Props {
   prompt: Prompt
   onClose: () => void
@@ -41,13 +42,14 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
     }
     const handleMouseUp = (e: MouseEvent) => {
       window.removeEventListener("mouseup", handleMouseUp)
+      onUpdatePrompt(updatedPrompt)
       onClose()
     }
     window.addEventListener("mousedown", handleMouseDown)
     return () => {
       window.removeEventListener("mousedown", handleMouseDown)
     }
-  }, [onClose])
+  }, [onClose, onUpdatePrompt, updatedPrompt])
 
   useEffect(() => {
     nameInputRef.current?.focus()
@@ -74,6 +76,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               placeholder={t("A name for your prompt.")}
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={(e) => setName(e.target.value)}
             />
 
             <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">{t("Description")}</div>
@@ -83,6 +86,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               placeholder={t("A description for your prompt.")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onBlur={(e) => setDescription(e.target.value)}
               rows={3}
             />
 
@@ -95,6 +99,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               )}
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              onBlur={(e) => setContent(e.target.value)}
               rows={10}
             />
 
