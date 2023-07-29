@@ -13,6 +13,7 @@ import {
 
 import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
 
+
 export class OpenAIError extends Error {
   type: string
   param: string
@@ -31,33 +32,40 @@ export const OpenAIStream = async (
   model: OpenAIModel,
   systemPrompt: string,
   temperature: number,
-  key: string,
+  apiKey: string,
   messages: Message[]
 ) => {
+  // OpenAI URL.
   let url = `${OPENAI_API_HOST}/v1/chat/completions`
   if (OPENAI_API_TYPE === "azure") {
+    // Azure URL.
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
+
   console.info(`Input '${messages[messages.length - 1].content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
   console.info(`  HTTP POST ${url}`)
   console.info(
     `  {model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${
-        messages.length
-    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars (limit is ${model.tokenLimit} tokens)]}`
+      messages.length
+    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars (limit is ${
+      model.tokenLimit
+    } tokens)]}`
   )
+
+  // HTTP POST full context to OpenAI.
   const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
       ...(OPENAI_API_TYPE === "openai" && {
-        Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
-      }),
-      ...(OPENAI_API_TYPE === "azure" && {
-        "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
       }),
       ...(OPENAI_API_TYPE === "openai" &&
         OPENAI_ORGANIZATION && {
           "OpenAI-Organization": OPENAI_ORGANIZATION
-        })
+        }),
+      ...(OPENAI_API_TYPE === "azure" && {
+        "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+      })
     },
     method: "POST",
     body: JSON.stringify({
