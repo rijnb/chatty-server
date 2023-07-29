@@ -6,7 +6,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
-import {savePrompts} from "@/utils/app/prompts"
+import {createNewPrompt, savePrompts} from "@/utils/app/prompts"
 
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
@@ -21,10 +21,6 @@ import {Prompts} from "./components/Prompts"
 import Sidebar from "../Sidebar"
 import PromptbarContext from "./PromptBar.context"
 import {PromptbarInitialState, initialState} from "./Promptbar.state"
-
-
-
-import { v4 as uuidv4 } from "uuid";
 
 
 const Promptbar = () => {
@@ -52,19 +48,10 @@ const Promptbar = () => {
 
   const handleCreatePrompt = () => {
     if (defaultModelId) {
-      const newPrompt: Prompt = {
-        id: uuidv4(),
-        name: `Prompt ${prompts.length + 1}`,
-        description: "",
-        content: "",
-        model: OpenAIModels[defaultModelId],
-        folderId: null
-      }
-
+      const newPrompt = createNewPrompt(`Prompt ${prompts.length + 1}`, OpenAIModels[defaultModelId])
       const updatedPrompts = [...prompts, newPrompt]
 
       homeDispatch({field: "prompts", value: updatedPrompts})
-
       savePrompts(updatedPrompts)
     }
   }

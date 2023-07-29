@@ -1,4 +1,4 @@
-import {IconBulbFilled, IconCheck, IconTrash, IconX} from "@tabler/icons-react"
+import {IconBuildingFactory2, IconCheck, IconTrash, IconUserQuestion, IconX} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
 
 import {Prompt} from "@/types/prompt"
@@ -75,7 +75,7 @@ export const PromptComponent = ({prompt}: Props) => {
           setIsRenaming(false)
         }}
       >
-        <IconBulbFilled size={18} />
+        {prompt.isSystemPrompt ? <IconBuildingFactory2 size={18} /> : <IconUserQuestion size={18} />}
 
         <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-4 text-left text-[12.5px] leading-3">
           {prompt.name}
