@@ -1,9 +1,6 @@
 import React, {FC, useEffect, useRef} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {Plugin, PluginList} from "@/types/plugin"
 
 

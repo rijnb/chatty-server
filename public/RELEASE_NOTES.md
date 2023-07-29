@@ -27,6 +27,7 @@
 ### 2023-07-24
 
 #### Features
+
 * Added token usage counter that turns red when older messages are being automatically discarded.
 * Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the
   existing V4 format.

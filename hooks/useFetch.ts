@@ -61,6 +61,6 @@ export const useFetch = () => {
     },
     patch: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
       return handleFetch(url, {...request, method: "patch"})
-    },
+    }
   }
 }

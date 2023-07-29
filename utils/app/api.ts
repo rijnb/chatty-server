@@ -1,5 +1,4 @@
 import {Plugin, PluginID} from "@/types/plugin"
-
 import {basePath} from "@/config"
 
 

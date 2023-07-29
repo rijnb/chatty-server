@@ -1,7 +1,5 @@
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 
 

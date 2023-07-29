@@ -1,20 +1,16 @@
 import {NextApiRequest, NextApiResponse} from "next"
-
 import {
-  MSG_CHARS_PRIVACY_LIMIT,
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "@/utils/app/const"
+import {trimForPrivacy} from "@/utils/app/privacy"
 import {cleanSourceText} from "@/utils/server/google"
-
 import {Message} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
-
 import {auth} from "./auth"
-
 import {Readability} from "@mozilla/readability"
 import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
@@ -24,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const authResult = auth(req)
     if (authResult.error) {
-      return new Response("Error: You are not authorized to use the service. Check your Unlock code and API key.", {
+      return new Response("Error: You are not authorized to use the service. Check your Unlock code.", {
         status: 401,
         statusText: authResult.statusText
       })
@@ -34,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
 
-    console.info(`[Google search] ${userMessage.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...`)
+    console.info(`[Google search] ${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
@@ -52,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const sourcesWithText: any = await Promise.all(
       sources.map(async (source) => {
         try {
-          console.info(`[Google search] get URL '${source.link.substring(0, 8 + MSG_CHARS_PRIVACY_LIMIT)}...'`)
+          console.info(`[Google search] get URL '${trimForPrivacy(source.link, 8)}'`)
           const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Google search request timed out")), 5000)
           )
@@ -144,7 +140,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
     const {choices: choices} = await answerRes.json()
     const answer = choices[0].message.content
-    console.info(`[Google search] Got result '${answer.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
+    console.info(`[Google search] Got result '${trimForPrivacy(answer)}'`)
     res.status(200).json({answer})
   } catch (error) {
     console.error(`[Google search] Error: ${error}`)

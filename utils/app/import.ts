@@ -1,3 +1,11 @@
+import {
+  getConversationsHistory,
+  removeSelectedConversation,
+  saveConversationsHistory,
+  saveSelectedConversation
+} from "@/utils/app/conversation"
+import {getFolders, saveFolders} from "@/utils/app/folders"
+import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {Conversation} from "@/types/chat"
 import {ExportFormatV4, LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {FolderInterface} from "@/types/folder"
@@ -60,32 +68,29 @@ export const isValidFile = (json: any): string[] => {
 export const importData = (data: SupportedExportFormats): LatestExportFormat => {
   const {history, folders, prompts} = convertOldDataFormatToNew(data)
 
-  const oldConversations = localStorage.getItem("conversationHistory")
-  const oldConversationsParsed = oldConversations ? JSON.parse(oldConversations) : []
+  const oldConversations = getConversationsHistory()
 
-  const newHistory: Conversation[] = [...oldConversationsParsed, ...history].filter(
+  const newHistory: Conversation[] = [...oldConversations, ...history].filter(
     (conversation, index, self) => index === self.findIndex((c) => c.id === conversation.id)
   )
-  localStorage.setItem("conversationHistory", JSON.stringify(newHistory))
+  saveConversationsHistory(newHistory)
   if (newHistory.length > 0) {
-    localStorage.setItem("selectedConversation", JSON.stringify(newHistory[newHistory.length - 1]))
+    saveSelectedConversation(newHistory[newHistory.length - 1])
   } else {
-    localStorage.removeItem("selectedConversation")
+    removeSelectedConversation()
   }
 
-  const oldFolders = localStorage.getItem("folders")
-  const oldFoldersParsed = oldFolders ? JSON.parse(oldFolders) : []
-  const newFolders: FolderInterface[] = [...folders, ...oldFoldersParsed].filter(
+  const oldFolders = getFolders()
+  const newFolders: FolderInterface[] = [...folders, ...oldFolders].filter(
     (folder, index, self) => index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
   )
-  localStorage.setItem("folders", JSON.stringify(newFolders))
+  saveFolders(newFolders)
 
-  const oldPrompts = localStorage.getItem("prompts")
-  const oldPromptsParsed = oldPrompts ? JSON.parse(oldPrompts) : []
-  const newPrompts: Prompt[] = [...prompts, ...oldPromptsParsed].filter(
+  const oldPrompts = getPrompts()
+  const newPrompts: Prompt[] = [...prompts, ...oldPrompts].filter(
     (prompt, index, self) => index === self.findIndex((p) => p.id === prompt.id)
   )
-  localStorage.setItem("prompts", JSON.stringify(newPrompts))
+  savePrompts(newPrompts)
 
   return {
     version: 4,

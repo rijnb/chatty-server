@@ -1,41 +1,31 @@
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
-
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
-import {savePrompts} from "@/utils/app/prompts"
-
+import {createNewPrompt, savePrompts} from "@/utils/app/prompts"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
-
 import HomeContext from "@/pages/api/home/home.context"
-
+import {PromptBarSettings} from "./components/PromptBarSettings"
 import {PromptFolders} from "./components/PromptFolders"
-import {PromptbarSettings} from "./components/PromptbarSettings"
 import {Prompts} from "./components/Prompts"
-
 import Sidebar from "../Sidebar"
-import PromptbarContext from "./PromptBar.context"
-import {PromptbarInitialState, initialState} from "./Promptbar.state"
+import PromptBarContext from "./PromptBar.context"
+import {PromptBarInitialState, initialState} from "./PromptBar.state"
 
 
-
-import { v4 as uuidv4 } from "uuid";
-
-
-const Promptbar = () => {
+const PromptBar = () => {
   const {t} = useTranslation("promptbar")
 
-  const promptBarContextValue = useCreateReducer<PromptbarInitialState>({
+  const promptBarContextValue = useCreateReducer<PromptBarInitialState>({
     initialState
   })
 
   const {
-    state: {prompts, defaultModelId, showPromptbar, folders},
+    state: {prompts, defaultModelId, showPromptBar, folders},
     dispatch: homeDispatch,
     handleCreateFolder
   } = useContext(HomeContext)
@@ -45,26 +35,15 @@ const Promptbar = () => {
     dispatch: promptDispatch
   } = promptBarContextValue
 
-  const handleTogglePromptbar = () => {
-    homeDispatch({field: "showPromptbar", value: !showPromptbar})
-    localStorage.setItem("showPromptbar", JSON.stringify(!showPromptbar))
+  const handleTogglePromptBar = () => {
+    homeDispatch({field: "showPromptBar", value: !showPromptBar})
+    localStorage.setItem("showPromptBar", JSON.stringify(!showPromptBar))
   }
 
   const handleCreatePrompt = () => {
     if (defaultModelId) {
-      const newPrompt: Prompt = {
-        id: uuidv4(),
-        name: `Prompt ${prompts.length + 1}`,
-        description: "",
-        content: "",
-        model: OpenAIModels[defaultModelId],
-        folderId: null
-      }
-
-      const updatedPrompts = [...prompts, newPrompt]
-
+      const updatedPrompts = [...prompts, createNewPrompt(`Prompt ${prompts.length + 1}`, OpenAIModels[defaultModelId])]
       homeDispatch({field: "prompts", value: updatedPrompts})
-
       savePrompts(updatedPrompts)
     }
   }
@@ -93,7 +72,6 @@ const Promptbar = () => {
       return p
     })
     homeDispatch({field: "prompts", value: updatedPrompts})
-
     savePrompts(updatedPrompts)
   }
 
@@ -107,7 +85,6 @@ const Promptbar = () => {
       }
 
       handleUpdatePrompt(updatedPrompt)
-
       e.target.style.background = "none"
     }
   }
@@ -139,7 +116,7 @@ const Promptbar = () => {
   }, [searchTerm, prompts])
 
   return (
-    <PromptbarContext.Provider
+    <PromptBarContext.Provider
       value={{
         ...promptBarContextValue,
         handleCreatePrompt,
@@ -152,21 +129,21 @@ const Promptbar = () => {
     >
       <Sidebar<Prompt>
         side={"right"}
-        isOpen={showPromptbar}
+        isOpen={showPromptBar}
         addItemButtonTitle={t("New prompt")}
         itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
         folderComponent={<PromptFolders />}
         items={filteredPrompts}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
-        toggleOpen={handleTogglePromptbar}
+        toggleOpen={handleTogglePromptBar}
         handleCreateItem={handleCreatePrompt}
         handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
         handleDrop={handleDrop}
-        footerComponent={<PromptbarSettings />}
+        footerComponent={<PromptBarSettings />}
       />
-    </PromptbarContext.Provider>
+    </PromptBarContext.Provider>
   )
 }
 
-export default Promptbar
+export default PromptBar

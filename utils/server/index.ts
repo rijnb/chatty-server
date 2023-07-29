@@ -1,8 +1,7 @@
+import {trimForPrivacy} from "@/utils/app/privacy"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
-
 import {
-  MSG_CHARS_PRIVACY_LIMIT,
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
   OPENAI_API_TYPE,
@@ -10,7 +9,6 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "../app/const"
-
 import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
 
 
@@ -42,49 +40,47 @@ export const OpenAIStream = async (
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
 
-  console.info(`Input '${messages[messages.length - 1].content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}...'`)
+  const lastMessage = messages[messages.length - 1]
+  console.info(`Input '${trimForPrivacy(lastMessage.content)}'`)
   console.info(`  HTTP POST ${url}`)
   console.info(
-    `  {model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${
-      messages.length
-    }, ${messages[messages.length - 1].role}, ${messages[messages.length - 1].content.length} chars (limit is ${
-      model.tokenLimit
-    } tokens)]}`
+    `  {model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${messages.length}, ${lastMessage.role}, ${lastMessage.content.length} chars (limit is ${model.tokenLimit} tokens)]}`
   )
 
   // HTTP POST full context to OpenAI.
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(OPENAI_API_TYPE === "openai" && {
-        Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+  const headers = {
+    "Content-Type": "application/json",
+
+    // OpenAI headers.
+    ...(OPENAI_API_TYPE === "openai" && {
+      Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+    }),
+    ...(OPENAI_API_TYPE === "openai" &&
+      OPENAI_ORGANIZATION && {
+        "OpenAI-Organization": OPENAI_ORGANIZATION
       }),
-      ...(OPENAI_API_TYPE === "openai" &&
-        OPENAI_ORGANIZATION && {
-          "OpenAI-Organization": OPENAI_ORGANIZATION
-        }),
-      ...(OPENAI_API_TYPE === "azure" && {
-        "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
-      })
-    },
-    method: "POST",
-    body: JSON.stringify({
-      ...(OPENAI_API_TYPE === "openai" && {model: model.id}),
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        ...messages
-      ],
-      max_tokens: OPENAI_API_MAX_TOKENS,
-      temperature: temperature,
-      stream: true
+
+    // Azure headers.
+    ...(OPENAI_API_TYPE === "azure" && {
+      "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
     })
+  }
+  const body = JSON.stringify({
+    model: model.id,
+    messages: [{role: "system", content: systemPrompt}, ...messages],
+    max_tokens: OPENAI_API_MAX_TOKENS,
+    temperature: temperature,
+    stream: true
+  })
+  const response = await fetch(url, {
+    headers: headers,
+    method: "POST",
+    body: body
   })
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
+  // HTTP POST error handling
   if (response.status !== 200) {
     const result = await response.json()
     if (result.error) {
@@ -94,29 +90,36 @@ export const OpenAIStream = async (
     }
   }
 
+  // Read stream from OpenAI.
   return new ReadableStream({
     async start(controller) {
       const onParse = (event: ParsedEvent | ReconnectInterval) => {
         if (event.type === "event") {
           const data = event.data
 
+          // Read next event.
           try {
             const json = JSON.parse(data)
+
+            // If it's the last message, close the stream.
             if (json.choices[0].finish_reason != null) {
               controller.close()
               return
             }
+
+            // Otherwise, send the message to the controller.
             const text = json.choices[0].delta.content
             const queue = encoder.encode(text)
             controller.enqueue(queue)
           } catch (e) {
             controller.error(e)
+            // Do not rethrow. The stream will be closed.
           }
         }
       }
 
+      // Create the parser with the callback.
       const parser = createParser(onParse)
-
       for await (const chunk of response.body as any) {
         parser.feed(decoder.decode(chunk))
       }

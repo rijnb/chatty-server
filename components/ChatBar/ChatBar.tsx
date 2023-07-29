@@ -1,44 +1,33 @@
-import {useCallback, useContext, useEffect} from "react"
-
+import React, {useCallback, useContext, useEffect} from "react"
 import {useTranslation} from "next-i18next"
-
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {saveConversation, saveConversations} from "@/utils/app/conversation"
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {createNewConversation, saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversation"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
-
 import {Conversation} from "@/types/chat"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
-
 import HomeContext from "@/pages/api/home/home.context"
-
-import {ChatFolders} from "./components/ChatFolders"
-import {ChatbarSettings} from "./components/ChatbarSettings"
-import {Conversations} from "./components/Conversations"
-
-import Sidebar from "../Sidebar"
-import ChatbarContext from "./Chatbar.context"
-import {ChatbarInitialState, initialState} from "./Chatbar.state"
+import ChatBarContext from "@/components/ChatBar/ChatBar.context"
+import {ChatBarInitialState, initialState} from "@/components/ChatBar/ChatBar.state"
+import {ChatBarSettings} from "@/components/ChatBar/components/ChatBarSettings"
+import {ChatFolders} from "@/components/ChatBar/components/ChatFolders"
+import {Conversations} from "@/components/ChatBar/components/Conversations"
+import Sidebar from "../Sidebar";
 
 
-
-import { v4 as uuidv4 } from "uuid";
-
-
-export const Chatbar = () => {
+export const ChatBar = () => {
   const {t} = useTranslation("sidebar")
 
-  const chatBarContextValue = useCreateReducer<ChatbarInitialState>({
+  const chatBarContextValue = useCreateReducer<ChatBarInitialState>({
     initialState
   })
 
   const {
-    state: {conversations, showChatbar, defaultModelId, folders, pluginKeys},
+    state: {conversations, showChatBar, defaultModelId, folders, pluginKeys},
     dispatch: homeDispatch,
     handleCreateFolder,
     handleNewConversation,
@@ -106,16 +95,7 @@ export const Chatbar = () => {
     defaultModelId &&
       homeDispatch({
         field: "selectedConversation",
-        value: {
-          id: uuidv4(),
-          name: t("New conversation"),
-          messages: [],
-          model: OpenAIModels[defaultModelId],
-          prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-          temperature: OPENAI_DEFAULT_TEMPERATURE,
-          folderId: null,
-          time: new Date().getTime()
-        }
+        value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
       })
 
     homeDispatch({field: "conversations", value: []})
@@ -146,7 +126,7 @@ export const Chatbar = () => {
 
     homeDispatch({field: "conversations", value: updatedConversations})
     chatDispatch({field: "searchTerm", value: ""})
-    saveConversations(updatedConversations)
+    saveConversationsHistory(updatedConversations)
 
     if (updatedConversations.length > 0) {
       homeDispatch({
@@ -154,30 +134,21 @@ export const Chatbar = () => {
         value: updatedConversations[updatedConversations.length - 1]
       })
 
-      saveConversation(updatedConversations[updatedConversations.length - 1])
+      saveSelectedConversation(updatedConversations[updatedConversations.length - 1])
     } else {
       defaultModelId &&
         homeDispatch({
           field: "selectedConversation",
-          value: {
-            id: uuidv4(),
-            name: t("New conversation"),
-            messages: [],
-            model: OpenAIModels[defaultModelId],
-            prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-            temperature: OPENAI_DEFAULT_TEMPERATURE,
-            folderId: null,
-            time: new Date().getTime()
-          }
+          value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
         })
 
       localStorage.removeItem("selectedConversation")
     }
   }
 
-  const handleToggleChatbar = () => {
-    homeDispatch({field: "showChatbar", value: !showChatbar})
-    localStorage.setItem("showChatbar", JSON.stringify(!showChatbar))
+  const handleToggleChatBar = () => {
+    homeDispatch({field: "showChatBar", value: !showChatBar})
+    localStorage.setItem("showChatBar", JSON.stringify(!showChatBar))
   }
 
   const handleDrop = (e: any) => {
@@ -210,7 +181,7 @@ export const Chatbar = () => {
   }, [searchTerm, conversations])
 
   return (
-    <ChatbarContext.Provider
+    <ChatBarContext.Provider
       value={{
         ...chatBarContextValue,
         handleDeleteConversation,
@@ -225,19 +196,19 @@ export const Chatbar = () => {
     >
       <Sidebar<Conversation>
         side={"left"}
-        isOpen={showChatbar}
+        isOpen={showChatBar}
         addItemButtonTitle={t("New conversation")}
         itemComponent={<Conversations conversations={filteredConversations} />}
         folderComponent={<ChatFolders searchTerm={searchTerm} />}
         items={filteredConversations}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}
-        toggleOpen={handleToggleChatbar}
+        toggleOpen={handleToggleChatBar}
         handleCreateItem={handleNewConversation}
         handleCreateFolder={() => handleCreateFolder(t("New folder"), "chat")}
         handleDrop={handleDrop}
-        footerComponent={<ChatbarSettings />}
+        footerComponent={<ChatBarSettings />}
       />
-    </ChatbarContext.Provider>
+    </ChatBarContext.Provider>
   )
 }

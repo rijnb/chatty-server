@@ -1,9 +1,6 @@
 import {FC, KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 
 

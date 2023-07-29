@@ -1,14 +1,10 @@
 import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {Conversation} from "@/types/chat"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import ChatbarContext from "@/components/Chatbar/Chatbar.context"
+import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 
 
 interface Props {
@@ -22,7 +18,7 @@ export const ConversationComponent = ({conversation}: Props) => {
     handleUpdateConversation
   } = useContext(HomeContext)
 
-  const {handleDeleteConversation} = useContext(ChatbarContext)
+  const {handleDeleteConversation} = useContext(ChatBarContext)
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)

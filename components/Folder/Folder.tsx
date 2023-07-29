@@ -1,12 +1,8 @@
 import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {FolderInterface} from "@/types/folder"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 
 

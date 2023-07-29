@@ -1,10 +1,7 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {SidebarButton} from "../Sidebar/SidebarButton"
 
 

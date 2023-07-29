@@ -1,19 +1,13 @@
-import {MSG_CHARS_PRIVACY_LIMIT} from "@/utils/app/const"
 import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser} from "@tabler/icons-react"
 import React, {FC, memo, useContext, useEffect, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
 import {updateConversation} from "@/utils/app/conversation"
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
+import {trimForPrivacy} from "@/utils/app/privacy"
 import {Message, isSame} from "@/types/chat"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import {CodeBlock} from "../Markdown/CodeBlock"
 import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown"
-
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
@@ -68,7 +62,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
     const {messages} = selectedConversation
     const findIndex = messages.findIndex((elm) => isSame(elm, message))
     if (findIndex < 0) {
-      console.info(`handleDeleteMessage: Message not found for: "${message.content.substring(0, MSG_CHARS_PRIVACY_LIMIT)}..."`)
+      console.info(`handleDeleteMessage: Message not found for: "${trimForPrivacy(message.content)}"`)
       return
     }
 
@@ -87,9 +81,9 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
       messages
     }
 
-    const {single, all} = updateConversation(updatedConversation, conversations)
-    homeDispatch({field: "selectedConversation", value: single})
-    homeDispatch({field: "conversations", value: all})
+    const {selected, history} = updateConversation(updatedConversation, conversations)
+    homeDispatch({field: "selectedConversation", value: selected})
+    homeDispatch({field: "conversations", value: history})
   }
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

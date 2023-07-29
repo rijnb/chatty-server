@@ -1,17 +1,12 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isEnterKey} from "@/utils/app/keyboard"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import {ChatInputTokenCount} from "./ChatInputTokenCount"
 import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"

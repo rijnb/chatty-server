@@ -1,5 +1,7 @@
 import {KeyValuePair} from "./data"
 
+export const STORAGE_KEY_PLUGIN_KEYS = "pluginKey"
+
 export interface Plugin {
   id: PluginID
   name: PluginName
