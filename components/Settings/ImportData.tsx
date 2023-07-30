@@ -49,6 +49,9 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
             }
             reader.readAsText(file)
           })
+
+          // Change the value of the input to make sure onChange fires next time.
+          e.target.value = ""
         }}
       />
 
