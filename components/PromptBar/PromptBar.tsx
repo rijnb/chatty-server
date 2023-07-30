@@ -90,6 +90,7 @@ const PromptBar = () => {
   }
 
   const handleImportPrompts = (data: SupportedExportFormats) => {
+    console.info(`handleImportPrompts`)
     const {folders, prompts}: LatestExportFormat = importData(data)
     homeDispatch({field: "folders", value: folders})
     homeDispatch({field: "prompts", value: prompts})

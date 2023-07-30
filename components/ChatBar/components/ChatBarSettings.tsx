@@ -39,7 +39,7 @@ export const ChatBarSettings = () => {
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
       {conversations.length > 0 ? <ClearConversations onClearConversations={handleClearConversations} /> : null}
 
-      <ImportData text={t("Import conversations")} onImport={handleImportConversations} />
+      <ImportData id="conversations" text={t("Import conversations")} onImport={handleImportConversations} />
 
       {conversations.length > 0 ? (
         <SidebarButton

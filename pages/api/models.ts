@@ -38,7 +38,6 @@ const handler = async (req: Request): Promise<Response> => {
       })
     }
     const response = await fetch(url, {headers: headers})
-
     if (!response.ok) {
       console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
       return new Response(response.body, {

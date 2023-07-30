@@ -8,7 +8,7 @@
 
 #### Bug fixes
 
-* ...
+* Source code cleanup.
 
 ### 2023-07-26
 

@@ -1,3 +1,5 @@
+import {trimForPrivacy} from "@/utils/app/privacy"
+
 export type RequestModel = {
   params?: object
   headers?: object
@@ -23,10 +25,11 @@ export const useFetch = () => {
         ? {}
         : {"Content-type": "application/json"})
     }
+    console.info(`useFetch: url:${requestUrl}`)
     return fetch(requestUrl, {...requestBody, headers, signal})
       .then((response) => {
         if (!response.ok) {
-          console.info(`  HTTP status:${response.status}, statusText:${response.statusText}`)
+          console.info(`useFetch: HTTP error, ${response.status}, statusText:${response.statusText}`)
           throw response
         }
         const contentType = response.headers.get("content-type")
@@ -37,14 +40,13 @@ export const useFetch = () => {
             : contentDisposition?.indexOf("attachment") !== -1
             ? response.blob()
             : response
-        console.info(`  HTTP response`)
         return data
       })
       .catch(async (error) => {
         const contentType = error.headers.get("content-type")
         const errContent =
           contentType && contentType?.indexOf("application/problem+json") !== -1 ? await error.json() : error
-        console.info(`  HTTP status:${error.status}, statusText:${error.statusText}`)
+        console.info(`useFetch: HTTP exception error, ${error.status}, statusText:${error.statusText}`)
         throw errContent
       })
   }
@@ -61,6 +63,9 @@ export const useFetch = () => {
     },
     patch: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
       return handleFetch(url, {...request, method: "patch"})
+    },
+    delete: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
+      return handleFetch(url, {...request, method: "delete"})
     }
   }
 }

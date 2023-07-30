@@ -1,4 +1,5 @@
 import {IconFileExport} from "@tabler/icons-react"
+import {random} from "nanoid"
 import {FC, useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
@@ -22,7 +23,7 @@ export const PromptBarSettings: FC<Props> = () => {
     <div>
       {prompts.length > 0 ? <ClearPrompts onClearPrompts={handleClearPrompts} /> : null}
 
-      <ImportData text={t("Import prompts")} onImport={handleImportPrompts} />
+      <ImportData id="prompts" text={t("Import prompts")} onImport={handleImportPrompts} />
 
       {prompts.length > 0 ? (
         <SidebarButton

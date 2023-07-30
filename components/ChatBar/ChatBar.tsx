@@ -127,6 +127,7 @@ export const ChatBar = () => {
   }
 
   const handleImportConversations = (data: SupportedExportFormats) => {
+    console.info(`handleImportConversations`)
     const {history, folders}: LatestExportFormat = importData(data)
     homeDispatch({field: "conversations", value: history})
     homeDispatch({
