@@ -1,4 +1,4 @@
-import {IconBulbFilled, IconCheck, IconTrash, IconX} from "@tabler/icons-react"
+import {IconBulbFilled, IconCheck, IconTrash, IconX, IconBuildingFactory2} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
 import {Prompt} from "@/types/prompt"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
@@ -72,7 +72,7 @@ export const PromptComponent = ({prompt}: Props) => {
           setIsRenaming(false)
         }}
       >
-        <IconBulbFilled size={18} />
+        {prompt.factory ? <IconBuildingFactory2 size={18} /> : <IconBulbFilled size={18} />}
 
         <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-4 text-left text-[12.5px] leading-3">
           {prompt.name}

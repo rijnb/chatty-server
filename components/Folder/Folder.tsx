@@ -1,6 +1,6 @@
 import {IconCaretDown, IconCaretRight, IconCheck, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {FolderInterface} from "@/types/folder"
 import HomeContext from "@/pages/api/home/home.context"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
@@ -22,7 +22,7 @@ const Folder = ({currentFolder, searchTerm, handleDrop, folderComponent}: Props)
   const [isOpen, setIsOpen] = useState(false)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e)) {
+    if (isKeyboardEnter(e)) {
       e.preventDefault()
       handleRename()
     }

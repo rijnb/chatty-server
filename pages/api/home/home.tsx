@@ -14,8 +14,8 @@ import {
   getSelectedConversation,
   saveConversationsHistory,
   saveSelectedConversation,
-  updateConversation
-} from "@/utils/app/conversation"
+  updateConversationHistory
+} from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
@@ -189,10 +189,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       [data.key]: data.value
     }
 
-    const {selected, history} = updateConversation(updatedConversation, conversations)
-
-    dispatch({field: "selectedConversation", value: selected})
-    dispatch({field: "conversations", value: history})
+    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    dispatch({field: "selectedConversation", value: updatedConversation})
+    dispatch({field: "conversations", value: conversationHistory})
   }
 
   // EFFECTS  --------------------------------------------

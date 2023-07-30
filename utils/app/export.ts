@@ -1,4 +1,4 @@
-import {getConversationsHistory} from "@/utils/app/conversation"
+import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
 import {getPrompts} from "@/utils/app/prompts"

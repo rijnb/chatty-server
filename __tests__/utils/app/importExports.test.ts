@@ -8,12 +8,12 @@ import {describe, expect, it} from "vitest"
 describe("Export Format Functions", () => {
   describe("isExportFormatV4", () => {
     it("should return true for v4 format", () => {
-      const obj = {version: 4, history: [], folders: [], prompts: []}
+      const obj = {version: 4, conversationHistory: [], folders: [], prompts: []}
       expect(isExportFormatV4(obj)).toBe(true)
     })
 
     it("should return false for non-v4 formats", () => {
-      const obj = {version: 5, history: [], folders: [], prompts: []}
+      const obj = {version: 5, conversationHistory: [], folders: [], prompts: []}
       expect(isExportFormatV4(obj)).toBe(false)
     })
   })
@@ -24,7 +24,7 @@ describe("cleanData Functions", () => {
     it("should return the latest format", () => {
       const data = {
         version: 4,
-        history: [
+        conversationHistory: [
           {
             id: "1",
             name: "conversation 1",
@@ -67,7 +67,7 @@ describe("cleanData Functions", () => {
       expect(isLatestExportFormat(obj)).toBe(true)
       expect(obj).toEqual({
         version: 4,
-        history: [
+        conversationHistory: [
           {
             id: "1",
             name: "conversation 1",

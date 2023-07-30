@@ -1,5 +1,5 @@
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 
 
@@ -40,7 +40,7 @@ export const PromptVariableModal: FC<Props> = ({prompt, promptVariables, onSubmi
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e) && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
     } else if (e.key === "Escape") {

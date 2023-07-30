@@ -1,7 +1,7 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
@@ -121,7 +121,7 @@ export const ChatInput = ({
       } else if (e.key === "Tab") {
         e.preventDefault()
         setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : 0))
-      } else if (isEnterKey(e)) {
+      } else if (isKeyboardEnter(e)) {
         e.preventDefault()
         handleInitModal()
       } else if (e.key === "Escape") {
@@ -130,7 +130,7 @@ export const ChatInput = ({
       } else {
         setActivePromptIndex(0)
       }
-    } else if (isEnterKey(e) && !isTyping && !e.shiftKey) {
+    } else if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     } else if (e.key === "/" && e.metaKey) {

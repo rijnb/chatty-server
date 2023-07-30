@@ -1,24 +1,21 @@
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+
 import {Conversation} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
+
 import {v4 as uuidv4} from "uuid"
 
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_CONVERSATION_HISTORY = "conversationHistory"
 
-export const updateConversation = (updatedConversation: Conversation, allConversations: Conversation[]) => {
-  const updatedConversations = allConversations.map((conversation) =>
-    conversation.id === updatedConversation.id ? updatedConversation : conversation
+export const updateConversationHistory = (conversation: Conversation, conversationHistory: Conversation[]) => {
+  const updatedConversationHistory = conversationHistory.map((conversationInHistory) =>
+    conversationInHistory.id === conversation.id ? conversation : conversationInHistory
   )
-
-  saveSelectedConversation(updatedConversation)
-  saveConversationsHistory(updatedConversations)
-
-  return {
-    selected: updatedConversation,
-    history: updatedConversations
-  }
+  saveSelectedConversation(conversation)
+  saveConversationsHistory(updatedConversationHistory)
+  return updatedConversationHistory
 }
 
 export const createNewConversation = (name: string, model: OpenAIModel, temperature: number): Conversation => {
@@ -44,6 +41,11 @@ export const getSelectedConversation = (): Conversation | null => {
   }
 }
 
+export const saveSelectedConversation = (conversation: Conversation) =>
+  localStorage.setItem(LOCAL_STORAGE_SELECTED_CONVERSATION, JSON.stringify(conversation))
+
+export const removeSelectedConversation = () => localStorage.removeItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
+
 export const getConversationsHistory = (): Conversation[] => {
   const conversationsAsString = localStorage.getItem(STORAGE_KEY_CONVERSATION_HISTORY)
   try {
@@ -53,11 +55,6 @@ export const getConversationsHistory = (): Conversation[] => {
     return []
   }
 }
-
-export const saveSelectedConversation = (conversation: Conversation) =>
-  localStorage.setItem(LOCAL_STORAGE_SELECTED_CONVERSATION, JSON.stringify(conversation))
-
-export const removeSelectedConversation = () => localStorage.removeItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
 
 export const saveConversationsHistory = (conversations: Conversation[]) =>
   localStorage.setItem(STORAGE_KEY_CONVERSATION_HISTORY, JSON.stringify(conversations))

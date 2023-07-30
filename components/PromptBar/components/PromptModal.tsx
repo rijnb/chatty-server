@@ -1,6 +1,6 @@
 import {FC, KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 
 
@@ -22,7 +22,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const updatedPrompt = useMemo(() => ({...prompt, name, description, content}), [prompt, name, description, content])
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e) && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !e.shiftKey) {
       e.preventDefault()
       onUpdatePrompt(updatedPrompt)
       onClose()

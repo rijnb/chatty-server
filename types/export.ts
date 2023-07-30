@@ -3,7 +3,7 @@ import {FolderInterface} from "./folder"
 import {Prompt} from "./prompt"
 
 
-export type SupportedExportFormats = ExportFormatV4 // Older format not supported.
+export type SupportedExportFormats = ExportFormatV4 // Older formats not supported.
 
 export type LatestExportFormat = ExportFormatV4
 

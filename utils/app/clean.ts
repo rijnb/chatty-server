@@ -6,7 +6,7 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 export const cleanSelectedConversation = (conversation: Conversation) => {
   let updatedConversation = conversation
 
-  // check for model on each conversation
+  // Check for model on each conversation.
   if (!updatedConversation.model) {
     updatedConversation = {
       ...updatedConversation,
@@ -14,7 +14,7 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
     }
   }
 
-  // check for system prompt on each conversation
+  // Check for system prompt on each conversation.
   if (!updatedConversation.prompt) {
     updatedConversation = {
       ...updatedConversation,

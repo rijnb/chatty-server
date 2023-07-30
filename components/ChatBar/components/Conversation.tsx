@@ -1,6 +1,6 @@
 import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Conversation} from "@/types/chat"
 import HomeContext from "@/pages/api/home/home.context"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
@@ -25,7 +25,7 @@ export const ConversationComponent = ({conversation}: Props) => {
   const [renameValue, setRenameValue] = useState("")
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e)) {
+    if (isKeyboardEnter(e)) {
       e.preventDefault()
       selectedConversation && handleRename(selectedConversation)
     }

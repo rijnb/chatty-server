@@ -29,5 +29,6 @@ export const programmingLanguages: languageMap = {
   sql: ".sql",
   swift: ".swift",
   typescript: ".ts"
-  // add more file extensions here, make sure the key is same as language prop in CodeBlock.tsx component
+
+  // Add more file extensions here. Make sure the key is same as language prop from the SyntaxHighlighter.
 }

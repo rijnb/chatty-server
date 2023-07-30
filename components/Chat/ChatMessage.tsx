@@ -1,10 +1,10 @@
 import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser} from "@tabler/icons-react"
 import React, {FC, memo, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {updateConversation} from "@/utils/app/conversation"
-import {isEnterKey} from "@/utils/app/keyboard"
+import {updateConversationHistory} from "@/utils/app/conversations"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {trimForPrivacy} from "@/utils/app/privacy"
-import {Message, isSame} from "@/types/chat"
+import {Message, equals} from "@/types/chat"
 import HomeContext from "@/pages/api/home/home.context"
 import {CodeBlock} from "../Markdown/CodeBlock"
 import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown"
@@ -60,7 +60,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
     }
 
     const {messages} = selectedConversation
-    const findIndex = messages.findIndex((elm) => isSame(elm, message))
+    const findIndex = messages.findIndex((elm) => equals(elm, message))
     if (findIndex < 0) {
       console.info(`handleDeleteMessage: Message not found for: "${trimForPrivacy(message.content)}"`)
       return
@@ -81,13 +81,13 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
       messages
     }
 
-    const {selected, history} = updateConversation(updatedConversation, conversations)
-    homeDispatch({field: "selectedConversation", value: selected})
-    homeDispatch({field: "conversations", value: history})
+    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    homeDispatch({field: "selectedConversation", value: updatedConversation})
+    homeDispatch({field: "conversations", value: conversationHistory})
   }
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (isEnterKey(e) && !isTyping && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
       handleEditMessage()
     }

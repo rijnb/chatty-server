@@ -5,10 +5,6 @@ export interface GoogleBody extends ChatBody {
   googleCSEId: string
 }
 
-export interface GoogleResponse {
-  message: Message
-}
-
 export interface GoogleSource {
   title: string
   link: string

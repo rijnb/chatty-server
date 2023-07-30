@@ -12,7 +12,8 @@ export const createNewPrompt = (name: string, model: OpenAIModel): Prompt => {
     description: "",
     content: "",
     model: model,
-    folderId: null
+    folderId: null,
+    factory : null
   }
 }
 

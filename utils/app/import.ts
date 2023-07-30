@@ -3,7 +3,7 @@ import {
   removeSelectedConversation,
   saveConversationsHistory,
   saveSelectedConversation
-} from "@/utils/app/conversation"
+} from "@/utils/app/conversations"
 import {getFolders, saveFolders} from "@/utils/app/folders"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {Conversation} from "@/types/chat"

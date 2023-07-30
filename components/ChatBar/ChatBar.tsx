@@ -1,22 +1,33 @@
-import React, {useCallback, useContext, useEffect} from "react"
+import {useCallback, useContext, useEffect} from "react"
+
 import {useTranslation} from "next-i18next"
+
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {createNewConversation, saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversation"
+
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
+
 import {Conversation} from "@/types/chat"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
+
 import HomeContext from "@/pages/api/home/home.context"
-import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import {ChatBarInitialState, initialState} from "@/components/ChatBar/ChatBar.state"
-import {ChatBarSettings} from "@/components/ChatBar/components/ChatBarSettings"
-import {ChatFolders} from "@/components/ChatBar/components/ChatFolders"
-import {Conversations} from "@/components/ChatBar/components/Conversations"
-import Sidebar from "../Sidebar";
+
+import {ChatBarSettings} from "./components/ChatBarSettings"
+import {ChatFolders} from "./components/ChatFolders"
+import {Conversations} from "./components/Conversations"
+
+import Sidebar from "../Sidebar"
+import ChatBarContext from "./ChatBar.context"
+import {ChatBarInitialState, initialState} from "./ChatBar.state"
+
+
+
+import { v4 as uuidv4 } from "uuid";
 
 
 export const ChatBar = () => {
@@ -95,7 +106,16 @@ export const ChatBar = () => {
     defaultModelId &&
       homeDispatch({
         field: "selectedConversation",
-        value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
+        value: {
+          id: uuidv4(),
+          name: t("New conversation"),
+          messages: [],
+          model: OpenAIModels[defaultModelId],
+          prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
+          temperature: OPENAI_DEFAULT_TEMPERATURE,
+          folderId: null,
+          time: new Date().getTime()
+        }
       })
 
     homeDispatch({field: "conversations", value: []})
@@ -139,7 +159,16 @@ export const ChatBar = () => {
       defaultModelId &&
         homeDispatch({
           field: "selectedConversation",
-          value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
+          value: {
+            id: uuidv4(),
+            name: t("New conversation"),
+            messages: [],
+            model: OpenAIModels[defaultModelId],
+            prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
+            temperature: OPENAI_DEFAULT_TEMPERATURE,
+            folderId: null,
+            time: new Date().getTime()
+          }
         })
 
       localStorage.removeItem("selectedConversation")

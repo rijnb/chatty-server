@@ -4,7 +4,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
-import {createNewPrompt, savePrompts} from "@/utils/app/prompts"
+import {createNewPrompt, savePrompts, STORAGE_KEY_PROMPTS} from "@/utils/app/prompts"
 import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
@@ -50,7 +50,7 @@ const PromptBar = () => {
 
   const handleClearPrompts = () => {
     homeDispatch({field: "prompts", value: []})
-    localStorage.removeItem("prompts")
+    localStorage.removeItem(STORAGE_KEY_PROMPTS)
     const updatedFolders = folders.filter((f) => f.type !== "prompt")
     homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
