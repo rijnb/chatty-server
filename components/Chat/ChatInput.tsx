@@ -217,9 +217,7 @@ export const ChatInput = ({
         setShowPromptList(false)
       }
     }
-
     window.addEventListener("click", handleOutsideClick)
-
     return () => {
       window.removeEventListener("click", handleOutsideClick)
     }

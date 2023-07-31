@@ -19,27 +19,27 @@ export function isJsonFormatV4(obj: any): obj is FileFormatV4 {
   return obj.version === 4
 }
 
-export const upgradeDataToLatestJsonFormat = (data: SupportedFileFormats): LatestFileFormat => {
+export const upgradeDataToLatestFormat = (data: SupportedFileFormats): LatestFileFormat => {
   if (isJsonFormatV4(data)) {
     return data
   }
   throw new Error(`Unsupported data file format version: ${trimForPrivacy(JSON.stringify(data))}`)
 }
 
-export const isValidJsonData = (json: any): string[] => {
+export const isValidJsonData = (jsonData: any): string[] => {
   const errors = []
-  if (!json || typeof json !== "object") {
-    errors.push("Invalid JSON format, incorrect top-level structure, expected an object")
+  if (!jsonData || typeof jsonData !== "object") {
+    errors.push("Invalid JSON format; incorrect top-level structure, expected an object")
     return errors
   }
-  const {version, history, folders, prompts} = json
+  const {version, history, folders, prompts} = jsonData
   if (
     typeof version !== "number" ||
     (history && !Array.isArray(history)) ||
     (folders && !Array.isArray(folders)) ||
     (prompts && !Array.isArray(prompts))
   ) {
-    errors.push("Invalid file structure, expected version, history, folders and prompts keys")
+    errors.push("Invalid file structure; expected version, history, folders and prompts keys")
     return errors
   }
   if (history) {
@@ -52,12 +52,12 @@ export const isValidJsonData = (json: any): string[] => {
         typeof historyItem.prompt !== "string" ||
         typeof historyItem.temperature !== "number"
       ) {
-        errors.push("Invalid history item format, expected id, name, messages, model, prompt and temperature keys")
+        errors.push("Invalid history item format; expected id, name, messages, model, prompt and temperature keys")
         break
       }
       for (const message of historyItem.messages) {
         if (!message.role || typeof message.content !== "string") {
-          errors.push("Invalid message format in history item, expected role and content keys")
+          errors.push("Invalid message format in history item; expected role and content keys")
           break
         }
       }
@@ -67,10 +67,13 @@ export const isValidJsonData = (json: any): string[] => {
 }
 
 export const importJsonData = (data: SupportedFileFormats): LatestFileFormat => {
-  const {history, folders, prompts} = upgradeDataToLatestJsonFormat(data)
-  const existingConversationHistory = getConversationsHistory()
+  const {history: importedHistory, folders: importedfolders, prompts: importedprompts} = upgradeDataToLatestFormat(data)
+  const history = importedHistory ?? []
+  const folders = importedfolders ?? []
+  const prompts = importedprompts ?? []
 
   // Existing conversations are NOT overwritten.
+  const existingConversationHistory = getConversationsHistory()
   const conversationHistory: Conversation[] = [...existingConversationHistory, ...history].filter(
     (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
   )

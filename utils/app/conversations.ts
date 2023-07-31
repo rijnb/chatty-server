@@ -23,7 +23,7 @@ export const createNewConversation = (name: string, model: OpenAIModel, temperat
 export const getSelectedConversation = (): Conversation | null => {
   const conversation = localStorage.getItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
   try {
-    return conversation ? JSON.parse(conversation) : null
+    return conversation ? JSON.parse(conversation) : undefined
   } catch (error) {
     console.error(`Local storage error: ${error}`)
     return null
@@ -52,7 +52,7 @@ export const removeConversationsHistory = () => localStorage.removeItem(STORAGE_
 
 export const updateConversationHistory = (conversation: Conversation, conversationHistory: Conversation[]) => {
   const updatedConversationHistory = conversationHistory.map((conversationInHistory) =>
-      conversationInHistory.id === conversation.id ? conversation : conversationInHistory
+    conversationInHistory.id === conversation.id ? conversation : conversationInHistory
   )
   saveSelectedConversation(conversation)
   saveConversationsHistory(updatedConversationHistory)

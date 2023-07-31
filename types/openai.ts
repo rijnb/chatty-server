@@ -40,4 +40,5 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
 }
 
 // In case the `OPENAI_DEFAULT_MODEL` environment variable is not set or set to an unsupported model.
-export const fallbackOpenAIModel = OpenAIModels["gpt-4-32k"]
+export const fallbackOpenAIModelID = OpenAIModelID.GPT_4_32K
+export const fallbackOpenAIModel = OpenAIModels[fallbackOpenAIModelID]

@@ -37,7 +37,7 @@ export const removeUnlockCode = () => localStorage.removeItem(STORAGE_KEY_UNLOCK
 
 export const getShowChatBar = () => {
   const value = localStorage.getItem(STORAGE_KEY_SHOW_CHAT_BAR)
-  return value ? JSON.parse(value) : null
+  return value ? JSON.parse(value) : false
 }
 export const saveShowChatBar = (showChatBar: boolean) =>
   localStorage.setItem(STORAGE_KEY_SHOW_CHAT_BAR, JSON.stringify(showChatBar))
@@ -45,7 +45,7 @@ export const removeShowChatBar = () => localStorage.removeItem(STORAGE_KEY_SHOW_
 
 export const getShowPromptBar = () => {
   const value = localStorage.getItem(STORAGE_KEY_SHOW_PROMPT_BAR)
-  return value ? JSON.parse(value) : null
+  return value ? JSON.parse(value) : false
 }
 export const saveShowPromptBar = (showPromptBar: boolean) =>
   localStorage.setItem(STORAGE_KEY_SHOW_PROMPT_BAR, JSON.stringify(showPromptBar))

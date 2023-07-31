@@ -1,11 +1,11 @@
-import {saveShowPromptBar} from "@/utils/app/settings"
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importJsonData} from "@/utils/app/import"
-import {createNewPrompt, removePrompts, savePrompts, STORAGE_KEY_PROMPTS} from "@/utils/app/prompts"
+import {createNewPrompt, removePrompts, savePrompts} from "@/utils/app/prompts"
+import {saveShowPromptBar} from "@/utils/app/settings"
 import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
@@ -20,10 +20,7 @@ import {PromptBarInitialState, initialState} from "./PromptBar.state"
 
 const PromptBar = () => {
   const {t} = useTranslation("promptbar")
-
-  const promptBarContextValue = useCreateReducer<PromptBarInitialState>({
-    initialState
-  })
+  const promptBarContextValue = useCreateReducer<PromptBarInitialState>({initialState})
 
   const {
     state: {prompts, defaultModelId, showPromptBar, folders},

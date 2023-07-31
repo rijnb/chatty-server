@@ -33,15 +33,15 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
             reader.onload = (e) => {
               try {
                 let json = JSON.parse(e.target?.result as string)
-                const validationResult = isValidJsonData(json)
-                if (validationResult.length === 0) {
+                const validationErrors = isValidJsonData(json)
+                if (validationErrors.length === 0) {
                   onImport(json)
                   setErrors([])
                 } else {
-                  setErrors(validationResult)
+                  setErrors(validationErrors)
                 }
               } catch (error) {
-                setErrors([`Invalid JSON file: file:${file.name}, error:${JSON.stringify(error)}`])
+                setErrors([`Invalid JSON file; file:${file.name}, exception:${error}`])
               }
             }
             reader.readAsText(file)
@@ -64,7 +64,6 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
       />
       {errors.length > 0 && (
         <div className="error-messages">
-          Errors in JSON file, not imported:
           {errors.map((error, index) => (
             <p key={index} className="error-message">
               {error}

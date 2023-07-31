@@ -53,9 +53,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
-  const contextValue = useCreateReducer<HomeInitialState>({
-    initialState
-  })
+  const contextValue = useCreateReducer<HomeInitialState>({initialState})
 
   const {
     state: {apiKey, unlockCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
@@ -149,7 +147,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   }
 
   const handleNewConversation = () => {
-    const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : null
+    const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
     const newConversation = createNewConversation(
       t("New conversation"),
       lastConversation?.model ?? OpenAIModels[defaultModelId],
@@ -181,31 +179,31 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   // Retrieved models from API.
   useEffect(() => {
+    console.debug("useEffect: modelData") //!! TODO
     if (modelData) {
-      console.log("data", modelData)
       homeDispatch({field: "models", value: modelData})
     }
   }, [modelData, homeDispatch])
 
   // Error retrieving models from API.
   useEffect(() => {
+    console.debug("useEffect: error") //!! TODO
     homeDispatch({field: "modelError", value: getModelsError(error)})
   }, [error, homeDispatch, getModelsError])
 
   // Selected conversation changed.
   useEffect(() => {
+    console.debug("useEffect: selectedConversation") //!! TODO
     if (window.innerWidth < 640) {
+      console.info("3 close chat bar") //!! TODO
       homeDispatch({field: "showChatBar", value: false})
+      homeDispatch({field: "showPromptBar", value: false})
     }
   }, [selectedConversation, homeDispatch])
 
   // Server side props changed.
   useEffect(() => {
-    defaultModelId &&
-      homeDispatch({
-        field: "defaultModelId",
-        value: defaultModelId
-      })
+    apiKey && homeDispatch({field: "apiKey", value: apiKey})
     serverSideApiKeyIsSet &&
       homeDispatch({
         field: "serverSideApiKeyIsSet",
@@ -221,10 +219,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         field: "serverSideUnlockCodeIsSet",
         value: serverSideUnlockCodeIsSet
       })
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
+  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
+    console.debug("useEffect: retrieve settings") //!! TODO
     const settings = getSettings()
     if (settings.theme) {
       homeDispatch({
@@ -235,6 +234,28 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
     const apiKey = getApiKey()
     const unlockCode = getUnlockCode()
+
+    serverSideApiKeyIsSet &&
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
+    serverSidePluginKeysSet &&
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
+    serverSideUnlockCodeIsSet &&
+      homeDispatch({
+        field: "serverSideUnlockCodeIsSet",
+        value: serverSideUnlockCodeIsSet
+      })
+
+    defaultModelId &&
+      homeDispatch({
+        field: "defaultModelId",
+        value: defaultModelId
+      })
 
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
@@ -292,11 +313,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
       homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
     } else {
-      const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : null
+      const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
       homeDispatch({
         field: "selectedConversation",
         value: createNewConversation(
-          t("New conversation"),
+          t("New conversationXXX"),
           lastConversation?.model ?? OpenAIModels[defaultModelId],
           lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
@@ -333,11 +354,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
             <ChatBar />
-
             <div className="flex flex-1">
               <Chat stopConversationRef={stopConversationRef} />
             </div>
-
             <PromptBar />
           </div>
         </main>
