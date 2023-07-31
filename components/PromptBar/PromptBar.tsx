@@ -1,11 +1,12 @@
+import {saveShowPromptBar} from "@/utils/app/settings"
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
-import {importData} from "@/utils/app/import"
-import {createNewPrompt, savePrompts, STORAGE_KEY_PROMPTS} from "@/utils/app/prompts"
-import {LatestExportFormat, SupportedExportFormats} from "@/types/export"
+import {importJsonData} from "@/utils/app/import"
+import {createNewPrompt, removePrompts, savePrompts, STORAGE_KEY_PROMPTS} from "@/utils/app/prompts"
+import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
@@ -37,7 +38,7 @@ const PromptBar = () => {
 
   const handleTogglePromptBar = () => {
     homeDispatch({field: "showPromptBar", value: !showPromptBar})
-    localStorage.setItem("showPromptBar", JSON.stringify(!showPromptBar))
+    saveShowPromptBar(!showPromptBar)
   }
 
   const handleCreatePrompt = () => {
@@ -50,7 +51,7 @@ const PromptBar = () => {
 
   const handleClearPrompts = () => {
     homeDispatch({field: "prompts", value: []})
-    localStorage.removeItem(STORAGE_KEY_PROMPTS)
+    removePrompts()
     const updatedFolders = folders.filter((f) => f.type !== "prompt")
     homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
@@ -89,8 +90,8 @@ const PromptBar = () => {
     }
   }
 
-  const handleImportPrompts = (data: SupportedExportFormats) => {
-    const {folders, prompts}: LatestExportFormat = importData(data)
+  const handleImportPrompts = (data: SupportedFileFormats) => {
+    const {folders, prompts}: LatestFileFormat = importJsonData(data)
     homeDispatch({field: "folders", value: folders})
     homeDispatch({field: "prompts", value: prompts})
   }

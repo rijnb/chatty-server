@@ -1,17 +1,14 @@
 import {IconFileImport} from "@tabler/icons-react"
 import {FC, useState} from "react"
-
-import {isValidFile} from "@/utils/app/import"
-
-import {SupportedExportFormats} from "@/types/export"
-
+import {isValidJsonData} from "@/utils/app/import"
+import {SupportedFileFormats} from "@/types/export"
 import {SidebarButton} from "../Sidebar/SidebarButton"
 
 
 interface Props {
   id: string
   text: string
-  onImport: (data: SupportedExportFormats) => void
+  onImport: (data: SupportedFileFormats) => void
 }
 
 export const ImportData: FC<Props> = ({id, text, onImport}) => {
@@ -36,7 +33,7 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
             reader.onload = (e) => {
               try {
                 let json = JSON.parse(e.target?.result as string)
-                const validationResult = isValidFile(json)
+                const validationResult = isValidJsonData(json)
                 if (validationResult.length === 0) {
                   onImport(json)
                   setErrors([])
@@ -44,7 +41,7 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
                   setErrors(validationResult)
                 }
               } catch (error) {
-                setErrors(["Invalid JSON file"])
+                setErrors([`Invalid JSON file: file:${file.name}, error:${JSON.stringify(error)}`])
               }
             }
             reader.readAsText(file)

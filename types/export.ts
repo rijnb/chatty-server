@@ -3,11 +3,13 @@ import {FolderInterface} from "./folder"
 import {Prompt} from "./prompt"
 
 
-export type SupportedExportFormats = ExportFormatV4 // Older formats not supported.
+export type SupportedFileFormats = FileFormatV4
+export type LatestFileFormat = FileFormatV4
 
-export type LatestExportFormat = ExportFormatV4
-
-export interface ExportFormatV4 {
+/**
+ * Do not change this file format, unless there is an upgrade path defined from earlier formats.
+ */
+export interface FileFormatV4 {
   version: 4
   history: Conversation[]
   folders: FolderInterface[]

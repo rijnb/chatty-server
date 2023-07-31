@@ -5,30 +5,31 @@ import {
   saveSelectedConversation
 } from "@/utils/app/conversations"
 import {getFolders, saveFolders} from "@/utils/app/folders"
+import {trimForPrivacy} from "@/utils/app/privacy"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {Conversation} from "@/types/chat"
-import {ExportFormatV4, LatestExportFormat, SupportedExportFormats} from "@/types/export"
+import {FileFormatV4, LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {FolderInterface} from "@/types/folder"
 import {Prompt} from "@/types/prompt"
 
 
-export const isLatestExportFormat = isExportFormatV4
+export const isLatestJsonFormat = isJsonFormatV4
 
-export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
+export function isJsonFormatV4(obj: any): obj is FileFormatV4 {
   return obj.version === 4
 }
 
-export const convertOldDataFormatToNew = (data: SupportedExportFormats): LatestExportFormat => {
-  if (isExportFormatV4(data)) {
+export const upgradeDataToLatestJsonFormat = (data: SupportedFileFormats): LatestFileFormat => {
+  if (isJsonFormatV4(data)) {
     return data
   }
-  throw new Error("Unsupported data format version")
+  throw new Error(`Unsupported data file format version: ${trimForPrivacy(JSON.stringify(data))}`)
 }
 
-export const isValidFile = (json: any): string[] => {
+export const isValidJsonData = (json: any): string[] => {
   const errors = []
   if (!json || typeof json !== "object") {
-    errors.push("Invalid JSON format, incorrect top-level structure")
+    errors.push("Invalid JSON format, incorrect top-level structure, expected an object")
     return errors
   }
   const {version, history, folders, prompts} = json
@@ -38,7 +39,7 @@ export const isValidFile = (json: any): string[] => {
     (folders && !Array.isArray(folders)) ||
     (prompts && !Array.isArray(prompts))
   ) {
-    errors.push("Invalid file structure")
+    errors.push("Invalid file structure, expected version, history, folders and prompts keys")
     return errors
   }
   if (history) {
@@ -51,12 +52,12 @@ export const isValidFile = (json: any): string[] => {
         typeof historyItem.prompt !== "string" ||
         typeof historyItem.temperature !== "number"
       ) {
-        errors.push("Invalid history item format")
+        errors.push("Invalid history item format, expected id, name, messages, model, prompt and temperature keys")
         break
       }
       for (const message of historyItem.messages) {
         if (!message.role || typeof message.content !== "string") {
-          errors.push("Invalid message format in history item")
+          errors.push("Invalid message format in history item, expected role and content keys")
           break
         }
       }
@@ -65,37 +66,39 @@ export const isValidFile = (json: any): string[] => {
   return errors
 }
 
-export const importData = (data: SupportedExportFormats): LatestExportFormat => {
-  const {history, folders, prompts} = convertOldDataFormatToNew(data)
+export const importJsonData = (data: SupportedFileFormats): LatestFileFormat => {
+  const {history, folders, prompts} = upgradeDataToLatestJsonFormat(data)
+  const existingConversationHistory = getConversationsHistory()
 
-  const oldConversations = getConversationsHistory()
-
-  const newHistory: Conversation[] = [...oldConversations, ...history].filter(
-    (conversation, index, self) => index === self.findIndex((c) => c.id === conversation.id)
+  // Existing conversations are NOT overwritten.
+  const conversationHistory: Conversation[] = [...existingConversationHistory, ...history].filter(
+    (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
   )
-  saveConversationsHistory(newHistory)
-  if (newHistory.length > 0) {
-    saveSelectedConversation(newHistory[newHistory.length - 1])
+  saveConversationsHistory(conversationHistory)
+  if (conversationHistory.length > 0) {
+    saveSelectedConversation(conversationHistory[conversationHistory.length - 1])
   } else {
     removeSelectedConversation()
   }
 
-  const oldFolders = getFolders()
-  const newFolders: FolderInterface[] = [...folders, ...oldFolders].filter(
-    (folder, index, self) => index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
+  // Existing folders are NOT overwritten.
+  const existingFolders = getFolders()
+  const importedFolders: FolderInterface[] = [...existingFolders, ...folders].filter(
+    (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
   )
-  saveFolders(newFolders)
+  saveFolders(importedFolders)
 
-  const oldPrompts = getPrompts()
-  const newPrompts: Prompt[] = [...prompts, ...oldPrompts].filter(
-    (prompt, index, self) => index === self.findIndex((p) => p.id === prompt.id)
+  // Existing prompts are overwritten.
+  const existingPrompts = getPrompts()
+  const importedPrompts: Prompt[] = [...prompts, ...existingPrompts].filter(
+    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
   )
-  savePrompts(newPrompts)
+  savePrompts(importedPrompts)
 
   return {
     version: 4,
-    history: newHistory,
-    folders: newFolders,
-    prompts: newPrompts
+    history: conversationHistory,
+    folders: importedFolders,
+    prompts: importedPrompts
   }
 }

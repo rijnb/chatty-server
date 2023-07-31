@@ -12,10 +12,6 @@ export const createNewFolder = (name: string, type: FolderType): FolderInterface
   }
 }
 
-export const saveFolders = (folders: FolderInterface[]) => {
-  localStorage.setItem(STORAGE_KEY_FOLDERS, JSON.stringify(folders))
-}
-
 export const getFolders = (): FolderInterface[] => {
   const foldersAsString = localStorage.getItem(STORAGE_KEY_FOLDERS)
   try {
@@ -25,3 +21,9 @@ export const getFolders = (): FolderInterface[] => {
     return []
   }
 }
+
+export const saveFolders = (folders: FolderInterface[]) => {
+  localStorage.setItem(STORAGE_KEY_FOLDERS, JSON.stringify(folders))
+}
+
+export const removeFolders = () => localStorage.removeItem(STORAGE_KEY_FOLDERS)

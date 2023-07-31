@@ -8,6 +8,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -58,59 +59,41 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   const {
     state: {apiKey, unlockCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
-    dispatch
+    dispatch: homeDispatch
   } = contextValue
 
-  const stopConversationRef = useRef<boolean>(false)
-
-  const {data, error, refetch} = useQuery(
+  const {
+    data: modelData,
+    error,
+    refetch
+  } = useQuery(
     ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
     ({signal}) => {
       if (!unlockCode && serverSideUnlockCodeIsSet) {
         return null
-      }
-      if (!apiKey && !serverSideApiKeyIsSet) {
+      } else if (!apiKey && !serverSideApiKeyIsSet) {
         return null
+      } else {
+        return getModels({key: apiKey}, unlockCode, signal)
       }
-      return getModels({key: apiKey}, unlockCode, signal)
     },
     {enabled: true, refetchOnMount: false}
   )
 
-  useEffect(() => {
-    if (data) {
-      console.log("data", data)
-      dispatch({field: "models", value: data})
-    }
-  }, [data, dispatch])
-
-  useEffect(() => {
-    dispatch({field: "modelError", value: getModelsError(error)})
-  }, [error, dispatch, getModelsError])
-
-  // FETCH MODELS ----------------------------------------------
-
-  const handleSelectConversation = (conversation: Conversation) => {
-    dispatch({
-      field: "selectedConversation",
-      value: conversation
-    })
-
-    saveSelectedConversation(conversation)
-  }
+  const stopConversationRef = useRef<boolean>(false)
 
   // FOLDER OPERATIONS  --------------------------------------------
 
   const handleCreateFolder = (name: string, type: FolderType) => {
     const updatedFolders = [...folders, createNewFolder(name, type)]
 
-    dispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
   }
 
   const handleDeleteFolder = (folderId: string) => {
     const updatedFolders = folders.filter((f) => f.id !== folderId)
-    dispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
 
     const updatedConversations: Conversation[] = conversations.map((conversation) => {
@@ -123,7 +106,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       return conversation
     })
 
-    dispatch({field: "conversations", value: updatedConversations})
+    homeDispatch({field: "conversations", value: updatedConversations})
     saveConversationsHistory(updatedConversations)
 
     const updatedPrompts: Prompt[] = prompts.map((prompt) => {
@@ -136,7 +119,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       return prompt
     })
 
-    dispatch({field: "prompts", value: updatedPrompts})
+    homeDispatch({field: "prompts", value: updatedPrompts})
     savePrompts(updatedPrompts)
   }
 
@@ -151,36 +134,36 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       return folder
     })
 
-    dispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
   }
 
   // CONVERSATION OPERATIONS  --------------------------------------------
 
-  const handleNewConversation = () => {
-    const lastConversation = conversations[conversations.length - 1]
+  const handleSelectConversation = (conversation: Conversation) => {
+    homeDispatch({
+      field: "selectedConversation",
+      value: conversation
+    })
+    saveSelectedConversation(conversation)
+  }
 
+  const handleNewConversation = () => {
+    const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : null
     const newConversation = createNewConversation(
       t("New conversation"),
       lastConversation?.model ?? OpenAIModels[defaultModelId],
-      lastConversation?.temperature
+      lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
     )
-
     const updatedConversations = [...conversations, newConversation]
 
-    dispatch({field: "selectedConversation", value: newConversation})
-    dispatch({field: "conversations", value: updatedConversations})
+    homeDispatch({field: "selectedConversation", value: newConversation})
+    homeDispatch({field: "conversations", value: updatedConversations})
 
-    saveSelectedConversation(
-      createNewConversation(
-        t("New conversation"),
-        lastConversation?.model ?? OpenAIModels[defaultModelId],
-        lastConversation?.temperature
-      )
-    )
+    saveSelectedConversation(newConversation)
     saveConversationsHistory(updatedConversations)
 
-    dispatch({field: "loading", value: false})
+    homeDispatch({field: "loading", value: false})
   }
 
   const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
@@ -190,43 +173,61 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     }
 
     const conversationHistory = updateConversationHistory(updatedConversation, conversations)
-    dispatch({field: "selectedConversation", value: updatedConversation})
-    dispatch({field: "conversations", value: conversationHistory})
+    homeDispatch({field: "selectedConversation", value: updatedConversation})
+    homeDispatch({field: "conversations", value: conversationHistory})
   }
 
   // EFFECTS  --------------------------------------------
 
+  // Retrieved models from API.
+  useEffect(() => {
+    if (modelData) {
+      console.log("data", modelData)
+      homeDispatch({field: "models", value: modelData})
+    }
+  }, [modelData, homeDispatch])
+
+  // Error retrieving models from API.
+  useEffect(() => {
+    homeDispatch({field: "modelError", value: getModelsError(error)})
+  }, [error, homeDispatch, getModelsError])
+
+  // Selected conversation changed.
   useEffect(() => {
     if (window.innerWidth < 640) {
-      dispatch({field: "showChatBar", value: false})
+      homeDispatch({field: "showChatBar", value: false})
     }
-  }, [selectedConversation, dispatch])
+  }, [selectedConversation, homeDispatch])
 
+  // Server side props changed.
   useEffect(() => {
-    defaultModelId && dispatch({field: "defaultModelId", value: defaultModelId})
+    defaultModelId &&
+      homeDispatch({
+        field: "defaultModelId",
+        value: defaultModelId
+      })
     serverSideApiKeyIsSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSideApiKeyIsSet",
         value: serverSideApiKeyIsSet
       })
     serverSidePluginKeysSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
     serverSideUnlockCodeIsSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSideUnlockCodeIsSet",
         value: serverSideUnlockCodeIsSet
       })
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, dispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
 
-  // ON LOAD --------------------------------------------
-
+  // Load settings from local storage.
   useEffect(() => {
     const settings = getSettings()
     if (settings.theme) {
-      dispatch({
+      homeDispatch({
         field: "lightMode",
         value: settings.theme
       })
@@ -236,68 +237,74 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     const unlockCode = getUnlockCode()
 
     if (serverSideApiKeyIsSet) {
-      dispatch({field: "apiKey", value: ""})
+      homeDispatch({field: "apiKey", value: ""})
       removeApiKey()
     } else if (apiKey) {
-      dispatch({field: "apiKey", value: apiKey})
+      homeDispatch({field: "apiKey", value: apiKey})
     }
 
     if (!serverSideUnlockCodeIsSet) {
-      dispatch({field: "unlockCode", value: ""})
+      homeDispatch({field: "unlockCode", value: ""})
       removeUnlockCode()
     } else if (unlockCode) {
-      dispatch({field: "unlockCode", value: unlockCode})
+      homeDispatch({field: "unlockCode", value: unlockCode})
     }
 
     const pluginKeys = getPluginKeys()
     if (serverSidePluginKeysSet) {
-      dispatch({field: "pluginKeys", value: []})
+      homeDispatch({field: "pluginKeys", value: []})
       removePluginKeys()
     } else if (pluginKeys) {
-      dispatch({field: "pluginKeys", value: pluginKeys})
+      homeDispatch({field: "pluginKeys", value: pluginKeys})
     }
 
     if (window.innerWidth < 640) {
-      dispatch({field: "showChatBar", value: false})
-      dispatch({field: "showPromptBar", value: false})
+      homeDispatch({field: "showChatBar", value: false})
+      homeDispatch({field: "showPromptBar", value: false})
     }
 
     const showChatBar = getShowChatBar()
     if (showChatBar) {
-      dispatch({field: "showChatBar", value: showChatBar})
+      homeDispatch({field: "showChatBar", value: showChatBar})
     }
 
     const showPromptBar = getShowPromptBar()
     if (showPromptBar) {
-      dispatch({field: "showPromptBar", value: showPromptBar})
+      homeDispatch({field: "showPromptBar", value: showPromptBar})
     }
 
     const folders = getFolders()
     if (folders) {
-      dispatch({field: "folders", value: folders})
+      homeDispatch({field: "folders", value: folders})
     }
 
     const prompts = getPrompts()
     if (prompts) {
-      dispatch({field: "prompts", value: prompts})
+      homeDispatch({field: "prompts", value: prompts})
     }
 
     const conversationsHistory: Conversation[] = getConversationsHistory()
     const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
-    dispatch({field: "conversations", value: cleanedConversationHistory})
+    homeDispatch({field: "conversations", value: cleanedConversationHistory})
 
     const selectedConversation = getSelectedConversation()
     if (selectedConversation) {
       const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
-      dispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+      homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
     } else {
-      const lastConversation = conversations[conversations.length - 1]
-      dispatch({
+      const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : null
+      homeDispatch({
         field: "selectedConversation",
-        value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], lastConversation?.temperature)
+        value: createNewConversation(
+          t("New conversation"),
+          lastConversation?.model ?? OpenAIModels[defaultModelId],
+          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        )
       })
     }
-  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, dispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, homeDispatch])
+
+  // LAYOUT --------------------------------------------
 
   const title = "Chatty"
   return (
@@ -338,7 +345,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     </HomeContext.Provider>
   )
 }
-export default Home
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
@@ -348,14 +354,11 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
     fallbackOpenAIModel.id
 
   let serverSidePluginKeysSet = false
-
   const googleApiKey = process.env.GOOGLE_API_KEY
   const googleCSEId = process.env.GOOGLE_CSE_ID
-
   if (googleApiKey && googleCSEId) {
     serverSidePluginKeysSet = true
   }
-
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
@@ -373,3 +376,5 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
     }
   }
 }
+
+export default Home

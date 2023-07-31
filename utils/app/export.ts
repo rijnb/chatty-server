@@ -2,11 +2,11 @@ import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
 import {getPrompts} from "@/utils/app/prompts"
-import {ExportFormatV4, LatestExportFormat} from "@/types/export"
+import {FileFormatV4, LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
 
 
-export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
+export function isExportFormatV4(obj: any): obj is FileFormatV4 {
   return obj.version === 4
 }
 
@@ -20,7 +20,7 @@ export const exportData = (prefix: string, type: FolderType) => {
     history: type === "chat" ? conversations : [],
     prompts: type == "prompt" ? prompts : [],
     folders: folders
-  } as LatestExportFormat
+  } as LatestFileFormat
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json"

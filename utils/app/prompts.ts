@@ -17,10 +17,6 @@ export const createNewPrompt = (name: string, model: OpenAIModel): Prompt => {
   }
 }
 
-export const savePrompts = (prompts: Prompt[]) => {
-  localStorage.setItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
-}
-
 export const getPrompts = (): Prompt[] => {
   const promptsAsString = localStorage.getItem(STORAGE_KEY_PROMPTS)
   try {
@@ -30,3 +26,9 @@ export const getPrompts = (): Prompt[] => {
     return []
   }
 }
+
+export const savePrompts = (prompts: Prompt[]) => {
+  localStorage.setItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
+}
+
+export const removePrompts = () => localStorage.removeItem(STORAGE_KEY_PROMPTS)

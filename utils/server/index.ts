@@ -11,7 +11,6 @@ import {
 } from "../app/const"
 import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
 
-
 export class OpenAIError extends Error {
   type: string
   param: string
@@ -33,13 +32,14 @@ export const OpenAIStream = async (
   apiKey: string,
   messages: Message[]
 ) => {
-  // OpenAI URL.
   let url = `${OPENAI_API_HOST}/v1/chat/completions`
   if (OPENAI_API_TYPE === "azure") {
-    // Azure URL.
     url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
   }
 
+  if (messages.length === 0) {
+    throw new Error("No messages in history")
+  }
   const lastMessage = messages[messages.length - 1]
   console.info(`Input '${trimForPrivacy(lastMessage.content)}'`)
   console.info(`  HTTP POST ${url}`)

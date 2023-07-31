@@ -26,7 +26,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
     }
     const {messages, key, model, googleAPIKey, googleCSEId} = req.body as GoogleBody
-
+    if (messages.length === 0) {
+      return res.status(200).json("No query was entered...")
+    }
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
 
@@ -138,9 +140,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         stream: false
       })
     })
-    const {choices: choices} = await answerRes.json()
+    const {choices} = await answerRes.json()
     const answer = choices[0].message.content
-    console.info(`[Google search] Got result '${trimForPrivacy(answer)}'`)
+    console.info(`[Google search] Got result: ${trimForPrivacy(answer)}`)
     res.status(200).json({answer})
   } catch (error) {
     console.error(`[Google search] Error: ${error}`)

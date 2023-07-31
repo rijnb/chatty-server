@@ -1,6 +1,6 @@
 import {Dispatch, createContext} from "react"
 import {ActionType} from "@/hooks/useCreateReducer"
-import {SupportedExportFormats} from "@/types/export"
+import {SupportedFileFormats} from "@/types/export"
 import {Prompt} from "@/types/prompt"
 import {PromptBarInitialState} from "./PromptBar.state"
 
@@ -12,7 +12,7 @@ export interface PromptBarContextProps {
   handleDeletePrompt: (prompt: Prompt) => void
   handleUpdatePrompt: (prompt: Prompt) => void
   handleClearPrompts: () => void
-  handleImportPrompts: (data: SupportedExportFormats) => void
+  handleImportPrompts: (data: SupportedFileFormats) => void
   handleExportPrompts: () => void
 }
 
