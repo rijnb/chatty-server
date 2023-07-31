@@ -22,17 +22,17 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
         type="file"
         accept=".json"
         multiple
-        onChange={(e) => {
-          console.info(`Importing file ${e.target.files?.length} files`)
-          if (!e.target.files?.length) {
+        onChange={(event) => {
+          console.info(`Importing file ${event.target.files?.length} files`)
+          if (!event.target.files?.length) {
             return
           }
 
-          Array.from(e.target.files).forEach((file) => {
+          Array.from(event.target.files).forEach((file) => {
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = (progressEvent) => {
               try {
-                let json = JSON.parse(e.target?.result as string)
+                let json = JSON.parse(progressEvent.target?.result as string)
                 const validationErrors = isValidJsonData(json)
                 if (validationErrors.length === 0) {
                   onImport(json)
@@ -48,7 +48,7 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
           })
 
           // Change the value of the input to make sure onChange fires next time.
-          e.target.value = ""
+          event.target.value = ""
         }}
       />
 

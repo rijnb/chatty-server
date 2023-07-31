@@ -1,5 +1,4 @@
 import {IconFileExport} from "@tabler/icons-react"
-import {random} from "nanoid"
 import {FC, useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"

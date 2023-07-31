@@ -66,7 +66,8 @@ export const isValidJsonData = (jsonData: any): string[] => {
   return errors
 }
 
-export const importJsonData = (data: SupportedFileFormats): LatestFileFormat => {
+// Import file and set the 'factory' value for all prompts to a new value (or remove it).
+export const importJsonData = (data: SupportedFileFormats, newFactoryValue = null): LatestFileFormat => {
   const {history: importedHistory, folders: importedfolders, prompts: importedprompts} = upgradeDataToLatestFormat(data)
   const history = importedHistory ?? []
   const folders = importedfolders ?? []
@@ -93,9 +94,12 @@ export const importJsonData = (data: SupportedFileFormats): LatestFileFormat => 
 
   // Existing prompts are overwritten.
   const existingPrompts = getPrompts()
-  const importedPrompts: Prompt[] = [...prompts, ...existingPrompts].filter(
-    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
-  )
+  const importedPrompts: Prompt[] = [...prompts, ...existingPrompts]
+    .filter((prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id))
+    .map((prompt) => {
+      prompt.factory = newFactoryValue
+      return prompt
+    })
   savePrompts(importedPrompts)
 
   return {
