@@ -10,7 +10,6 @@ import {trimForPrivacy} from "@/utils/app/privacy"
 import {cleanSourceText} from "@/utils/server/google"
 import {Message} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
-import {auth} from "./auth"
 import {Readability} from "@mozilla/readability"
 import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
@@ -18,13 +17,6 @@ import jsdom, {JSDOM} from "jsdom"
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const authResult = auth(req)
-    if (authResult.error) {
-      return new Response("Error: You are not authorized to use the service. Check your Unlock code.", {
-        status: 401,
-        statusText: authResult.statusText
-      })
-    }
     const {messages, key, model, googleAPIKey, googleCSEId} = req.body as GoogleBody
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
