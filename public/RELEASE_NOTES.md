@@ -4,8 +4,9 @@
 
 #### Features
 
+* Added factory prompts. Everyone receives the factory prompts. They are automatically updated when you start. If you
+  edit them, they become 'user prompts'. If you wish tp get the factory one back, just delete it and reload the page.
 * Sorted prompt list.
-* Added factory prompt.
 
 #### Bug fixes
 
