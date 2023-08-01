@@ -1,4 +1,4 @@
-import {FC, MutableRefObject} from "react"
+import {FC, MutableRefObject, useEffect, useRef, useState} from "react"
 import {Prompt} from "@/types/prompt"
 
 interface Props {
@@ -9,7 +9,31 @@ interface Props {
   promptListRef: MutableRefObject<HTMLUListElement | null>
 }
 
-export const PromptList: FC<Props> = ({prompts, activePromptIndex, onSelect, onMouseOver, promptListRef}) => {
+export const PromptList: FC<Props> = ({
+  prompts,
+  activePromptIndex,
+  onSelect,
+  onMouseOver,
+  promptListRef
+}) => {
+  const [isScrolling, setIsScrolling] = useState(false)
+  const scrollTimeout = useRef<NodeJS.Timeout>()
+
+  const handleScroll = () => {
+    setIsScrolling(true)
+    clearTimeout(scrollTimeout.current)
+    scrollTimeout.current = setTimeout(() => {
+      setIsScrolling(false)
+    }, 250)
+  }
+
+  useEffect(() => {
+    promptListRef.current?.addEventListener("scroll", handleScroll)
+    return () => {
+      promptListRef.current?.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+
   return (
     <ul
       ref={promptListRef}
@@ -28,7 +52,11 @@ export const PromptList: FC<Props> = ({prompts, activePromptIndex, onSelect, onM
               e.stopPropagation()
               onSelect()
             }}
-            onMouseEnter={() => onMouseOver(index)}
+            onMouseEnter={() => {
+              if (!isScrolling) {
+                onMouseOver(index)
+              }
+            }}
           >
             {prompt.name}
           </li>
