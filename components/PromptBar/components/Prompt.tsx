@@ -1,4 +1,4 @@
-import {IconBulbFilled, IconCheck, IconTrash, IconX, IconBuildingFactory2} from "@tabler/icons-react"
+import {IconBuildingFactory2, IconBulbFilled, IconCheck, IconTrash, IconX} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
 import {Prompt} from "@/types/prompt"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
