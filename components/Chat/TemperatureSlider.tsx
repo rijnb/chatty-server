@@ -1,9 +1,6 @@
 import {FC, useContext, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
 import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-
 import HomeContext from "@/pages/api/home/home.context"
 
 
@@ -16,7 +13,7 @@ export const TemperatureSlider: FC<Props> = ({label, onChangeTemperature}) => {
   const {
     state: {conversations}
   } = useContext(HomeContext)
-  const lastConversation = conversations[conversations.length - 1]
+  const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
   const [temperature, setTemperature] = useState(lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE)
   const {t} = useTranslation("chat")
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

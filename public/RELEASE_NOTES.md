@@ -1,11 +1,24 @@
 ## Release notes
 
+### 2023-07-29
+
+#### Features
+
+* Added factory prompts. Everyone receives the factory prompts. They are automatically updated when you start. If you
+  edit them, they become 'user prompts'. If you wish tp get the factory one back, just delete it and reload the page.
+* Sorted prompt list.
+
+#### Bug fixes
+
+* Source code cleanup.
+* Fixed bug when importing would trigger wrong `onChange` handler and the handler would not always be called.
+
 ### 2023-07-26
 
 #### Features
 
-* Improved welcome screen and handling of API key, unlock code and loading models. 
-* Top status now always visible, to choose model and show release notes. 
+* Improved welcome screen and handling of API key, unlock code and loading models.
+* Top status now always visible, to choose model and show release notes.
 * Improved message input box to only show "/" if applicable.
 
 #### Bug fixes
@@ -17,6 +30,7 @@
 ### 2023-07-24
 
 #### Features
+
 * Added token usage counter that turns red when older messages are being automatically discarded.
 * Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the
   existing V4 format.

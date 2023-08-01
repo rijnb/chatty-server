@@ -1,8 +1,6 @@
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
-
 import {OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 
-import {auth} from "./auth"
 
 export const config = {
   runtime: "edge"
@@ -10,38 +8,27 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const authResult = auth(req)
-    if (authResult.error) {
-      return new Response("Error: You are not authorized to use the service. Check your Unlock code and API key.", {
-        status: 401,
-        statusText: authResult.statusText
-      })
-    }
-    const {key} = (await req.json()) as {
-      key: string
-    }
+    const {key} = (await req.json()) as {key: string}
 
     let url = `${OPENAI_API_HOST}/v1/models`
     if (OPENAI_API_TYPE === "azure") {
       url = `${OPENAI_API_HOST}/openai/models?api-version=${OPENAI_API_VERSION}`
     }
-    console.info(`Get models from ${OPENAI_API_TYPE}: ${url}`)
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
+    console.info(`Get models (${OPENAI_API_TYPE}): ${url}`)
+    const headers = {
+      "Content-Type": "application/json",
+      ...(OPENAI_API_TYPE === "openai" && {
+        Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
+      }),
+      ...(OPENAI_API_TYPE === "openai" &&
+        OPENAI_ORGANIZATION && {
+          "OpenAI-Organization": OPENAI_ORGANIZATION
         }),
-        ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
-        }),
-        ...(OPENAI_API_TYPE === "openai" &&
-          OPENAI_ORGANIZATION && {
-            "OpenAI-Organization": OPENAI_ORGANIZATION
-          })
-      }
-    })
-
+      ...(OPENAI_API_TYPE === "azure" && {
+        "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
+      })
+    }
+    const response = await fetch(url, {headers: headers})
     if (!response.ok) {
       console.error(`${OPENAI_API_TYPE} returned an error, status:${response.status}`)
       return new Response(response.body, {

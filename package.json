@@ -24,6 +24,7 @@
       "_static/**/*",
       "node_modules/**/*",
       "RELEASE_NOTES.md",
+      "factory-presets.json",
       "package.json"
     ],
     "mac": {

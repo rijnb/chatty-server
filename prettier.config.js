@@ -31,6 +31,6 @@ module.exports = {
     "^[./]", // Other imports
     ".*" // Any uncaught imports
   ],
-  importOrderSeparation: true,
+  importOrderSeparation: false,
   importOrderSortSpecifiers: true
 }

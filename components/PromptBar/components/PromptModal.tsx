@@ -1,9 +1,6 @@
 import {FC, KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 
 
@@ -18,14 +15,18 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const [name, setName] = useState(prompt.name)
   const [description, setDescription] = useState(prompt.description)
   const [content, setContent] = useState(prompt.content)
+  const [factory, setFactory] = useState(prompt.factory)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
 
-  const updatedPrompt = useMemo(() => ({...prompt, name, description, content}), [prompt, name, description, content])
+  const updatedPrompt = useMemo(
+    () => ({...prompt, name, description, content, factory}),
+    [prompt, name, description, content, factory]
+  )
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e) && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !e.shiftKey) {
       e.preventDefault()
       onUpdatePrompt(updatedPrompt)
       onClose()
@@ -79,7 +80,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               onBlur={(e) => setName(e.target.value)}
             />
 
-            <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">{t("Description")}</div>
+            <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">{t("Description")}</div>
             <textarea
               className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
               style={{resize: "none"}}
@@ -90,7 +91,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               rows={3}
             />
 
-            <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">{t("Prompt")}</div>
+            <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">{t("Prompt")}</div>
             <textarea
               className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
               style={{resize: "none"}}
@@ -100,12 +101,12 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               onBlur={(e) => setContent(e.target.value)}
-              rows={10}
+              rows={9}
             />
 
             <button
               type="button"
-              className="w-full px-4 py-2 mt-6 border rounded-lg shadow border-neutral-500 text-neutral-900 hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
+              className="w-full px-4 py-2 mt-2 border rounded-lg shadow border-neutral-500 text-neutral-900 hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
               onClick={() => {
                 onUpdatePrompt(updatedPrompt)
                 onClose()
@@ -113,6 +114,12 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
             >
               {t("Save")}
             </button>
+
+            {prompt.factory && (
+              <div className="mt-2 text-sm font-bold text-red-900 dark:text-red-300">
+                {t("Note: This is factory prompt, which is automatically updated.")}
+              </div>
+            )}
           </div>
         </div>
       </div>

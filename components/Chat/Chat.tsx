@@ -2,32 +2,25 @@ import {IconEraser, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@ta
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import Modal from "react-modal"
-
 import {useTranslation} from "next-i18next"
 import {useRouter} from "next/router"
-
 import {getEndpoint} from "@/utils/app/api"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
-import {saveConversation, saveConversations} from "@/utils/app/conversation"
+import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
-
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {fallbackOpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
 import {MemoizedReactMarkdown} from "@/components/Markdown/MemoizedReactMarkdown"
-
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-
 import {toPng} from "html-to-image"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
@@ -251,7 +244,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 })
               }
             }
-            saveConversation(updatedConversation)
+            saveSelectedConversation(updatedConversation)
             const updatedConversations: Conversation[] = conversations.map((conversation) => {
               if (conversation.id === selectedConversation.id) {
                 return updatedConversation
@@ -262,7 +255,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               updatedConversations.push(updatedConversation)
             }
             homeDispatch({field: "conversations", value: updatedConversations})
-            saveConversations(updatedConversations)
+            saveConversationsHistory(updatedConversations)
             homeDispatch({field: "messageIsStreaming", value: false})
           } else {
             const {answer} = data
@@ -275,7 +268,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               field: "selectedConversation",
               value: updatedConversation
             })
-            saveConversation(updatedConversation)
+            saveSelectedConversation(updatedConversation)
             const updatedConversations: Conversation[] = conversations.map((conversation) => {
               if (conversation.id === selectedConversation.id) {
                 return updatedConversation
@@ -286,7 +279,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               updatedConversations.push(updatedConversation)
             }
             homeDispatch({field: "conversations", value: updatedConversations})
-            saveConversations(updatedConversations)
+            saveConversationsHistory(updatedConversations)
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
           }
@@ -346,7 +339,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     setShowSettings(!showSettings)
   }
 
-  const onClearAll = () => {
+  const onClearMessagesInConversation = () => {
     setIsReleaseNotesDialogOpen(false)
     if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, {
@@ -459,7 +452,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
                 <IconRobot size={18} />
               </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearAll}>
+              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearMessagesInConversation}>
                 <IconEraser size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
@@ -549,7 +542,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         contentLabel="Release Notes"
         ariaHideApp={false}
       >
-
         <MemoizedReactMarkdown
           className="prose dark:prose-invert flex-1"
           remarkPlugins={[remarkGfm, remarkMath]}

@@ -1,14 +1,10 @@
 import {IconKey} from "@tabler/icons-react"
 import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "react-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {PluginID, PluginKey} from "@/types/plugin"
-
 import HomeContext from "@/pages/api/home/home.context"
-
-import ChatbarContext from "@/components/Chatbar/Chatbar.context"
+import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
 
@@ -19,14 +15,14 @@ export const PluginKeys = () => {
     state: {pluginKeys}
   } = useContext(HomeContext)
 
-  const {handlePluginKeyChange, handleClearPluginKey} = useContext(ChatbarContext)
+  const {handlePluginKeyChange, handleClearPluginKey} = useContext(ChatBarContext)
 
   const [isChanging, setIsChanging] = useState(false)
 
   const modalRef = useRef<HTMLDivElement>(null)
 
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e) && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !e.shiftKey) {
       e.preventDefault()
       setIsChanging(false)
     }

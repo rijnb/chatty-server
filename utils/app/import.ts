@@ -1,36 +1,45 @@
+import {
+  getConversationsHistory,
+  removeSelectedConversation,
+  saveConversationsHistory,
+  saveSelectedConversation
+} from "@/utils/app/conversations"
+import {getFolders, saveFolders} from "@/utils/app/folders"
+import {trimForPrivacy} from "@/utils/app/privacy"
+import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {Conversation} from "@/types/chat"
-import {ExportFormatV4, LatestExportFormat, SupportedExportFormats} from "@/types/export"
+import {FileFormatV4, LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {FolderInterface} from "@/types/folder"
 import {Prompt} from "@/types/prompt"
 
 
-export const isLatestExportFormat = isExportFormatV4
+export const isLatestJsonFormat = isJsonFormatV4
 
-export function isExportFormatV4(obj: any): obj is ExportFormatV4 {
+export function isJsonFormatV4(obj: any): obj is FileFormatV4 {
   return obj.version === 4
 }
 
-export const convertOldDataFormatToNew = (data: SupportedExportFormats): LatestExportFormat => {
-  if (isExportFormatV4(data)) {
+export const upgradeDataToLatestFormat = (data: SupportedFileFormats): LatestFileFormat => {
+  if (isJsonFormatV4(data)) {
     return data
   }
-  throw new Error("Unsupported data format version")
+  throw new Error(`Unsupported data file format version: ${trimForPrivacy(JSON.stringify(data))}`)
 }
 
-export const isValidFile = (json: any): string[] => {
+export const isValidJsonData = (jsonData: any): string[] => {
   const errors = []
-  if (!json || typeof json !== "object") {
-    errors.push("Invalid JSON format, incorrect top-level structure")
+  if (!jsonData || typeof jsonData !== "object") {
+    errors.push("Invalid JSON format; incorrect top-level structure, expected an object")
     return errors
   }
-  const {version, history, folders, prompts} = json
+  const {version, history, folders, prompts} = jsonData
   if (
     typeof version !== "number" ||
     (history && !Array.isArray(history)) ||
     (folders && !Array.isArray(folders)) ||
     (prompts && !Array.isArray(prompts))
   ) {
-    errors.push("Invalid file structure")
+    errors.push("Invalid file structure; expected version, history, folders and prompts keys")
     return errors
   }
   if (history) {
@@ -43,12 +52,12 @@ export const isValidFile = (json: any): string[] => {
         typeof historyItem.prompt !== "string" ||
         typeof historyItem.temperature !== "number"
       ) {
-        errors.push("Invalid history item format")
+        errors.push("Invalid history item format; expected id, name, messages, model, prompt and temperature keys")
         break
       }
       for (const message of historyItem.messages) {
         if (!message.role || typeof message.content !== "string") {
-          errors.push("Invalid message format in history item")
+          errors.push("Invalid message format in history item; expected role and content keys")
           break
         }
       }
@@ -57,40 +66,56 @@ export const isValidFile = (json: any): string[] => {
   return errors
 }
 
-export const importData = (data: SupportedExportFormats): LatestExportFormat => {
-  const {history, folders, prompts} = convertOldDataFormatToNew(data)
+// Import file and set the 'factory' value for all prompts to a new value (or remove it).
+export const importJsonData = (
+  data: SupportedFileFormats,
+  newFactoryValue: boolean | null = null
+): LatestFileFormat => {
+  const {history: readHistory, folders: readFolders, prompts: readPrompts} = upgradeDataToLatestFormat(data)
+  const newHistory = readHistory ?? []
+  const newFolders =
+    readFolders.map((folder) => {
+      folder.factory = newFactoryValue
+      return folder
+    }) ?? []
+  const newPrompts =
+    readPrompts.map((prompt) => {
+      prompt.factory = newFactoryValue
+      return prompt
+    }) ?? []
 
-  const oldConversations = localStorage.getItem("conversationHistory")
-  const oldConversationsParsed = oldConversations ? JSON.parse(oldConversations) : []
-
-  const newHistory: Conversation[] = [...oldConversationsParsed, ...history].filter(
-    (conversation, index, self) => index === self.findIndex((c) => c.id === conversation.id)
+  // Existing conversations are NOT overwritten.
+  const existingConversationHistory = getConversationsHistory()
+  const conversationHistory: Conversation[] = [...existingConversationHistory, ...newHistory].filter(
+    (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
   )
-  localStorage.setItem("conversationHistory", JSON.stringify(newHistory))
-  if (newHistory.length > 0) {
-    localStorage.setItem("selectedConversation", JSON.stringify(newHistory[newHistory.length - 1]))
+  saveConversationsHistory(conversationHistory)
+  if (conversationHistory.length > 0) {
+    saveSelectedConversation(conversationHistory[conversationHistory.length - 1])
   } else {
-    localStorage.removeItem("selectedConversation")
+    removeSelectedConversation()
   }
 
-  const oldFolders = localStorage.getItem("folders")
-  const oldFoldersParsed = oldFolders ? JSON.parse(oldFolders) : []
-  const newFolders: FolderInterface[] = [...folders, ...oldFoldersParsed].filter(
-    (folder, index, self) => index === self.findIndex((otherFolder) => otherFolder.id === folder.id)
+  // Existing folders are not overwritten.
+  const userFolders = getFolders().filter((folder) => !folder.factory)
+  const factoryFolders = getFolders().filter((folder) => folder.factory)
+  const importedFolders: FolderInterface[] = [...factoryFolders, ...userFolders, ...newFolders].filter(
+    (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
   )
-  localStorage.setItem("folders", JSON.stringify(newFolders))
+  saveFolders(importedFolders)
 
-  const oldPrompts = localStorage.getItem("prompts")
-  const oldPromptsParsed = oldPrompts ? JSON.parse(oldPrompts) : []
-  const newPrompts: Prompt[] = [...prompts, ...oldPromptsParsed].filter(
-    (prompt, index, self) => index === self.findIndex((p) => p.id === prompt.id)
+  // Existing prompts are not overwritten.
+  const userPrompts = getPrompts().filter((prompt) => !prompt.factory)
+  const factoryPrompts = getPrompts().filter((prompt) => prompt.factory)
+  const importedPrompts: Prompt[] = [...factoryPrompts, ...userPrompts, ...newPrompts].filter(
+    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
   )
-  localStorage.setItem("prompts", JSON.stringify(newPrompts))
+  savePrompts(importedPrompts)
 
   return {
     version: 4,
-    history: newHistory,
-    folders: newFolders,
-    prompts: newPrompts
+    history: conversationHistory,
+    folders: importedFolders,
+    prompts: importedPrompts
   }
 }

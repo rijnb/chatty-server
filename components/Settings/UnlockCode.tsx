@@ -1,10 +1,7 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {SidebarButton} from "../Sidebar/SidebarButton"
 
 
@@ -20,7 +17,7 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isEnterKey(e)) {
+    if (isKeyboardEnter(e)) {
       e.preventDefault()
       handleUpdateKey(newKey)
     }

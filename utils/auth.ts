@@ -1,11 +1,7 @@
 import {NextApiRequest} from "next"
 
-function parseApiKey(bearToken: string) {
-  const token = bearToken.trim().replaceAll("Bearer ", "").trim()
-
-  return {
-    unlockCode: token
-  }
+function parseApiKey(bearToken: string): string {
+  return bearToken.trim().replaceAll("Bearer ", "").trim()
 }
 
 function timingSafeEqual(a: string, b: string) {
@@ -24,39 +20,19 @@ function timingSafeEqual(a: string, b: string) {
 
 export function auth(req: Request | NextApiRequest) {
   const SERVER_UNLOCK_CODE = process.env.OPENAI_UNLOCK_CODE ?? ""
-
   if (!SERVER_UNLOCK_CODE) {
-    return {
-      error: false
-    }
+    return {error: false}
   }
 
+  // Check if it's a NextApiRequest (Next.js) or a Request (Express.js).
   let authToken: string
-
-  // Check if it's a NextApiRequest (Next.js) or a Request (Express.js)
   if (typeof req.headers.get === "function") {
-    // NextApiRequest: req.headers.get('Authorization')
     authToken = req.headers.get("Authorization") ?? ""
   } else {
-    // Request: req.headers.authorization
     authToken = (req as unknown as NextApiRequest).headers["authorization"] ?? ""
   }
 
-  // check if it is openai api key or user token
-  const {unlockCode} = parseApiKey(authToken)
-
-  // Compare buffer with two codes
-  const isUnlockCodeValid = timingSafeEqual(unlockCode, SERVER_UNLOCK_CODE)
-
-  if (!isUnlockCodeValid) {
-    return {
-      error: true,
-      status: 401,
-      statusText: "Unauthorized"
-    }
-  }
-
-  return {
-    error: false
-  }
+  return timingSafeEqual(parseApiKey(authToken), SERVER_UNLOCK_CODE)
+    ? {error: false}
+    : {error: true, status: 401, statusText: "Unauthorized"}
 }

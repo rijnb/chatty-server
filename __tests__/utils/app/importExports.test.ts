@@ -1,22 +1,20 @@
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {convertOldDataFormatToNew, isExportFormatV4, isLatestExportFormat} from "@/utils/app/import"
-
-import {ExportFormatV4} from "@/types/export"
+import {isJsonFormatV4, isLatestJsonFormat, upgradeDataToLatestFormat} from "@/utils/app/import"
+import {FileFormatV4} from "@/types/export"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
-
 import {describe, expect, it} from "vitest"
 
 
 describe("Export Format Functions", () => {
   describe("isExportFormatV4", () => {
     it("should return true for v4 format", () => {
-      const obj = {version: 4, history: [], folders: [], prompts: []}
-      expect(isExportFormatV4(obj)).toBe(true)
+      const obj = {version: 4, conversationHistory: [], folders: [], prompts: []}
+      expect(isJsonFormatV4(obj)).toBe(true)
     })
 
     it("should return false for non-v4 formats", () => {
-      const obj = {version: 5, history: [], folders: [], prompts: []}
-      expect(isExportFormatV4(obj)).toBe(false)
+      const obj = {version: 5, conversationHistory: [], folders: [], prompts: []}
+      expect(isJsonFormatV4(obj)).toBe(false)
     })
   })
 })
@@ -63,13 +61,13 @@ describe("cleanData Functions", () => {
             folderId: null
           }
         ]
-      } as ExportFormatV4
+      } as FileFormatV4
 
-      const obj = convertOldDataFormatToNew(data)
-      expect(isLatestExportFormat(obj)).toBe(true)
+      const obj = upgradeDataToLatestFormat(data)
+      expect(isLatestJsonFormat(obj)).toBe(true)
       expect(obj).toEqual({
         version: 4,
-        history: [
+        conversationHistory: [
           {
             id: "1",
             name: "conversation 1",

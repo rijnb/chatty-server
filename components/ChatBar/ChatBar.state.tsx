@@ -1,11 +1,11 @@
 import {Conversation} from "@/types/chat"
 
-export interface ChatbarInitialState {
+export interface ChatBarInitialState {
   searchTerm: string
   filteredConversations: Conversation[]
 }
 
-export const initialState: ChatbarInitialState = {
+export const initialState: ChatBarInitialState = {
   searchTerm: "",
   filteredConversations: []
 }

@@ -1,40 +1,48 @@
 import {useEffect, useRef} from "react"
 import {useQuery} from "react-query"
-
 import {GetServerSideProps} from "next"
 import {useTranslation} from "next-i18next"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations"
 import Head from "next/head"
-
+import {useRouter} from "next/router"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
-
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {saveConversation, saveConversations, updateConversation} from "@/utils/app/conversation"
-import {saveFolders} from "@/utils/app/folders"
-import {savePrompts} from "@/utils/app/prompts"
-import {getSettings} from "@/utils/app/settings"
-
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {
+  createNewConversation,
+  getConversationsHistory,
+  getSelectedConversation,
+  saveConversationsHistory,
+  saveSelectedConversation,
+  updateConversationHistory
+} from "@/utils/app/conversations"
+import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
+import {importJsonData} from "@/utils/app/import"
+import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
+import {getPrompts, savePrompts} from "@/utils/app/prompts"
+import {
+  getApiKey,
+  getSettings,
+  getShowChatBar,
+  getShowPromptBar,
+  getUnlockCode,
+  removeApiKey,
+  removeUnlockCode
+} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
-import {FolderInterface, FolderType} from "@/types/folder"
+import {LatestFileFormat} from "@/types/export"
+import {FolderType} from "@/types/folder"
 import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
-
 import {Chat} from "@/components/Chat/Chat"
-import {Chatbar} from "@/components/Chatbar/Chatbar"
+import {ChatBar} from "@/components/ChatBar/ChatBar"
 import {Navbar} from "@/components/Mobile/Navbar"
-import Promptbar from "@/components/Promptbar"
-
+import PromptBar from "@/components/PromptBar"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
-
-
-
-import { v4 as uuidv4 } from "uuid";
 
 
 interface Props {
@@ -48,149 +56,126 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
-  const contextValue = useCreateReducer<HomeInitialState>({
-    initialState
-  })
+  const contextValue = useCreateReducer<HomeInitialState>({initialState})
+  const router = useRouter()
 
   const {
-    state: {apiKey, unlockCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
-    dispatch
+    state: {
+      apiKey,
+      unlockCode,
+      lightMode,
+      folders,
+      conversations,
+      selectedConversation,
+      prompts,
+      triggerFactoryPrompts,
+      temperature
+    },
+    dispatch: homeDispatch
   } = contextValue
 
-  const stopConversationRef = useRef<boolean>(false)
-
-  const {data, error, refetch} = useQuery(
+  const {
+    data: modelData,
+    error,
+    refetch
+  } = useQuery(
     ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
     ({signal}) => {
       if (!unlockCode && serverSideUnlockCodeIsSet) {
         return null
-      }
-      if (!apiKey && !serverSideApiKeyIsSet) {
+      } else if (!apiKey && !serverSideApiKeyIsSet) {
         return null
+      } else {
+        return getModels({key: apiKey}, unlockCode, signal)
       }
-      return getModels({key: apiKey}, unlockCode, signal)
     },
     {enabled: true, refetchOnMount: false}
   )
 
-  useEffect(() => {
-    if (data) {
-      console.log("data", data)
-      dispatch({field: "models", value: data})
-    }
-  }, [data, dispatch])
-
-  useEffect(() => {
-    dispatch({field: "modelError", value: getModelsError(error)})
-  }, [error, dispatch, getModelsError])
-
-  // FETCH MODELS ----------------------------------------------
-
-  const handleSelectConversation = (conversation: Conversation) => {
-    dispatch({
-      field: "selectedConversation",
-      value: conversation
-    })
-
-    saveConversation(conversation)
-  }
+  const stopConversationRef = useRef<boolean>(false)
 
   // FOLDER OPERATIONS  --------------------------------------------
 
   const handleCreateFolder = (name: string, type: FolderType) => {
-    const newFolder: FolderInterface = {
-      id: uuidv4(),
-      name,
-      type
-    }
+    const updatedFolders = [...folders, createNewFolder(name, type)]
 
-    const updatedFolders = [...folders, newFolder]
-
-    dispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
   }
 
   const handleDeleteFolder = (folderId: string) => {
     const updatedFolders = folders.filter((f) => f.id !== folderId)
-    dispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
 
-    const updatedConversations: Conversation[] = conversations.map((c) => {
-      if (c.folderId === folderId) {
+    const updatedConversations: Conversation[] = conversations.map((conversation) => {
+      if (conversation.folderId === folderId) {
         return {
-          ...c,
+          ...conversation,
           folderId: null
         }
       }
-
-      return c
+      return conversation
     })
 
-    dispatch({field: "conversations", value: updatedConversations})
-    saveConversations(updatedConversations)
+    homeDispatch({field: "conversations", value: updatedConversations})
+    saveConversationsHistory(updatedConversations)
 
-    const updatedPrompts: Prompt[] = prompts.map((p) => {
-      if (p.folderId === folderId) {
+    const updatedPrompts: Prompt[] = prompts.map((prompt) => {
+      if (prompt.folderId === folderId) {
         return {
-          ...p,
+          ...prompt,
           folderId: null
         }
       }
-
-      return p
+      return prompt
     })
 
-    dispatch({field: "prompts", value: updatedPrompts})
+    homeDispatch({field: "prompts", value: updatedPrompts})
     savePrompts(updatedPrompts)
   }
 
   const handleUpdateFolder = (folderId: string, name: string) => {
-    const updatedFolders = folders.map((f) => {
-      if (f.id === folderId) {
+    const updatedFolders = folders.map((folder) => {
+      if (folder.id === folderId) {
         return {
-          ...f,
+          ...folder,
           name
         }
       }
-
-      return f
+      return folder
     })
 
-    dispatch({field: "folders", value: updatedFolders})
-
+    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
   }
 
   // CONVERSATION OPERATIONS  --------------------------------------------
 
+  const handleSelectConversation = (conversation: Conversation) => {
+    homeDispatch({
+      field: "selectedConversation",
+      value: conversation
+    })
+    saveSelectedConversation(conversation)
+  }
+
   const handleNewConversation = () => {
-    const lastConversation = conversations[conversations.length - 1]
-
-    const newConversation: Conversation = {
-      id: uuidv4(),
-      name: t("New conversation"),
-      messages: [],
-      model: lastConversation?.model || {
-        id: OpenAIModels[defaultModelId].id,
-        name: OpenAIModels[defaultModelId].name,
-        maxLength: OpenAIModels[defaultModelId].maxLength,
-        tokenLimit: OpenAIModels[defaultModelId].tokenLimit
-      },
-      prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-      temperature: lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
-      folderId: null,
-      time: new Date().getTime()
-    }
-
+    const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
+    const newConversation = createNewConversation(
+      t("New conversation"),
+      lastConversation?.model ?? OpenAIModels[defaultModelId],
+      lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+    )
     const updatedConversations = [...conversations, newConversation]
 
-    dispatch({field: "selectedConversation", value: newConversation})
-    dispatch({field: "conversations", value: updatedConversations})
+    homeDispatch({field: "selectedConversation", value: newConversation})
+    homeDispatch({field: "conversations", value: updatedConversations})
 
-    saveConversation(newConversation)
-    saveConversations(updatedConversations)
+    saveSelectedConversation(newConversation)
+    saveConversationsHistory(updatedConversations)
 
-    dispatch({field: "loading", value: false})
+    homeDispatch({field: "loading", value: false})
   }
 
   const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
@@ -199,135 +184,170 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       [data.key]: data.value
     }
 
-    const {single, all} = updateConversation(updatedConversation, conversations)
-
-    dispatch({field: "selectedConversation", value: single})
-    dispatch({field: "conversations", value: all})
+    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    homeDispatch({field: "selectedConversation", value: updatedConversation})
+    homeDispatch({field: "conversations", value: conversationHistory})
   }
 
   // EFFECTS  --------------------------------------------
 
+  // Read factory prompts file.
   useEffect(() => {
-    if (window.innerWidth < 640) {
-      dispatch({field: "showChatbar", value: false})
+    const filename = `${router.basePath}/factory-prompts.json`
+    if (triggerFactoryPrompts) {
+      console.debug(`useEffect: triggerFactoryPrompts`)
+      homeDispatch({field: "triggerFactoryPrompts", value: false})
+      fetch(filename)
+        .then((response) => response.text())
+        .then((text) => {
+          let factoryData: LatestFileFormat = JSON.parse(text)
+          const {folders, prompts}: LatestFileFormat = importJsonData(factoryData, true)
+          homeDispatch({field: "folders", value: folders})
+          homeDispatch({field: "prompts", value: prompts})
+        })
+        .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
-  }, [selectedConversation, dispatch])
+  }, [triggerFactoryPrompts])
 
+  // Retrieved models from API.
   useEffect(() => {
-    defaultModelId && dispatch({field: "defaultModelId", value: defaultModelId})
+    console.debug("useEffect: modelData")
+    if (modelData) {
+      homeDispatch({field: "models", value: modelData})
+    }
+  }, [modelData, homeDispatch])
+
+  // Error retrieving models from API.
+  useEffect(() => {
+    console.debug("useEffect: error")
+    homeDispatch({field: "modelError", value: getModelsError(error)})
+  }, [error, homeDispatch])
+
+  // Server side props changed.
+  useEffect(() => {
+    apiKey && homeDispatch({field: "apiKey", value: apiKey})
     serverSideApiKeyIsSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSideApiKeyIsSet",
         value: serverSideApiKeyIsSet
       })
     serverSidePluginKeysSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
     serverSideUnlockCodeIsSet &&
-      dispatch({
+      homeDispatch({
         field: "serverSideUnlockCodeIsSet",
         value: serverSideUnlockCodeIsSet
       })
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, dispatch])
+  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
 
-  // ON LOAD --------------------------------------------
-
+  // Load settings from local storage.
   useEffect(() => {
+    console.debug("useEffect: server-side props changed")
     const settings = getSettings()
     if (settings.theme) {
-      dispatch({
+      homeDispatch({
         field: "lightMode",
         value: settings.theme
       })
     }
 
-    const apiKey = localStorage.getItem("apiKey")
-    const unlockCode = localStorage.getItem("unlockCode")
+    const apiKey = getApiKey()
+    const unlockCode = getUnlockCode()
+
+    serverSideApiKeyIsSet &&
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
+    serverSidePluginKeysSet &&
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
+    serverSideUnlockCodeIsSet &&
+      homeDispatch({
+        field: "serverSideUnlockCodeIsSet",
+        value: serverSideUnlockCodeIsSet
+      })
+
+    defaultModelId &&
+      homeDispatch({
+        field: "defaultModelId",
+        value: defaultModelId
+      })
 
     if (serverSideApiKeyIsSet) {
-      dispatch({field: "apiKey", value: ""})
-
-      localStorage.removeItem("apiKey")
+      homeDispatch({field: "apiKey", value: ""})
+      removeApiKey()
     } else if (apiKey) {
-      dispatch({field: "apiKey", value: apiKey})
+      homeDispatch({field: "apiKey", value: apiKey})
     }
 
     if (!serverSideUnlockCodeIsSet) {
-      dispatch({field: "unlockCode", value: ""})
-
-      localStorage.removeItem("unlockCode")
+      homeDispatch({field: "unlockCode", value: ""})
+      removeUnlockCode()
     } else if (unlockCode) {
-      dispatch({field: "unlockCode", value: unlockCode})
+      homeDispatch({field: "unlockCode", value: unlockCode})
     }
 
-    const pluginKeys = localStorage.getItem("pluginKeys")
+    const pluginKeys = getPluginKeys()
     if (serverSidePluginKeysSet) {
-      dispatch({field: "pluginKeys", value: []})
-      localStorage.removeItem("pluginKeys")
+      homeDispatch({field: "pluginKeys", value: []})
+      removePluginKeys()
     } else if (pluginKeys) {
-      dispatch({field: "pluginKeys", value: JSON.parse(pluginKeys)})
+      homeDispatch({field: "pluginKeys", value: pluginKeys})
     }
 
     if (window.innerWidth < 640) {
-      dispatch({field: "showChatbar", value: false})
-      dispatch({field: "showPromptbar", value: false})
+      homeDispatch({field: "showChatBar", value: false})
+      homeDispatch({field: "showPromptBar", value: false})
     }
 
-    const showChatbar = localStorage.getItem("showChatbar")
-    if (showChatbar) {
-      dispatch({field: "showChatbar", value: JSON.parse(showChatbar)})
+    const showChatBar = getShowChatBar()
+    if (showChatBar) {
+      homeDispatch({field: "showChatBar", value: showChatBar})
     }
 
-    const showPromptbar = localStorage.getItem("showPromptbar")
-    if (showPromptbar) {
-      dispatch({field: "showPromptbar", value: JSON.parse(showPromptbar)})
+    const showPromptBar = getShowPromptBar()
+    if (showPromptBar) {
+      homeDispatch({field: "showPromptBar", value: showPromptBar})
     }
 
-    const folders = localStorage.getItem("folders")
+    const folders = getFolders()
     if (folders) {
-      dispatch({field: "folders", value: JSON.parse(folders)})
+      homeDispatch({field: "folders", value: folders})
     }
 
-    const prompts = localStorage.getItem("prompts")
+    const prompts = getPrompts()
     if (prompts) {
-      dispatch({field: "prompts", value: JSON.parse(prompts)})
+      homeDispatch({field: "prompts", value: prompts})
     }
 
-    const conversationHistory = localStorage.getItem("conversationHistory")
-    if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory)
-      const cleanedConversationHistory = cleanConversationHistory(parsedConversationHistory)
+    const conversationsHistory: Conversation[] = getConversationsHistory()
+    const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
+    homeDispatch({field: "conversations", value: cleanedConversationHistory})
 
-      dispatch({field: "conversations", value: cleanedConversationHistory})
-    }
-
-    const selectedConversation = localStorage.getItem("selectedConversation")
+    const selectedConversation = getSelectedConversation()
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation)
-      const cleanedSelectedConversation = cleanSelectedConversation(parsedSelectedConversation)
-
-      dispatch({
-        field: "selectedConversation",
-        value: cleanedSelectedConversation
-      })
+      const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
+      homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
     } else {
-      const lastConversation = conversations[conversations.length - 1]
-      dispatch({
+      const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
+      homeDispatch({
         field: "selectedConversation",
-        value: {
-          id: uuidv4(),
-          name: t("New conversation"),
-          messages: [],
-          model: OpenAIModels[defaultModelId],
-          prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-          temperature: lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
-          folderId: null
-        }
+        value: createNewConversation(
+          t("New conversationXXX"),
+          lastConversation?.model ?? OpenAIModels[defaultModelId],
+          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        )
       })
     }
-  }, [defaultModelId, dispatch, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, dispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, homeDispatch])
+
+  // LAYOUT --------------------------------------------
 
   const title = "Chatty"
   return (
@@ -355,20 +375,17 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
           </div>
 
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            <Chatbar />
-
+            <ChatBar />
             <div className="flex flex-1">
               <Chat stopConversationRef={stopConversationRef} />
             </div>
-
-            <Promptbar />
+            <PromptBar />
           </div>
         </main>
       )}
     </HomeContext.Provider>
   )
 }
-export default Home
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
@@ -378,14 +395,11 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
     fallbackOpenAIModel.id
 
   let serverSidePluginKeysSet = false
-
   const googleApiKey = process.env.GOOGLE_API_KEY
   const googleCSEId = process.env.GOOGLE_CSE_ID
-
   if (googleApiKey && googleCSEId) {
     serverSidePluginKeysSet = true
   }
-
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
@@ -403,3 +417,5 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
     }
   }
 }
+
+export default Home

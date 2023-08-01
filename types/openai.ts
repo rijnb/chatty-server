@@ -38,5 +38,7 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
     tokenLimit: 32000
   }
 }
-// in case the `OPENAI_DEFAULT_MODEL` environment variable is not set or set to an unsupported model
-export const fallbackOpenAIModel = OpenAIModels["gpt-4-32k"]
+
+// In case the `OPENAI_DEFAULT_MODEL` environment variable is not set or set to an unsupported model.
+export const fallbackOpenAIModelID = OpenAIModelID.GPT_4_32K
+export const fallbackOpenAIModel = OpenAIModels[fallbackOpenAIModelID]

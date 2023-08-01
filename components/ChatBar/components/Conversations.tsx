@@ -1,7 +1,5 @@
 import {Conversation} from "@/types/chat"
-
 import {ConversationComponent} from "./Conversation"
-
 
 interface Props {
   conversations: Conversation[]

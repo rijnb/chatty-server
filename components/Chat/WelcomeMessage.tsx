@@ -1,7 +1,5 @@
 import {FC, useContext} from "react"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 
 export interface Props {}
 

@@ -1,3 +1,4 @@
+// Clean up the source text from Google search results.
 export const cleanSourceText = (text: string) => {
   return text
     .trim()

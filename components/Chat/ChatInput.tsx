@@ -1,17 +1,12 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
-
 import {useTranslation} from "next-i18next"
-
-import {isEnterKey} from "@/utils/app/keys"
-
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
-
 import HomeContext from "@/pages/api/home/home.context"
-
 import {ChatInputTokenCount} from "./ChatInputTokenCount"
 import {PluginSelect} from "./PluginSelect"
 import {PromptList} from "./PromptList"
@@ -126,7 +121,7 @@ export const ChatInput = ({
       } else if (e.key === "Tab") {
         e.preventDefault()
         setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : 0))
-      } else if (isEnterKey(e)) {
+      } else if (isKeyboardEnter(e)) {
         e.preventDefault()
         handleInitModal()
       } else if (e.key === "Escape") {
@@ -135,7 +130,7 @@ export const ChatInput = ({
       } else {
         setActivePromptIndex(0)
       }
-    } else if (isEnterKey(e) && !isTyping && !e.shiftKey) {
+    } else if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     } else if (e.key === "/" && e.metaKey) {
@@ -222,9 +217,7 @@ export const ChatInput = ({
         setShowPromptList(false)
       }
     }
-
     window.addEventListener("click", handleOutsideClick)
-
     return () => {
       window.removeEventListener("click", handleOutsideClick)
     }
@@ -355,10 +348,8 @@ export const ChatInput = ({
         <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
           Chatty
         </a>
-        &nbsp;was developed by Rijn Buve, originally based on the works of Mckay Wrigley and others on&nbsp;
-        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">
-          chatbot-ui
-        </a>
+        &nbsp;was developed by Rijn Buve, based on <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">chatbpt-ui</a>
+        &nbsp;by Mckay Wrigley
       </div>
     </div>
   )

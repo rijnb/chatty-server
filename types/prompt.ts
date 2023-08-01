@@ -7,5 +7,5 @@ export interface Prompt {
   content: string
   model: OpenAIModel
   folderId: string | null
-  isSystemPrompt: boolean
+  factory: boolean | null
 }

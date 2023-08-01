@@ -1,3 +1,10 @@
+/**
+ * Generates a filename by concatenating a prefix, a timestamp, and a suffix.
+ *
+ * @param prefix - The string prefix to prepend to the generated filename.
+ * @param suffix - The string suffix, typically a file extension, to append to the generated filename.
+ * @returns A string representing the generated filename, formatted as `prefix_yyyyMMdd_HHmmss.suffix`.
+ */
 export const generateFilename = (prefix: string, suffix: string) => {
   const now = new Date()
   const year = now.getFullYear()

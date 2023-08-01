@@ -1,54 +1,54 @@
 import {IconFileImport} from "@tabler/icons-react"
 import {FC, useState} from "react"
-
-import {useTranslation} from "next-i18next"
-
-import {isValidFile} from "@/utils/app/import"
-
-import {SupportedExportFormats} from "@/types/export"
-
+import {isValidJsonData} from "@/utils/app/import"
+import {SupportedFileFormats} from "@/types/export"
 import {SidebarButton} from "../Sidebar/SidebarButton"
 
 
 interface Props {
+  id: string
   text: string
-  onImport: (data: SupportedExportFormats) => void
+  onImport: (data: SupportedFileFormats) => void
 }
 
-export const ImportData: FC<Props> = ({text, onImport}) => {
+export const ImportData: FC<Props> = ({id, text, onImport}) => {
   const [errors, setErrors] = useState<string[]>([])
   return (
     <>
       <input
-        id="import-file"
+        id={`import-${id}`}
         className="sr-only"
         tabIndex={-1}
         type="file"
         accept=".json"
         multiple
-        onChange={(e) => {
-          if (!e.target.files?.length) {
+        onChange={(event) => {
+          console.info(`Importing file ${event.target.files?.length} files`)
+          if (!event.target.files?.length) {
             return
           }
 
-          Array.from(e.target.files).forEach((file) => {
+          Array.from(event.target.files).forEach((file) => {
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = (progressEvent) => {
               try {
-                let json = JSON.parse(e.target?.result as string)
-                const validationResult = isValidFile(json)
-                if (validationResult.length === 0) {
+                let json = JSON.parse(progressEvent.target?.result as string)
+                const validationErrors = isValidJsonData(json)
+                if (validationErrors.length === 0) {
                   onImport(json)
                   setErrors([])
                 } else {
-                  setErrors(validationResult)
+                  setErrors(validationErrors)
                 }
               } catch (error) {
-                setErrors(["Invalid JSON file"])
+                setErrors([`Invalid JSON file; file:${file.name}, exception:${error}`])
               }
             }
             reader.readAsText(file)
           })
+
+          // Change the value of the input to make sure onChange fires next time.
+          event.target.value = ""
         }}
       />
 
@@ -56,7 +56,7 @@ export const ImportData: FC<Props> = ({text, onImport}) => {
         text={text}
         icon={<IconFileImport size={18} />}
         onClick={() => {
-          const importFile = document.querySelector("#import-file") as HTMLInputElement
+          const importFile = document.querySelector(`#import-${id}`) as HTMLInputElement
           if (importFile) {
             importFile.click()
           }
@@ -64,7 +64,6 @@ export const ImportData: FC<Props> = ({text, onImport}) => {
       />
       {errors.length > 0 && (
         <div className="error-messages">
-          Errors in JSON file, not imported:
           {errors.map((error, index) => (
             <p key={index} className="error-message">
               {error}
