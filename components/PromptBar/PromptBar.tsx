@@ -104,7 +104,7 @@ const PromptBar = () => {
         field: "filteredPrompts",
         value: prompts.filter((prompt) => {
           const searchable =
-            prompt.name.toLowerCase() + " " + prompt.description.toLowerCase() + " " + prompt.content.toLowerCase()
+              prompt.name.toLowerCase() + " " + prompt.description.toLowerCase() + " " + prompt.content.toLowerCase()
           return searchable.includes(searchTerm.toLowerCase())
         })
       })
@@ -114,33 +114,33 @@ const PromptBar = () => {
   }, [searchTerm, prompts])
 
   return (
-    <PromptBarContext.Provider
-      value={{
-        ...promptBarContextValue,
-        handleCreatePrompt,
-        handleDeletePrompt,
-        handleUpdatePrompt,
-        handleClearPrompts,
-        handleImportPrompts,
-        handleExportPrompts
-      }}
-    >
-      <Sidebar<Prompt>
-        side={"right"}
-        isOpen={showPromptBar}
-        addItemButtonTitle={t("New prompt")}
-        itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
-        folderComponent={<PromptFolders />}
-        items={filteredPrompts}
-        searchTerm={searchTerm}
-        handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
-        toggleOpen={handleTogglePromptBar}
-        handleCreateItem={handleCreatePrompt}
-        handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
-        handleDrop={handleDrop}
-        footerComponent={<PromptBarSettings />}
-      />
-    </PromptBarContext.Provider>
+      <PromptBarContext.Provider
+          value={{
+            ...promptBarContextValue,
+            handleCreatePrompt,
+            handleDeletePrompt,
+            handleUpdatePrompt,
+            handleClearPrompts,
+            handleImportPrompts,
+            handleExportPrompts
+          }}
+      >
+        <Sidebar<Prompt>
+            side={"right"}
+            isOpen={showPromptBar}
+            addItemButtonTitle={t("New prompt")}
+            itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
+            folderComponent={<PromptFolders />}
+            items={filteredPrompts}
+            searchTerm={searchTerm}
+            handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
+            toggleOpen={handleTogglePromptBar}
+            handleCreateItem={handleCreatePrompt}
+            handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
+            handleDrop={handleDrop}
+            footerComponent={<PromptBarSettings />}
+        />
+      </PromptBarContext.Provider>
   )
 }
 

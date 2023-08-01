@@ -17,6 +17,10 @@ export const createNewPrompt = (name: string, model: OpenAIModel): Prompt => {
   }
 }
 
+export const savePrompts = (prompts: Prompt[]) => {
+  localStorage.setItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
+}
+
 export const getPrompts = (): Prompt[] => {
   const promptsAsString = localStorage.getItem(STORAGE_KEY_PROMPTS)
   try {
@@ -25,25 +29,6 @@ export const getPrompts = (): Prompt[] => {
     console.error(`Local storage error: ${error}`)
     return []
   }
-}
-
-import {v4 as uuidv4} from "uuid"
-
-
-export const createNewPrompt = (name: string, model: OpenAIModel): Prompt => {
-  return {
-    id: uuidv4(),
-    name: name,
-    description: "",
-    content: "",
-    model: model,
-    folderId: null,
-    isSystemPrompt: false,
-  }
-}
-
-export const savePrompts = (prompts: Prompt[]) => {
-  localStorage.setItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
 }
 
 export const removePrompts = () => localStorage.removeItem(STORAGE_KEY_PROMPTS)
