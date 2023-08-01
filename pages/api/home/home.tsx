@@ -191,16 +191,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     homeDispatch({field: "modelError", value: getModelsError(error)})
   }, [error, homeDispatch, getModelsError])
 
-  // Selected conversation changed.
-  useEffect(() => {
-    console.debug("useEffect: selectedConversation") //!! TODO
-    if (window.innerWidth < 640) {
-      console.info("3 close chat bar") //!! TODO
-      homeDispatch({field: "showChatBar", value: false})
-      homeDispatch({field: "showPromptBar", value: false})
-    }
-  }, [selectedConversation, homeDispatch])
-
   // Server side props changed.
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
