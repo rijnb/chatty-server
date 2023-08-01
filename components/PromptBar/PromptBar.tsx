@@ -63,12 +63,12 @@ const PromptBar = () => {
   }
 
   const handleUpdatePrompt = (prompt: Prompt) => {
-    const updatedPrompts = prompts.map((p) => {
-      if (p.id === prompt.id) {
-        return prompt
+    const updatedPrompts = prompts.map((existingPrompt) => {
+      if (existingPrompt.id === prompt.id) {
+        return {...prompt, factory: null}
+      } else {
+        return existingPrompt
       }
-
-      return p
     })
     homeDispatch({field: "prompts", value: updatedPrompts})
     savePrompts(updatedPrompts)
