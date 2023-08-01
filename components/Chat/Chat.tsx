@@ -16,7 +16,6 @@ import {getEndpoint} from "@/utils/app/api"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
-import {saveTheme} from "@/utils/app/settings"
 import {throttle} from "@/utils/data/throttle"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {fallbackOpenAIModel} from "@/types/openai"
@@ -33,12 +32,11 @@ import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math";
-
+import remarkMath from "remark-math"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
-  theme: Theme
+  theme: "light" | "dark"
 }
 
 const useMarkdownFile = (filename: string) => {
@@ -461,14 +459,9 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
               &nbsp;&nbsp;&nbsp;|&nbsp;
               <button
                 className="ml-2 cursor-pointer hover:opacity-50"
-                onClick={() => {
-                  const newTheme = theme === "dark" ? "light" : "dark"
-                  homeDispatch({field: "theme", value: newTheme})
-                  saveTheme(newTheme)
-                }}
+                onClick={() => homeDispatch({field: "theme", value: theme === "dark" ? "light" : "dark"})}
               >
-                {theme === "dark" && <IconBulbFilled size={18} />}
-                {theme === "light" && <IconBulbOff size={18} />}
+                {theme === "dark" ? <IconBulbFilled size={18} /> : <IconBulbOff size={18} />}
               </button>
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
                 <IconRobot size={18} />

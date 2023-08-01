@@ -29,7 +29,7 @@ import {
   getShowPromptBar,
   getUnlockCode,
   removeApiKey,
-  removeUnlockCode
+  removeUnlockCode, saveSettings
 } from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
@@ -208,6 +208,13 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
   }, [triggerFactoryPrompts])
+
+  // Theme switch.
+  useEffect(() => {
+    console.debug("useEffect: theme")
+    const settings = {...getSettings(), theme: theme}
+    saveSettings(settings)
+  }, [theme, homeDispatch])
 
   // Retrieved models from API.
   useEffect(() => {

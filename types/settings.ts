@@ -1,3 +1,3 @@
-export interface Theme {
+export interface Settings {
   theme: "light" | "dark"
 }
