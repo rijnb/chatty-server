@@ -1,9 +1,9 @@
-import {Conversation, Message} from "@/types/chat"
-import {ErrorMessage} from "@/types/error"
-import {FolderInterface} from "@/types/folder"
-import {OpenAIModel, OpenAIModelID} from "@/types/openai"
-import {PluginKey} from "@/types/plugin"
-import {Prompt} from "@/types/prompt"
+import { Conversation, Message } from "@/types/chat";
+import { ErrorMessage } from "@/types/error";
+import { FolderInterface } from "@/types/folder";
+import { OpenAIModel, OpenAIModelID } from "@/types/openai";
+import { PluginKey } from "@/types/plugin";
+import { Prompt } from "@/types/prompt";
 
 
 export interface HomeInitialState {
@@ -20,6 +20,7 @@ export interface HomeInitialState {
   selectedConversation: Conversation | undefined
   currentMessage: Message | undefined
   prompts: Prompt[]
+  triggerFactoryPrompts: boolean
   temperature: number
   showChatBar: boolean
   showPromptBar: boolean
@@ -46,6 +47,7 @@ export const initialState: HomeInitialState = {
   selectedConversation: undefined,
   currentMessage: undefined,
   prompts: [],
+  triggerFactoryPrompts: true,
   temperature: 1,
   showPromptBar: true,
   showChatBar: true,

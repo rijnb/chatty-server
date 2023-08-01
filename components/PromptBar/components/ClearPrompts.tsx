@@ -45,6 +45,6 @@ export const ClearPrompts: FC<Props> = ({onClearPrompts}) => {
       </div>
     </div>
   ) : (
-    <SidebarButton text={t("Clear prompts")} icon={<IconTrash size={18} />} onClick={() => setIsConfirming(true)} />
+    <SidebarButton text={t("Clear user prompts")} icon={<IconTrash size={18} />} onClick={() => setIsConfirming(true)} />
   )
 }

@@ -4,6 +4,7 @@ import {GetServerSideProps} from "next"
 import {useTranslation} from "next-i18next"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations"
 import Head from "next/head"
+import {useRouter} from "next/router"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
@@ -18,6 +19,7 @@ import {
   updateConversationHistory
 } from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
+import {importJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {
@@ -31,6 +33,7 @@ import {
 } from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
+import {LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
 import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
@@ -54,9 +57,20 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
+  const router = useRouter()
 
   const {
-    state: {apiKey, unlockCode, lightMode, folders, conversations, selectedConversation, prompts, temperature},
+    state: {
+      apiKey,
+      unlockCode,
+      lightMode,
+      folders,
+      conversations,
+      selectedConversation,
+      prompts,
+      triggerFactoryPrompts,
+      temperature
+    },
     dispatch: homeDispatch
   } = contextValue
 
@@ -177,6 +191,24 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   // EFFECTS  --------------------------------------------
 
+  // Read factory prompts file.
+  useEffect(() => {
+    const filename = `${router.basePath}/factory-prompts.json`
+    if (triggerFactoryPrompts) {
+      console.debug(`useEffect: triggerFactoryPrompts`)
+      homeDispatch({field: "triggerFactoryPrompts", value: false})
+      fetch(filename)
+        .then((response) => response.text())
+        .then((text) => {
+          let factoryData: LatestFileFormat = JSON.parse(text)
+          const {folders, prompts}: LatestFileFormat = importJsonData(factoryData, true)
+          homeDispatch({field: "folders", value: folders})
+          homeDispatch({field: "prompts", value: prompts})
+        })
+        .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
+    }
+  }, [triggerFactoryPrompts])
+
   // Retrieved models from API.
   useEffect(() => {
     console.debug("useEffect: modelData")
@@ -189,7 +221,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   useEffect(() => {
     console.debug("useEffect: error")
     homeDispatch({field: "modelError", value: getModelsError(error)})
-  }, [error, homeDispatch, getModelsError])
+  }, [error, homeDispatch])
 
   // Server side props changed.
   useEffect(() => {

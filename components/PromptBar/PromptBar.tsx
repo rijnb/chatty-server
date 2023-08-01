@@ -47,11 +47,12 @@ const PromptBar = () => {
   }
 
   const handleClearPrompts = () => {
-    homeDispatch({field: "prompts", value: []})
     removePrompts()
     const updatedFolders = folders.filter((f) => f.type !== "prompt")
-    homeDispatch({field: "folders", value: updatedFolders})
     saveFolders(updatedFolders)
+    homeDispatch({field: "prompts", value: []})
+    homeDispatch({field: "folders", value: updatedFolders})
+    homeDispatch({field: "triggerFactoryPrompts", value: true})
   }
 
   const handleDeletePrompt = (prompt: Prompt) => {

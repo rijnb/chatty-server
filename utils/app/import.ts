@@ -67,11 +67,22 @@ export const isValidJsonData = (jsonData: any): string[] => {
 }
 
 // Import file and set the 'factory' value for all prompts to a new value (or remove it).
-export const importJsonData = (data: SupportedFileFormats, newFactoryValue = null): LatestFileFormat => {
+export const importJsonData = (
+  data: SupportedFileFormats,
+  newFactoryValue: boolean | null = null
+): LatestFileFormat => {
   const {history: importedHistory, folders: importedfolders, prompts: importedprompts} = upgradeDataToLatestFormat(data)
   const history = importedHistory ?? []
-  const folders = importedfolders ?? []
-  const prompts = importedprompts ?? []
+  const folders =
+    importedfolders.map((folder) => {
+      folder.factory = newFactoryValue
+      return folder
+    }) ?? []
+  const prompts =
+    importedprompts.map((prompt) => {
+      prompt.factory = newFactoryValue
+      return prompt
+    }) ?? []
 
   // Existing conversations are NOT overwritten.
   const existingConversationHistory = getConversationsHistory()
@@ -85,21 +96,24 @@ export const importJsonData = (data: SupportedFileFormats, newFactoryValue = nul
     removeSelectedConversation()
   }
 
-  // Existing folders are NOT overwritten.
-  const existingFolders = getFolders()
+  // Existing folders are not overwritten.
+  const existingFolders = getFolders().map((folder) => {
+    folder.factory = null
+    return folder
+  })
   const importedFolders: FolderInterface[] = [...existingFolders, ...folders].filter(
     (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
   )
   saveFolders(importedFolders)
 
-  // Existing prompts are overwritten.
-  const existingPrompts = getPrompts()
-  const importedPrompts: Prompt[] = [...prompts, ...existingPrompts]
-    .filter((prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id))
-    .map((prompt) => {
-      prompt.factory = newFactoryValue
-      return prompt
-    })
+  // Existing prompts are not overwritten.
+  const existingPrompts = getPrompts().map((prompt) => {
+    prompt.factory = null
+    return prompt
+  })
+  const importedPrompts: Prompt[] = [...existingPrompts, ...prompts].filter(
+    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
+  )
   savePrompts(importedPrompts)
 
   return {

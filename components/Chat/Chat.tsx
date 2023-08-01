@@ -339,7 +339,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     setShowSettings(!showSettings)
   }
 
-  const onClearAll = () => {
+  const onClearMessagesInConversation = () => {
     setIsReleaseNotesDialogOpen(false)
     if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, {
@@ -452,7 +452,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
                 <IconRobot size={18} />
               </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearAll}>
+              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearMessagesInConversation}>
                 <IconEraser size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
