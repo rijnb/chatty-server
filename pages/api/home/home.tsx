@@ -63,7 +63,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     state: {
       apiKey,
       unlockCode,
-      lightMode,
+      theme,
       folders,
       conversations,
       selectedConversation,
@@ -249,7 +249,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     const settings = getSettings()
     if (settings.theme) {
       homeDispatch({
-        field: "lightMode",
+        field: "theme",
         value: settings.theme
       })
     }
@@ -369,7 +369,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}>
+        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${theme}`}>
           <div className="fixed top-0 w-full sm:hidden">
             <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
           </div>
@@ -377,7 +377,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} />
+              <Chat stopConversationRef={stopConversationRef} theme={theme}/>
             </div>
             <PromptBar />
           </div>
@@ -411,8 +411,7 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
         "chat",
         "sidebar",
         "markdown",
-        "promptbar",
-        "settings"
+        "promptbar"
       ]))
     }
   }

@@ -6,6 +6,7 @@
 
 * Added factory prompts. Everyone receives the factory prompts. They are automatically updated when you start. If you
   edit them, they become 'user prompts'. If you wish tp get the factory one back, just delete it and reload the page.
+* Removed settings menu (with only a theme selection) and created icon to slip between dark/light theme instead.
 * Sorted prompt list.
 
 #### Bug fixes

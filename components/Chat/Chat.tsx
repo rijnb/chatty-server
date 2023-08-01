@@ -1,4 +1,12 @@
-import {IconEraser, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
+import {
+  IconBulbFilled,
+  IconBulbOff,
+  IconEraser,
+  IconHelp,
+  IconMarkdown,
+  IconRobot,
+  IconScreenshot
+} from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import Modal from "react-modal"
@@ -8,6 +16,7 @@ import {getEndpoint} from "@/utils/app/api"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
+import {saveTheme} from "@/utils/app/settings"
 import {throttle} from "@/utils/data/throttle"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {fallbackOpenAIModel} from "@/types/openai"
@@ -29,6 +38,7 @@ import remarkMath from "remark-math";
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
+  theme: Theme
 }
 
 const useMarkdownFile = (filename: string) => {
@@ -43,7 +53,7 @@ const useMarkdownFile = (filename: string) => {
   return fileContent
 }
 
-export const Chat = memo(({stopConversationRef}: Props) => {
+export const Chat = memo(({stopConversationRef, theme}: Props) => {
   const {t} = useTranslation("chat")
 
   const {
@@ -449,6 +459,17 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 <IconHelp size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
+              <button
+                className="ml-2 cursor-pointer hover:opacity-50"
+                onClick={() => {
+                  const newTheme = theme === "dark" ? "light" : "dark"
+                  homeDispatch({field: "theme", value: newTheme})
+                  saveTheme(newTheme)
+                }}
+              >
+                {theme === "dark" && <IconBulbFilled size={18} />}
+                {theme === "light" && <IconBulbOff size={18} />}
+              </button>
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
                 <IconRobot size={18} />
               </button>

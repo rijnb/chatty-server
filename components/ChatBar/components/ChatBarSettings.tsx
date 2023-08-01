@@ -7,7 +7,6 @@ import {ClearConversations} from "@/components/ChatBar/components/ClearConversat
 import {PluginKeys} from "@/components/ChatBar/components/PluginKeys"
 import {ApiKey} from "@/components/Settings/ApiKey"
 import {ImportData} from "@/components/Settings/ImportData"
-import {SettingsDialog} from "@/components/Settings/SettingsDialog"
 import {UnlockCode} from "@/components/Settings/UnlockCode"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
@@ -40,7 +39,6 @@ export const ChatBarSettings = () => {
       {conversations.length > 0 ? <ClearConversations onClearConversations={handleClearConversations} /> : null}
 
       <ImportData id="conversations" text={t("Import conversations")} onImport={handleImportConversations} />
-
       {conversations.length > 0 ? (
         <SidebarButton
           text={t("Export conversations")}
@@ -48,20 +46,8 @@ export const ChatBarSettings = () => {
           onClick={() => handleExportConversations()}
         />
       ) : null}
-
-      <SidebarButton text={t("Settings")} icon={<IconSettings size={18} />} onClick={() => setIsSettingDialog(true)} />
-
       {!serverSideApiKeyIsSet ? <ApiKey apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
-
       {!serverSidePluginKeysSet ? <PluginKeys /> : null}
-
-      <SettingsDialog
-        open={isSettingDialogOpen}
-        onClose={() => {
-          setIsSettingDialog(false)
-        }}
-      />
-
       {serverSideUnlockCodeIsSet ? (
         <UnlockCode unlockCode={unlockCode} onUnlockCodeChange={handleUnlockCodeChange} />
       ) : null}

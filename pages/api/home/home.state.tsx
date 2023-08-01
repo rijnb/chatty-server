@@ -11,7 +11,7 @@ export interface HomeInitialState {
   unlockCode: string
   pluginKeys: PluginKey[]
   loading: boolean
-  lightMode: "light" | "dark"
+  theme: "light" | "dark"
   messageIsStreaming: boolean
   modelError: ErrorMessage | null
   models: OpenAIModel[]
@@ -38,7 +38,7 @@ export const initialState: HomeInitialState = {
   unlockCode: "",
   loading: false,
   pluginKeys: [],
-  lightMode: "dark",
+  theme: "dark",
   messageIsStreaming: false,
   modelError: null,
   models: [],

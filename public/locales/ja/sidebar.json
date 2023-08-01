@@ -7,8 +7,5 @@
   "Import config": "会話履歴をインポート",
   "Are you sure?": "よろしいですか？",
   "Clear conversations": " 会話をクリア",
-  "Export config": "会話履歴をエクスポート",
-  "Dark mode": "ダークモード",
-  "Light mode": "ライトモード",
-  "Settings": "設定"
+  "Export config": "会話履歴をエクスポート"
 }
