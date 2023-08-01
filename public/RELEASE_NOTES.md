@@ -4,7 +4,8 @@
 
 #### Features
 
-* ...
+* Sorted prompt list.
+* Added factory prompt.
 
 #### Bug fixes
 
