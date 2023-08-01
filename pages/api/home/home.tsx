@@ -179,7 +179,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   // Retrieved models from API.
   useEffect(() => {
-    console.debug("useEffect: modelData") //!! TODO
+    console.debug("useEffect: modelData")
     if (modelData) {
       homeDispatch({field: "models", value: modelData})
     }
@@ -187,7 +187,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   // Error retrieving models from API.
   useEffect(() => {
-    console.debug("useEffect: error") //!! TODO
+    console.debug("useEffect: error")
     homeDispatch({field: "modelError", value: getModelsError(error)})
   }, [error, homeDispatch, getModelsError])
 
@@ -213,7 +213,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
 
   // Load settings from local storage.
   useEffect(() => {
-    console.debug("useEffect: retrieve settings") //!! TODO
+    console.debug("useEffect: server-side props changed")
     const settings = getSettings()
     if (settings.theme) {
       homeDispatch({
