@@ -20,17 +20,17 @@ export const PromptBarSettings: FC<Props> = () => {
 
   return (
     <div>
-      {prompts.length > 0 ? <ClearPrompts onClearPrompts={handleClearPrompts} /> : null}
-
-      <ImportData id="prompts" text={t("Import prompts")} onImport={handleImportPrompts} />
+      <ImportData id="prompts" text={t("Import user prompts")} onImport={handleImportPrompts} />
 
       {prompts.length > 0 ? (
         <SidebarButton
-          text={t("Export prompts")}
+          text={t("Export user prompts")}
           icon={<IconFileExport size={18} />}
           onClick={() => handleExportPrompts()}
         />
       ) : null}
+
+      {prompts.length > 0 ? <ClearPrompts onClearPrompts={handleClearPrompts} /> : null}
     </div>
   )
 }
