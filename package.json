@@ -21,7 +21,7 @@
       "buildResources": "assets"
     },
     "files": [
-      "_static/**/*",
+      "build/**/*",
       "node_modules/**/*",
       "RELEASE_NOTES.md",
       "factory-presets.json",
