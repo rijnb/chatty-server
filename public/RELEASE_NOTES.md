@@ -13,6 +13,7 @@
 
 * Source code cleanup.
 * Fixed bug when importing would trigger wrong `onChange` handler and the handler would not always be called.
+* Removed delete button for factory prompts. 
 
 ### 2023-07-26
 
