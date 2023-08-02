@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - chatty-internal
+name: Build and deploy Node.js app to Azure Web App
 
 on:
   push:
@@ -14,24 +14,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+        # https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/build/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - name: npm install, build, and test
+      - name: npm install, build, and (in the future) test
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
+
+      - name: Package
+        run: |
+          cp -pr ./build/static ./build/standalone/build
+          cp -pr ./public ./build/standalone
+          cp -pr ./ecosystem.config.js ./build/standalone
+
+      - name: Zip all files for upload between jobs
+        working-directory: build/standalone
+        run: zip ${{ github.workspace }}/app.zip ./* -qry
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: app.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,7 +60,7 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: node-app
 
@@ -53,4 +71,4 @@ jobs:
           app-name: 'chatty-internal'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6690D492EA3A4AEB95D336F8909EF375 }}
-          package: .
+          package: app.zip
