@@ -52,7 +52,7 @@ export const PromptFolders = () => {
           <Folder
             key={index}
             searchTerm={searchTerm}
-            currentFolder={folder}
+            folder={folder}
             handleDrop={handleDrop}
             folderComponent={PromptFolders(folder)}
           />

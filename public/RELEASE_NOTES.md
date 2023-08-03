@@ -1,5 +1,11 @@
 ## Release notes
 
+### 2023-08-03
+
+#### Bug fixes
+
+* #32: Factory Prompts are cloned even if no changes are made.
+
 ### 2023-07-29
 
 #### Features

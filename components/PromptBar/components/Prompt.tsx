@@ -49,7 +49,7 @@ export const PromptComponent = ({prompt}: Props) => {
       <div className="relative flex items-center">
         <button
             className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90"
-            draggable="true"
+            draggable={prompt.factory ? "false" : "true"}
             onClick={(e) => {
               e.stopPropagation()
               setShowModal(true)
@@ -59,7 +59,7 @@ export const PromptComponent = ({prompt}: Props) => {
               setIsDeleting(false)
             }}
         >
-          {prompt.factory ? <IconBuildingFactory2 size={18}/> : <IconUserCircle size={18}/>}
+          {prompt.factory ? <IconBuildingFactory2 size={18} color={"gray"}/> : <IconUserCircle size={18}/>}
           <div
               className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-4 text-left text-[12.5px] leading-3">
             {prompt.name}

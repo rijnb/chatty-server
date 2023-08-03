@@ -51,7 +51,7 @@ export const ChatFolders = ({searchTerm}: Props) => {
           <Folder
             key={index}
             searchTerm={searchTerm}
-            currentFolder={folder}
+            folder={folder}
             handleDrop={handleDrop}
             folderComponent={ChatFolders(folder)}
           />

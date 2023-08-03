@@ -117,7 +117,7 @@ export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
 
             {prompt.factory && (
               <div className="mt-2 text-sm font-bold text-red-900 dark:text-red-300">
-                {t("Note: This is factory prompt, which is automatically updated.")}
+                {t("Note: This is factory prompt. If you edit and saveit, a user prompt will be created. The factory prompt will not be changed.")}
               </div>
             )}
           </div>
