@@ -373,7 +373,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         <title>{title}</title>
         <meta name="description" content="ChatGPT but better." />
         <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={`${router.basePath}/favicon.ico`} />
       </Head>
       {selectedConversation && (
         <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${theme}`}>

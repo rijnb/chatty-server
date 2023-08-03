@@ -1,4 +1,4 @@
-const {basePath} = require("./config")
+const {basePath, output} = require("./config")
 const {i18n} = require("./next-i18next.config")
 
 /** @type {import("next").NextConfig} */
@@ -6,11 +6,11 @@ const nextConfig = {
   i18n,
   reactStrictMode: true,
   distDir: "build",
+  output,
   images: {
     unoptimized: true
   },
-  basePath: basePath,
-  assetPrefix: basePath,
+  basePath,
 
   webpack(config, {isServer, dev}) {
     config.experiments = {
