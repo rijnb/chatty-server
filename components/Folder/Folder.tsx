@@ -148,7 +148,7 @@ const Folder = ({folder, searchTerm, handleDrop, folderComponent}: Props) => {
           </div>
         )}
 
-        {!isDeleting && !isRenaming && (
+        {!isDeleting && !isRenaming && !folder.factory && (
           <div className="absolute right-1 z-10 flex text-gray-300">
             <SidebarActionButton
               handleClick={(e) => {
