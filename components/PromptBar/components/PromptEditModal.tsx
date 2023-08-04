@@ -10,7 +10,7 @@ interface Props {
   onUpdatePrompt: (prompt: Prompt) => void
 }
 
-export const PromptModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
+export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
   const {t} = useTranslation("promptbar")
   const [name, setName] = useState(prompt.name)
   const [description, setDescription] = useState(prompt.description)

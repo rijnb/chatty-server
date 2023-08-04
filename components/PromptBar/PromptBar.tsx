@@ -12,7 +12,7 @@ import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
 import {PromptBarSettings} from "./components/PromptBarSettings"
 import {PromptFolders} from "./components/PromptFolders"
-import {Prompts} from "./components/Prompts"
+import {PromptList} from "./components/PromptList"
 import Sidebar from "../Sidebar"
 import PromptBarContext from "./PromptBar.context"
 import {PromptBarInitialState, initialState} from "./PromptBar.state"
@@ -146,7 +146,7 @@ const PromptBar = () => {
         side={"right"}
         isOpen={showPromptBar}
         addItemButtonTitle={t("New prompt")}
-        itemComponent={<Prompts prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
+        itemComponent={<PromptList prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
         folderComponent={<PromptFolders />}
         items={filteredPrompts}
         searchTerm={searchTerm}

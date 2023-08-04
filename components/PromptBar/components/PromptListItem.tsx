@@ -3,13 +3,13 @@ import {Prompt} from "@/types/prompt"
 import {IconBuildingFactory2, IconCheck, IconTrash, IconUserCircle, IconX} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useState} from "react"
 import PromptBarContext from "../PromptBar.context"
-import {PromptModal} from "./PromptModal"
+import {PromptEditModal} from "./PromptEditModal"
 
 interface Props {
   prompt: Prompt
 }
 
-export const PromptComponent = ({prompt}: Props) => {
+export const PromptListItem = ({prompt}: Props) => {
   const {dispatch: promptDispatch, handleUpdatePrompt, handleDeletePrompt} = useContext(PromptBarContext)
 
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -87,7 +87,7 @@ export const PromptComponent = ({prompt}: Props) => {
         )}
 
         {showModal &&
-            <PromptModal prompt={prompt} onClose={() => setShowModal(false)} onUpdatePrompt={handleUpdate}/>}
+            <PromptEditModal prompt={prompt} onClose={() => setShowModal(false)} onUpdatePrompt={handleUpdate}/>}
       </div>
   )
 }

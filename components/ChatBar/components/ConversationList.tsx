@@ -1,11 +1,11 @@
 import {Conversation} from "@/types/chat"
-import {ConversationComponent} from "./Conversation"
+import {ConversationListItem} from "./ConversationListItem"
 
 interface Props {
   conversations: Conversation[]
 }
 
-export const Conversations = ({conversations}: Props) => {
+export const ConversationList = ({conversations}: Props) => {
   return (
     <div className="flex w-full flex-col gap-1">
       {conversations
@@ -13,7 +13,7 @@ export const Conversations = ({conversations}: Props) => {
         .slice()
         .reverse()
         .map((conversation, index) => (
-          <ConversationComponent key={index} conversation={conversation} />
+          <ConversationListItem key={index} conversation={conversation} />
         ))}
     </div>
   )

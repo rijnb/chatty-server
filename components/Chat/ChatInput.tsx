@@ -9,8 +9,8 @@ import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
 import {ChatInputTokenCount} from "./ChatInputTokenCount"
 import {PluginSelect} from "./PluginSelect"
-import {PromptList} from "./PromptList"
-import {PromptVariableModal} from "./PromptVariableModal"
+import {PromptPopupList} from "./PromptPopupList"
+import {PromptInputVars} from "./PromptInputVars"
 
 
 interface Props {
@@ -323,7 +323,7 @@ export const ChatInput = ({
 
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
-              <PromptList
+              <PromptPopupList
                 activePromptIndex={activePromptIndex}
                 prompts={filteredPrompts}
                 onSelect={handleInitModal}
@@ -334,7 +334,7 @@ export const ChatInput = ({
           )}
 
           {isModalVisible && (
-            <PromptVariableModal
+            <PromptInputVars
               prompt={filteredPrompts[activePromptIndex]}
               promptVariables={variables}
               onSubmit={handleSubmit}

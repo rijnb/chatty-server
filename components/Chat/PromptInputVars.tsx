@@ -11,7 +11,7 @@ interface Props {
   onCancel: () => void
 }
 
-export const PromptVariableModal: FC<Props> = ({prompt, promptVariables, onSubmit, onClose, onCancel}) => {
+export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, onClose, onCancel}) => {
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))

@@ -8,7 +8,7 @@ import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import {SidebarButton} from "@/components/Sidebar/SidebarButton"
 
 
-export const PluginKeys = () => {
+export const PluginKeyList = () => {
   const {t} = useTranslation("sidebar")
 
   const {

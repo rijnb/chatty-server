@@ -11,7 +11,7 @@ interface Props {
   conversation: Conversation
 }
 
-export const ConversationComponent = ({conversation}: Props) => {
+export const ConversationListItem = ({conversation}: Props) => {
   const {
     state: {selectedConversation, messageIsStreaming},
     handleSelectConversation,

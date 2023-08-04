@@ -2,14 +2,14 @@ import {useContext} from "react"
 import {FolderInterface} from "@/types/folder"
 import HomeContext from "@/pages/api/home/home.context"
 import Folder from "@/components/Folder"
-import {ConversationComponent} from "./Conversation"
+import {ConversationListItem} from "./ConversationListItem"
 
 
 interface Props {
   searchTerm: string
 }
 
-export const ChatFolders = ({searchTerm}: Props) => {
+export const ChatFolderList = ({searchTerm}: Props) => {
   const {
     state: {folders, conversations},
     handleUpdateConversation
@@ -34,7 +34,7 @@ export const ChatFolders = ({searchTerm}: Props) => {
           if (conversation.folderId === currentFolder.id) {
             return (
               <div key={index} className="ml-5 gap-2 border-l pl-2">
-                <ConversationComponent conversation={conversation} />
+                <ConversationListItem conversation={conversation} />
               </div>
             )
           }

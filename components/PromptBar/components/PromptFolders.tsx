@@ -2,7 +2,7 @@ import {useContext} from "react"
 import {FolderInterface} from "@/types/folder"
 import HomeContext from "@/pages/api/home/home.context"
 import Folder from "@/components/Folder"
-import {PromptComponent} from "@/components/PromptBar/components/Prompt"
+import {PromptListItem} from "@/components/PromptBar/components/PromptListItem"
 import PromptBarContext from "../PromptBar.context"
 
 
@@ -37,7 +37,7 @@ export const PromptFolders = () => {
         if (prompt.folderId === currentFolder.id) {
           return (
             <div key={index} className="ml-5 gap-2 border-l pl-2">
-              <PromptComponent key={index} prompt={prompt} />
+              <PromptListItem key={index} prompt={prompt} />
             </div>
           )
         }

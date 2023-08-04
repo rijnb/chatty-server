@@ -20,8 +20,8 @@ import {OpenAIModels, fallbackOpenAIModelID} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import {ChatBarSettings} from "./components/ChatBarSettings"
-import {ChatFolders} from "./components/ChatFolders"
-import {Conversations} from "./components/Conversations"
+import {ChatFolderList} from "./components/ChatFolderList"
+import {ConversationList} from "./components/ConversationList"
 import Sidebar from "../Sidebar"
 import ChatBarContext from "./ChatBar.context"
 import {ChatBarInitialState, initialState} from "./ChatBar.state"
@@ -205,8 +205,8 @@ export const ChatBar = () => {
         side={"left"}
         isOpen={showChatBar}
         addItemButtonTitle={t("New conversation")}
-        itemComponent={<Conversations conversations={filteredConversations} />}
-        folderComponent={<ChatFolders searchTerm={searchTerm} />}
+        itemComponent={<ConversationList conversations={filteredConversations} />}
+        folderComponent={<ChatFolderList searchTerm={searchTerm} />}
         items={filteredConversations}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}

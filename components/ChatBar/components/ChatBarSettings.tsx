@@ -4,7 +4,7 @@ import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import {ClearConversations} from "@/components/ChatBar/components/ClearConversations"
-import {PluginKeys} from "@/components/ChatBar/components/PluginKeys"
+import {PluginKeyList} from "@/components/ChatBar/components/PluginKeyList"
 import {ApiKey} from "@/components/Settings/ApiKey"
 import {ImportData} from "@/components/Settings/ImportData"
 import {UnlockCode} from "@/components/Settings/UnlockCode"
@@ -47,7 +47,7 @@ export const ChatBarSettings = () => {
         />
       ) : null}
       {!serverSideApiKeyIsSet ? <ApiKey apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
-      {!serverSidePluginKeysSet ? <PluginKeys /> : null}
+      {!serverSidePluginKeysSet ? <PluginKeyList /> : null}
       {serverSideUnlockCodeIsSet ? (
         <UnlockCode unlockCode={unlockCode} onUnlockCodeChange={handleUnlockCodeChange} />
       ) : null}
