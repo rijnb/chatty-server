@@ -18,8 +18,22 @@ export const exportData = (prefix: string, type: FolderType) => {
   const data = {
     version: 4,
     history: type === "chat" ? conversations : [],
-    prompts: type == "prompt" ? prompts : [],
-    folders: folders
+    prompts:
+      type == "prompt"
+        ? prompts.map((prompt, index, all) => {
+            if (prompt.folderId) {
+              const {factory, ...rest} = prompt
+              return rest
+            } else {
+              const {factory, folderId, ...rest} = prompt
+              return rest
+            }
+          })
+        : [],
+    folders: folders.map((folder) => {
+      const {factory, ...rest} = folder
+      return rest
+    })
   } as LatestFileFormat
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {

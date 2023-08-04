@@ -71,9 +71,9 @@ export const ChatInput = ({
   }
 
   const handleSend = () => {
-    function removeEmptyLines(content: string) {
+    function removeSuperfluousWhitespace(content: string) {
       // Remove trailing whitespace and consecutive newlines.
-      return content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n")
+      return content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")
     }
 
     if (messageIsStreaming) {
@@ -83,7 +83,7 @@ export const ChatInput = ({
       return
     }
 
-    onSend({role: "user", content: removeEmptyLines(content)}, plugin)
+    onSend({role: "user", content: removeSuperfluousWhitespace(content)}, plugin)
     setContent("")
     setPlugin(null)
 

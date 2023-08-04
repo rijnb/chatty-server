@@ -5,6 +5,7 @@
 #### Bug fixes
 
 * #32: Factory Prompts are cloned even if no changes are made.
+* Improved handling of editing factory prompts.
 
 ### 2023-07-29
 

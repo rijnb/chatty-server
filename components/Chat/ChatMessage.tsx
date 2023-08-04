@@ -253,7 +253,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                       <CodeBlock
                         key={Math.random()}
                         language={(match && match[1]) || ""}
-                        value={String(children).replace(/\n$/, "")}
+                        value={String(children).replace(/\n\n$/, "\n")}
                         {...props}
                       />
                     ) : (
