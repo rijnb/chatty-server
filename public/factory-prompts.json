@@ -13,7 +13,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "9265cd7e-acbb-4bac-a976-2238cedae27e",
@@ -26,7 +27,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "fd7d5fca-20ae-43c9-aab5-190f5535e319",
@@ -39,7 +41,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "2bed77d8-64aa-4f64-bfe0-7b52783390eb",
@@ -52,7 +55,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "df8caf99-6861-4868-b425-042da9af2606",
@@ -65,7 +69,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "a9f1cd42-a70a-46db-b562-479ff5e05ecf",
@@ -78,7 +83,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "ebbecfc8-8dba-4f68-801d-47d8ea1fc2cb",
@@ -91,7 +97,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "49904f7d-c9a5-4f07-884c-a0cde27017de",
@@ -104,7 +111,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "c6c4d1a7-9528-4bb1-a3d7-7dad074c5338",
@@ -117,7 +125,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "46317d1d-bc9d-47a6-bfed-aecd0559b7ea",
@@ -130,7 +139,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "766374e5-39a4-48f8-be8d-f02527c14434",
@@ -143,7 +153,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "cf187968-92c2-4811-b70f-e434002f5659",
@@ -156,7 +167,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "015c6f2e-546e-4ff2-9790-a2e3caaf29ed",
@@ -169,7 +181,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "38c62dd0-c8bd-4f44-8b0b-fb1435d7ca76",
@@ -182,7 +195,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "5b4ab133-067b-4fff-929f-fd8e5a2e385b",
@@ -195,7 +209,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "17e89cd7-bf15-4db6-a9db-f10c69911343",
@@ -208,7 +223,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "c675478f-084e-4bfc-b8ba-4218f7a63eeb",
@@ -221,7 +237,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a"
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
     },
     {
       "id": "002fb51f-5910-4087-999c-ea67cb0b1751",
@@ -234,7 +251,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a"
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
     },
     {
       "id": "21e49a56-79ad-46d1-a18d-5f0994071687",
@@ -247,7 +265,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139"
+      "folderId": "dd8e330d-64e1-4fa9-92e8-746359f81139",
+      "factory": true
     },
     {
       "id": "2b659788-09ec-46e1-96f8-6f1f37e9ff7d",
@@ -260,7 +279,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "55eaa79c-f18d-4182-be36-cb1e635e67ef",
@@ -273,7 +293,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "15a430ae-2ccb-4c9e-9f90-5e2be4747a1f",
@@ -286,7 +307,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "bed857e4-3bb8-4305-9e4e-097154024eea",
@@ -299,7 +321,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "47a8150f-eb48-4f89-bad1-77ddfc314bd8",
@@ -312,7 +335,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "a4b3bc11-9afe-45f1-b0ff-0d817b5f57bf",
@@ -325,7 +349,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "44d033d8-5ec0-4238-8e2c-c21a6d7ef062",
@@ -338,7 +363,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "50c19265-dddc-45c9-be38-474e4fb89289",
@@ -351,7 +377,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "ce6cfe07-8c2a-468d-a4ca-609af466ca9c",
@@ -364,7 +391,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "53baa80d-d3da-47e6-abac-4e62790d58f4",
@@ -377,7 +405,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
@@ -390,7 +419,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "c957084f-f76b-4035-8591-1785139bba0b",
@@ -403,7 +433,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     },
     {
       "id": "33ba03cb-455d-437a-a593-02c76178442b",
@@ -416,7 +447,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267"
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
     },
     {
       "id": "a6af31b8-474a-46e0-a165-04a97aadb416",
@@ -429,7 +461,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "36ce5ae4-7ce2-4a7f-bb77-4db9d5d5a296",
@@ -442,7 +475,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "bd6a8433-7613-4267-b2ea-b014812e2ce5",
@@ -455,7 +489,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "167abc79-457b-4ef4-beaf-7adbaba48249",
@@ -468,7 +503,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "ec27c20d-c422-4499-84b4-3298dcf2f208",
@@ -481,7 +517,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "05b01f4f-6786-48a4-b59b-a72fe6e56df7",
@@ -494,7 +531,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "a9255ab1-9636-48e5-a72c-caf1cbe8c956",
@@ -507,7 +545,8 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "5debb2de-feea-4ee1-90d2-685bca186de9",
@@ -520,47 +559,54 @@
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
+      "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",
+      "factory": true
     },
     {
       "id": "273b7b10-a735-4360-a9d4-da9d4ea64435",
       "name": "Add code to chat",
-      "description": "Paste code snippets or complete files to this chat so we can use it in our chat.",
-      "content": "I have this code. Just respond with “OK, ask me about your code.” if you get this.\n```\n{{Paste a code snippet or complete file}}\n```",
+      "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
+      "content": "I have this code. Just respond with “OK, ask me about your code.” if you get this.\nFilename: {{Filename of code, extension may be omitted}}\n```{{Paste a code snippet or complete file}}\n```",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
         "maxLength": 96000,
         "tokenLimit": 32000
       },
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
     }
   ],
   "folders": [
     {
       "id": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "name": "Work productivity",
-      "type": "prompt"
+      "type": "prompt",
+      "factory": true
     },
     {
       "id": "dd8e330d-64e1-4fa9-92e8-746359f81139",
       "name": "Act as...",
-      "type": "prompt"
+      "type": "prompt",
+      "factory": true
     },
     {
       "id": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
       "name": "Fun stuff",
-      "type": "prompt"
+      "type": "prompt",
+      "factory": true
     },
     {
       "id": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
       "name": "Text processing",
-      "type": "prompt"
+      "type": "prompt",
+      "factory": true
     },
     {
       "id": "652556cb-c731-4724-aee3-a022dfd2179c",
       "name": "Let’s talk about...",
-      "type": "prompt"
+      "type": "prompt",
+      "factory": true
     }
   ]
 }

@@ -10,9 +10,9 @@ import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
-import {PromptBarSettings} from "./components/PromptBarSettings"
-import {PromptFolderList} from "./components/PromptFolderList"
-import {PromptList} from "./components/PromptList"
+import PromptBarSettings from "./components/PromptBarSettings"
+import PromptFolderList from "./components/PromptFolderList"
+import PromptList from "./components/PromptList"
 import Sidebar from "../Sidebar"
 import PromptBarContext from "./PromptBar.context"
 import {PromptBarInitialState, initialState} from "./PromptBar.state"
@@ -83,7 +83,8 @@ const PromptBar = () => {
     // Prompt changed, create user prompt from factory prompt if needed.
     let updatedPrompts
     if (prompt.factory && changed) {
-      updatedPrompts = [...prompts, {...prompt, id: uuidv4(), factory: null}]
+      // A changed factory prompt needs to get a new id and be moved outside the factory folder.
+      updatedPrompts = [...prompts, {...prompt, id: uuidv4(), factory: null, folderId: null}]
     } else {
       updatedPrompts = prompts.map((p) => (p.id === prompt.id ? prompt : p))
     }
