@@ -2,6 +2,7 @@ export type RequestModel = {
   params?: object
   headers?: object
   signal?: AbortSignal
+  rawResponse?: boolean
 }
 
 export type RequestWithBodyModel = RequestModel & {
@@ -9,7 +10,7 @@ export type RequestWithBodyModel = RequestModel & {
 }
 
 export const useFetch = () => {
-  const handleFetch = async (url: string, request: any, signal?: AbortSignal) => {
+  const handleFetch = async (url: string, request: any) => {
     const requestUrl = request?.params ? `${url}${request.params}` : url
     const requestBody = request?.body
       ? request.body instanceof FormData
@@ -24,12 +25,17 @@ export const useFetch = () => {
         : {"Content-type": "application/json"})
     }
     console.info(`useFetch: url:${requestUrl}`)
-    return fetch(requestUrl, {...requestBody, headers, signal})
+    return fetch(requestUrl, {...requestBody, headers})
       .then((response) => {
         if (!response.ok) {
           console.info(`useFetch: HTTP error, ${response.status}, statusText:${response.statusText}`)
           throw response
         }
+
+        if (request.rawResponse) {
+          return response
+        }
+
         const contentType = response.headers.get("content-type")
         const contentDisposition = response.headers.get("content-disposition")
         return contentType &&
