@@ -6,3 +6,5 @@ export const MemoizedReactMarkdown: FC<Options> = memo(
   ReactMarkdown,
   (prevProps, nextProps) => prevProps.children === nextProps.children
 )
+
+export default MemoizedReactMarkdown

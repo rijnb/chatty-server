@@ -1,19 +1,18 @@
-import {IconFileExport, IconSettings} from "@tabler/icons-react"
-import React, {useContext, useState} from "react"
+import {IconFileExport} from "@tabler/icons-react"
+import React, {useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import {ClearConversations} from "@/components/ChatBar/components/ClearConversations"
-import {PluginKeyList} from "@/components/ChatBar/components/PluginKeyList"
-import {ApiKey} from "@/components/Settings/ApiKey"
-import {ImportData} from "@/components/Settings/ImportData"
-import {UnlockCode} from "@/components/Settings/UnlockCode"
-import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import ClearConversations from "@/components/ChatBar/components/ClearConversations"
+import PluginKeyList from "@/components/ChatBar/components/PluginKeyList"
+import ApiKey from "@/components/Settings/ApiKey"
+import ImportData from "@/components/Settings/ImportData"
+import UnlockCode from "@/components/Settings/UnlockCode"
+import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 
 export const ChatBarSettings = () => {
   const {t} = useTranslation("sidebar")
-  const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false)
 
   const {
     state: {
@@ -54,3 +53,5 @@ export const ChatBarSettings = () => {
     </div>
   )
 }
+
+export default ChatBarSettings

@@ -1,13 +1,8 @@
-import {FC, useContext} from "react"
-import HomeContext from "@/pages/api/home/home.context"
+import {FC} from "react"
 
 export interface Props {}
 
 export const WelcomeMessage: FC<Props> = () => {
-  const {
-    state: {apiKey, unlockCode, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet},
-    dispatch: homeDispatch
-  } = useContext(HomeContext)
 
   return (
     <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12">
@@ -41,3 +36,5 @@ export const WelcomeMessage: FC<Props> = () => {
     </div>
   )
 }
+
+export default WelcomeMessage

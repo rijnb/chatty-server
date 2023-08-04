@@ -68,3 +68,5 @@ export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
     </div>
   )
 }
+
+export default ChatInputTokenCount

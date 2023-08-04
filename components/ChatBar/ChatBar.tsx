@@ -19,9 +19,9 @@ import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {OpenAIModels, fallbackOpenAIModelID} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
-import {ChatBarSettings} from "./components/ChatBarSettings"
-import {ChatFolderList} from "./components/ChatFolderList"
-import {ConversationList} from "./components/ConversationList"
+import ChatBarSettings from "./components/ChatBarSettings"
+import ChatFolderList from "./components/ChatFolderList"
+import ConversationList from "./components/ConversationList"
 import Sidebar from "../Sidebar"
 import ChatBarContext from "./ChatBar.context"
 import {ChatBarInitialState, initialState} from "./ChatBar.state"
@@ -205,8 +205,8 @@ export const ChatBar = () => {
         side={"left"}
         isOpen={showChatBar}
         addItemButtonTitle={t("New conversation")}
-        itemComponent={<ConversationList conversations={filteredConversations} />}
-        folderComponent={<ChatFolderList searchTerm={searchTerm} />}
+        listItem={<ConversationList conversations={filteredConversations} />}
+        folderListItem={<ChatFolderList searchTerm={searchTerm} />}
         items={filteredConversations}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}
@@ -219,3 +219,5 @@ export const ChatBar = () => {
     </ChatBarContext.Provider>
   )
 }
+
+export default ChatBar

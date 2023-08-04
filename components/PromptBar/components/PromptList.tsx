@@ -1,6 +1,6 @@
 import {FC} from "react"
 import {Prompt} from "@/types/prompt"
-import {PromptListItem} from "./PromptListItem"
+import PromptListItem from "./PromptListItem"
 
 
 interface Props {
@@ -19,3 +19,5 @@ export const PromptList: FC<Props> = ({prompts}) => {
     </div>
   )
 }
+
+export default PromptList

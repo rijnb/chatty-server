@@ -6,3 +6,5 @@ export const MemoizedChatMessage: FC<Props> = memo(
   ChatMessage,
   (prevProps, nextProps) => prevProps.message.content == nextProps.message.content
 )
+
+export default MemoizedChatMessage

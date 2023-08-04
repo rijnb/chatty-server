@@ -2,11 +2,11 @@ import {useContext} from "react"
 import {FolderInterface} from "@/types/folder"
 import HomeContext from "@/pages/api/home/home.context"
 import Folder from "@/components/Folder"
-import {PromptListItem} from "@/components/PromptBar/components/PromptListItem"
+import PromptListItem from "@/components/PromptBar/components/PromptListItem"
 import PromptBarContext from "../PromptBar.context"
 
 
-export const PromptFolders = () => {
+export const PromptFolderList = () => {
   const {
     state: {folders}
   } = useContext(HomeContext)
@@ -19,12 +19,7 @@ export const PromptFolders = () => {
   const handleDrop = (e: any, folder: FolderInterface) => {
     if (e.dataTransfer) {
       const prompt = JSON.parse(e.dataTransfer.getData("prompt"))
-
-      const updatedPrompt = {
-        ...prompt,
-        folderId: folder.id
-      }
-
+      const updatedPrompt = {...prompt, folderId: folder.id}
       handleUpdatePrompt(updatedPrompt)
     }
   }
@@ -48,11 +43,13 @@ export const PromptFolders = () => {
       {folders
         .filter((folder) => folder.type === "prompt")
         .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => (a.factory === b.factory ? 0 : a.factory ? 1 : -1))
         .map((folder, index) => (
           <Folder
             key={index}
             searchTerm={searchTerm}
             folder={folder}
+            allowDrop={!folder.factory}
             handleDrop={handleDrop}
             folderComponent={PromptFolders(folder)}
           />
@@ -60,3 +57,5 @@ export const PromptFolders = () => {
     </div>
   )
 }
+
+export default PromptFolderList

@@ -105,3 +105,5 @@ export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, o
     </div>
   )
 }
+
+export default PromptInputVars

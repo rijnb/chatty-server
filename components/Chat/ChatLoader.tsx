@@ -18,3 +18,5 @@ export const ChatLoader: FC<Props> = () => {
     </div>
   )
 }
+
+export default ChatLoader

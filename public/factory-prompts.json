@@ -58,7 +58,7 @@
       "id": "df8caf99-6861-4868-b425-042da9af2606",
       "name": "Statistician",
       "description": "Provide a statement and I will provide you with statistical facts.",
-      "content": "I want to act as a Statistician. I will provide you with details related with statistics. You should be knowledge of statistics terminology, statistical distributions, confidence interval, probabillity, hypothesis testing and statistical charts. Here's a statement I want you to provide statistical facts on:\n\n{{Provide me statistics for this statement}}",
+      "content": "I want to act as a Statistician. I will provide you with details related with statistics. You should be knowledge of statistics terminology, statistical distributions, confidence interval, probability, hypothesis testing and statistical charts. Here's a statement I want you to provide statistical facts on:\n\n{{Provide me statistics for this statement}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "GPT-4-32K",
@@ -162,7 +162,7 @@
       "id": "015c6f2e-546e-4ff2-9790-a2e3caaf29ed",
       "name": "Friend",
       "description": "Just chat with me and I'll be there for you...",
-      "content": "I want you to act as my friend. I will tell you what is happening in my life and you will reply with something helpful. You can be supportive to help me through the difficult times. If I struggle with something, you can help me by asking clariyfing questions so I can figure out what I’m struggling with. Or you can give me some advice on how to proceed. If you understand this, respond with \"I'm here for you, ask me anything or just talk about yourself.\".",
+      "content": "I want you to act as my friend. I will tell you what is happening in my life and you will reply with something helpful. You can be supportive to help me through the difficult times. If I struggle with something, you can help me by asking clarifying questions so I can figure out what I’m struggling with. Or you can give me some advice on how to proceed. If you understand this, respond with \"I'm here for you, ask me anything or just talk about yourself.\".",
       "model": {
         "id": "gpt-4-32k",
         "name": "GPT-4-32K",
@@ -383,7 +383,7 @@
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
       "name": "Short summary",
       "description": "Provide a text and I will summarize it for you.",
-      "content": "Provide a short summary of the text below. If there are inconsistencies or actions, make those clear at the bottom of your respons. Here's the text: \n\n{{Summarize this text}}",
+      "content": "Provide a short summary of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. Here's the text: \n\n{{Summarize this text}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",

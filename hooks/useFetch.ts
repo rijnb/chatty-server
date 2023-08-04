@@ -1,5 +1,3 @@
-import {trimForPrivacy} from "@/utils/app/privacy"
-
 export type RequestModel = {
   params?: object
   headers?: object
@@ -34,13 +32,12 @@ export const useFetch = () => {
         }
         const contentType = response.headers.get("content-type")
         const contentDisposition = response.headers.get("content-disposition")
-        const data =
-          contentType && (contentType?.indexOf("application/json") !== -1 || contentType?.indexOf("text/plain") !== -1)
-            ? response.json()
-            : contentDisposition?.indexOf("attachment") !== -1
-            ? response.blob()
-            : response
-        return data
+        return contentType &&
+          (contentType?.indexOf("application/json") !== -1 || contentType?.indexOf("text/plain") !== -1)
+          ? response.json()
+          : contentDisposition?.indexOf("attachment") !== -1
+          ? response.blob()
+          : response
       })
       .catch(async (error) => {
         const contentType = error.headers.get("content-type")

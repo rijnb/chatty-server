@@ -147,3 +147,5 @@ export const ConversationListItem = ({conversation}: Props) => {
     </div>
   )
 }
+
+export default ConversationListItem

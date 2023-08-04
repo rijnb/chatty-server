@@ -9,13 +9,7 @@ interface Props {
   promptListRef: MutableRefObject<HTMLUListElement | null>
 }
 
-export const PromptPopupList: FC<Props> = ({
-  prompts,
-  activePromptIndex,
-  onSelect,
-  onMouseOver,
-  promptListRef
-}) => {
+export const PromptPopupList: FC<Props> = ({prompts, activePromptIndex, onSelect, onMouseOver, promptListRef}) => {
   const [isScrolling, setIsScrolling] = useState(false)
   const scrollTimeout = useRef<NodeJS.Timeout>()
 
@@ -28,9 +22,10 @@ export const PromptPopupList: FC<Props> = ({
   }
 
   useEffect(() => {
-    promptListRef.current?.addEventListener("scroll", handleScroll)
+    let ref = promptListRef.current
+    ref?.addEventListener("scroll", handleScroll)
     return () => {
-      promptListRef.current?.removeEventListener("scroll", handleScroll)
+      ref?.removeEventListener("scroll", handleScroll)
     }
   }, [])
 
@@ -64,3 +59,5 @@ export const PromptPopupList: FC<Props> = ({
     </ul>
   )
 }
+
+export default PromptPopupList

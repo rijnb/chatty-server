@@ -9,11 +9,12 @@ import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 interface Props {
   folder: FolderInterface
   searchTerm: string
+  allowDrop: boolean
   handleDrop: (e: any, folder: FolderInterface) => void
   folderComponent: (ReactElement | undefined)[]
 }
 
-const Folder = ({folder, searchTerm, handleDrop, folderComponent}: Props) => {
+const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Props) => {
   const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext)
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -35,6 +36,9 @@ const Folder = ({folder, searchTerm, handleDrop, folderComponent}: Props) => {
   }
 
   const dropHandler = (e: any) => {
+    if (!allowDrop) {
+      return
+    }
     if (e.dataTransfer) {
       setIsOpen(true)
       handleDrop(e, folder)
@@ -42,15 +46,21 @@ const Folder = ({folder, searchTerm, handleDrop, folderComponent}: Props) => {
     }
   }
 
-  const allowDrop = (e: any) => {
+  const handleDragOver = (e: any) => {
     e.preventDefault()
   }
 
   const highlightDrop = (e: any) => {
+    if (!allowDrop) {
+      return
+    }
     e.target.style.background = "#343541"
   }
 
   const removeHighlight = (e: any) => {
+    if (!allowDrop) {
+      return
+    }
     e.target.style.background = "none"
   }
 
@@ -96,7 +106,7 @@ const Folder = ({folder, searchTerm, handleDrop, folderComponent}: Props) => {
             className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90`}
             onClick={() => setIsOpen(!isOpen)}
             onDrop={(e) => dropHandler(e)}
-            onDragOver={allowDrop}
+            onDragOver={handleDragOver}
             onDragEnter={highlightDrop}
             onDragLeave={removeHighlight}
           >

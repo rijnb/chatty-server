@@ -1,5 +1,5 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
-import {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
+import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Message} from "@/types/chat"
@@ -7,10 +7,10 @@ import {OpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
-import {ChatInputTokenCount} from "./ChatInputTokenCount"
-import {PluginSelect} from "./PluginSelect"
-import {PromptPopupList} from "./PromptPopupList"
-import {PromptInputVars} from "./PromptInputVars"
+import ChatInputTokenCount from "./ChatInputTokenCount"
+import PluginSelect from "./PluginSelect"
+import PromptInputVars from "./PromptInputVars"
+import PromptPopupList from "./PromptPopupList"
 
 
 interface Props {
@@ -348,9 +348,14 @@ export const ChatInput = ({
         <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
           Chatty
         </a>
-        &nbsp;was developed by Rijn Buve, based on <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">chatbpt-ui</a>
+        &nbsp;was developed by Rijn Buve, based on{" "}
+        <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">
+          chatbot-ui
+        </a>
         &nbsp;by Mckay Wrigley
       </div>
     </div>
   )
 }
+
+export default ChatInput

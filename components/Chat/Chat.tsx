@@ -32,7 +32,8 @@ import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
+import remarkMath from "remark-math";
+
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -518,7 +519,8 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
                   messageIndex={index}
                   onEdit={(editedMessage) => {
                     setCurrentMessage(editedMessage)
-                    // discard edited message and the ones that come after then resend
+
+                    // Discard edited message and the ones that come after then resend.
                     handleSend(editedMessage, selectedConversation?.messages.length - index)
                   }}
                 />
@@ -599,3 +601,4 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
 })
 
 Chat.displayName = "Chat"
+export default Chat

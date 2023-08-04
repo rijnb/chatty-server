@@ -31,7 +31,7 @@
 
 #### Bug fixes
 
-* Fixed prompts selector. Only works on start of line and cannot scroll below list.
+* Fixed prompt selector. Only works on start of line and cannot scroll below list.
 * Fixed cancelling prompt. Now empties input bar.
 * Fixed message delete, which sometimes failed.
 
@@ -57,11 +57,11 @@
 * Introduced 2 minute timout for really long responses.
 * Fixed token count.
 * Fixed screen width issues.
-* Fixed icon of settings button on top.
+* Fixed icon of settings on top.
 * Improved layout of top bar.
-* Full clean up of source code and directory structure, removal of old files.
+* Full cleanup of source code and directory structure, removal of old files.
 
 ### Found an issue?
 
 Please report issues and features requests on the
-[Github issue tracker](https://github.com/rijnb/chatty-server/issues).
+[GitHub issue tracker](https://github.com/rijnb/chatty-server/issues).

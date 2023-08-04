@@ -68,4 +68,6 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
     </div>
   )
 })
+
 CodeBlock.displayName = "CodeBlock"
+export default CodeBlock

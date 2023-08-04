@@ -1,4 +1,4 @@
-import {useContext} from "react"
+import React, {useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 
@@ -41,3 +41,5 @@ export const ModelSelect = () => {
     </div>
   )
 }
+
+export default ModelSelect

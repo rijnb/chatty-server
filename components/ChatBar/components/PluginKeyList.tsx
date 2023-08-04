@@ -5,7 +5,7 @@ import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {PluginID, PluginKey} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 
 export const PluginKeyList = () => {
@@ -14,7 +14,6 @@ export const PluginKeyList = () => {
   const {
     state: {pluginKeys}
   } = useContext(HomeContext)
-
   const {handlePluginKeyChange, handleClearPluginKey} = useContext(ChatBarContext)
 
   const [isChanging, setIsChanging] = useState(false)
@@ -34,7 +33,7 @@ export const PluginKeyList = () => {
         window.addEventListener("mouseup", handleMouseUp)
       }
     }
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleMouseUp = () => {
       window.removeEventListener("mouseup", handleMouseUp)
       setIsChanging(false)
     }
@@ -195,3 +194,5 @@ export const PluginKeyList = () => {
     </>
   )
 }
+
+export default PluginKeyList

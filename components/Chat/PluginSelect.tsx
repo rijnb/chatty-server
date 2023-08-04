@@ -78,3 +78,5 @@ export const PluginSelect: FC<Props> = ({plugin, onPluginChange, onKeyDown}) => 
     </div>
   )
 }
+
+export default PluginSelect

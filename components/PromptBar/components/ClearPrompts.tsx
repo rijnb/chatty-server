@@ -1,7 +1,7 @@
 import {IconCheck, IconTrash, IconX} from "@tabler/icons-react"
 import {FC, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 
 interface Props {
@@ -45,6 +45,12 @@ export const ClearPrompts: FC<Props> = ({onClearPrompts}) => {
       </div>
     </div>
   ) : (
-    <SidebarButton text={t("Clear all user prompts")} icon={<IconTrash size={18} />} onClick={() => setIsConfirming(true)} />
+    <SidebarButton
+      text={t("Clear all user prompts")}
+      icon={<IconTrash size={18} />}
+      onClick={() => setIsConfirming(true)}
+    />
   )
 }
+
+export default ClearPrompts

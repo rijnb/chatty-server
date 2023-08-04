@@ -68,16 +68,14 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       conversations,
       selectedConversation,
       prompts,
-      triggerFactoryPrompts,
-      temperature
+      triggerFactoryPrompts
     },
     dispatch: homeDispatch
   } = contextValue
 
   const {
     data: modelData,
-    error,
-    refetch
+    error
   } = useQuery(
     ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
     ({signal}) => {

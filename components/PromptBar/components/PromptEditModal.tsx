@@ -15,7 +15,7 @@ export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) =>
   const [name, setName] = useState(prompt.name)
   const [description, setDescription] = useState(prompt.description)
   const [content, setContent] = useState(prompt.content)
-  const [factory, setFactory] = useState(prompt.factory)
+  const [factory] = useState(prompt.factory)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
@@ -41,7 +41,7 @@ export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) =>
         window.addEventListener("mouseup", handleMouseUp)
       }
     }
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleMouseUp = () => {
       window.removeEventListener("mouseup", handleMouseUp)
       onUpdatePrompt(updatedPrompt)
       onClose()
@@ -117,7 +117,9 @@ export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) =>
 
             {prompt.factory && (
               <div className="mt-2 text-sm text-red-900 dark:text-red-300">
-                {t("This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted.")}
+                {t(
+                  "This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted."
+                )}
               </div>
             )}
           </div>
@@ -126,3 +128,5 @@ export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) =>
     </div>
   )
 }
+
+export default PromptEditModal

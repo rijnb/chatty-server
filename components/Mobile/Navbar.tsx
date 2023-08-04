@@ -19,3 +19,5 @@ export const Navbar: FC<Props> = ({selectedConversation, onNewConversation}) => 
     </nav>
   )
 }
+
+export default Navbar

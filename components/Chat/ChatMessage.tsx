@@ -317,4 +317,6 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
     </div>
   )
 })
+
 ChatMessage.displayName = "ChatMessage"
+export default ChatMessage

@@ -45,4 +45,4 @@ automated tests and adhere to our code style guidelines.
 ## Contact
 
 If you have any questions or need help getting started,
-feel free to reach out to me via [mail](mail:rijn@buve.nl).
+feel free to reach out to me via [mail](mailto:rijn@buve.nl).

@@ -17,3 +17,5 @@ export const SidebarButton: FC<Props> = ({text, icon, onClick}) => {
     </button>
   )
 }
+
+export default SidebarButton

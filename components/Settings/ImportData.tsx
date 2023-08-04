@@ -2,7 +2,7 @@ import {IconFileImport} from "@tabler/icons-react"
 import {FC, useState} from "react"
 import {isValidJsonData} from "@/utils/app/import"
 import {SupportedFileFormats} from "@/types/export"
-import {SidebarButton} from "../Sidebar/SidebarButton"
+import SidebarButton from "../Sidebar/SidebarButton"
 
 
 interface Props {
@@ -74,3 +74,5 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
     </>
   )
 }
+
+export default ImportData

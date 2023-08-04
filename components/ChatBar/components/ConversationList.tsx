@@ -1,5 +1,5 @@
 import {Conversation} from "@/types/chat"
-import {ConversationListItem} from "./ConversationListItem"
+import ConversationListItem from "./ConversationListItem"
 
 interface Props {
   conversations: Conversation[]
@@ -18,3 +18,5 @@ export const ConversationList = ({conversations}: Props) => {
     </div>
   )
 }
+
+export default ConversationList

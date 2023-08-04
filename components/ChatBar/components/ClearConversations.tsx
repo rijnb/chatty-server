@@ -1,7 +1,7 @@
 import {IconCheck, IconTrash, IconX} from "@tabler/icons-react"
 import {FC, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {SidebarButton} from "@/components/Sidebar/SidebarButton"
+import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 
 interface Props {
@@ -52,3 +52,5 @@ export const ClearConversations: FC<Props> = ({onClearConversations}) => {
     />
   )
 }
+
+export default ClearConversations

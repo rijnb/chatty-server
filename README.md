@@ -5,7 +5,7 @@ GPT-4 for many tasks. For that, it allows you to store
 "prompts" (in folders), that allows you to quickly have GPT-4 analyze your text
 in a certain way and respond to you.
 
-I've created a whole bunch of prompts to start with. To use them, import the file
+I've created a bunch of prompts to start with. To use them, import the file
 `examples/example-prompts.json` with `Import prompts`. Then, on the prompt line,
 type `/` and search for a prompt and press enter.
 
@@ -18,7 +18,7 @@ GPT-4. Just press Enter again to execute it.
 
 ## Using a browser or ChattyUI
 
-Chatty Server is a web-based which can be accessed by browser. It is deploy on
+Chatty Server is a web-based which can be accessed by browser. It is deployed on
 a server with a basepath of `/chatty/1/chat` (for the actual value, check [config.js](./config.js)).
 So, if you deploy it on `https://myserver.com`, you can access it at `https://myserver.com/chatty/1/chat`.
 

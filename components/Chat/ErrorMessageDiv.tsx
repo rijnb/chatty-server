@@ -24,3 +24,5 @@ export const ErrorMessageDiv: FC<Props> = ({error}) => {
     </div>
   )
 }
+
+export default ErrorMessageDiv

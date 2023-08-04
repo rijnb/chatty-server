@@ -1,4 +1,4 @@
-import {FC, useContext, useState} from "react"
+import React, {FC, useContext, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import HomeContext from "@/pages/api/home/home.context"
@@ -54,3 +54,5 @@ export const TemperatureSlider: FC<Props> = ({label, onChangeTemperature}) => {
     </div>
   )
 }
+
+export default TemperatureSlider

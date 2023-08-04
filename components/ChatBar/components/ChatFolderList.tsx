@@ -2,7 +2,7 @@ import {useContext} from "react"
 import {FolderInterface} from "@/types/folder"
 import HomeContext from "@/pages/api/home/home.context"
 import Folder from "@/components/Folder"
-import {ConversationListItem} from "./ConversationListItem"
+import ConversationListItem from "./ConversationListItem"
 
 
 interface Props {
@@ -47,11 +47,13 @@ export const ChatFolderList = ({searchTerm}: Props) => {
       {folders
         .filter((folder) => folder.type === "chat")
         .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => (a.factory === b.factory ? 0 : a.factory ? 1 : -1))
         .map((folder, index) => (
           <Folder
             key={index}
             searchTerm={searchTerm}
             folder={folder}
+            allowDrop={!folder.factory}
             handleDrop={handleDrop}
             folderComponent={ChatFolders(folder)}
           />
@@ -59,3 +61,5 @@ export const ChatFolderList = ({searchTerm}: Props) => {
     </div>
   )
 }
+
+export default ChatFolderList

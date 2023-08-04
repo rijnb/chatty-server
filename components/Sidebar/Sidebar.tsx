@@ -10,8 +10,8 @@ interface Props<T> {
   addItemButtonTitle: string
   side: "left" | "right"
   items: T[]
-  itemComponent: ReactNode
-  folderComponent: ReactNode
+  listItem: ReactNode
+  folderListItem: ReactNode
   footerComponent?: ReactNode
   searchTerm: string
   handleSearchTerm: (searchTerm: string) => void
@@ -26,8 +26,8 @@ const Sidebar = <T,>({
   addItemButtonTitle,
   side,
   items,
-  itemComponent,
-  folderComponent,
+  listItem,
+  folderListItem,
   footerComponent,
   searchTerm,
   handleSearchTerm,
@@ -77,7 +77,7 @@ const Sidebar = <T,>({
         <Search placeholder={t("Search...")} searchTerm={searchTerm} onSearch={handleSearchTerm} />
 
         <div className="flex-grow overflow-auto">
-          {items?.length > 0 && <div className="flex border-b border-white/20 pb-2">{folderComponent}</div>}
+          {items?.length > 0 && <div className="flex border-b border-white/20 pb-2">{folderListItem}</div>}
 
           {items?.length > 0 ? (
             <div
@@ -87,12 +87,12 @@ const Sidebar = <T,>({
               onDragEnter={highlightDrop}
               onDragLeave={removeHighlight}
             >
-              {itemComponent}
+              {listItem}
             </div>
           ) : (
             <div className="mt-8 select-none text-center text-white opacity-50">
               <IconMistOff className="mx-auto mb-3" />
-              <span className="text-[14px] leading-normal">{t("No data.")}</span>
+              <span className="text-[14px] leading-normal">{t("Empty.")}</span>
             </div>
           )}
         </div>

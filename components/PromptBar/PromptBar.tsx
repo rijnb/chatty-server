@@ -11,7 +11,7 @@ import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
 import {PromptBarSettings} from "./components/PromptBarSettings"
-import {PromptFolders} from "./components/PromptFolders"
+import {PromptFolderList} from "./components/PromptFolderList"
 import {PromptList} from "./components/PromptList"
 import Sidebar from "../Sidebar"
 import PromptBarContext from "./PromptBar.context"
@@ -146,8 +146,8 @@ const PromptBar = () => {
         side={"right"}
         isOpen={showPromptBar}
         addItemButtonTitle={t("New prompt")}
-        itemComponent={<PromptList prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
-        folderComponent={<PromptFolders />}
+        listItem={<PromptList prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
+        folderListItem={<PromptFolderList />}
         items={filteredPrompts}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
