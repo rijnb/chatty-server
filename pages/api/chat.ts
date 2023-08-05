@@ -1,12 +1,11 @@
-import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {OpenAIError, OpenAIStream} from "@/utils/server"
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {OpenAIError, OpenAIStream} from "@/utils/server"
+import tiktokenModel from "@dqbd/tiktoken/encoders/cl100k_base.json"
+import {init, Tiktoken} from "@dqbd/tiktoken/lite/init"
 // @ts-expect-error
 import wasm from "../../node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module"
-import tiktokenModel from "@dqbd/tiktoken/encoders/cl100k_base.json"
-import {Tiktoken, init} from "@dqbd/tiktoken/lite/init"
-
 
 export const config = {
   runtime: "edge"
@@ -55,10 +54,25 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error) {
     if (error instanceof OpenAIError) {
       console.error(`Error in OpenAI stream, message:${error.message}`)
-      return new Response(`Error: ${error.message}`, {
-        status: 500,
-        statusText: error.message
-      })
+      if (error.message.includes("content management policy")) {
+        return new Response(`Warning: ${error.message}\n\nPlease rephrase your question.`, {
+          status: 200
+        })
+      } else if (error.message.includes("rate limit")) {
+        return new Response(`${error.message}`, {
+          status: 500,
+          statusText: error.message
+        })
+      } else if (error.message.includes("Azure")) {
+        return new Response(`Warning: ${error.message}`, {
+          status: 200
+        })
+      } else {
+        return new Response(`${error.message}`, {
+          status: 500,
+          statusText: error.message
+        })
+      }
     } else {
       console.error(`Other stream error, error:${error}`)
       return new Response("Error: Server responded with an error", {

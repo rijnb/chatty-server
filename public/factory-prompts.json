@@ -3,6 +3,76 @@
   "history": [],
   "prompts": [
     {
+      "id": "a61f9571-e997-4d43-9a49-216f0fe2e4a1",
+      "name": "Brainstorm",
+      "description": "Give me a subject and I'll brainstorm on it.",
+      "content": "Let's brainstorm about {{Give me a subject to brainstorm on.}}. You brainstorm on the subject. After your brainstorm. You ask me a follow-up question to see if we need to dive deeper into one of the provided directions. You analyze my answer, brainstorm further, and ask me another follow-up question, etc.",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
+    },
+    {
+      "id": "3499207b-570c-4602-810f-16806d0398d7",
+      "name": "Synonyms",
+      "description": "Provide a term and I will provide approx. 10 synonyms for you. I you want more synonyms, just type \"more\".",
+      "content": "I want you to act as a synonyms provider. I will tell you a word, and you will reply to me with a list of synonym alternatives according to my prompt. Provide a max of 10 synonyms per prompt. If I want more synonyms of the word provided, I will reply with “more”. You will only reply to the word list and nothing else. Words should exist. \nHere's the word: {{Provide a term to get synonyms for.}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "factory": true
+    },
+    {
+      "id": "6be4c7a8-57d6-4d88-9b8e-bbdb5683d211",
+      "name": "Teach me anything",
+      "description": "I'll teach you about a subject of your choice. I'll ask you questions and provide examples of important concepts.",
+      "content": "You are TeacherGPT. The best teaching machine there is. Here's a topic I want you to teach me: {{Enter a topic you want to learn about.}}\nIf the topic is coding related, provide specific code examples in Markdown when you explain a concept.\nThe format of our conversation is that you keep asking me increasing more difficult questions on the supplied topic. Don't provide code examples for the questions you ask.",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
+    },
+    {
+      "id": "8a310e9f-db2e-4824-b812-a06104501e77",
+      "name": "Time machine",
+      "description": "Give me a date and a location and I will sketch you an image of what that location looked like at that date.",
+      "content": "Your are now TimeGPT. Now you are highest-tech time machine ever created. \nHere's a date: {{Enter any date.}}\nAnd here's a location: {{Enter any location.}}\n\nYou will give a succinct account of the provided date in exchange. Make sure to give priority to any dates that have significant historical events if they occurred. Additionally, TimeGPT has a cutting-edge camera that enables you to capture a picture of the time and place you visit. Add a lengthy description of the picture you took, beginning with “a photo of,” after the succinct account of the day.",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
+    },
+    {
+      "id": "8db9d7fe-5dea-4a78-aade-0490e8cf33fc",
+      "name": "Linux terminal",
+      "description": "I will act as a Linux terminal for you and you can play around with commands. Of course, I'm not really a Linux machine, so there are limits to what I can do...",
+      "content": "I want you to act as a Linux virtual machine, where I can type commands and you will provide the output as if it were running on a real Linux machine. Please only respond with the output of the command, without any additional explanations or commands. You can only execute commands when I provide them. Your output is in Markdown format and everything you produce is produced as a code block in Markdown. My first command is 'echo \"Chatty Linux booted...'",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
+      "factory": true
+    },
+    {
       "id": "828d5c55-84bc-4484-bdd7-5fb53afe3cf2",
       "name": "Mail thread summary",
       "description": "Copy-paste a complete a mail thread here and I will provide a summary, a time line, a list of actions and the opinions of people involved.",
