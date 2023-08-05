@@ -2,10 +2,17 @@
 
 ### 2023-08-03
 
+#### Features
+
+* Factory folders have a different icon now.
+* Handle content management policy violations by Azure OpenAI in a more user friendly way.
+* Great new factory prompts to play with!
+
 #### Bug fixes
 
-* #32: Factory Prompts are cloned even if no changes are made.
+* Factory Prompts are cloned even if no changes are made (#32).
 * Improved handling of editing factory prompts.
+* Fixed pop-up prompts list selection error.
 
 ### 2023-07-29
 
@@ -20,7 +27,7 @@
 
 * Source code cleanup.
 * Fixed bug when importing would trigger wrong `onChange` handler and the handler would not always be called.
-* Removed delete button for factory prompts. 
+* Removed delete button for factory prompts.
 
 ### 2023-07-26
 
