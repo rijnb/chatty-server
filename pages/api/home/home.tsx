@@ -29,7 +29,8 @@ import {
   getShowPromptBar,
   getUnlockCode,
   removeApiKey,
-  removeUnlockCode, saveSettings
+  removeUnlockCode,
+  saveSettings
 } from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
@@ -60,23 +61,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   const router = useRouter()
 
   const {
-    state: {
-      apiKey,
-      unlockCode,
-      theme,
-      folders,
-      conversations,
-      selectedConversation,
-      prompts,
-      triggerFactoryPrompts
-    },
+    state: {apiKey, unlockCode, theme, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
-  const {
-    data: modelData,
-    error
-  } = useQuery(
+  const {data: modelData, error} = useQuery(
     ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
     ({signal}) => {
       if (!unlockCode && serverSideUnlockCodeIsSet) {
@@ -382,7 +371,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} theme={theme}/>
+              <Chat stopConversationRef={stopConversationRef} theme={theme} />
             </div>
             <PromptBar />
           </div>
@@ -411,13 +400,7 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
       serverSideUnlockCodeIsSet: !!process.env.OPENAI_UNLOCK_CODE,
       defaultModelId,
       serverSidePluginKeysSet,
-      ...(await serverSideTranslations(locale ?? "en", [
-        "common",
-        "chat",
-        "sidebar",
-        "markdown",
-        "promptbar"
-      ]))
+      ...(await serverSideTranslations(locale ?? "en", ["common", "chat", "sidebar", "markdown", "promptbar"]))
     }
   }
 }
