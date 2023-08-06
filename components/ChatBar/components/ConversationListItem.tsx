@@ -9,11 +9,12 @@ import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 
 interface Props {
   conversation: Conversation
+  isSelected: boolean
 }
 
-export const ConversationListItem = ({conversation}: Props) => {
+export const ConversationListItem = ({conversation, isSelected}: Props) => {
   const {
-    state: {selectedConversation, messageIsStreaming},
+    state: {messageIsStreaming},
     handleSelectConversation,
     handleUpdateConversation
   } = useContext(HomeContext)
@@ -27,7 +28,7 @@ export const ConversationListItem = ({conversation}: Props) => {
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
-      selectedConversation && handleRename(selectedConversation)
+      isSelected && handleRename(conversation)
     }
   }
 
@@ -68,7 +69,7 @@ export const ConversationListItem = ({conversation}: Props) => {
   const handleOpenRenameModal: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
     setIsRenaming(true)
-    selectedConversation && setRenameValue(selectedConversation.name)
+    isSelected && setRenameValue(conversation.name)
   }
   const handleOpenDeleteModal: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
@@ -85,7 +86,7 @@ export const ConversationListItem = ({conversation}: Props) => {
 
   return (
     <div className="relative flex items-center">
-      {isRenaming && selectedConversation?.id === conversation.id ? (
+      {isRenaming && isSelected ? (
         <div className="flex w-full items-center gap-3 rounded-lg bg-[#343541]/90 p-3">
           <IconMessage size={18} />
           <input
@@ -101,7 +102,7 @@ export const ConversationListItem = ({conversation}: Props) => {
         <button
           className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
             messageIsStreaming ? "disabled:cursor-not-allowed" : ""
-          } ${selectedConversation?.id === conversation.id ? "bg-[#343541]/90" : ""}`}
+          } ${isSelected ? "bg-[#343541]/90" : ""}`}
           onClick={() => handleSelectConversation(conversation)}
           disabled={messageIsStreaming}
           draggable="true"
@@ -110,11 +111,11 @@ export const ConversationListItem = ({conversation}: Props) => {
           <IconMessage size={18} />
           <div
             className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-4 ${
-              selectedConversation?.id === conversation.id ? "pr-12" : "pr-1"
+              isSelected ? "pr-12" : "pr-1"
             }`}
           >
             {conversation.name}
-            {selectedConversation?.id === conversation.id && (
+            {isSelected && (
               <div className="block text-[12.5px] text-gray-400">
                 {conversation?.time ? new Date(conversation?.time).toLocaleString() : ""}
               </div>
@@ -123,7 +124,7 @@ export const ConversationListItem = ({conversation}: Props) => {
         </button>
       )}
 
-      {(isDeleting || isRenaming) && selectedConversation?.id === conversation.id && (
+      {(isDeleting || isRenaming) && isSelected && (
         <div className="absolute right-1 z-10 flex text-gray-300">
           <SidebarActionButton handleClick={handleConfirm}>
             <IconCheck size={18} />
@@ -134,7 +135,7 @@ export const ConversationListItem = ({conversation}: Props) => {
         </div>
       )}
 
-      {selectedConversation?.id === conversation.id && !isDeleting && !isRenaming && (
+      {isSelected && !isDeleting && !isRenaming && (
         <div className="absolute right-1 z-10 flex text-gray-300">
           <SidebarActionButton handleClick={handleOpenRenameModal}>
             <IconPencil size={18} />

@@ -32,7 +32,7 @@ export const ChatBar = () => {
   const chatBarContextValue = useCreateReducer<ChatBarInitialState>({initialState})
 
   const {
-    state: {conversations, showChatBar, defaultModelId, folders, pluginKeys},
+    state: {conversations, selectedConversation, showChatBar, defaultModelId, folders, pluginKeys},
     dispatch: homeDispatch,
     handleCreateFolder,
     handleNewConversation,
@@ -205,7 +205,9 @@ export const ChatBar = () => {
         side={"left"}
         isOpen={showChatBar}
         addItemButtonTitle={t("New conversation")}
-        listItem={<ConversationList conversations={filteredConversations} />}
+        listItem={
+          <ConversationList conversations={filteredConversations} selectedConversation={selectedConversation} />
+        }
         folderListItem={<ChatFolderList searchTerm={searchTerm} />}
         items={filteredConversations}
         searchTerm={searchTerm}

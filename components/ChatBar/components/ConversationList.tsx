@@ -3,9 +3,10 @@ import ConversationListItem from "./ConversationListItem"
 
 interface Props {
   conversations: Conversation[]
+  selectedConversation?: Conversation
 }
 
-export const ConversationList = ({conversations}: Props) => {
+export const ConversationList = ({conversations, selectedConversation}: Props) => {
   return (
     <div className="flex w-full flex-col gap-1">
       {conversations
@@ -13,7 +14,11 @@ export const ConversationList = ({conversations}: Props) => {
         .slice()
         .reverse()
         .map((conversation, index) => (
-          <ConversationListItem key={index} conversation={conversation} />
+          <ConversationListItem
+            key={index}
+            conversation={conversation}
+            isSelected={conversation.id == selectedConversation?.id}
+          />
         ))}
     </div>
   )
