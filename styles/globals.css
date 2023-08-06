@@ -45,3 +45,8 @@ pre:has(div.codeblock) {
 .error-message {
   color: indianred;
 }
+
+.list-header-1 {
+  color: grey;
+  font-size: 0.9em;
+}
