@@ -1,5 +1,11 @@
 ## Release notes
 
+### 2023-08-06
+
+#### Features
+
+* Improved handling of factory folder; shows dividers for factory/user folders.
+
 ### 2023-08-03
 
 #### Features

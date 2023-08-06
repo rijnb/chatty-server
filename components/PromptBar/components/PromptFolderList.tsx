@@ -40,10 +40,28 @@ export const PromptFolderList = () => {
 
   return (
     <div className="flex w-full flex-col pt-2">
+      {folders.filter((folder) => folder.type === "prompt" && folder.factory).length > 0 && (
+        <span className="list-header-1">Factory prompts:</span>
+      )}
       {folders
-        .filter((folder) => folder.type === "prompt")
+        .filter((folder) => folder.type === "prompt" && folder.factory)
         .sort((a, b) => a.name.localeCompare(b.name))
-        .sort((a, b) => (a.factory === b.factory ? 0 : a.factory ? 1 : -1))
+        .map((folder, index) => (
+          <Folder
+            key={index}
+            searchTerm={searchTerm}
+            folder={folder}
+            allowDrop={!folder.factory}
+            handleDrop={handleDrop}
+            folderComponent={PromptFolders(folder)}
+          />
+        ))}
+      {folders.filter((folder) => folder.type === "prompt" && !folder.factory).length > 0 && (
+        <span className="list-header-1">User prompts:</span>
+      )}
+      {folders
+        .filter((folder) => folder.type === "prompt" && !folder.factory)
+        .sort((a, b) => a.name.localeCompare(b.name))
         .map((folder, index) => (
           <Folder
             key={index}
