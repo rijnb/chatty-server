@@ -26,19 +26,23 @@ interface UnlockProviderProps {
 }
 
 export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
-  const [code, setCode] = useState(() => {
-    if (isProtected && typeof window !== "undefined") {
-      return getUnlockCode() || ""
-    }
-    return ""
-  })
-  const [unlocked, setUnlocked] = useState(true)
+  const [code, setCode] = useState("")
+  const [unlocked, setUnlocked] = useState(!isProtected)
   const [invalidCode, setInvalidCode] = useState(false)
+
+  useEffect(() => {
+    getUnlockCode()
+  }, []);
 
   useEffect(() => {
     if (!isProtected) {
       setUnlocked(true)
       removeUnlockCode()
+    } else {
+      const storedCode = getUnlockCode()
+      if (storedCode) {
+        setCode(storedCode)
+      }
     }
   }, [isProtected])
 
