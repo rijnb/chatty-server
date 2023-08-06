@@ -29,6 +29,7 @@ import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
+import {useUnlock} from "@/components/DoorLock/UnlockProvider";
 
 
 interface Props {
@@ -38,6 +39,8 @@ interface Props {
 
 export const Chat = memo(({stopConversationRef, theme}: Props) => {
   const {t} = useTranslation("chat")
+
+  const {code} = useUnlock();
 
   const {
     state: {
@@ -121,7 +124,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json",
-              ...(unlockCode && {Authorization: `Bearer ${unlockCode}`})
+              ...(code && {Authorization: `Bearer ${code}`})
             },
             body,
             rawResponse: true,

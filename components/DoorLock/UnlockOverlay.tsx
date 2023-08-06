@@ -7,6 +7,8 @@ import UnlockCode from "@/components/Settings/UnlockCode"
 const UnlockOverlay = () => {
   const {unlocked, code, setCode, invalidCode} = useUnlock()
 
+  console.log("UnlockOverlay: unlocked is", unlocked)
+
   return !unlocked ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="flex flex-col items-center justify-center gap-4 rounded-lg border bg-white dark:bg-[#202123] px-4 pt-5 pb-4">

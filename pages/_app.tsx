@@ -6,6 +6,7 @@ import App from "next/app"
 import {Inter} from "next/font/google"
 import {UnlockProvider} from "@/components/DoorLock/UnlockProvider"
 import "@/styles/globals.css"
+import UnlockOverlay from "@/components/DoorLock/UnlockOverlay";
 
 
 const inter = Inter({subsets: ["latin"]})
@@ -23,6 +24,7 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
       <QueryClientProvider client={queryClient}>
         <UnlockProvider isProtected={isProtected}>
           <Component {...pageProps} />
+          {isProtected && <UnlockOverlay />}
         </UnlockProvider>
       </QueryClientProvider>
     </div>

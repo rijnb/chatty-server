@@ -5,8 +5,8 @@ interface UnlockContextType {
   unlocked: boolean
   code: string
   setCode: (code: string) => void
-  invalidCode: boolean;
-  setInvalidCode: (invalid: boolean) => void;
+  invalidCode: boolean
+  setInvalidCode: (invalid: boolean) => void
 }
 
 const UnlockContext = createContext<UnlockContextType | undefined>(undefined)
@@ -25,27 +25,34 @@ interface UnlockProviderProps {
 }
 
 export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
-  const [code, setCode] = useState("")
-  const [unlocked, setUnlocked] = useState(!isProtected)
-  const [invalidCode, setInvalidCode] = useState(false);
+  const [code, setCode] = useState(() => {
+    if (isProtected && typeof window !== "undefined") {
+      return localStorage.getItem("unlockCode") || ""
+    }
+    return ""
+  })
+  const [unlocked, setUnlocked] = useState(true)
+  const [invalidCode, setInvalidCode] = useState(false)
 
   useEffect(() => {
     if (!isProtected) {
       setUnlocked(true)
-    } else {
-      const storedCode = localStorage.getItem("unlockCode")
-      if (storedCode) {
-        setCode(storedCode)
-      }
     }
   }, [isProtected])
 
   useEffect(() => {
     if (code) {
       setUnlocked(true)
+      setInvalidCode(false)
       localStorage.setItem("unlockCode", code)
     }
   }, [code, isProtected])
+
+  useEffect(() => {
+    if (invalidCode) {
+      setUnlocked(false)
+    }
+  }, [invalidCode])
 
   const value: UnlockContextType = {
     isProtected,
@@ -53,7 +60,7 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
     code,
     setCode,
     invalidCode,
-    setInvalidCode,
+    setInvalidCode
   }
 
   return <UnlockContext.Provider value={value}>{children}</UnlockContext.Provider>
