@@ -1,7 +1,7 @@
 import {useCallback} from "react"
 import useApiHelper from "@/hooks/useApiHelper"
-import {useFetch} from "@/hooks/useFetch"
 import {Plugin, PluginID} from "@/types/plugin"
+import {useFetchWithUnlock} from "@/components/DoorLock/useFetchWithUnlock"
 
 
 export interface GetModelsRequestProps {
@@ -9,7 +9,7 @@ export interface GetModelsRequestProps {
 }
 
 const useApiService = () => {
-  const fetchService = useFetch()
+  const fetchService = useFetchWithUnlock()
   const {getApiUrl} = useApiHelper()
 
   const getModels = useCallback(

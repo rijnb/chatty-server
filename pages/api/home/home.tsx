@@ -48,12 +48,11 @@ import {HomeInitialState, initialState} from "./home.state"
 
 interface Props {
   serverSideApiKeyIsSet: boolean
-  serverSideUnlockCodeIsSet: boolean
   serverSidePluginKeysSet: boolean
   defaultModelId: OpenAIModelID
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, defaultModelId}: Props) => {
+const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -66,11 +65,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
   } = contextValue
 
   const {data: modelData, error} = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode],
     ({signal}) => {
-      if (!unlockCode && serverSideUnlockCodeIsSet) {
-        return null
-      } else if (!apiKey && !serverSideApiKeyIsSet) {
+      if (!apiKey && !serverSideApiKeyIsSet) {
         return null
       } else {
         return getModels({key: apiKey}, unlockCode, signal)
@@ -230,12 +227,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
-    serverSideUnlockCodeIsSet &&
-      homeDispatch({
-        field: "serverSideUnlockCodeIsSet",
-        value: serverSideUnlockCodeIsSet
-      })
-  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
+  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
@@ -261,11 +253,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
-    serverSideUnlockCodeIsSet &&
-      homeDispatch({
-        field: "serverSideUnlockCodeIsSet",
-        value: serverSideUnlockCodeIsSet
-      })
 
     defaultModelId &&
       homeDispatch({
@@ -278,13 +265,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       removeApiKey()
     } else if (apiKey) {
       homeDispatch({field: "apiKey", value: apiKey})
-    }
-
-    if (!serverSideUnlockCodeIsSet) {
-      homeDispatch({field: "unlockCode", value: ""})
-      removeUnlockCode()
-    } else if (unlockCode) {
-      homeDispatch({field: "unlockCode", value: unlockCode})
     }
 
     const pluginKeys = getPluginKeys()
@@ -339,7 +319,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         )
       })
     }
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // LAYOUT --------------------------------------------
 

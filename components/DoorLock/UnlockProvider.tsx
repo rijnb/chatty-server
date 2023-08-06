@@ -5,6 +5,8 @@ interface UnlockContextType {
   unlocked: boolean
   code: string
   setCode: (code: string) => void
+  invalidCode: boolean;
+  setInvalidCode: (invalid: boolean) => void;
 }
 
 const UnlockContext = createContext<UnlockContextType | undefined>(undefined)
@@ -25,6 +27,7 @@ interface UnlockProviderProps {
 export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
   const [code, setCode] = useState("")
   const [unlocked, setUnlocked] = useState(!isProtected)
+  const [invalidCode, setInvalidCode] = useState(false);
 
   useEffect(() => {
     if (!isProtected) {
@@ -48,7 +51,9 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
     isProtected,
     unlocked,
     code,
-    setCode
+    setCode,
+    invalidCode,
+    setInvalidCode,
   }
 
   return <UnlockContext.Provider value={value}>{children}</UnlockContext.Provider>

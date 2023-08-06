@@ -5,7 +5,7 @@ import UnlockCode from "@/components/Settings/UnlockCode"
 
 
 const UnlockOverlay = () => {
-  const {unlocked, code, setCode} = useUnlock()
+  const {unlocked, code, setCode, invalidCode} = useUnlock()
 
   return !unlocked ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -14,6 +14,7 @@ const UnlockOverlay = () => {
         <div className="text-2xl font-bold text-red-800 dark:text-red-400">
           The application is locked by an <span className="italic">unlock code</span>
         </div>
+        {invalidCode && <div className="text-red-600 mt-4">The provided unlock code is invalid.</div>}
         <div className="text-center text-gray-300">Please enter the correct unlock code.</div>
 
         <UnlockCode unlockCode={code} onUnlockCodeChange={setCode} />
