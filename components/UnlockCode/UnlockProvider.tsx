@@ -1,4 +1,5 @@
 import {createContext, useContext, useEffect, useState} from "react"
+import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
 
 interface UnlockContextType {
   isProtected: boolean
@@ -27,7 +28,7 @@ interface UnlockProviderProps {
 export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
   const [code, setCode] = useState(() => {
     if (isProtected && typeof window !== "undefined") {
-      return localStorage.getItem("unlockCode") || ""
+      return getUnlockCode() || ""
     }
     return ""
   })
@@ -37,6 +38,7 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
   useEffect(() => {
     if (!isProtected) {
       setUnlocked(true)
+      removeUnlockCode()
     }
   }, [isProtected])
 
@@ -44,7 +46,7 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
     if (code) {
       setUnlocked(true)
       setInvalidCode(false)
-      localStorage.setItem("unlockCode", code)
+      saveUnlockCode(code)
     }
   }, [code, isProtected])
 

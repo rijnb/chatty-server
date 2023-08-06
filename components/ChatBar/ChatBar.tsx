@@ -13,7 +13,7 @@ import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importJsonData} from "@/utils/app/import"
 import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
-import {saveApiKey, saveShowChatBar, saveUnlockCode} from "@/utils/app/settings"
+import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {OpenAIModels, fallbackOpenAIModelID} from "@/types/openai"
@@ -43,14 +43,6 @@ export const ChatBar = () => {
     state: {searchTerm, filteredConversations},
     dispatch: chatDispatch
   } = chatBarContextValue
-
-  const handleUnlockCodeChange = useCallback(
-    (unlockCode: string) => {
-      homeDispatch({field: "unlockCode", value: unlockCode})
-      saveUnlockCode(unlockCode)
-    },
-    [homeDispatch]
-  )
 
   const handleApiKeyChange = useCallback(
     (apiKey: string) => {
@@ -197,8 +189,7 @@ export const ChatBar = () => {
         handleExportConversations,
         handlePluginKeyChange,
         handleClearPluginKey,
-        handleApiKeyChange,
-        handleUnlockCodeChange: handleUnlockCodeChange
+        handleApiKeyChange
       }}
     >
       <Sidebar<Conversation>

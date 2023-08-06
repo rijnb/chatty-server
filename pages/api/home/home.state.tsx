@@ -1,14 +1,13 @@
-import { Conversation, Message } from "@/types/chat";
-import { ErrorMessage } from "@/types/error";
-import { FolderInterface } from "@/types/folder";
-import { OpenAIModel, OpenAIModelID } from "@/types/openai";
-import { PluginKey } from "@/types/plugin";
-import { Prompt } from "@/types/prompt";
+import {Conversation, Message} from "@/types/chat"
+import {ErrorMessage} from "@/types/error"
+import {FolderInterface} from "@/types/folder"
+import {OpenAIModel, OpenAIModelID} from "@/types/openai"
+import {PluginKey} from "@/types/plugin"
+import {Prompt} from "@/types/prompt"
 
 
 export interface HomeInitialState {
   apiKey: string
-  unlockCode: string
   pluginKeys: PluginKey[]
   loading: boolean
   theme: "light" | "dark"
@@ -29,13 +28,11 @@ export interface HomeInitialState {
   searchTerm: string
   defaultModelId: OpenAIModelID | undefined
   serverSideApiKeyIsSet: boolean
-  serverSideUnlockCodeIsSet: boolean
   serverSidePluginKeysSet: boolean
 }
 
 export const initialState: HomeInitialState = {
   apiKey: "",
-  unlockCode: "",
   loading: false,
   pluginKeys: [],
   theme: "dark",
@@ -56,6 +53,5 @@ export const initialState: HomeInitialState = {
   searchTerm: "",
   defaultModelId: undefined,
   serverSideApiKeyIsSet: false,
-  serverSideUnlockCodeIsSet: false,
   serverSidePluginKeysSet: false
 }

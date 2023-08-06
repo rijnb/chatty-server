@@ -7,31 +7,20 @@ import ClearConversations from "@/components/ChatBar/components/ClearConversatio
 import PluginKeyList from "@/components/ChatBar/components/PluginKeyList"
 import ApiKey from "@/components/Settings/ApiKey"
 import ImportData from "@/components/Settings/ImportData"
-import UnlockCode from "@/components/Settings/UnlockCode"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
-
+import {UnlockCodeEditor, useUnlock} from "@/components/UnlockCode"
 
 export const ChatBarSettings = () => {
   const {t} = useTranslation("sidebar")
 
-  const {
-    state: {
-      apiKey,
-      unlockCode,
-      serverSideApiKeyIsSet,
-      serverSideUnlockCodeIsSet,
-      serverSidePluginKeysSet,
-      conversations
-    }
-  } = useContext(HomeContext)
+  const {isProtected, code, setCode} = useUnlock()
 
   const {
-    handleClearConversations,
-    handleImportConversations,
-    handleExportConversations,
-    handleApiKeyChange,
-    handleUnlockCodeChange
-  } = useContext(ChatBarContext)
+    state: {apiKey, serverSideApiKeyIsSet, serverSidePluginKeysSet, conversations}
+  } = useContext(HomeContext)
+
+  const {handleClearConversations, handleImportConversations, handleExportConversations, handleApiKeyChange} =
+    useContext(ChatBarContext)
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
@@ -47,9 +36,7 @@ export const ChatBarSettings = () => {
       ) : null}
       {!serverSideApiKeyIsSet ? <ApiKey apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
       {!serverSidePluginKeysSet ? <PluginKeyList /> : null}
-      {serverSideUnlockCodeIsSet ? (
-        <UnlockCode unlockCode={unlockCode} onUnlockCodeChange={handleUnlockCodeChange} />
-      ) : null}
+      {isProtected ? <UnlockCodeEditor unlockCode={code} onUnlockCodeChange={setCode} /> : null}
     </div>
   )
 }

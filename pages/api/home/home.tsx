@@ -27,9 +27,7 @@ import {
   getSettings,
   getShowChatBar,
   getShowPromptBar,
-  getUnlockCode,
   removeApiKey,
-  removeUnlockCode,
   saveSettings
 } from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
@@ -40,6 +38,7 @@ import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {Chat} from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
+import {useUnlock} from "@/components/UnlockCode"
 import {Navbar} from "@/components/Mobile/Navbar"
 import PromptBar from "@/components/PromptBar"
 import HomeContext from "./home.context"
@@ -58,19 +57,22 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const {getModelsError} = useErrorService()
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
   const router = useRouter()
+  const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, unlockCode, theme, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey, theme, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
   const {data: modelData, error} = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode],
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
     ({signal}) => {
-      if (!apiKey && !serverSideApiKeyIsSet) {
+      if (!unlocked) {
+        return null
+      } else if (!apiKey && !serverSideApiKeyIsSet) {
         return null
       } else {
-        return getModels({key: apiKey}, unlockCode, signal)
+        return getModels({key: apiKey}, signal)
       }
     },
     {enabled: true, refetchOnMount: false}
@@ -241,7 +243,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     }
 
     const apiKey = getApiKey()
-    const unlockCode = getUnlockCode()
 
     serverSideApiKeyIsSet &&
       homeDispatch({
@@ -377,7 +378,6 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      serverSideUnlockCodeIsSet: !!process.env.OPENAI_UNLOCK_CODE,
       defaultModelId,
       serverSidePluginKeysSet,
       ...(await serverSideTranslations(locale ?? "en", ["common", "chat", "sidebar", "markdown", "promptbar"]))

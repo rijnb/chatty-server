@@ -4,9 +4,8 @@ import {appWithTranslation} from "next-i18next"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {Inter} from "next/font/google"
-import {UnlockProvider} from "@/components/DoorLock/UnlockProvider"
+import {UnlockOverlay, UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
-import UnlockOverlay from "@/components/DoorLock/UnlockOverlay";
 
 
 const inter = Inter({subsets: ["latin"]})

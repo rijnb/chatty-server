@@ -22,6 +22,7 @@ import {Plugin} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
+import {useUnlock} from "@/components/UnlockCode"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
@@ -29,7 +30,6 @@ import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
-import {useUnlock} from "@/components/DoorLock/UnlockProvider";
 
 
 interface Props {
@@ -40,7 +40,7 @@ interface Props {
 export const Chat = memo(({stopConversationRef, theme}: Props) => {
   const {t} = useTranslation("chat")
 
-  const {code} = useUnlock();
+  const {code, unlocked} = useUnlock()
 
   const {
     state: {
@@ -48,10 +48,8 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
       conversations,
       models,
       apiKey,
-      unlockCode,
       pluginKeys,
       serverSideApiKeyIsSet,
-      serverSideUnlockCodeIsSet,
       modelError,
       loading
     },
@@ -285,8 +283,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
       homeDispatch,
       pluginKeys,
       selectedConversation,
-      stopConversationRef,
-      unlockCode
+      stopConversationRef
     ]
   )
 
@@ -480,12 +477,6 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
                   Please enter the correct Azure OpenAI key in left menu bar of Chatty.
                 </div>
               )}
-              {serverSideUnlockCodeIsSet && !unlockCode && (
-                <div className="text-center text-red-800 dark:text-red-400 mb-2">
-                  The application is locked by an <span className="italic">unlock code</span>.
-                  <div>Please enter the correct unlock code in left menu bar of Chatty.</div>
-                </div>
-              )}
               {models.length === 0 && (
                 <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px] text-center font-semibold text-gray-600 dark:text-gray-300">
                   <div>
@@ -514,7 +505,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
             </>
           </div>
 
-          {(serverSideApiKeyIsSet || apiKey) && (!serverSideUnlockCodeIsSet || unlockCode) && models.length > 0 && (
+          {(serverSideApiKeyIsSet || apiKey) && unlocked && models.length > 0 && (
             <ChatInput
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}

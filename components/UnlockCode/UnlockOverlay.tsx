@@ -1,10 +1,9 @@
 import {IconLock} from "@tabler/icons-react"
 import React from "react"
-import {useUnlock} from "@/components/DoorLock/UnlockProvider"
-import UnlockCode from "@/components/Settings/UnlockCode"
+import {UnlockCodeEditor, useUnlock} from "@/components/UnlockCode"
 
 
-const UnlockOverlay = () => {
+export const UnlockOverlay = () => {
   const {unlocked, code, setCode, invalidCode} = useUnlock()
 
   console.log("UnlockOverlay: unlocked is", unlocked)
@@ -19,10 +18,8 @@ const UnlockOverlay = () => {
         {invalidCode && <div className="text-red-600 mt-4">The provided unlock code is invalid.</div>}
         <div className="text-center text-gray-300">Please enter the correct unlock code.</div>
 
-        <UnlockCode unlockCode={code} onUnlockCodeChange={setCode} />
+        <UnlockCodeEditor unlockCode={code} onUnlockCodeChange={setCode} />
       </div>
     </div>
   ) : null
 }
-
-export default UnlockOverlay

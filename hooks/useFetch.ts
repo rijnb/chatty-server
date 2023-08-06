@@ -48,9 +48,11 @@ export const useFetch = () => {
       .catch(async (error) => {
         const contentType = error.headers.get("content-type")
         const errContent =
-          contentType && contentType?.indexOf("application/problem+json") !== -1 ? await error.json() : error
+          contentType && contentType === ("application/problem+json" || "application/json")
+            ? await error.json()
+            : await error.text()
         console.info(`useFetch: HTTP exception error, ${error.status}, statusText:${error.statusText}`)
-        throw errContent
+        throw {status: error.status, statusText: error.statusText, content: errContent}
       })
   }
 

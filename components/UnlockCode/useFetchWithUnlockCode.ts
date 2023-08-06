@@ -1,14 +1,14 @@
 import {RequestModel, RequestWithBodyModel, useFetch} from "@/hooks/useFetch"
-import {useUnlock} from "@/components/DoorLock/UnlockProvider"
-import unlockCode from "@/components/Settings/UnlockCode";
+import {useUnlock} from "@/components/UnlockCode"
 
-
-export const useFetchWithUnlock = () => {
+export const useFetchWithUnlockCode = () => {
   const originalFetch = useFetch()
-  const {code, invalidCode, setInvalidCode} = useUnlock()
+  const {isProtected, code, invalidCode, setInvalidCode} = useUnlock()
 
   const fetchWithErrorHandling = async (fetchMethod: Function, url: string, request: RequestModel) => {
-    console.log("fetchWithErrorHandling", url, code)
+    if (!isProtected) {
+      return await fetchMethod(url, request)
+    }
 
     if (invalidCode) {
       throw new Error("Invalid code")
@@ -17,7 +17,10 @@ export const useFetchWithUnlock = () => {
     try {
       return await fetchMethod(url, request)
     } catch (error: any) {
-      if (error.status === 401) {
+      if (
+        error.status === 401 &&
+        error.content === "Error: You are not authorized to use the service. Check your Unlock code."
+      ) {
         setInvalidCode(true)
       }
       throw error
@@ -33,7 +36,7 @@ export const useFetchWithUnlock = () => {
     post: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> =>
       fetchWithErrorHandling(originalFetch.post, url, {
         ...request,
-        headers: {...request?.headers, Authorization: `${code}`}
+        headers: {...request?.headers, Authorization: `Bearer ${code}`}
       })
     // ... (Other fetch methods)
   }

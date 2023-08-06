@@ -1,5 +1,5 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import SidebarButton from "../Sidebar/SidebarButton"
@@ -10,7 +10,7 @@ interface Props {
   onUnlockCodeChange: (apiKey: string) => void
 }
 
-export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
+export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
   const {t} = useTranslation("sidebar")
   const [isChanging, setIsChanging] = useState(false)
   const [newKey, setNewKey] = useState(unlockCode)
@@ -73,5 +73,3 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
     <SidebarButton text={t("Unlock code")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
   )
 }
-
-export default UnlockCode
