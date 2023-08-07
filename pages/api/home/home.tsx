@@ -75,7 +75,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         return getModels({key: apiKey}, signal)
       }
     },
-    {enabled: true, refetchOnMount: false}
+    {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
 
   const stopConversationRef = useRef<boolean>(false)
