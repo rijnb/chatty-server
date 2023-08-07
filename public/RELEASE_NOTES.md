@@ -5,6 +5,7 @@
 #### Features
 
 * Improved handling of factory folder; shows dividers for factory/user folders.
+* Escape clears input buffer.
 
 ### 2023-08-03
 

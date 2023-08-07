@@ -136,6 +136,9 @@ export const ChatInput = ({
     } else if (e.key === "/" && e.metaKey) {
       e.preventDefault()
       setShowPluginSelect(!showPluginSelect)
+    } else if (e.key === "Escape") {
+      e.preventDefault()
+      setContent("")
     }
   }
 
