@@ -22,14 +22,7 @@ import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {importJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
-import {
-  getApiKey,
-  getSettings,
-  getShowChatBar,
-  getShowPromptBar,
-  removeApiKey,
-  saveSettings
-} from "@/utils/app/settings"
+import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {LatestFileFormat} from "@/types/export"
@@ -38,9 +31,9 @@ import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {Chat} from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
-import {useUnlock} from "@/components/UnlockCode"
 import {Navbar} from "@/components/Mobile/Navbar"
 import PromptBar from "@/components/PromptBar"
+import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 
@@ -60,7 +53,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, theme, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
@@ -195,13 +188,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     }
   }, [triggerFactoryPrompts])
 
-  // Theme switch.
-  useEffect(() => {
-    console.debug("useEffect: theme")
-    const settings = {...getSettings(), theme: theme}
-    saveSettings(settings)
-  }, [theme, homeDispatch])
-
   // Retrieved models from API.
   useEffect(() => {
     console.debug("useEffect: modelData")
@@ -234,14 +220,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // Load settings from local storage.
   useEffect(() => {
     console.debug("useEffect: server-side props changed")
-    const settings = getSettings()
-    if (settings.theme) {
-      homeDispatch({
-        field: "theme",
-        value: settings.theme
-      })
-    }
-
     const apiKey = getApiKey()
 
     serverSideApiKeyIsSet &&
@@ -344,7 +322,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         <link rel="icon" href={`${router.basePath}/favicon.ico`} />
       </Head>
       {selectedConversation && (
-        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${theme}`}>
+        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white`}>
           <div className="fixed top-0 w-full sm:hidden">
             <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
           </div>
@@ -352,7 +330,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} theme={theme} />
+              <Chat stopConversationRef={stopConversationRef} />
             </div>
             <PromptBar />
           </div>

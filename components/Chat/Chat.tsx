@@ -10,6 +10,7 @@ import {
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
+import {useTheme} from "next-themes"
 import {useFetch} from "@/hooks/useFetch"
 import useApiService from "@/services/useApiService"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
@@ -34,11 +35,11 @@ import {toPng} from "html-to-image"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
-  theme: "light" | "dark"
 }
 
-export const Chat = memo(({stopConversationRef, theme}: Props) => {
+export const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("chat")
+  const {theme, setTheme} = useTheme()
 
   const {code, unlocked} = useUnlock()
 
@@ -440,7 +441,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
               &nbsp;&nbsp;&nbsp;|&nbsp;
               <button
                 className="ml-2 cursor-pointer hover:opacity-50"
-                onClick={() => homeDispatch({field: "theme", value: theme === "dark" ? "light" : "dark"})}
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
                 {theme === "dark" ? <IconBulbFilled size={18} /> : <IconBulbOff size={18} />}
               </button>

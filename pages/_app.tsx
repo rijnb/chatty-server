@@ -1,6 +1,7 @@
 import {Toaster} from "react-hot-toast"
 import {QueryClient, QueryClientProvider} from "react-query"
 import {appWithTranslation} from "next-i18next"
+import {ThemeProvider} from "next-themes"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {Inter} from "next/font/google"
@@ -21,9 +22,11 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
     <div className={inter.className}>
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <UnlockProvider isProtected={isProtected}>
-          <Component {...pageProps} />
-        </UnlockProvider>
+        <ThemeProvider>
+          <UnlockProvider isProtected={isProtected}>
+            <Component {...pageProps} />
+          </UnlockProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </div>
   )
