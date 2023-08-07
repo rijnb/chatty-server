@@ -90,7 +90,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
         <div className="flex w-full items-center gap-3 rounded-lg bg-[#343541]/90 p-3">
           <IconMessage size={18} />
           <input
-            className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-[12.5px] leading-3 text-white outline-none focus:border-neutral-100"
+            className="mr-12 flex-1 overflow-hidden overflow-ellipsis dark:border-neutral-400 dark:bg-transparent dark:text-white text-gray-800 border-gray-300 bg-transparent text-left text-[12.5px] leading-3 outline-none focus:dark:border-neutral-100 focus:border-gray-500"
             type="text"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
@@ -100,23 +100,23 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
         </div>
       ) : (
         <button
-          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
+          className={`flex w-full cursor-pointer items-center gap-3 dark:hover:bg-[#343541]/90 hover:bg-gray-300 rounded-lg p-3 text-sm transition-colors duration-200 ${
             messageIsStreaming ? "disabled:cursor-not-allowed" : ""
-          } ${isSelected ? "bg-[#343541]/90" : ""}`}
+          } ${isSelected ? "dark:bg-[#343541]/90 bg-gray-200" : ""}`}
           onClick={() => handleSelectConversation(conversation)}
           disabled={messageIsStreaming}
           draggable="true"
           onDragStart={(e) => handleDragStart(e, conversation)}
         >
-          <IconMessage size={18} />
+          <IconMessage size={18} className="dark:text-white text-gray-800" />
           <div
-            className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-4 ${
+            className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all dark:text-white text-gray-800 text-left text-[12.5px] leading-4 ${
               isSelected ? "pr-12" : "pr-1"
             }`}
           >
             {conversation.name}
             {isSelected && (
-              <div className="block text-[12.5px] text-gray-400">
+              <div className="block dark:text-gray-400 text-gray-600 text-[12.5px]">
                 {conversation?.time ? new Date(conversation?.time).toLocaleString() : ""}
               </div>
             )}
@@ -125,7 +125,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
       )}
 
       {(isDeleting || isRenaming) && isSelected && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+        <div className="absolute right-1 z-10 flex dark:text-gray-300 text-gray-600">
           <SidebarActionButton handleClick={handleConfirm}>
             <IconCheck size={18} />
           </SidebarActionButton>
@@ -136,7 +136,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
       )}
 
       {isSelected && !isDeleting && !isRenaming && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+        <div className="absolute right-1 z-10 flex dark:text-gray-300 text-gray-600">
           <SidebarActionButton handleClick={handleOpenRenameModal}>
             <IconPencil size={18} />
           </SidebarActionButton>
