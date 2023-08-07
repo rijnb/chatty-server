@@ -1,5 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react"
 import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
+import {UnlockOverlay} from "@/components/UnlockCode/UnlockOverlay"
+
 
 interface UnlockContextType {
   isProtected: boolean
@@ -26,13 +28,15 @@ interface UnlockProviderProps {
 }
 
 export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
+  const [loading, setLoading] = useState(isProtected)
+
   const [code, setCode] = useState("")
   const [unlocked, setUnlocked] = useState(!isProtected)
   const [invalidCode, setInvalidCode] = useState(false)
 
   useEffect(() => {
     getUnlockCode()
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (!isProtected) {
@@ -42,7 +46,10 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
       const storedCode = getUnlockCode()
       if (storedCode) {
         setCode(storedCode)
+        setUnlocked(true)
       }
+
+      setLoading(false)
     }
   }, [isProtected])
 
@@ -69,5 +76,16 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
     setInvalidCode
   }
 
-  return <UnlockContext.Provider value={value}>{children}</UnlockContext.Provider>
+  if (loading) {
+    return null
+  }
+
+  {
+    return (
+      <UnlockContext.Provider value={value}>
+        {children}
+        <UnlockOverlay />
+      </UnlockContext.Provider>
+    )
+  }
 }

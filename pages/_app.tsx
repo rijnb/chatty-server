@@ -4,7 +4,7 @@ import {appWithTranslation} from "next-i18next"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {Inter} from "next/font/google"
-import {UnlockOverlay, UnlockProvider} from "@/components/UnlockCode"
+import {UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
 
 
@@ -23,7 +23,6 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
       <QueryClientProvider client={queryClient}>
         <UnlockProvider isProtected={isProtected}>
           <Component {...pageProps} />
-          {isProtected && <UnlockOverlay />}
         </UnlockProvider>
       </QueryClientProvider>
     </div>
