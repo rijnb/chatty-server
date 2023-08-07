@@ -12,7 +12,8 @@ import toast from "react-hot-toast"
 import Modal from "react-modal"
 import {useTranslation} from "next-i18next"
 import {useRouter} from "next/router"
-import {getEndpoint} from "@/utils/app/api"
+import {useFetch} from "@/hooks/useFetch"
+import useApiService from "@/services/useApiService"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
@@ -78,6 +79,9 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const router = useRouter()
+  const {getEndpoint} = useApiService()
+  const fetchService = useFetch()
+
   const releaseNotesMarkdown = useMarkdownFile(`${router.basePath}/RELEASE_NOTES.md`)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -139,9 +143,9 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
           const endpoint = getEndpoint(plugin)
           let body
           if (!plugin) {
-            body = JSON.stringify(chatBody)
+            body = chatBody
           } else {
-            body = JSON.stringify({
+            body = {
               ...chatBody,
               googleAPIKey: pluginKeys
                 .find((key) => key.pluginId === "google-search")
@@ -149,17 +153,18 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
               googleCSEId: pluginKeys
                 .find((key) => key.pluginId === "google-search")
                 ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
-            })
+            }
           }
           const controller = new AbortController()
 
-          const response = await fetch(endpoint, {
-            method: "POST",
+          const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json",
               ...(unlockCode && {Authorization: `Bearer ${unlockCode}`})
             },
-            body
+            body,
+            rawResponse: true,
+            signal: controller.signal
           })
 
           if (!response.ok) {
@@ -304,7 +309,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
         return
       }
     },
-    [apiKey, conversations, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, unlockCode]
+    [apiKey, conversations, fetchService, getEndpoint, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, unlockCode]
   )
 
   const handleScroll = () => {

@@ -636,7 +636,7 @@
       "id": "273b7b10-a735-4360-a9d4-da9d4ea64435",
       "name": "Add code to chat",
       "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
-      "content": "I have this code. Just respond with “OK, ask me about your code.” if you get this.\nFilename: {{Filename of code, extension may be omitted}}\n```{{Paste a code snippet or complete file}}\n```",
+      "content": "I have this code. Just respond with “OK, ask me about your code.” if you get this.\nFilename: {{Filename of code (extension may be omitted), or just type 'x'}}\n```\n{{Paste a code snippet or complete file}}\n```",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
