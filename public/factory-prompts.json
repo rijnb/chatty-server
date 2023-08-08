@@ -645,7 +645,7 @@
     },
     {
       "id": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
-      "name": "Text processing",
+      "name": "Writing assistant",
       "type": "prompt"
     },
     {
@@ -655,7 +655,7 @@
     },
     {
       "id": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
-      "name": "Coding",
+      "name": "Code development",
       "type": "prompt"
     }
   ]
