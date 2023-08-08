@@ -1,6 +1,6 @@
-import {createContext, useContext, useEffect, useState} from "react"
-import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
-import {UnlockOverlay} from "@/components/UnlockCode/UnlockOverlay"
+import { createContext, useContext, useEffect, useState } from "react";
+import { getUnlockCode, removeUnlockCode, saveUnlockCode } from "@/utils/app/settings";
+import { UnlockOverlay } from "@/components/UnlockCode/UnlockOverlay";
 
 
 interface UnlockContextType {
@@ -39,10 +39,7 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
   }, [])
 
   useEffect(() => {
-    if (!isProtected) {
-      setUnlocked(true)
-      removeUnlockCode()
-    } else {
+    if (isProtected) {
       const storedCode = getUnlockCode()
       if (storedCode) {
         setCode(storedCode)
@@ -50,6 +47,9 @@ export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => 
       }
 
       setLoading(false)
+    } else {
+      setUnlocked(true)
+      removeUnlockCode()
     }
   }, [isProtected])
 
