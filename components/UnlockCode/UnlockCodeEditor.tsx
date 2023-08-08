@@ -12,13 +12,17 @@ interface Props {
 export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
   const {t} = useTranslation("sidebar")
   const [isChanging, setIsChanging] = useState(false)
-  const [newKey, setNewKey] = useState(unlockCode)
+  const [newUnlockCode, setNewUnlockCode] = useState(unlockCode)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setNewUnlockCode(unlockCode)
+  }, [unlockCode])
 
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
-      handleUpdateKey(newKey)
+      handleUpdateKey(newUnlockCode)
     }
   }
 
@@ -41,8 +45,8 @@ export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
         ref={inputRef}
         className="ml-2 h-[20px] flex-1 overflow-hidden overflow-ellipsis border-b border-gray-300 bg-transparent pr-1 text-left text-[12.5px] leading-3 text-gray-800 outline-none focus:border-gray-500 dark:border-neutral-600 dark:text-white focus:dark:border-neutral-200"
         type="password"
-        value={newKey}
-        onChange={(e) => setNewKey(e.target.value)}
+        value={newUnlockCode}
+        onChange={(e) => setNewUnlockCode(e.target.value)}
         onKeyDown={handleEnterDown}
         placeholder={t("Enter unlock code")}
       />
@@ -53,7 +57,7 @@ export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
           size={18}
           onClick={(e) => {
             e.stopPropagation()
-            handleUpdateKey(newKey)
+            handleUpdateKey(newUnlockCode)
           }}
         />
 
@@ -63,7 +67,7 @@ export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
           onClick={(e) => {
             e.stopPropagation()
             setIsChanging(false)
-            setNewKey(unlockCode)
+            setNewUnlockCode(unlockCode)
           }}
         />
       </div>
