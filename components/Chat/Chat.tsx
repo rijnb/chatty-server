@@ -30,7 +30,7 @@ import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-import {toPng} from "html-to-image"
+import { toPng } from "html-to-image";
 
 
 interface Props {
@@ -119,6 +119,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
           const controller = new AbortController()
 
+          console.log(`==== fetch: ${endpoint}`) //!!
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json",
@@ -128,11 +129,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             rawResponse: true,
             signal: controller.signal
           })
-
+          console.log(`==== response: ${response}`) //!!
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
             let errorText = await response.text()
+            console.log(`==== errorText: ${errorText}`) //!!
             console.log(
               `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, headers:${response.headers}`
             )
@@ -150,6 +152,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
 
           // Get response data (as JSON for plugin, as reader for OpenAI).
+          console.log(`==== get data`) //!!
           const data = plugin ? await response.json() : response.body?.getReader()
           if (!data) {
             homeDispatch({field: "loading", value: false})
@@ -261,14 +264,29 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
         }
       } catch (error) {
-        console.error(`Server error: {error} (${typeof error}, ${JSON.stringify(error)}`)
-        if (error instanceof Error && error.message === "Request timeout") {
-          toast.error(`${error.message}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+        const {status, statustext, content, message} = error as any
+        if (status === 401) {
+
+          // Not authorized.
+          toast.error(`${content}`, {duration: TOAST_DURATION_MS})
+        } else if (error instanceof Error) {
+
+          // Some other error, try to figure out what it is.
+          if (error.message.includes("timeout")) {
+            toast.error(`${error.message}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+          } else {
+            toast.error(`${error.message}`, {duration: TOAST_DURATION_MS})
+          }
         } else {
-          toast.error(
-            `The server returned an error... Please try again later.`,
-            {duration: TOAST_DURATION_MS}
-          )
+
+          // No clue. Try some properties and hope for the best.
+          if (statustext) {
+            toast.error(`The server returned an error...\n${statustext}`, {duration: TOAST_DURATION_MS})
+          } else if (message) {
+            toast.error(`The server returned an error...\n${message}`, {duration: TOAST_DURATION_MS})
+          } else {
+            toast.error(`The server returned an error... Try again later.`, {duration: TOAST_DURATION_MS})
+          }
         }
         homeDispatch({field: "loading", value: false})
         homeDispatch({field: "messageIsStreaming", value: false})
@@ -473,12 +491,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             <>
               {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
               {!serverSideApiKeyIsSet && !apiKey && (
-                <div className="text-center text-red-800 dark:text-red-400 mb-2">
+                <div className="mb-2 text-center text-red-800 dark:text-red-400">
                   Please enter the correct Azure OpenAI key in left menu bar of Chatty.
                 </div>
               )}
               {models.length === 0 && (
-                <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px] text-center font-semibold text-gray-600 dark:text-gray-300">
+                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-semibold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
                   <div>
                     Loading models...
                     <Spinner size="16px" className="mx-auto" />

@@ -19,7 +19,7 @@ export const useFetchWithUnlockCode = () => {
     } catch (error: any) {
       if (
         error.status === 401 &&
-        error.content === "Error: You are not authorized to use the service. Check your Unlock code."
+        error.content.includes("Unlock code")
       ) {
         setInvalidCode(true)
       }
