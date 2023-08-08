@@ -9,9 +9,8 @@ import {
 } from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
-import Modal from "react-modal"
 import {useTranslation} from "next-i18next"
-import {useRouter} from "next/router"
+import {useTheme} from "next-themes"
 import {useFetch} from "@/hooks/useFetch"
 import useApiService from "@/services/useApiService"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
@@ -22,8 +21,9 @@ import {ChatBody, Conversation, Message} from "@/types/chat"
 import {fallbackOpenAIModel} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
+import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
-import {MemoizedReactMarkdown} from "@/components/Markdown/MemoizedReactMarkdown"
+import {useUnlock} from "@/components/UnlockCode"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
@@ -31,30 +31,17 @@ import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
-import rehypeMathjax from "rehype-mathjax"
-import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math";
 
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
-  theme: "light" | "dark"
 }
 
-const useMarkdownFile = (filename: string) => {
-  const [fileContent, setFileContent] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch(filename)
-      .then((response) => response.text())
-      .then((text) => setFileContent(text))
-      .catch((error) => console.error(`Error fetching markdown file: ${error}`))
-  }, [filename])
-  return fileContent
-}
-
-export const Chat = memo(({stopConversationRef, theme}: Props) => {
+export const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("chat")
+  const {theme, setTheme} = useTheme()
+
+  const {code, unlocked} = useUnlock()
 
   const {
     state: {
@@ -62,10 +49,8 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
       conversations,
       models,
       apiKey,
-      unlockCode,
       pluginKeys,
       serverSideApiKeyIsSet,
-      serverSideUnlockCodeIsSet,
       modelError,
       loading
     },
@@ -78,34 +63,12 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
   const [showSettings, setShowSettings] = useState<boolean>(false)
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
-  const router = useRouter()
   const {getEndpoint} = useApiService()
   const fetchService = useFetch()
 
-  const releaseNotesMarkdown = useMarkdownFile(`${router.basePath}/RELEASE_NOTES.md`)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const customModalStyles = {
-    content: {
-      backgroundColor: "#e6e6e0",
-      color: "#000000",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      padding: "2rem",
-      maxWidth: "50%",
-      maxHeight: "80%",
-      overflow: "auto"
-    },
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.5)"
-    }
-  }
 
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
@@ -160,7 +123,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json",
-              ...(unlockCode && {Authorization: `Bearer ${unlockCode}`})
+              ...(code && {Authorization: `Bearer ${code}`})
             },
             body,
             rawResponse: true,
@@ -321,8 +284,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
       homeDispatch,
       pluginKeys,
       selectedConversation,
-      stopConversationRef,
-      unlockCode
+      stopConversationRef
     ]
   )
 
@@ -479,7 +441,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
               &nbsp;&nbsp;&nbsp;|&nbsp;
               <button
                 className="ml-2 cursor-pointer hover:opacity-50"
-                onClick={() => homeDispatch({field: "theme", value: theme === "dark" ? "light" : "dark"})}
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
                 {theme === "dark" ? <IconBulbFilled size={18} /> : <IconBulbOff size={18} />}
               </button>
@@ -516,12 +478,6 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
                   Please enter the correct Azure OpenAI key in left menu bar of Chatty.
                 </div>
               )}
-              {serverSideUnlockCodeIsSet && !unlockCode && (
-                <div className="text-center text-red-800 dark:text-red-400 mb-2">
-                  The application is locked by an <span className="italic">unlock code</span>.
-                  <div>Please enter the correct unlock code in left menu bar of Chatty.</div>
-                </div>
-              )}
               {models.length === 0 && (
                 <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px] text-center font-semibold text-gray-600 dark:text-gray-300">
                   <div>
@@ -550,7 +506,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
             </>
           </div>
 
-          {(serverSideApiKeyIsSet || apiKey) && (!serverSideUnlockCodeIsSet || unlockCode) && models.length > 0 && (
+          {(serverSideApiKeyIsSet || apiKey) && unlocked && models.length > 0 && (
             <ChatInput
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
@@ -570,51 +526,7 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
           )}
         </>
       )}
-      <Modal
-        isOpen={isReleaseNotesDialogOpen}
-        onRequestClose={() => setIsReleaseNotesDialogOpen(false)}
-        style={customModalStyles}
-        contentLabel="Release Notes"
-        ariaHideApp={false}
-      >
-        <MemoizedReactMarkdown
-          className="prose dark:prose-invert flex-1"
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeMathjax]}
-          components={{
-            code({node, inline, className, children, ...props}) {
-              return (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              )
-            },
-            table({children}) {
-              return (
-                <table className="border-collapse border border-black px-3 py-1 dark:border-white">{children}</table>
-              )
-            },
-            th({children}) {
-              return (
-                <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
-                  {children}
-                </th>
-              )
-            },
-            td({children}) {
-              return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
-            }
-          }}
-        >
-          {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
-        </MemoizedReactMarkdown>
-        <button
-          className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
-          onClick={() => setIsReleaseNotesDialogOpen(false)}
-        >
-          Dismiss
-        </button>
-      </Modal>
+      <ReleaseNotes isOpen={isReleaseNotesDialogOpen} close={() => setIsReleaseNotesDialogOpen(false)} />
     </div>
   )
 })

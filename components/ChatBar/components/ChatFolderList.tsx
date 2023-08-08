@@ -11,7 +11,7 @@ interface Props {
 
 export const ChatFolderList = ({searchTerm}: Props) => {
   const {
-    state: {folders, conversations},
+    state: {folders, conversations, selectedConversation},
     handleUpdateConversation
   } = useContext(HomeContext)
 
@@ -34,7 +34,7 @@ export const ChatFolderList = ({searchTerm}: Props) => {
           if (conversation.folderId === currentFolder.id) {
             return (
               <div key={index} className="ml-5 gap-2 border-l pl-2">
-                <ConversationListItem conversation={conversation} />
+                <ConversationListItem conversation={conversation} isSelected={conversation.id == selectedConversation?.id} />
               </div>
             )
           }
