@@ -5,7 +5,6 @@ import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 import PromptBarContext from "../PromptBar.context"
 import PromptEditModal from "./PromptEditModal"
 
-
 interface Props {
   prompt: Prompt
 }
@@ -49,7 +48,7 @@ export const PromptListItem = ({prompt}: Props) => {
   return (
     <div className="relative flex items-center">
       <button
-        className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90"
+        className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
         draggable={prompt.factory ? "false" : "true"}
         onClick={(e) => {
           e.stopPropagation()
@@ -60,14 +59,18 @@ export const PromptListItem = ({prompt}: Props) => {
           setIsDeleting(false)
         }}
       >
-        {prompt.factory ? <IconBuildingFactory2 size={18} color={"gray"} /> : <IconUserCircle size={18} />}
-        <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-4 text-left text-[12.5px] leading-3">
+        {prompt.factory ? (
+          <IconBuildingFactory2 size={18} className="text-gray-500 dark:text-neutral-300" />
+        ) : (
+          <IconUserCircle size={18} className="text-gray-500 dark:text-neutral-300" />
+        )}
+        <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-4 text-left text-[12.5px] leading-3 text-gray-800 dark:text-white">
           {prompt.name}
         </div>
       </button>
 
       {isDeleting && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+        <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
           <SidebarActionButton handleClick={handleDelete}>
             <IconCheck size={18} />
           </SidebarActionButton>
@@ -79,7 +82,7 @@ export const PromptListItem = ({prompt}: Props) => {
       )}
 
       {!isDeleting && !prompt.factory && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+        <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
           <SidebarActionButton handleClick={handleConfirmDelete}>
             <IconTrash size={18} />
           </SidebarActionButton>

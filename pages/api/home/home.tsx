@@ -37,7 +37,6 @@ import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 
-
 interface Props {
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
@@ -322,7 +321,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         <link rel="icon" href={`${router.basePath}/favicon.ico`} />
       </Head>
       {selectedConversation && (
-        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white`}>
+        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
           <div className="fixed top-0 w-full sm:hidden">
             <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
           </div>
