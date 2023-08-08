@@ -299,17 +299,31 @@ export const Chat = memo(({stopConversationRef, theme}: Props) => {
           }
         }
       } catch (error) {
+        console.error(`Server error: {error} (${typeof error}, ${JSON.stringify(error)}`)
         if (error instanceof Error && error.message === "Request timeout") {
-          toast.error(`${error}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+          toast.error(`${error.message}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
         } else {
-          toast.error(`${error}... Please try again later.`, {duration: TOAST_DURATION_MS})
+          toast.error(
+            `The server returned an error... Please try again later.`,
+            {duration: TOAST_DURATION_MS}
+          )
         }
         homeDispatch({field: "loading", value: false})
         homeDispatch({field: "messageIsStreaming", value: false})
         return
       }
     },
-    [apiKey, conversations, fetchService, getEndpoint, homeDispatch, pluginKeys, selectedConversation, stopConversationRef, unlockCode]
+    [
+      apiKey,
+      conversations,
+      fetchService,
+      getEndpoint,
+      homeDispatch,
+      pluginKeys,
+      selectedConversation,
+      stopConversationRef,
+      unlockCode
+    ]
   )
 
   const handleScroll = () => {
