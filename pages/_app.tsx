@@ -5,6 +5,7 @@ import {ThemeProvider} from "next-themes"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {Inter} from "next/font/google"
+import ThemeInitializer from "@/components/Theme/ThemeInitializer"
 import {UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
 
@@ -23,6 +24,7 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
       <Toaster />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
+          <ThemeInitializer />
           <UnlockProvider isProtected={isProtected}>
             <Component {...pageProps} />
           </UnlockProvider>
@@ -34,7 +36,6 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
 
 ChattyApp.getInitialProps = async (context: AppContext): Promise<ChattyAppProps & AppInitialProps> => {
   const ctx = await App.getInitialProps(context)
-
   return {...ctx, isProtected: !!process.env.OPENAI_UNLOCK_CODE}
 }
 
