@@ -5,7 +5,6 @@ import {ThemeProvider} from "next-themes"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {Inter} from "next/font/google"
-import ThemeInitializer from "@/components/Theme/ThemeInitializer"
 import {UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
 
@@ -23,8 +22,7 @@ function ChattyApp({Component, pageProps, isProtected}: AppProps & ChattyAppProp
     <div className={inter.className}>
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <ThemeInitializer />
+        <ThemeProvider defaultTheme="dark">
           <UnlockProvider isProtected={isProtected}>
             <Component {...pageProps} />
           </UnlockProvider>
