@@ -6,14 +6,14 @@ import HomeContext from "@/pages/api/home/home.context"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 
-
 interface Props {
   conversation: Conversation
+  isSelected: boolean
 }
 
-export const ConversationListItem = ({conversation}: Props) => {
+export const ConversationListItem = ({conversation, isSelected}: Props) => {
   const {
-    state: {selectedConversation, messageIsStreaming},
+    state: {messageIsStreaming},
     handleSelectConversation,
     handleUpdateConversation
   } = useContext(HomeContext)
@@ -27,7 +27,7 @@ export const ConversationListItem = ({conversation}: Props) => {
   const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
-      selectedConversation && handleRename(selectedConversation)
+      isSelected && handleRename(conversation)
     }
   }
 
@@ -68,7 +68,7 @@ export const ConversationListItem = ({conversation}: Props) => {
   const handleOpenRenameModal: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
     setIsRenaming(true)
-    selectedConversation && setRenameValue(selectedConversation.name)
+    isSelected && setRenameValue(conversation.name)
   }
   const handleOpenDeleteModal: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
@@ -85,11 +85,11 @@ export const ConversationListItem = ({conversation}: Props) => {
 
   return (
     <div className="relative flex items-center">
-      {isRenaming && selectedConversation?.id === conversation.id ? (
-        <div className="flex w-full items-center gap-3 rounded-lg bg-[#343541]/90 p-3">
-          <IconMessage size={18} />
+      {isRenaming && isSelected ? (
+        <div className="flex w-full items-center gap-3 rounded-lg bg-gray-200 p-3 dark:bg-[#343541]/90 dark:text-white">
+          <IconMessage size={18} className="text-gray-500 dark:text-neutral-300" />
           <input
-            className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-[12.5px] leading-3 text-white outline-none focus:border-neutral-100"
+            className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-gray-300 bg-transparent text-left text-[12.5px] leading-3 text-gray-800 outline-none focus:border-gray-500 dark:border-neutral-400 dark:bg-transparent dark:text-white focus:dark:border-neutral-100"
             type="text"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
@@ -99,23 +99,23 @@ export const ConversationListItem = ({conversation}: Props) => {
         </div>
       ) : (
         <button
-          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
+          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-[#343541]/90 ${
             messageIsStreaming ? "disabled:cursor-not-allowed" : ""
-          } ${selectedConversation?.id === conversation.id ? "bg-[#343541]/90" : ""}`}
+          } ${isSelected ? "bg-gray-300 dark:bg-[#343541]/90" : ""}`}
           onClick={() => handleSelectConversation(conversation)}
           disabled={messageIsStreaming}
           draggable="true"
           onDragStart={(e) => handleDragStart(e, conversation)}
         >
-          <IconMessage size={18} />
+          <IconMessage size={18} className="text-gray-500 dark:text-neutral-300" />
           <div
-            className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-4 ${
-              selectedConversation?.id === conversation.id ? "pr-12" : "pr-1"
+            className={`relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-4 text-gray-800 dark:text-white ${
+              isSelected ? "pr-12" : "pr-1"
             }`}
           >
             {conversation.name}
-            {selectedConversation?.id === conversation.id && (
-              <div className="block text-[12.5px] text-gray-400">
+            {isSelected && (
+              <div className="block text-[12.5px] text-gray-600 dark:text-gray-400">
                 {conversation?.time ? new Date(conversation?.time).toLocaleString() : ""}
               </div>
             )}
@@ -123,8 +123,8 @@ export const ConversationListItem = ({conversation}: Props) => {
         </button>
       )}
 
-      {(isDeleting || isRenaming) && selectedConversation?.id === conversation.id && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+      {(isDeleting || isRenaming) && isSelected && (
+        <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
           <SidebarActionButton handleClick={handleConfirm}>
             <IconCheck size={18} />
           </SidebarActionButton>
@@ -134,8 +134,8 @@ export const ConversationListItem = ({conversation}: Props) => {
         </div>
       )}
 
-      {selectedConversation?.id === conversation.id && !isDeleting && !isRenaming && (
-        <div className="absolute right-1 z-10 flex text-gray-300">
+      {isSelected && !isDeleting && !isRenaming && (
+        <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
           <SidebarActionButton handleClick={handleOpenRenameModal}>
             <IconPencil size={18} />
           </SidebarActionButton>

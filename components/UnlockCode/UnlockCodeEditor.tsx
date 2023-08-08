@@ -1,16 +1,15 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import SidebarButton from "../Sidebar/SidebarButton"
-
 
 interface Props {
   unlockCode: string
   onUnlockCodeChange: (apiKey: string) => void
 }
 
-export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
+export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
   const {t} = useTranslation("sidebar")
   const [isChanging, setIsChanging] = useState(false)
   const [newKey, setNewKey] = useState(unlockCode)
@@ -35,12 +34,12 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
   }, [isChanging])
 
   return isChanging ? (
-    <div className="duration:200 flex w-full cursor-pointer items-center rounded-md py-3 px-3 transition-colors hover:bg-gray-500/10">
+    <div className="duration:200 flex w-full cursor-pointer items-center rounded-md px-3 py-3 transition-colors hover:bg-gray-300 dark:hover:bg-[#343541]/90">
       <IconKey size={18} />
 
       <input
         ref={inputRef}
-        className="ml-2 h-[20px] flex-1 overflow-hidden overflow-ellipsis border-b border-neutral-400 bg-transparent pr-1 text-[12.5px] leading-3 text-left text-white outline-none focus:border-neutral-100"
+        className="ml-2 h-[20px] flex-1 overflow-hidden overflow-ellipsis border-b border-gray-300 bg-transparent pr-1 text-left text-[12.5px] leading-3 text-gray-800 outline-none focus:border-gray-500 dark:border-neutral-600 dark:text-white focus:dark:border-neutral-200"
         type="password"
         value={newKey}
         onChange={(e) => setNewKey(e.target.value)}
@@ -50,7 +49,7 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
 
       <div className="flex w-[40px]">
         <IconCheck
-          className="ml-auto min-w-[20px] text-neutral-400 hover:text-neutral-100"
+          className="ml-auto min-w-[20px] text-gray-500 hover:text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100"
           size={18}
           onClick={(e) => {
             e.stopPropagation()
@@ -59,7 +58,7 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
         />
 
         <IconX
-          className="ml-auto min-w-[20px] text-neutral-400 hover:text-neutral-100"
+          className="ml-auto min-w-[20px] text-gray-500 hover:text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100"
           size={18}
           onClick={(e) => {
             e.stopPropagation()
@@ -73,5 +72,3 @@ export const UnlockCode: FC<Props> = ({unlockCode, onUnlockCodeChange}) => {
     <SidebarButton text={t("Unlock code")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
   )
 }
-
-export default UnlockCode

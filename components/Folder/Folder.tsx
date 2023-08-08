@@ -1,7 +1,3 @@
-import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import HomeContext from "@/pages/api/home/home.context"
-import {FolderInterface} from "@/types/folder"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {
   IconArrowBadgeDown,
   IconArrowBadgeRight,
@@ -13,6 +9,10 @@ import {
   IconX
 } from "@tabler/icons-react"
 import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {FolderInterface} from "@/types/folder"
+import HomeContext from "@/pages/api/home/home.context"
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 
 interface Props {
   folder: FolderInterface
@@ -89,112 +89,114 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
   }, [searchTerm])
 
   return (
-      <>
-        <div className="relative flex items-center">
-          {isRenaming ? (
-              <div className="flex w-full items-center gap-3 bg-[#343541]/90 p-3">
-                {isOpen ? folder.factory ? (
-                        <IconCaretDown size={18}/>
-                    ) : (
-                        <IconArrowBadgeDown size={18}/>
-                    )
-                    : folder.factory ? (
-                        <IconArrowBadgeRight size={18} color={"gray"}/>
-                    ) : (
-                        <IconCaretRight size={18}/>
-                    )}
-                <input
-                    className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-[12.5px] leading-3 text-white outline-none focus:border-neutral-100"
-                    type="text"
-                    value={renameValue}
-                    onChange={(e) => setRenameValue(e.target.value)}
-                    onKeyDown={handleEnterDown}
-                    autoFocus
-                />
-              </div>
-          ) : (
-              <button
-                  className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90`}
-                  onClick={() => setIsOpen(!isOpen)}
-                  onDrop={(e) => dropHandler(e)}
-                  onDragOver={handleDragOver}
-                  onDragEnter={highlightDrop}
-                  onDragLeave={removeHighlight}
-              >
-                {isOpen ? (
-                    folder.factory ? (
-                        <IconArrowBadgeDown size={18} color={"gray"}/>
-                    ) : (
-                        <IconCaretDown size={18}/>
-                    )
-                ) : folder.factory ? (
-                    <IconArrowBadgeRight size={18} color={"gray"}/>
-                ) : (
-                    <IconCaretRight size={18}/>
-                )}
+    <>
+      <div className="relative flex items-center">
+        {isRenaming ? (
+          <div className="flex w-full items-center gap-3 rounded-lg bg-gray-200 p-3 text-gray-800 dark:bg-[#343541]/90 dark:text-white">
+            {isOpen ? (
+              folder.factory ? (
+                <IconCaretDown size={18} />
+              ) : (
+                <IconArrowBadgeDown size={18} />
+              )
+            ) : folder.factory ? (
+              <IconArrowBadgeRight size={18} color={"gray"} />
+            ) : (
+              <IconCaretRight size={18} />
+            )}
+            <input
+              className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-gray-300 bg-transparent text-left text-[12.5px] leading-3 text-gray-800 outline-none focus:border-gray-500 dark:border-neutral-400 dark:bg-transparent dark:text-white focus:dark:border-neutral-100"
+              type="text"
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              onKeyDown={handleEnterDown}
+              autoFocus
+            />
+          </div>
+        ) : (
+          <button
+            className={
+              "flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
+            }
+            onClick={() => setIsOpen(!isOpen)}
+            onDrop={(e) => dropHandler(e)}
+            onDragOver={handleDragOver}
+            onDragEnter={highlightDrop}
+            onDragLeave={removeHighlight}
+          >
+            {isOpen ? (
+              folder.factory ? (
+                <IconArrowBadgeDown size={18} color={"gray"} />
+              ) : (
+                <IconCaretDown size={18} />
+              )
+            ) : folder.factory ? (
+              <IconArrowBadgeRight size={18} color={"gray"} />
+            ) : (
+              <IconCaretRight size={18} />
+            )}
 
-                <div
-                    className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-3">
-                  {folder.name}
-                </div>
-              </button>
-          )}
+            <div className="relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all pr-12 text-left text-[12.5px] leading-3 text-gray-800 dark:text-white">
+              {folder.name}
+            </div>
+          </button>
+        )}
 
-          {(isDeleting || isRenaming) && (
-              <div className="absolute right-1 z-10 flex text-gray-300">
-                <SidebarActionButton
-                    handleClick={(e) => {
-                      e.stopPropagation()
+        {(isDeleting || isRenaming) && (
+          <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
+            <SidebarActionButton
+              handleClick={(e) => {
+                e.stopPropagation()
 
-                      if (isDeleting) {
-                        handleDeleteFolder(folder.id)
-                      } else if (isRenaming) {
-                        handleRename()
-                      }
+                if (isDeleting) {
+                  handleDeleteFolder(folder.id)
+                } else if (isRenaming) {
+                  handleRename()
+                }
 
-                      setIsDeleting(false)
-                      setIsRenaming(false)
-                    }}
-                >
-                  <IconCheck size={18}/>
-                </SidebarActionButton>
-                <SidebarActionButton
-                    handleClick={(e) => {
-                      e.stopPropagation()
-                      setIsDeleting(false)
-                      setIsRenaming(false)
-                    }}
-                >
-                  <IconX size={18}/>
-                </SidebarActionButton>
-              </div>
-          )}
+                setIsDeleting(false)
+                setIsRenaming(false)
+              }}
+            >
+              <IconCheck size={18} />
+            </SidebarActionButton>
+            <SidebarActionButton
+              handleClick={(e) => {
+                e.stopPropagation()
+                setIsDeleting(false)
+                setIsRenaming(false)
+              }}
+            >
+              <IconX size={18} />
+            </SidebarActionButton>
+          </div>
+        )}
 
-          {!isDeleting && !isRenaming && !folder.factory && (
-              <div className="absolute right-1 z-10 flex text-gray-300">
-                <SidebarActionButton
-                    handleClick={(e) => {
-                      e.stopPropagation()
-                      setIsRenaming(true)
-                      setRenameValue(folder.name)
-                    }}
-                >
-                  <IconPencil size={18}/>
-                </SidebarActionButton>
-                <SidebarActionButton
-                    handleClick={(e) => {
-                      e.stopPropagation()
-                      setIsDeleting(true)
-                    }}
-                >
-                  <IconTrash size={18}/>
-                </SidebarActionButton>
-              </div>
-          )}
-        </div>
+        {!isDeleting && !isRenaming && !folder.factory && (
+          <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
+            <SidebarActionButton
+              handleClick={(e) => {
+                e.stopPropagation()
+                setIsRenaming(true)
+                setRenameValue(folder.name)
+              }}
+            >
+              <IconPencil size={18} />
+            </SidebarActionButton>
+            <SidebarActionButton
+              handleClick={(e) => {
+                e.stopPropagation()
+                setIsDeleting(true)
+              }}
+            >
+              <IconTrash size={18} />
+            </SidebarActionButton>
+          </div>
+        )}
+      </div>
 
-        {isOpen ? folderComponent : null}
-      </>
+      {isOpen ? folderComponent : null}
+    </>
   )
 }
 

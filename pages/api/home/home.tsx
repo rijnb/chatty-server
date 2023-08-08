@@ -22,15 +22,7 @@ import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {importJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
-import {
-  getApiKey,
-  getSettings,
-  getShowChatBar,
-  getShowPromptBar,
-  getUnlockCode,
-  removeApiKey,
-  removeUnlockCode, saveSettings
-} from "@/utils/app/settings"
+import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {LatestFileFormat} from "@/types/export"
@@ -41,53 +33,41 @@ import {Chat} from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
 import {Navbar} from "@/components/Mobile/Navbar"
 import PromptBar from "@/components/PromptBar"
+import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 
-
 interface Props {
   serverSideApiKeyIsSet: boolean
-  serverSideUnlockCodeIsSet: boolean
   serverSidePluginKeysSet: boolean
   defaultModelId: OpenAIModelID
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, defaultModelId}: Props) => {
+const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
   const {t} = useTranslation("chat")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
   const router = useRouter()
+  const {unlocked} = useUnlock()
 
   const {
-    state: {
-      apiKey,
-      unlockCode,
-      theme,
-      folders,
-      conversations,
-      selectedConversation,
-      prompts,
-      triggerFactoryPrompts
-    },
+    state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
-  const {
-    data: modelData,
-    error
-  } = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet, unlockCode, !serverSideUnlockCodeIsSet],
+  const {data: modelData, error} = useQuery(
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
     ({signal}) => {
-      if (!unlockCode && serverSideUnlockCodeIsSet) {
+      if (!unlocked) {
         return null
       } else if (!apiKey && !serverSideApiKeyIsSet) {
         return null
       } else {
-        return getModels({key: apiKey}, unlockCode, signal)
+        return getModels({key: apiKey}, signal)
       }
     },
-    {enabled: true, refetchOnMount: false}
+    {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
 
   const stopConversationRef = useRef<boolean>(false)
@@ -207,13 +187,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
     }
   }, [triggerFactoryPrompts])
 
-  // Theme switch.
-  useEffect(() => {
-    console.debug("useEffect: theme")
-    const settings = {...getSettings(), theme: theme}
-    saveSettings(settings)
-  }, [theme, homeDispatch])
-
   // Retrieved models from API.
   useEffect(() => {
     console.debug("useEffect: modelData")
@@ -241,26 +214,12 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
-    serverSideUnlockCodeIsSet &&
-      homeDispatch({
-        field: "serverSideUnlockCodeIsSet",
-        value: serverSideUnlockCodeIsSet
-      })
-  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockCodeIsSet, homeDispatch])
+  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
     console.debug("useEffect: server-side props changed")
-    const settings = getSettings()
-    if (settings.theme) {
-      homeDispatch({
-        field: "theme",
-        value: settings.theme
-      })
-    }
-
     const apiKey = getApiKey()
-    const unlockCode = getUnlockCode()
 
     serverSideApiKeyIsSet &&
       homeDispatch({
@@ -271,11 +230,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       homeDispatch({
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
-      })
-    serverSideUnlockCodeIsSet &&
-      homeDispatch({
-        field: "serverSideUnlockCodeIsSet",
-        value: serverSideUnlockCodeIsSet
       })
 
     defaultModelId &&
@@ -289,13 +243,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
       removeApiKey()
     } else if (apiKey) {
       homeDispatch({field: "apiKey", value: apiKey})
-    }
-
-    if (!serverSideUnlockCodeIsSet) {
-      homeDispatch({field: "unlockCode", value: ""})
-      removeUnlockCode()
-    } else if (unlockCode) {
-      homeDispatch({field: "unlockCode", value: unlockCode})
     }
 
     const pluginKeys = getPluginKeys()
@@ -350,7 +297,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         )
       })
     }
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSideUnlockCodeIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // LAYOUT --------------------------------------------
 
@@ -374,7 +321,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
         <link rel="icon" href={`${router.basePath}/favicon.ico`} />
       </Head>
       {selectedConversation && (
-        <main className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${theme}`}>
+        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
           <div className="fixed top-0 w-full sm:hidden">
             <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
           </div>
@@ -382,7 +329,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, serverSideUnlockC
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} theme={theme}/>
+              <Chat stopConversationRef={stopConversationRef} />
             </div>
             <PromptBar />
           </div>
@@ -408,16 +355,9 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      serverSideUnlockCodeIsSet: !!process.env.OPENAI_UNLOCK_CODE,
       defaultModelId,
       serverSidePluginKeysSet,
-      ...(await serverSideTranslations(locale ?? "en", [
-        "common",
-        "chat",
-        "sidebar",
-        "markdown",
-        "promptbar"
-      ]))
+      ...(await serverSideTranslations(locale ?? "en", ["common", "chat", "sidebar", "markdown", "promptbar"]))
     }
   }
 }
