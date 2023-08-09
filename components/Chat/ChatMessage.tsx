@@ -55,14 +55,13 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
   const handleDeleteMessage = () => {
     if (!selectedConversation) {
-      console.info("handleDeleteMessage: No conversation selected")
       return
     }
 
     const {messages} = selectedConversation
     const findIndex = messages.findIndex((elm) => equals(elm, message))
     if (findIndex < 0) {
-      console.info(`handleDeleteMessage: Message not found for: "${trimForPrivacy(message.content)}"`)
+      console.warn(`Message not found for: "${trimForPrivacy(message.content)}"`)
       return
     }
 

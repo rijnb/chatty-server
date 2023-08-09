@@ -12,7 +12,7 @@ export const getFolders = (): FolderInterface[] => {
   try {
     return foldersAsString ? (JSON.parse(foldersAsString) as FolderInterface[]) : []
   } catch (error) {
-    console.error(`Local storage error: ${error}`)
+    console.error(`Local storage error:${error}`)
     return []
   }
 }

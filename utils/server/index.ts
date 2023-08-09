@@ -42,9 +42,9 @@ export const OpenAIStream = async (
   }
   const lastMessage = messages[messages.length - 1]
   console.info(`Input '${trimForPrivacy(lastMessage.content)}'`)
-  console.info(`  HTTP POST ${url}`)
+  console.info(`HTTP POST url:${url}`)
   console.info(
-    `  {model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${messages.length}, ${lastMessage.role}, ${lastMessage.content.length} chars (limit is ${model.tokenLimit} tokens)]}`
+    `HTTP POST body:{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${messages.length}, role:${lastMessage.role}, length:${lastMessage.content.length} chars, limit:${model.tokenLimit} tokens)]}`
   )
 
   // HTTP POST full context to OpenAI.

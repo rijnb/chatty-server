@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
       })
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
-    console.error(`Error: ${error}`)
+    console.error(`Error:${error}`)
     return new Response("Error", {status: 500, statusText: error ? error.toString() : ""})
   }
 }

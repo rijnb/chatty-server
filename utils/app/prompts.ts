@@ -26,7 +26,7 @@ export const getPrompts = (): Prompt[] => {
   try {
     return promptsAsString ? (JSON.parse(promptsAsString) as Prompt[]) : []
   } catch (error) {
-    console.error(`Local storage error: ${error}`)
+    console.error(`Local storage error:${error}`)
     return []
   }
 }

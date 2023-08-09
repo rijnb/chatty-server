@@ -25,7 +25,7 @@ export const getSelectedConversation = (): Conversation | null => {
   try {
     return conversation ? JSON.parse(conversation) : undefined
   } catch (error) {
-    console.error(`Local storage error: ${error}`)
+    console.error(`Local storage error:${error}`)
     return null
   }
 }
@@ -40,7 +40,7 @@ export const getConversationsHistory = (): Conversation[] => {
   try {
     return conversationsAsString ? JSON.parse(conversationsAsString) : []
   } catch (error) {
-    console.error(`Local storage error: ${error}`)
+    console.error(`Local storage error:${error}`)
     return []
   }
 }

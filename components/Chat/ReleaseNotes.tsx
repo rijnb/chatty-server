@@ -19,7 +19,7 @@ const useMarkdownFile = (filename: string) => {
     fetch(filename)
       .then((response) => response.text())
       .then((text) => setFileContent(text))
-      .catch((error) => console.error(`Error fetching markdown file: ${error}`))
+      .catch((error) => console.error(`Error fetching markdown file, error:${error}`))
   }, [filename])
   return fileContent
 }

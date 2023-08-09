@@ -7,7 +7,7 @@ export const getPluginKeys = (): PluginKey[] => {
   try {
     return PluginKeyAsString ? (JSON.parse(PluginKeyAsString) as PluginKey[]) : []
   } catch (error) {
-    console.error(`Local storage error: ${error}`)
+    console.error(`Local storage error:${error}`)
     return []
   }
 }
