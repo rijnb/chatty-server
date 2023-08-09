@@ -40,7 +40,7 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
 
 export const cleanConversationHistory = (history: any[]): Conversation[] => {
   if (!Array.isArray(history)) {
-    console.warn("history is not an array. Returning an empty array.")
+    console.warn("History is not an array. Returning an empty array.")
     return []
   }
 
@@ -69,7 +69,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       acc.push(conversation)
       return acc
     } catch (error) {
-      console.warn(`error while cleaning conversations' history. Removing culprit`, error)
+      console.warn(`Error while cleaning conversations history. Removing culprit`, error)
     }
     return acc
   }, [])

@@ -24,11 +24,11 @@ export const useFetch = () => {
         ? {}
         : {"Content-type": "application/json"})
     }
-    console.info(`useFetch: url:${requestUrl}`)
+    console.info(`useFetch, url:${requestUrl}`)
     return fetch(requestUrl, {...requestBody, headers})
       .then((response) => {
         if (!response.ok) {
-          console.info(`useFetch: HTTP error, ${response.status}, statusText:${response.statusText}`)
+          console.info(`useFetch not OK, HTTP status:${response.status}, statusText:${response.statusText}`)
           throw response
         }
 
@@ -51,7 +51,7 @@ export const useFetch = () => {
           contentType && contentType === ("application/problem+json" || "application/json")
             ? await error.json()
             : await error.text()
-        console.info(`useFetch: HTTP exception error, ${error.status}, statusText:${error.statusText}`)
+        console.info(`useFetch exception, HTTP status:${error.status}, statusText:${error.statusText}`)
         throw {status: error.status, statusText: error.statusText, content: errContent}
       })
   }

@@ -117,7 +117,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
           const controller = new AbortController()
 
-          console.log(`==== fetch: ${endpoint}`) //!!
+          console.info(`HTTP fetch:${endpoint}`)
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json"
@@ -126,12 +126,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             rawResponse: true,
             signal: controller.signal
           })
-          console.log(`==== response: ${response}`) //!!
+          console.info(`HTTP response:${response}`)
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
             let errorText = await response.text()
-            console.log(`==== errorText: ${errorText}`) //!!
+            console.log(`HTTP error, text:${errorText}`)
             console.log(
               `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, headers:${response.headers}`
             )
@@ -149,7 +149,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
 
           // Get response data (as JSON for plugin, as reader for OpenAI).
-          console.log(`==== get data`) //!!
+          console.info(`HTTP get data`)
           const data = plugin ? await response.json() : response.body?.getReader()
           if (!data) {
             homeDispatch({field: "loading", value: false})
@@ -262,6 +262,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         }
       } catch (error) {
         const {status, statusText, content, message} = error as any
+        console.warn(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
         if (status === 401) {
           // Not authorized.
           toast.error(`${content}`, {duration: TOAST_DURATION_MS})

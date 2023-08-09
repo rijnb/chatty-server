@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userMessage = messages[messages.length - 1].content.trim()
     const query = encodeURIComponent(userMessage)
 
-    console.info(`[Google search] ${trimForPrivacy(userMessage)}`)
+    console.info(`Google search, query:${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const sourcesWithText: any = await Promise.all(
       sources.map(async (source) => {
         try {
-          console.info(`[Google search] get URL '${trimForPrivacy(source.link, 8)}'`)
+          console.info(`Google search, get:${trimForPrivacy(source.link, 8)}`)
           const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Google search request timed out")), 5000)
           )
@@ -51,7 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const virtualConsole = new jsdom.VirtualConsole()
           virtualConsole.on("error", (error) => {
             if (!error.message.includes("Could not parse CSS stylesheet")) {
-              console.error(`[Google search] ${error}`)
+              console.error(`Google search, error:${error}`)
             }
           })
           const dom = new JSDOM(html, {virtualConsole})
@@ -66,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
           return null
         } catch (error) {
-          console.error(`[Google search] ${error}`)
+          console.error(`Google search, error:${error}`)
           return null
         }
       })
@@ -107,7 +107,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (OPENAI_API_TYPE === "azure") {
       url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
     }
-    console.info(`[Google search] POST result to ${OPENAI_API_TYPE}`)
+    console.info(`Google search, POST:${OPENAI_API_TYPE}`)
     const answerRes = await fetch(`${url}`, {
       headers: {
         "Content-Type": "application/json",
@@ -133,10 +133,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
     const {choices} = await answerRes.json()
     const answer = choices[0].message.content
-    console.info(`[Google search] Got result: ${trimForPrivacy(answer)}`)
+    console.info(`Google search, result:${trimForPrivacy(answer)}`)
     res.status(200).json({answer})
   } catch (error) {
-    console.error(`[Google search] Error: ${error}`)
+    console.error(`Google search, error:${error}`)
     res.status(500).json({error: "Google search error"})
   }
 }
