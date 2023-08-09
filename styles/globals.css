@@ -50,3 +50,13 @@ pre:has(div.codeblock) {
   color: grey;
   font-size: 0.9em;
 }
+
+.codeblock-bar-dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.codeblock-bar-light {
+  background-color: #f0f0f0;
+  color: #333;
+}

@@ -22,15 +22,14 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
     if (!navigator.clipboard || !navigator.clipboard.writeText) {
       return
     }
-
     navigator.clipboard.writeText(value).then(() => {
       setIsCopied(true)
-
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
     })
   }
+
   const downloadAsFile = () => {
     const fileExtension = programmingLanguages[language] || ".txt"
     const fileName = `${generateFilename("code", fileExtension)}`
@@ -45,26 +44,29 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
+
   return (
     <div className="codeblock relative font-sans text-[16px]">
-      <div className="flex items-center justify-between px-4 py-1.5">
-        <span className="text-xs lowercase text-white">{language}</span>
+      <div
+        className={`flex items-center justify-between px-4 py-1.5 ${
+          theme === "dark" ? "codeblock-bar-dark" : "codeblock-bar-light"
+        }`}
+      >
+        <span className="text-xs lowercase">{language}</span>
 
         <div className="flex items-center">
-          <button
-            className="flex items-center gap-1.5 rounded bg-none p-1 text-xs text-white"
-            onClick={copyToClipboard}
-          >
+          <button className="flex items-center gap-1.5 rounded bg-none p-1 text-xs" onClick={copyToClipboard}>
             {isCopied ? <IconCheck size={18} /> : <IconClipboard size={18} />}
             {isCopied ? t("Copied!") : t("Copy code")}
           </button>
-          <button className="flex items-center rounded bg-none p-1 text-xs text-white" onClick={downloadAsFile}>
+          <button className="flex items-center rounded bg-none p-1 text-xs" onClick={downloadAsFile}>
             <IconDownload size={18} />
           </button>
         </div>
       </div>
 
-      <SyntaxHighlighter language={language} style={theme === "dark" ? oneDark : oneLight} customStyle={{margin: 0}}>
+      <SyntaxHighlighter language={language} style={theme === "dark" ? oneDark : oneLight}
+                         customStyle={{margin: 0, paddingLeft: "1em", fontSize: "small"}}>
         {value}
       </SyntaxHighlighter>
     </div>
