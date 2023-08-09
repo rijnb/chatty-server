@@ -67,7 +67,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSend = useCallback(
+  const handleSendMessage = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
       try {
         if (selectedConversation) {
@@ -299,7 +299,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     ]
   )
 
-  const handleScroll = () => {
+  const handleChatScroll = () => {
     if (chatContainerRef.current) {
       const {scrollTop, scrollHeight, clientHeight} = chatContainerRef.current
       const bottomTolerance = 30
@@ -314,33 +314,33 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     }
   }
 
-  const handleScrollUp = () => {
+  const handleScrollToTop = () => {
     chatContainerRef.current?.scrollTo({
       top: 0,
       behavior: "smooth"
     })
   }
 
-  const handleScrollDown = () => {
+  const handleScrollToBottom = () => {
     chatContainerRef.current?.scrollTo({
       top: chatContainerRef.current.scrollHeight,
       behavior: "smooth"
     })
   }
 
-  const onSettings = () => {
+  const handleToggleSettings = () => {
     setIsReleaseNotesDialogOpen(false)
     if (!showSettings) {
       setAutoScrollEnabled(false)
-      handleScrollUp()
+      handleScrollToTop()
     } else {
       setAutoScrollEnabled(true)
-      handleScrollDown()
+      handleScrollToBottom()
     }
     setShowSettings(!showSettings)
   }
 
-  const onClearMessagesInConversation = () => {
+  const onClearConversationMessages = () => {
     setIsReleaseNotesDialogOpen(false)
     if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, {
@@ -357,7 +357,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   }
   const throttledScrollDown = throttle(scrollDown, 250)
 
-  const onSaveAsScreenshot = () => {
+  const onSaveScreenshot = () => {
     setIsReleaseNotesDialogOpen(false)
     if (chatContainerRef.current === null) {
       return
@@ -379,7 +379,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       })
   }
 
-  const onSaveAsMarkdown = () => {
+  const onSaveMarkdown = () => {
     setIsReleaseNotesDialogOpen(false)
     if (!selectedConversation) {
       return
@@ -403,7 +403,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     URL.revokeObjectURL(url)
   }
 
-  const onReleaseNotes = () => {
+  const handleToggleReleaseNotes = () => {
     setIsReleaseNotesDialogOpen(!isReleaseNotesDialogOpen)
   }
 
@@ -442,11 +442,11 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         <ErrorMessageDiv error={modelError} />
       ) : (
         <>
-          <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
+          <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleChatScroll}>
             <div className="sticky top-0 z-10 flex justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
               {t("Model")}: {selectedConversation?.model.name}
               &nbsp;&nbsp;&nbsp;|&nbsp;
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onReleaseNotes}>
+              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleReleaseNotes}>
                 <IconHelp size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
@@ -456,20 +456,20 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               >
                 {theme === "dark" ? <IconBulbFilled size={18} /> : <IconBulbOff size={18} />}
               </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSettings}>
+              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleSettings}>
                 <IconRobot size={18} />
               </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearMessagesInConversation}>
+              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearConversationMessages}>
                 <IconEraser size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
               {selectedConversation ? (
-                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveAsScreenshot}>
+                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveScreenshot}>
                   <IconScreenshot size={18} />
                 </button>
               ) : null}
               {selectedConversation ? (
-                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveAsMarkdown}>
+                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveMarkdown}>
                   <IconMarkdown size={18} />
                 </button>
               ) : null}
@@ -507,7 +507,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                     setCurrentMessage(editedMessage)
 
                     // Discard edited message and the ones that come after then resend.
-                    handleSend(editedMessage, selectedConversation?.messages.length - index)
+                    handleSendMessage(editedMessage, selectedConversation?.messages.length - index)
                   }}
                 />
               ))}
@@ -524,12 +524,12 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               model={selectedConversation ? selectedConversation.model : fallbackOpenAIModel}
               onSend={(message, plugin) => {
                 setCurrentMessage(message)
-                handleSend(message, 0, plugin)
+                handleSendMessage(message, 0, plugin)
               }}
-              onScrollDownClick={handleScrollDown}
+              onScrollDownClick={handleScrollToBottom}
               onRegenerate={() => {
                 if (currentMessage) {
-                  handleSend(currentMessage, 2, null)
+                  handleSendMessage(currentMessage, 2, null)
                 }
               }}
               showScrollDownButton={showScrollDownButton}

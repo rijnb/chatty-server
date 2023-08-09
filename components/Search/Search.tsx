@@ -12,11 +12,11 @@ interface Props {
 const Search: FC<Props> = ({placeholder, searchTerm, onSearch}) => {
   const {t} = useTranslation("sidebar")
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value)
   }
 
-  const clearSearch = () => {
+  const handleClear = () => {
     onSearch("")
   }
 
@@ -27,14 +27,14 @@ const Search: FC<Props> = ({placeholder, searchTerm, onSearch}) => {
         type="text"
         placeholder={t(placeholder)}
         value={searchTerm}
-        onChange={handleSearchChange}
+        onChange={handleChange}
       />
 
       {searchTerm && (
         <IconX
           className="absolute right-4 cursor-pointer text-neutral-400 hover:text-neutral-600 dark:text-neutral-300 dark:hover:text-neutral-400"
           size={18}
-          onClick={clearSearch}
+          onClick={handleClear}
         />
       )}
     </div>

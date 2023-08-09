@@ -20,7 +20,7 @@ export const PluginKeyList = () => {
 
   const modalRef = useRef<HTMLDivElement>(null)
 
-  const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e) && !e.shiftKey) {
       e.preventDefault()
       setIsChanging(false)
@@ -50,7 +50,7 @@ export const PluginKeyList = () => {
       {isChanging && (
         <div
           className="z-100 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          onKeyDown={handleEnter}
+          onKeyDown={handleKeyDown}
         >
           <div className="fixed inset-0 z-10 overflow-hidden">
             <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
