@@ -261,7 +261,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
         }
       } catch (error) {
-        const {status, statustext, content, message} = error as any
+        const {status, statusText, content, message} = error as any
         if (status === 401) {
           // Not authorized.
           toast.error(`${content}`, {duration: TOAST_DURATION_MS})
@@ -274,9 +274,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
-          if (statustext) {
-            toast.error(`The server returned an error...\n${statustext}`, {duration: TOAST_DURATION_MS})
-          } else if (message) {
+          if (statusText && statusText !== "") {
+            toast.error(`The server returned an error...\n${statusText}`, {duration: TOAST_DURATION_MS})
+          } else if (message && message !== "") {
             toast.error(`The server returned an error...\n${message}`, {duration: TOAST_DURATION_MS})
           } else {
             toast.error(`The server returned an error... Try again later.`, {duration: TOAST_DURATION_MS})
