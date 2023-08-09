@@ -24,7 +24,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
   const [isRenaming, setIsRenaming] = useState(false)
   const [renameValue, setRenameValue] = useState("")
 
-  const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
       isSelected && handleRename(conversation)
@@ -93,7 +93,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
             type="text"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
-            onKeyDown={handleEnterDown}
+            onKeyDown={handleKeyDown}
             autoFocus
           />
         </div>

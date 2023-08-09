@@ -37,15 +37,15 @@ const Sidebar = <T,>({
 }: Props<T>) => {
   const {t} = useTranslation("promptbar")
 
-  const allowDrop = (e: any) => {
+  const handleDragOver = (e: any) => {
     e.preventDefault()
   }
 
-  const highlightDrop = (e: any) => {
+  const handleDragEnter = (e: any) => {
     e.target.style.background = "#343541"
   }
 
-  const removeHighlight = (e: any) => {
+  const handleDragLeave = (e: any) => {
     e.target.style.background = "none"
   }
 
@@ -84,9 +84,9 @@ const Sidebar = <T,>({
             <div
               className="pt-2"
               onDrop={handleDrop}
-              onDragOver={allowDrop}
-              onDragEnter={highlightDrop}
-              onDragLeave={removeHighlight}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
             >
               {listItem}
             </div>

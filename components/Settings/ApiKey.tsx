@@ -15,14 +15,14 @@ export const ApiKey: FC<Props> = ({apiKey, onApiKeyChange}) => {
   const [newKey, setNewKey] = useState(apiKey)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
-      handleUpdateKey(newKey)
+      handleApiKeyUpdate(newKey)
     }
   }
 
-  const handleUpdateKey = (newKey: string) => {
+  const handleApiKeyUpdate = (newKey: string) => {
     onApiKeyChange(newKey.trim())
     setIsChanging(false)
   }
@@ -43,7 +43,7 @@ export const ApiKey: FC<Props> = ({apiKey, onApiKeyChange}) => {
         type="password"
         value={newKey}
         onChange={(e) => setNewKey(e.target.value)}
-        onKeyDown={handleEnterDown}
+        onKeyDown={handleKeyDown}
         placeholder={t("API key")}
       />
 
@@ -53,7 +53,7 @@ export const ApiKey: FC<Props> = ({apiKey, onApiKeyChange}) => {
           size={18}
           onClick={(e) => {
             e.stopPropagation()
-            handleUpdateKey(newKey)
+            handleApiKeyUpdate(newKey)
           }}
         />
 

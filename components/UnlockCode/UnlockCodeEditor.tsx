@@ -19,7 +19,7 @@ export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
     setNewUnlockCode(unlockCode)
   }, [unlockCode])
 
-  const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
       handleUpdateKey(newUnlockCode)
@@ -47,7 +47,7 @@ export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
         type="password"
         value={newUnlockCode}
         onChange={(e) => setNewUnlockCode(e.target.value)}
-        onKeyDown={handleEnterDown}
+        onKeyDown={handleKeyDown}
         placeholder={t("Enter unlock code")}
       />
 

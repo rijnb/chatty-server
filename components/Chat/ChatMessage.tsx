@@ -34,11 +34,11 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const toggleEditing = () => {
+  const handleToggleEditing = () => {
     setIsEditing(!isEditing)
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessageContent(event.target.value)
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit"
@@ -46,7 +46,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
     }
   }
 
-  const handleEditMessage = () => {
+  const handleSaveMessage = () => {
     if (selectedConversation && onEdit) {
       onEdit({...message, content: messageContent})
     }
@@ -86,14 +86,14 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
     homeDispatch({field: "conversations", value: conversationHistory})
   }
 
-  const handlePressEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
       e.preventDefault()
-      handleEditMessage()
+      handleSaveMessage()
     }
   }
 
-  const copyOnClick = () => {
+  const handleCopyOnClick = () => {
     if (!navigator.clipboard) {
       return
     }
@@ -141,8 +141,8 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                     ref={textareaRef}
                     className="w-full resize-none whitespace-pre-line border-none dark:bg-[#343541]"
                     value={messageContent}
-                    onChange={handleInputChange}
-                    onKeyDown={handlePressEnter}
+                    onChange={handleContentChange}
+                    onKeyDown={handleKeyDown}
                     onCompositionStart={() => setIsTyping(true)}
                     onCompositionEnd={() => setIsTyping(false)}
                     style={{
@@ -157,7 +157,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                   <div className="mt-10 flex justify-center space-x-4">
                     <button
                       className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
-                      onClick={handleEditMessage}
+                      onClick={handleSaveMessage}
                       disabled={messageContent.trim().length <= 0}
                     >
                       {t("Save & submit")}
@@ -229,7 +229,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                 <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-8 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
                   <button
                     className="invisible text-gray-500 hover:text-gray-700 focus:visible group-hover:visible dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={toggleEditing}
+                    onClick={handleToggleEditing}
                   >
                     <IconEdit size={20} />
                   </button>
@@ -306,7 +306,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                   ) : (
                     <button
                       className="invisible text-gray-500 hover:text-gray-700 focus:visible group-hover:visible dark:text-gray-400 dark:hover:text-gray-300"
-                      onClick={copyOnClick}
+                      onClick={handleCopyOnClick}
                     >
                       <IconCopy size={20} />
                     </button>

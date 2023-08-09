@@ -18,7 +18,7 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
   const {theme, setTheme} = useTheme()
   const [isCopied, setIsCopied] = useState<Boolean>(false)
 
-  const copyToClipboard = () => {
+  const handleCopyToClipboard = () => {
     if (!navigator.clipboard || !navigator.clipboard.writeText) {
       return
     }
@@ -30,7 +30,7 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
     })
   }
 
-  const downloadAsFile = () => {
+  const handleDownloadAsFile = () => {
     const fileExtension = programmingLanguages[language] || ".txt"
     const fileName = `${generateFilename("code", fileExtension)}`
     const blob = new Blob([value], {type: "text/plain"})
@@ -55,11 +55,11 @@ export const CodeBlock: FC<Props> = memo(({language, value}) => {
         <span className="text-xs lowercase">{language}</span>
 
         <div className="flex items-center">
-          <button className="flex items-center gap-1.5 rounded bg-none p-1 text-xs" onClick={copyToClipboard}>
+          <button className="flex items-center gap-1.5 rounded bg-none p-1 text-xs" onClick={handleCopyToClipboard}>
             {isCopied ? <IconCheck size={18} /> : <IconClipboard size={18} />}
             {isCopied ? t("Copied!") : t("Copy code")}
           </button>
-          <button className="flex items-center rounded bg-none p-1 text-xs" onClick={downloadAsFile}>
+          <button className="flex items-center rounded bg-none p-1 text-xs" onClick={handleDownloadAsFile}>
             <IconDownload size={18} />
           </button>
         </div>

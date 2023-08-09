@@ -30,7 +30,7 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
   const [renameValue, setRenameValue] = useState("")
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isKeyboardEnter(e)) {
       e.preventDefault()
       handleRename()
@@ -58,14 +58,14 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
     e.preventDefault()
   }
 
-  const highlightDrop = (e: any) => {
+  const handleDragEnter = (e: any) => {
     if (!allowDrop) {
       return
     }
     e.target.style.background = "#343541"
   }
 
-  const removeHighlight = (e: any) => {
+  const handleDragLeave = (e: any) => {
     if (!allowDrop) {
       return
     }
@@ -109,7 +109,7 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
               type="text"
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}
-              onKeyDown={handleEnterDown}
+              onKeyDown={handleKeyDown}
               autoFocus
             />
           </div>
@@ -121,8 +121,8 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
             onClick={() => setIsOpen(!isOpen)}
             onDrop={(e) => dropHandler(e)}
             onDragOver={handleDragOver}
-            onDragEnter={highlightDrop}
-            onDragLeave={removeHighlight}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
           >
             {isOpen ? (
               folder.factory ? (
