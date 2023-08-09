@@ -52,6 +52,8 @@ const handler = async (req: Request): Promise<Response> => {
     const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend)
     return new Response(stream, {headers: {"Content-Type": "text/plain; charset=utf-8"}})
   } catch (error) {
+    const {status, statusText, content, message} = error as any
+    console.warn(`HTTP stream error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
     if (error instanceof OpenAIError) {
       console.error(`Error in OpenAI stream, message:${error.message}`)
       if (error.message.includes("content management policy")) {
@@ -73,6 +75,12 @@ const handler = async (req: Request): Promise<Response> => {
           statusText: error.message
         })
       }
+    } else if (error instanceof TypeError) {
+      console.error(`Type error, message:${error.message}, error.stack:${error.stack}`)
+      return new Response(`Error: Server responded with ${error.message}`, {
+        status: 500,
+        statusText: `Server responded with: ${error.message}`
+      })
     } else {
       console.error(`Other stream error, error:${error}`)
       return new Response("Error: Server responded with an error", {
