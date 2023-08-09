@@ -11,7 +11,6 @@ import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRe
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
-import {useFetch} from "@/hooks/useFetch"
 import useApiService from "@/services/useApiService"
 import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -23,15 +22,14 @@ import {Plugin} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
-import {useUnlock} from "@/components/UnlockCode"
+import {useFetchWithUnlockCode, useUnlock} from "@/components/UnlockCode"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-import { toPng } from "html-to-image";
-
+import {toPng} from "html-to-image"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -40,7 +38,7 @@ interface Props {
 export const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("chat")
   const {theme, setTheme} = useTheme()
-  const {code, unlocked} = useUnlock()
+  const {unlocked} = useUnlock()
 
   const {
     state: {
@@ -63,7 +61,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
-  const fetchService = useFetch()
+  const fetchService = useFetchWithUnlockCode()
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -122,8 +120,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           console.log(`==== fetch: ${endpoint}`) //!!
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
-              "Content-Type": "application/json",
-              ...(code && {Authorization: `Bearer ${code}`})
+              "Content-Type": "application/json"
             },
             body,
             rawResponse: true,
@@ -266,11 +263,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       } catch (error) {
         const {status, statustext, content, message} = error as any
         if (status === 401) {
-
           // Not authorized.
           toast.error(`${content}`, {duration: TOAST_DURATION_MS})
         } else if (error instanceof Error) {
-
           // Some other error, try to figure out what it is.
           if (error.message.includes("timeout")) {
             toast.error(`${error.message}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
@@ -278,7 +273,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             toast.error(`${error.message}`, {duration: TOAST_DURATION_MS})
           }
         } else {
-
           // No clue. Try some properties and hope for the best.
           if (statustext) {
             toast.error(`The server returned an error...\n${statustext}`, {duration: TOAST_DURATION_MS})
