@@ -1,5 +1,19 @@
 ## Release notes
 
+### 2023-08-10
+
+#### Features
+
+* Improved handling of window resizes and width of conversation column.
+
+#### Bug fixes
+
+* Fixed incorrect visual artifacts for code blocks.
+* Release notes readable in dark theme.
+* Improved log messages.
+* Fixed unlock code handling.
+* Fixed startup issue and r
+
 ### 2023-08-06
 
 #### Features
