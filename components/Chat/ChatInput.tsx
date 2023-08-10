@@ -350,7 +350,7 @@ export const ChatInput = ({
         <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
           Chatty
         </a>
-        &nbsp;was developed by Rijn Buve, based on{" "}
+        &nbsp;was developed by Rijn Buve and Oleksii Kulyk, based on{" "}
         <a href="https://github.com/mckaywrigley/chatbot-ui" target="_blank" className="underline">
           chatbot-ui
         </a>
