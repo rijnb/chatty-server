@@ -2,9 +2,6 @@ import React, {useEffect, useState} from "react"
 import Modal from "react-modal"
 import {useRouter} from "next/router"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import rehypeMathjax from "rehype-mathjax"
-import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
 
 
 export interface Props {
@@ -57,33 +54,7 @@ export default function ReleaseNotes({isOpen, close}: Props) {
       contentLabel="Release Notes"
       ariaHideApp={false}
     >
-      <MemoizedReactMarkdown
-        className="prose dark:prose-invert flex-1"
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeMathjax]}
-        components={{
-          code({node, inline, className, children, ...props}) {
-            return (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            )
-          },
-          table({children}) {
-            return <table className="border-collapse border border-black px-3 py-1 dark:border-white">{children}</table>
-          },
-          th({children}) {
-            return (
-              <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
-                {children}
-              </th>
-            )
-          },
-          td({children}) {
-            return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
-          }
-        }}
-      >
+      <MemoizedReactMarkdown className="prose flex-1 dark:prose-invert text-black">
         {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
       </MemoizedReactMarkdown>
       <button
