@@ -50,9 +50,9 @@ const Sidebar = <T,>({
   }
 
   return isOpen ? (
-    <div>
+    <div className="relative">
       <div
-        className={`fixed top-0 ${side}-0 z-40 flex h-full w-[260px] flex-none flex-col space-y-2 bg-gray-100 p-2 text-[14px] transition-all dark:bg-[#202123] sm:relative sm:top-0`}
+        className={`${side}-0 relative top-0 z-40 flex h-full w-[260px] flex-none flex-col space-y-2 bg-gray-100 p-2 text-[14px] transition-all dark:bg-[#202123]`}
       >
         <div className="flex items-center">
           <button
