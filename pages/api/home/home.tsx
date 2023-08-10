@@ -322,11 +322,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       </Head>
       {selectedConversation && (
         <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
-          <div className="fixed top-0 w-full sm:hidden">
-            <Navbar selectedConversation={selectedConversation} onNewConversation={handleNewConversation} />
-          </div>
-
-          <div className="flex h-full w-full pt-[48px] sm:pt-0">
+          <div className="flex h-full w-full overflow-y-hidden pt-0">
             <ChatBar />
             <div className="flex flex-1">
               <Chat stopConversationRef={stopConversationRef} />

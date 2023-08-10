@@ -12,7 +12,6 @@ import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
-
 export interface Props {
   message: Message
   messageIndex: number
@@ -125,7 +124,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
       }`}
       style={{overflowWrap: "anywhere"}}
     >
-      <div className="relative m-auto flex p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
+      <div className="relative m-auto flex gap-2 p-4 px-0 py-4 text-base">
         <div className="min-w-[40px] text-right font-bold">
           {message.role === "assistant" ? <IconRobot size={30} /> : <IconUser size={30} />}
         </div>
@@ -185,16 +184,16 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                       code({node, inline, className, children, ...props}) {
                         const match = /language-(\w+)/.exec(className || "")
                         return !inline ? (
-                            <CodeBlock
-                                key={Math.random()}
-                                language={(match && match[1]) || ""}
-                                value={String(children).replace(/\n\n$/, "\n")}
-                                {...props}
-                            />
+                          <CodeBlock
+                            key={Math.random()}
+                            language={(match && match[1]) || ""}
+                            value={String(children).replace(/\n\n$/, "\n")}
+                            {...props}
+                          />
                         ) : (
-                            <code className={className} {...props}>
-                              {children}
-                            </code>
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
                         )
                       },
                       table({children}) {
@@ -225,7 +224,7 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
                 {
                   // User message buttons to edit/delete.
                 }
-                <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-8 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
+                <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-1 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
                   <button
                     className="invisible text-gray-500 hover:text-gray-700 focus:visible group-hover:visible dark:text-gray-400 dark:hover:text-gray-300"
                     onClick={handleToggleEditing}
@@ -298,8 +297,8 @@ export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => 
               {
                 // Robot message buttons to edit/delete.
               }
-              <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-8 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
-                <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-8 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
+              <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-1 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
+                <div className="ml-1 flex flex-col items-center justify-end gap-4 md:-mr-1 md:ml-0 md:flex-row md:items-start md:justify-start md:gap-1">
                   {messagedCopied ? (
                     <IconCheck size={20} className="text-green-500 dark:text-green-400" />
                   ) : (
