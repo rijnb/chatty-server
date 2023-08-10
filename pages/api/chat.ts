@@ -1,13 +1,11 @@
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {trimForPrivacy} from "@/utils/app/privacy"
-import {OpenAIError, OpenAIStream} from "@/utils/server"
+import {ChatCompletionStream, OpenAIError} from "@/utils/server"
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
 // @ts-expect-error
 import wasm from "../../node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module"
 import tiktokenModel from "@dqbd/tiktoken/encoders/cl100k_base.json"
 import {Tiktoken, init} from "@dqbd/tiktoken/lite/init"
-
 
 export const config = {
   runtime: "edge"
@@ -65,8 +63,7 @@ nrOfMessagesSkipped:${nrOfMessageSkipped}, \
 model:'${model.id}', \
 temperature:${temperature}}`)
 
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend)
-    return new Response(stream, {headers: {"Content-Type": "text/plain; charset=utf-8"}})
+    return ChatCompletionStream(model, promptToSend, temperatureToUse, key, messagesToSend)
   } catch (error) {
     const {status, statusText, content, message} = error as any
     console.warn(
