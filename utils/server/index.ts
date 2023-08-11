@@ -1,4 +1,5 @@
 import {trimForPrivacy} from "@/utils/app/privacy"
+import getNrOfTokens from "@/utils/app/tokens"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 import {
@@ -10,6 +11,7 @@ import {
   OPENAI_ORGANIZATION
 } from "../app/const"
 import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
+
 
 export class OpenAIError extends Error {
   type: string
@@ -40,12 +42,6 @@ export const OpenAIStream = async (
   if (messages.length === 0) {
     throw new Error("No messages in history")
   }
-  const lastMessage = messages[messages.length - 1]
-  console.info(`Input '${trimForPrivacy(lastMessage.content)}'`)
-  console.info(`HTTP POST url:${url}`)
-  console.info(
-    `HTTP POST body:{model:'${model.id}', max_tokens:${OPENAI_API_MAX_TOKENS}, temperature:${temperature}, messages:[#${messages.length}, role:${lastMessage.role}, length:${lastMessage.content.length} chars, limit:${model.tokenLimit} tokens)]}`
-  )
 
   // HTTP POST full context to OpenAI.
   const headers = {
@@ -72,6 +68,22 @@ export const OpenAIStream = async (
     temperature: temperature,
     stream: true
   })
+
+  // Log prompt for debugging.
+  const latestMessage = messages[messages.length - 1]
+  const nrOfTokens = 1//!! getNrOfTokens(latestMessage.content, messages, systemPrompt, model)
+  console.info(`sendRequest: {\
+lastMessage:'${trimForPrivacy(latestMessage.content)}', \
+lastMessageLengthInChars:${latestMessage.content.length}, \
+bodyLengthInChars:${body.length}, \
+nrOfMessages:${messages.length}, \
+nrOfTokens:${nrOfTokens}, \
+tokenLimit:${model.tokenLimit}, \
+role:'${latestMessage.role}', \
+model:'${model.id}', \
+temperature:${temperature}, \
+url:'${url}'`)
+
   const response = await fetch(url, {
     headers: headers,
     method: "POST",

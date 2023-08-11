@@ -1,8 +1,8 @@
-import {FC, useContext, useEffect, useState} from "react"
+import {FC, useContext} from "react"
 import {useTranslation} from "react-i18next"
+import getNrOfTokens from "@/utils/app/tokens"
 import HomeContext from "@/pages/api/home/home.context"
-import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json"
-import {Tiktoken} from "@dqbd/tiktoken/lite"
+import {get_encoding} from "@dqbd/tiktoken"
 
 
 interface Props {
@@ -10,61 +10,22 @@ interface Props {
   tokenLimit: number
 }
 
+const tokenizer = get_encoding("cl100k_base")
+
 export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
   const {t} = useTranslation("chat")
   const {
     state: {selectedConversation}
   } = useContext(HomeContext)
 
-  const [tokenizer, setTokenizer] = useState<Tiktoken | null>(null)
-
-  useEffect(() => {
-    let model: Tiktoken | null = new Tiktoken(
-      cl100k_base.bpe_ranks,
-      {
-        ...cl100k_base.special_tokens,
-        "<|im_start|>": 100264,
-        "<|im_end|>": 100265,
-        "<|im_sep|>": 100266
-      },
-      cl100k_base.pat_str
-    )
-
-    setTokenizer(model)
-    return () => model?.free()
-  }, [])
-
-  const messages: Array<{role: string; content: string}> = [
-    {role: "system", content: selectedConversation?.prompt ?? ""},
-    ...(selectedConversation?.messages ?? []),
-    {role: "user", content: content ?? ""}
-  ]
-
-  const isGpt3 = selectedConversation?.model.id.startsWith("gpt-3")
-  const msgSep = isGpt3 ? "\n" : ""
-  const roleSep = isGpt3 ? "\n" : "<|im_sep|>"
-
-  const serialized = [
-    messages
-      .map(({role, content}) => {
-        return `<|im_start|>${role}${roleSep}${content}<|im_end|>`
-      })
-      .join(msgSep),
-    `<|im_start|>assistant${roleSep}`
-  ].join(msgSep)
-
-  const count = tokenizer?.encode(serialized, "all").length
-
-  if (count == null) {
-    return null
-  }
-  return count > tokenLimit ? (
-    <div className="bg-opacity-40 bg-red-500 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
-      {count} / {tokenLimit} {t("tokens")}
+  const nrOfTokens = getNrOfTokens(content, selectedConversation?.messages, selectedConversation?.prompt, selectedConversation?.model)
+  return nrOfTokens > tokenLimit ? (
+    <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
+      {nrOfTokens} / {tokenLimit} {t("tokens")}
     </div>
   ) : (
-    <div className="bg-opacity-10 bg-neutral-300 rounded-full py-1 px-2 text-neutral-400 pointer-events-auto text-xs">
-      {count} / {tokenLimit} {t("tokens")}
+    <div className="pointer-events-auto rounded-full bg-neutral-300 bg-opacity-10 px-2 py-1 text-xs text-neutral-400">
+      {nrOfTokens} / {tokenLimit} {t("tokens")}
     </div>
   )
 }

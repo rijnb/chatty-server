@@ -110,7 +110,7 @@ export const ChatBar = () => {
         history.length > 0
           ? history[history.length - 1]
           : createNewConversation(
-              t("New conversationXXX"),
+              t("New conversation"),
               OpenAIModels[defaultModelId || fallbackOpenAIModelID],
               OPENAI_DEFAULT_TEMPERATURE
             )

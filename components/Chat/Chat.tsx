@@ -117,7 +117,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
           const controller = new AbortController()
 
-          console.info(`HTTP fetch:${endpoint}`)
+          console.debug(`HTTP fetch:${endpoint}`)
           const response = await fetchService.post<Response>(endpoint, {
             headers: {
               "Content-Type": "application/json"
@@ -126,13 +126,13 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             rawResponse: true,
             signal: controller.signal
           })
-          console.info(`HTTP response:${response}`)
+          console.debug(`HTTP response:${response}`)
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
             let errorText = await response.text()
-            console.log(`HTTP error, text:${errorText}`)
-            console.log(
+            console.debug(`HTTP error, text:${errorText}`)
+            console.debug(
               `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, headers:${response.headers}`
             )
             // Fall back to statusText if errorText is empty.
@@ -149,7 +149,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
 
           // Get response data (as JSON for plugin, as reader for OpenAI).
-          console.info(`HTTP get data`)
+          console.debug(`HTTP get data`)
           const data = plugin ? await response.json() : response.body?.getReader()
           if (!data) {
             homeDispatch({field: "loading", value: false})
@@ -173,7 +173,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             let text = ""
             while (!done) {
               if (stopConversationRef.current) {
-                console.info("Stopped conversation...")
+                console.debug("Stopped conversation...")
                 controller.abort()
                 done = true
                 break
@@ -375,8 +375,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           chatContainerRef.current.classList.add("max-h-full")
         }
       })
-      .catch((err) => {
-        console.log(err)
+      .catch((error) => {
+        console.warn(`Error saving images: ${error}`)
       })
   }
 

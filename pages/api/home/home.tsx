@@ -291,7 +291,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       homeDispatch({
         field: "selectedConversation",
         value: createNewConversation(
-          t("New conversationXXX"),
+          t("New conversation"),
           lastConversation?.model ?? OpenAIModels[defaultModelId],
           lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )

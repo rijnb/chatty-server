@@ -12,6 +12,7 @@ import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 
+
 interface Props {
   model: OpenAIModel
   onSend: (message: Message, plugin: Plugin | null) => void

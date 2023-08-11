@@ -14,7 +14,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (OPENAI_API_TYPE === "azure") {
       url = `${OPENAI_API_HOST}/openai/models?api-version=${OPENAI_API_VERSION}`
     }
-    console.info(`Get models (${OPENAI_API_TYPE}): ${url}`)
+    console.debug(`Get models (${OPENAI_API_TYPE}): ${url}`)
     const headers = {
       "Content-Type": "application/json",
       ...(OPENAI_API_TYPE === "openai" && {

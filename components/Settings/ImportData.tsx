@@ -23,7 +23,7 @@ export const ImportData: FC<Props> = ({id, text, onImport}) => {
         accept=".json"
         multiple
         onChange={(event) => {
-          console.info(`Importing file ${event.target.files?.length} files`)
+          console.debug(`Importing file ${event.target.files?.length} files`)
           if (!event.target.files?.length) {
             return
           }
