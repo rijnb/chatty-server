@@ -5,7 +5,7 @@ import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
-import {importJsonData} from "@/utils/app/import"
+import {importData} from "@/utils/app/import"
 import {createNewPrompt, removePrompts, savePrompts} from "@/utils/app/prompts"
 import {saveShowPromptBar} from "@/utils/app/settings"
 import {useContext, useEffect} from "react"
@@ -107,7 +107,7 @@ const PromptBar = () => {
   }
 
   const handleImportPrompts = (data: SupportedFileFormats) => {
-    const {folders, prompts}: LatestFileFormat = importJsonData(data)
+    const {folders, prompts}: LatestFileFormat = importData(data)
     homeDispatch({field: "folders", value: folders})
     homeDispatch({field: "prompts", value: prompts})
   }
