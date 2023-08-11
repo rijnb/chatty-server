@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react"
-import Modal from "react-modal"
 import {useRouter} from "next/router"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-
+import {ModalOverlay} from "@/components/ModalOverlay"
 
 export interface Props {
   isOpen: boolean
@@ -26,49 +25,21 @@ export default function ReleaseNotes({isOpen, close}: Props) {
 
   const releaseNotesMarkdown = useMarkdownFile(`${basePath}/RELEASE_NOTES.md`)
 
-  const customModalStyles = {
-    content: {
-      backgroundColor: "#e6e6e0",
-      color: "#000000",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      padding: "2rem",
-      maxWidth: "50%",
-      maxHeight: "80%",
-      overflow: "auto"
-    },
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.5)"
-    }
-  }
-
   return (
-    <Modal
+    <ModalOverlay
+      className="max-h-4/5 max-w-1/2 overflow-auto rounded-lg border bg-white p-8 dark:border-gray-700 dark:bg-[#202123]"
       isOpen={isOpen}
-      onRequestClose={close}
-      style={customModalStyles}
-      contentLabel="Release Notes"
-      ariaHideApp={false}
+      onClose={close}
     >
-      <button
-          className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
-          onClick={close}
-      >
-        Dismiss
-      </button>
-      <MemoizedReactMarkdown className="prose flex-1 dark:prose-invert text-black">
+      <MemoizedReactMarkdown className="prose flex-1 dark:prose-invert">
         {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
       </MemoizedReactMarkdown>
       <button
-        className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
+        className="mt-2 flex items-center rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
         onClick={close}
       >
         Dismiss
       </button>
-    </Modal>
+    </ModalOverlay>
   )
 }
