@@ -276,9 +276,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         } else {
           // No clue. Try some properties and hope for the best.
           if (statusText && statusText !== "") {
-            toast.error(`The server returned an error...\n${statusText}`, {duration: TOAST_DURATION_MS})
+            toast.error(`The server returned an error...\n\n${statusText}`, {duration: TOAST_DURATION_MS})
           } else if (message && message !== "") {
-            toast.error(`The server returned an error...\n${message}`, {duration: TOAST_DURATION_MS})
+            toast.error(`The server returned an error...\n\n${message}`, {duration: TOAST_DURATION_MS})
           } else {
             toast.error(`The server returned an error... Try again later.`, {duration: TOAST_DURATION_MS})
           }
