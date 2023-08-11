@@ -1,5 +1,3 @@
-import {trimForPrivacy} from "@/utils/app/privacy"
-import getNrOfTokens from "@/utils/app/tokens"
 import {Message} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 import {
@@ -68,21 +66,6 @@ export const OpenAIStream = async (
     temperature: temperature,
     stream: true
   })
-
-  // Log prompt for debugging.
-  const latestMessage = messages[messages.length - 1]
-  const nrOfTokens = 1//!! getNrOfTokens(latestMessage.content, messages, systemPrompt, model)
-  console.info(`sendRequest: {\
-lastMessage:'${trimForPrivacy(latestMessage.content)}', \
-lastMessageLengthInChars:${latestMessage.content.length}, \
-bodyLengthInChars:${body.length}, \
-nrOfMessages:${messages.length}, \
-nrOfTokens:${nrOfTokens}, \
-tokenLimit:${model.tokenLimit}, \
-role:'${latestMessage.role}', \
-model:'${model.id}', \
-temperature:${temperature}, \
-url:'${url}'`)
 
   const response = await fetch(url, {
     headers: headers,
