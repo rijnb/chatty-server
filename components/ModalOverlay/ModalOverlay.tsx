@@ -19,6 +19,7 @@ export const ModalOverlay = ({className, children, isOpen, onClose}: Props) => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      console.log("key down", e.key)
       if (e.key === "Escape") {
         if (onClose && e.key === "Escape") {
           onClose()
@@ -30,8 +31,10 @@ export const ModalOverlay = ({className, children, isOpen, onClose}: Props) => {
 
   useEffect(() => {
     if (isOpen) {
+      console.log("adding event listener")
       window.addEventListener("keydown", handleKeyDown)
       return () => {
+        console.log("removing event listener")
         window.removeEventListener("keydown", handleKeyDown)
       }
     }

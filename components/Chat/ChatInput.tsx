@@ -181,6 +181,7 @@ export const ChatInput = ({
   }
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
+    setIsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
@@ -338,11 +339,11 @@ export const ChatInput = ({
 
           {isModalVisible && (
             <PromptInputVars
+              isOpen={isModalVisible}
               prompt={filteredPrompts[activePromptIndex]}
               promptVariables={variables}
               onSubmit={handlePromptSubmit}
               onCancel={handlePromptCancel}
-              onClose={() => setIsModalVisible(false)}
             />
           )}
         </div>
