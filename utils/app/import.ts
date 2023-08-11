@@ -1,9 +1,4 @@
-import {
-  getConversationsHistory,
-  removeSelectedConversation,
-  saveConversationsHistory,
-  saveSelectedConversation
-} from "@/utils/app/conversations"
+import {getConversationsHistory, removeSelectedConversation, saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {getFolders, saveFolders} from "@/utils/app/folders"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
@@ -11,7 +6,6 @@ import {Conversation} from "@/types/chat"
 import {FileFormatV4, LatestFileFormat, SupportedFileFormats} from "@/types/export"
 import {FolderInterface} from "@/types/folder"
 import {Prompt} from "@/types/prompt"
-
 
 export const isLatestJsonFormat = isJsonFormatV4
 
@@ -34,10 +28,10 @@ export const isValidJsonData = (jsonData: any): string[] => {
   }
   const {version, history, folders, prompts} = jsonData
   if (
-    typeof version !== "number" ||
-    (history && !Array.isArray(history)) ||
-    (folders && !Array.isArray(folders)) ||
-    (prompts && !Array.isArray(prompts))
+      typeof version !== "number" ||
+      (history && !Array.isArray(history)) ||
+      (folders && !Array.isArray(folders)) ||
+      (prompts && !Array.isArray(prompts))
   ) {
     errors.push("Invalid file structure; expected version, history, folders and prompts keys")
     return errors
@@ -45,12 +39,12 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (history) {
     for (const historyItem of history) {
       if (
-        !historyItem.id ||
-        typeof historyItem.name !== "string" ||
-        !Array.isArray(historyItem.messages) ||
-        typeof historyItem.model !== "object" ||
-        typeof historyItem.prompt !== "string" ||
-        typeof historyItem.temperature !== "number"
+          !historyItem.id ||
+          typeof historyItem.name !== "string" ||
+          !Array.isArray(historyItem.messages) ||
+          typeof historyItem.model !== "object" ||
+          typeof historyItem.prompt !== "string" ||
+          typeof historyItem.temperature !== "number"
       ) {
         errors.push("Invalid history item format; expected id, name, messages, model, prompt and temperature keys")
         break
@@ -67,67 +61,80 @@ export const isValidJsonData = (jsonData: any): string[] => {
 }
 
 // Import file and set the 'factory' value for all prompts to a new value (or remove it).
-export const importJsonData = (
-  data: SupportedFileFormats,
-  newFactoryValue: boolean | null = null
+export const importData = (
+    data: SupportedFileFormats,
+    readFactoryData: boolean = false
 ): LatestFileFormat => {
   const {history: readHistory, folders: readFolders, prompts: readPrompts} = upgradeDataToLatestFormat(data)
-  const newHistory = readHistory ?? []
+
+  const existingUserFolders = getFolders().filter((folder) => !folder.factory)
+  const existingFactoryFolders = getFolders().filter((folder) => folder.factory)
+  const existingFactoryFolderIds = existingFactoryFolders.map((folder) => folder.id)
   const newFactoryFolders =
-      readFolders.filter((folder) => folder.factory).map((folder) => {
-        folder.factory = newFactoryValue
-        return folder
-      }) ?? []
+      readFolders
+          .filter((folder) => folder.factory &&
+              (readFactoryData || !existingFactoryFolderIds.includes(folder.id))) ?? []
+  const allFactoryFolderIds = [...existingFactoryFolderIds, ...newFactoryFolders
+      .map((folder) => folder.id)]
   const newUserFolders =
-      readFolders.filter((folder) => !folder.factory).map((folder) => {
-        folder.factory = newFactoryValue
-        return folder
-      }) ?? []
+      readFolders.filter((folder) => !folder.factory && !allFactoryFolderIds.includes(folder.id))
+          .map((folder) => {
+            folder.factory = readFactoryData ? true : null
+            return folder
+          }) ?? []
+
+  const existingUserPrompts = getPrompts().filter((prompt) => !prompt.factory)
+  const existingFactoryPrompts = getPrompts().filter((prompt) => prompt.factory)
+  const existingFactoryPromptIds = existingFactoryPrompts.map((prompt) => prompt.id)
   const newFactoryPrompts =
-    readPrompts
-      .filter((prompt) => prompt.factory)
-      .map((prompt) => {
-        prompt.factory = newFactoryValue
-        return prompt
-      }) ?? []
+      readPrompts
+          .filter((prompt) => prompt.factory &&
+              (readFactoryData || !existingFactoryPromptIds.includes(prompt.id))) ?? []
+
+  const allFactoryPromptIds = [...existingFactoryPromptIds, ...newFactoryPrompts
+      .map((prompt) => prompt.id)]
   const newUserPrompts =
-    readPrompts
-      .filter((prompt) => !prompt.factory)
-      .map((prompt) => {
-        prompt.factory = newFactoryValue
-        return prompt
-      }) ?? []
+      readPrompts
+          .filter((prompt) => !prompt.factory && !allFactoryPromptIds.includes(prompt.id))
+          .map((prompt) => {
+            prompt.factory = readFactoryData ? true : null
+            return prompt
+          }) ?? []
+
+  const existingHistory = getConversationsHistory()
+  const newHistory = readHistory ?? []
 
   // Existing conversations are NOT overwritten.
-  const existingConversationHistory = getConversationsHistory()
-  const conversationHistory: Conversation[] = [...existingConversationHistory, ...newHistory].filter(
-    (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
-  )
-  saveConversationsHistory(conversationHistory)
-  if (conversationHistory.length > 0) {
-    saveSelectedConversation(conversationHistory[conversationHistory.length - 1])
+  const importedHistory: Conversation[] = [...existingHistory, ...newHistory]
+      .filter(
+          (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
+      )
+  saveConversationsHistory(importedHistory)
+  if (importedHistory.length > 0) {
+    saveSelectedConversation(importedHistory[importedHistory.length - 1])
   } else {
     removeSelectedConversation()
   }
 
   // Existing folders are not overwritten.
-  const userFolders = getFolders().filter((folder) => !folder.factory)
-  const importedFolders: FolderInterface[] = [...newFactoryFolders, ...userFolders, ...newUserFolders].filter(
-    (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
-  )
+  const importedUserFolders: FolderInterface[] = [...existingUserFolders, ...newUserFolders]
+      .filter(
+          (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
+      )
+  const importedFolders = [...existingFactoryFolders, ...newFactoryFolders, ...importedUserFolders]
   saveFolders(importedFolders)
 
   // Existing user prompts are not overwritten.
-  const userPrompts = getPrompts().filter((prompt) => !prompt.factory)
-  const importedUserPrompts: Prompt[] = [...userPrompts, ...newUserPrompts].filter(
-    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
-  )
-  const importedPrompts = [...newFactoryPrompts, ...importedUserPrompts]
+  const importedUserPrompts: Prompt[] = [...existingUserPrompts, ...newUserPrompts]
+      .filter(
+          (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
+      )
+  const importedPrompts = [...existingFactoryPrompts, ...newFactoryPrompts, ...importedUserPrompts]
   savePrompts(importedPrompts)
 
   return {
     version: 4,
-    history: conversationHistory,
+    history: importedHistory,
     folders: importedFolders,
     prompts: importedPrompts
   }

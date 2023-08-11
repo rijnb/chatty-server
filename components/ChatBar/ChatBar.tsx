@@ -11,7 +11,7 @@ import {
 } from "@/utils/app/conversations"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
-import {importJsonData} from "@/utils/app/import"
+import {importData} from "@/utils/app/import"
 import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
@@ -102,7 +102,7 @@ export const ChatBar = () => {
   }
 
   const handleImportConversations = (data: SupportedFileFormats) => {
-    const {history, folders}: LatestFileFormat = importJsonData(data)
+    const {history, folders}: LatestFileFormat = importData(data)
     homeDispatch({field: "conversations", value: history})
     homeDispatch({
       field: "selectedConversation",

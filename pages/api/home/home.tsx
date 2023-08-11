@@ -19,7 +19,7 @@ import {
   updateConversationHistory
 } from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
-import {importJsonData} from "@/utils/app/import"
+import {importData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
@@ -171,15 +171,15 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
   // Read factory prompts file.
   useEffect(() => {
+    console.debug(`useEffect: triggerFactoryPrompts:${triggerFactoryPrompts}`)
     const filename = `${router.basePath}/factory-prompts.json`
     if (triggerFactoryPrompts) {
-      console.debug(`useEffect: triggerFactoryPrompts`)
       homeDispatch({field: "triggerFactoryPrompts", value: false})
       fetch(filename)
         .then((response) => response.text())
         .then((text) => {
           let factoryData: LatestFileFormat = JSON.parse(text)
-          const {folders, prompts}: LatestFileFormat = importJsonData(factoryData, true)
+          const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
           homeDispatch({field: "folders", value: folders})
           homeDispatch({field: "prompts", value: prompts})
         })
