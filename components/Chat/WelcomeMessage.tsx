@@ -17,9 +17,9 @@ export const WelcomeMessage: FC<Props> = () => {
             <span className="text-indigo-700">Y</span>&nbsp;
           </div>
           <div className="text-center text-xl font-mono font-bold text-gray-800 dark:text-gray-400">
-            Just a better interface for
+            A better interface for Azure
             <p />
-            Azure and OpenAI GPT-3/GPT-4
+            and OpenAI GPT-3/GPT-4 models
           </div>
           <div className="text-center text-gray-700 dark:text-gray-400">
             <div>&nbsp;</div>
@@ -27,8 +27,8 @@ export const WelcomeMessage: FC<Props> = () => {
             <div>&nbsp;</div>
             <div className="font-light">Chatty is 100% unaffiliated with OpenAI.</div>
             <div>&nbsp;</div>
-            <div className="font-light">You can start chatting in the box below or</div>
-            <div className="font-light">click on (?) in the top menu to read the release notes.</div>
+            <div className="font-light">You can start chatting in the box below.</div>
+            <div className="font-light">Click on (?) in the top menu for instructions and release notes.</div>
           </div>
           <div className="text-center text-gray-600 dark:text-gray-400">- = o O o = -</div>
         </div>

@@ -1,3 +1,14 @@
+## Quick start guide
+
+Whenever you start asking me questions in the input box below, I will try to answer them. 
+The questions and answers are stored in a "conversation". I use this conversation as a context
+to provide you the next answer. It serves as my memory during the conversation.
+
+Conversations are stored in the left menu bar, and you can start a new conversation
+by clicking on the "New conversation" button. You can also import and export conversations.
+
+You can also edit the name of conversations or place them in folders, to organize them.
+
 ## Release notes
 
 ### 2023-08-10

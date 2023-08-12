@@ -24,13 +24,14 @@ export const useFetch = () => {
         ? {}
         : {"Content-type": "application/json"})
     }
-    console.debug(`useFetch, url:${requestUrl}`)
+    console.debug(`useFetch: url:${requestUrl}`)
     return fetch(requestUrl, {...requestBody, headers})
       .then((response) => {
         if (!response.ok) {
-          console.debug(`useFetch not OK, HTTP status:${response.status}, statusText:${response.statusText}`)
+          console.debug(`useFetch: not OK, status:${response.status}, statusText:${response.statusText}`)
           throw response
         }
+        console.debug(`useFetch: OK, status:${response.status}, statusText:${response.statusText}`)
 
         if (request.rawResponse) {
           return response
