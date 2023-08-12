@@ -1,17 +1,16 @@
 import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
-import {ModalOverlay} from "@/components/ModalOverlay"
+import {ModalDialog} from "@/components/ModalDialog"
 
 interface Props {
-  isOpen: boolean
   prompt: Prompt
   promptVariables: string[]
   onSubmit: (updatedPromptVariables: string[]) => void
   onCancel: () => void
 }
 
-export const PromptInputVars: FC<Props> = ({isOpen, prompt, promptVariables, onSubmit, onCancel}) => {
+export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, onCancel}) => {
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
@@ -47,9 +46,8 @@ export const PromptInputVars: FC<Props> = ({isOpen, prompt, promptVariables, onS
   }, [])
 
   return (
-    <ModalOverlay
+    <ModalDialog
       className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
-      isOpen={isOpen}
       onClose={onCancel}
     >
       <div role="dialog" onKeyDown={handleKeyDown}>
@@ -79,7 +77,7 @@ export const PromptInputVars: FC<Props> = ({isOpen, prompt, promptVariables, onS
           Submit
         </button>
       </div>
-    </ModalOverlay>
+    </ModalDialog>
   )
 }
 
