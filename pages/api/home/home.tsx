@@ -1,31 +1,42 @@
-import {useEffect, useRef} from "react"
-import {useQuery} from "react-query"
-import {GetServerSideProps} from "next"
-import {useTranslation} from "next-i18next"
-import {serverSideTranslations} from "next-i18next/serverSideTranslations"
-import Head from "next/head"
-import {useRouter} from "next/router"
+import {Chat} from "@/components/Chat/Chat"
+import {ChatBar} from "@/components/ChatBar/ChatBar"
+import PromptBar from "@/components/PromptBar"
+import {useUnlock} from "@/components/UnlockCode"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
-import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE, DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS} from "@/utils/app/const"
-import {createNewConversation, getConversationsHistory, getSelectedConversation, saveConversationsHistory, saveSelectedConversation, updateConversationHistory} from "@/utils/app/conversations"
-import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
-import {importData} from "@/utils/app/import"
-import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
-import {getPrompts, savePrompts} from "@/utils/app/prompts"
-import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
 import {fallbackOpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
-import {Chat} from "@/components/Chat/Chat"
-import {ChatBar} from "@/components/ChatBar/ChatBar"
-import PromptBar from "@/components/PromptBar"
-import {useUnlock} from "@/components/UnlockCode"
+import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
+import {
+  DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS,
+  NEW_CONVERSATION_TITLE,
+  OPENAI_DEFAULT_TEMPERATURE
+} from "@/utils/app/const"
+import {
+  createNewConversation,
+  getConversationsHistory,
+  getSelectedConversation,
+  saveConversationsHistory,
+  saveSelectedConversation,
+  updateConversationHistory
+} from "@/utils/app/conversations"
+import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
+import {importData} from "@/utils/app/import"
+import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
+import {getPrompts, savePrompts} from "@/utils/app/prompts"
+import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
+import {GetServerSideProps} from "next"
+import {useTranslation} from "next-i18next"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations"
+import Head from "next/head"
+import {useRouter} from "next/router"
+import {useEffect, useRef} from "react"
+import {useQuery} from "react-query"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 
@@ -169,14 +180,14 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       console.debug(`useEffect: fetch:${filename}`)
       homeDispatch({field: "triggerFactoryPrompts", value: false})
       fetch(filename)
-          .then((response) => response.text())
-          .then((text) => {
-            let factoryData: LatestFileFormat = JSON.parse(text)
-            const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
-            homeDispatch({field: "folders", value: folders})
-            homeDispatch({field: "prompts", value: prompts})
-          })
-          .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
+      .then((response) => response.text())
+      .then((text) => {
+        let factoryData: LatestFileFormat = JSON.parse(text)
+        const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
+        homeDispatch({field: "folders", value: folders})
+        homeDispatch({field: "prompts", value: prompts})
+      })
+      .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
   }, [triggerFactoryPrompts])
 
@@ -297,11 +308,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
             lastConversation?.model ?? OpenAIModels[defaultModelId],
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
-        homeDispatch({field: "conversations", value: [...cleanedConversationHistory, newConversation]})
-        homeDispatch({
-          field: "selectedConversation",
-          value: newConversation
-        })
+        // Only add a new conversation to the history if there are existing conversations.
+        if (cleanedConversationHistory.length > 0) {
+          homeDispatch({field: "conversations", value: [...cleanedConversationHistory, newConversation]})
+        }
+        homeDispatch({field: "selectedConversation", value: newConversation})
       }
     }
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
