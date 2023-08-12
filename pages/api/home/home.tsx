@@ -9,7 +9,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE, DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS} from "@/utils/app/const"
 import {createNewConversation, getConversationsHistory, getSelectedConversation, saveConversationsHistory, saveSelectedConversation, updateConversationHistory} from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
@@ -273,22 +273,36 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
     const conversationsHistory: Conversation[] = getConversationsHistory()
     const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
-    homeDispatch({field: "conversations", value: cleanedConversationHistory})
 
+    // Re-select the previous conversation. But only if it wasn't too long (to avoid using lost of tokens).
     const selectedConversation = getSelectedConversation()
     if (selectedConversation) {
       const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
+      homeDispatch({field: "conversations", value: cleanedConversationHistory})
       homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
-    } else {
-      const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
-      homeDispatch({
-        field: "selectedConversation",
-        value: createNewConversation(
+    }
+
+    const totalChars = selectedConversation ? selectedConversation?.messages.reduce((acc, message) => acc + message.content.length, 0) : -1
+    if (totalChars < 0 || totalChars > DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS) {
+      const lastConversation =
+          conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
+      if (lastConversation && lastConversation.messages.length === 0) {
+        // If no conversation was selected, select the last conversation if it was empty.
+        homeDispatch({field: "conversations", value: cleanedConversationHistory})
+        homeDispatch({field: "selectedConversation", value: lastConversation})
+      } else {
+        // Or create a new empty conversation.
+        const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
             lastConversation?.model ?? OpenAIModels[defaultModelId],
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
-      })
+        homeDispatch({field: "conversations", value: [...cleanedConversationHistory, newConversation]})
+        homeDispatch({
+          field: "selectedConversation",
+          value: newConversation
+        })
+      }
     }
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 

@@ -12,7 +12,7 @@ import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
 import useApiService from "@/services/useApiService"
-import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
@@ -157,8 +157,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             return
           }
           if (!plugin) {
-            // Update name of conversation when first message is received.
-            if (updatedConversation.messages.length === 1) {
+            // Update name of conversation when first message is received and the name is still the default value.
+            if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
               const {content} = message
               const maxTitleLength = 30
               const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content

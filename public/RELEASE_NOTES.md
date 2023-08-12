@@ -77,11 +77,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
-### 2023-08-10
+### 2023-08-11
 
 #### Features
 
 * Improved handling of window resizes and width of conversation column.
+* The previous conversation is now automatically selected when you start Chatty unless it's larger than a threshold (to avoid consuming too many tokens by accident).
 
 #### Bug fixes
 
