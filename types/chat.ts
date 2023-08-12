@@ -1,5 +1,7 @@
 import {OpenAIModel} from "./openai"
 
+export const titleNewConversation = 'asd'
+
 export type Role = "assistant" | "user"
 
 export interface Message {

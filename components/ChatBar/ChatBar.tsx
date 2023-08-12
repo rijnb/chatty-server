@@ -1,14 +1,8 @@
 import {useCallback, useContext, useEffect} from "react"
 import {useTranslation} from "next-i18next"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {
-  createNewConversation,
-  removeConversationsHistory,
-  removeSelectedConversation,
-  saveConversationsHistory,
-  saveSelectedConversation
-} from "@/utils/app/conversations"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {createNewConversation, removeConversationsHistory, removeSelectedConversation, saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
@@ -16,7 +10,7 @@ import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {LatestFileFormat, SupportedFileFormats} from "@/types/export"
-import {OpenAIModels, fallbackOpenAIModelID} from "@/types/openai"
+import {fallbackOpenAIModelID, OpenAIModels} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ChatBarSettings from "./components/ChatBarSettings"
@@ -25,7 +19,6 @@ import ConversationList from "./components/ConversationList"
 import Sidebar from "../Sidebar"
 import ChatBarContext from "./ChatBar.context"
 import {ChatBarInitialState, initialState} from "./ChatBar.state"
-
 
 export const ChatBar = () => {
   const {t} = useTranslation("sidebar")
@@ -45,11 +38,11 @@ export const ChatBar = () => {
   } = chatBarContextValue
 
   const handleApiKeyChange = useCallback(
-    (apiKey: string) => {
-      homeDispatch({field: "apiKey", value: apiKey})
-      saveApiKey(apiKey)
-    },
-    [homeDispatch]
+      (apiKey: string) => {
+        homeDispatch({field: "apiKey", value: apiKey})
+        saveApiKey(apiKey)
+      },
+      [homeDispatch]
   )
 
   const handlePluginKeyChange = (pluginKey: PluginKey) => {
@@ -87,9 +80,9 @@ export const ChatBar = () => {
     const updatedFolders = folders.filter((f) => f.type !== "chat")
     if (defaultModelId) {
       const newConversation = createNewConversation(
-        t("New conversation"),
-        OpenAIModels[defaultModelId],
-        OPENAI_DEFAULT_TEMPERATURE
+          t(NEW_CONVERSATION_TITLE),
+          OpenAIModels[defaultModelId],
+          OPENAI_DEFAULT_TEMPERATURE
       )
       homeDispatch({
         field: "selectedConversation",
@@ -107,13 +100,13 @@ export const ChatBar = () => {
     homeDispatch({
       field: "selectedConversation",
       value:
-        history.length > 0
-          ? history[history.length - 1]
-          : createNewConversation(
-              t("New conversation"),
-              OpenAIModels[defaultModelId || fallbackOpenAIModelID],
-              OPENAI_DEFAULT_TEMPERATURE
-            )
+          history.length > 0
+              ? history[history.length - 1]
+              : createNewConversation(
+                  t(NEW_CONVERSATION_TITLE),
+                  OpenAIModels[defaultModelId || fallbackOpenAIModelID],
+                  OPENAI_DEFAULT_TEMPERATURE
+              )
     })
     homeDispatch({field: "folders", value: folders})
   }
@@ -138,10 +131,10 @@ export const ChatBar = () => {
     } else {
       removeSelectedConversation()
       defaultModelId &&
-        homeDispatch({
-          field: "selectedConversation",
-          value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
-        })
+      homeDispatch({
+        field: "selectedConversation",
+        value: createNewConversation(t(NEW_CONVERSATION_TITLE), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
+      })
     }
   }
 
@@ -165,9 +158,9 @@ export const ChatBar = () => {
         field: "filteredConversations",
         value: conversations.filter((conversation) => {
           const searchable =
-            conversation.name.toLocaleLowerCase() +
-            " " +
-            conversation.messages.map((message) => message.content).join(" ")
+              conversation.name.toLocaleLowerCase() +
+              " " +
+              conversation.messages.map((message) => message.content).join(" ")
           return searchable.toLowerCase().includes(searchTerm.toLowerCase())
         })
       })
@@ -180,36 +173,36 @@ export const ChatBar = () => {
   }, [searchTerm, conversations])
 
   return (
-    <ChatBarContext.Provider
-      value={{
-        ...chatBarContextValue,
-        handleDeleteConversation,
-        handleClearConversations,
-        handleImportConversations,
-        handleExportConversations,
-        handlePluginKeyChange,
-        handleClearPluginKey,
-        handleApiKeyChange
-      }}
-    >
-      <Sidebar<Conversation>
-        side={"left"}
-        isOpen={showChatBar}
-        addItemButtonTitle={t("New conversation")}
-        listItem={
-          <ConversationList conversations={filteredConversations} selectedConversation={selectedConversation} />
-        }
-        folderListItem={<ChatFolderList searchTerm={searchTerm} />}
-        items={filteredConversations}
-        searchTerm={searchTerm}
-        handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}
-        toggleOpen={handleToggleChatBar}
-        handleCreateItem={handleNewConversation}
-        handleCreateFolder={() => handleCreateFolder(t("New folder"), "chat")}
-        handleDrop={handleDrop}
-        footerComponent={<ChatBarSettings />}
-      />
-    </ChatBarContext.Provider>
+      <ChatBarContext.Provider
+          value={{
+            ...chatBarContextValue,
+            handleDeleteConversation,
+            handleClearConversations,
+            handleImportConversations,
+            handleExportConversations,
+            handlePluginKeyChange,
+            handleClearPluginKey,
+            handleApiKeyChange
+          }}
+      >
+        <Sidebar<Conversation>
+            side={"left"}
+            isOpen={showChatBar}
+            addItemButtonTitle={t(NEW_CONVERSATION_TITLE)}
+            listItem={
+              <ConversationList conversations={filteredConversations} selectedConversation={selectedConversation}/>
+            }
+            folderListItem={<ChatFolderList searchTerm={searchTerm}/>}
+            items={filteredConversations}
+            searchTerm={searchTerm}
+            handleSearchTerm={(searchTerm: string) => chatDispatch({field: "searchTerm", value: searchTerm})}
+            toggleOpen={handleToggleChatBar}
+            handleCreateItem={handleNewConversation}
+            handleCreateFolder={() => handleCreateFolder(t("New folder"), "chat")}
+            handleDrop={handleDrop}
+            footerComponent={<ChatBarSettings/>}
+        />
+      </ChatBarContext.Provider>
   )
 }
 

@@ -12,7 +12,7 @@ import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
 import useApiService from "@/services/useApiService"
-import {RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
@@ -126,14 +126,13 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             rawResponse: true,
             signal: controller.signal
           })
-          console.debug(`HTTP response:${response}`)
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
             let errorText = await response.text()
             console.debug(`HTTP error, text:${errorText}`)
             console.debug(
-              `HTTP response, statusText:${response.statusText}, status:${response.status}, errorText: ${errorText}, headers:${response.headers}`
+              `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText: ${errorText}, headers:${response.headers}`
             )
             // Fall back to statusText if errorText is empty.
             if (errorText.length == 0) {
@@ -149,17 +148,20 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
 
           // Get response data (as JSON for plugin, as reader for OpenAI).
-          console.debug(`HTTP get data`)
+          console.debug(`HTTP get data...`)
           const data = plugin ? await response.json() : response.body?.getReader()
           if (!data) {
+            console.debug(`HTTP get data: no data`)
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
             return
           }
           if (!plugin) {
-            if (updatedConversation.messages.length === 1) {
+            // Update name of conversation when first message is received and the name is still the default value.
+            if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
               const {content} = message
-              const customName = content.length > 30 ? content.substring(0, 30) + "..." : content
+              const maxTitleLength = 30
+              const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
               updatedConversation = {
                 ...updatedConversation,
                 name: customName,

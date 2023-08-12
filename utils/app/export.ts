@@ -5,7 +5,6 @@ import {getPrompts} from "@/utils/app/prompts"
 import {FileFormatV4, LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
 
-
 export function isExportFormatV4(obj: any): obj is FileFormatV4 {
   return obj.version === 4
 }
@@ -18,22 +17,16 @@ export const exportData = (prefix: string, type: FolderType) => {
   const data = {
     version: 4,
     history: type === "chat" ? conversations : [],
-    prompts:
-      type == "prompt"
-        ? prompts.map((prompt, index, all) => {
-            if (prompt.folderId) {
-              const {factory, ...rest} = prompt
-              return rest
-            } else {
-              const {factory, folderId, ...rest} = prompt
-              return rest
-            }
-          })
-        : [],
-    folders: folders.map((folder) => {
-      const {factory, ...rest} = folder
-      return rest
-    })
+    prompts: type == "prompt" ? prompts
+        .map((prompt, index, all) => {
+          if (prompt.folderId) {
+            return prompt
+          } else {
+            const {folderId, ...rest} = prompt
+            return rest
+          }
+        }) : [],
+    folders: folders
   } as LatestFileFormat
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
