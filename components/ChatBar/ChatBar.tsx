@@ -85,7 +85,6 @@ export const ChatBar = () => {
     removeConversationsHistory()
     removeSelectedConversation()
     const updatedFolders = folders.filter((f) => f.type !== "chat")
-    console.debug(`defaultModelId: ${defaultModelId}`)//!!
     if (defaultModelId) {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
