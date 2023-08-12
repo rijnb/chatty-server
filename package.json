@@ -11,8 +11,8 @@
     "start-local": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
   },
   "build": {
     "appId": "com.info.chatty",
@@ -40,12 +40,12 @@
     "asar": true
   },
   "dependencies": {
-    "@dqbd/tiktoken": "^1.0.7",
     "@tabler/icons-react": "^2.29.0",
     "ai": "^2.1.32",
     "eventsource-parser": "^1.0.0",
     "html-to-image": "^1.11.11",
     "i18next": "^23.2.11",
+    "js-tiktoken": "^1.0.7",
     "next": "^13.4.12",
     "next-i18next": "^14.0.0",
     "next-themes": "^0.2.1",
@@ -67,22 +67,26 @@
   "devDependencies": {
     "@mozilla/readability": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/jsdom": "^21.1.1",
     "@types/node": "^20.4.4",
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
     "@types/react-syntax-highlighter": "^15.5.7",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "@types/uuid": "^9.0.2",
     "autoprefixer": "^10.4.14",
     "endent": "^2.1.0",
     "eslint": "^8.45.0",
     "eslint-config-next": "^13.4.12",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
     "jsdom": "^22.1.0",
     "prettier": "^3.0.1",
     "prettier-plugin-tailwindcss": "^0.4.1",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6",
-    "vitest": "^0.33.0"
+    "typescript": "^5.1.6"
   }
 }
