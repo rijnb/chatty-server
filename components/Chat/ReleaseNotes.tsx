@@ -54,6 +54,12 @@ export default function ReleaseNotes({isOpen, close}: Props) {
       contentLabel="Release Notes"
       ariaHideApp={false}
     >
+      <button
+          className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
+          onClick={close}
+      >
+        Dismiss
+      </button>
       <MemoizedReactMarkdown className="prose flex-1 dark:prose-invert text-black">
         {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
       </MemoizedReactMarkdown>
