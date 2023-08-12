@@ -1,7 +1,7 @@
 import {useCallback, useContext, useEffect} from "react"
 import {useTranslation} from "next-i18next"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   removeConversationsHistory,
@@ -87,7 +87,7 @@ export const ChatBar = () => {
     const updatedFolders = folders.filter((f) => f.type !== "chat")
     if (defaultModelId) {
       const newConversation = createNewConversation(
-        t("New conversation"),
+        t(NEW_CONVERSATION_TITLE),
         OpenAIModels[defaultModelId],
         OPENAI_DEFAULT_TEMPERATURE
       )
@@ -110,7 +110,7 @@ export const ChatBar = () => {
         history.length > 0
           ? history[history.length - 1]
           : createNewConversation(
-              t("New conversation"),
+              t(NEW_CONVERSATION_TITLE),
               OpenAIModels[defaultModelId || fallbackOpenAIModelID],
               OPENAI_DEFAULT_TEMPERATURE
             )
@@ -140,7 +140,7 @@ export const ChatBar = () => {
       defaultModelId &&
         homeDispatch({
           field: "selectedConversation",
-          value: createNewConversation(t("New conversation"), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
+          value: createNewConversation(t(NEW_CONVERSATION_TITLE), OpenAIModels[defaultModelId], OPENAI_DEFAULT_TEMPERATURE)
         })
     }
   }
@@ -195,7 +195,7 @@ export const ChatBar = () => {
       <Sidebar<Conversation>
         side={"left"}
         isOpen={showChatBar}
-        addItemButtonTitle={t("New conversation")}
+        addItemButtonTitle={t(NEW_CONVERSATION_TITLE)}
         listItem={
           <ConversationList conversations={filteredConversations} selectedConversation={selectedConversation} />
         }

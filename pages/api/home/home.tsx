@@ -9,15 +9,8 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {
-  createNewConversation,
-  getConversationsHistory,
-  getSelectedConversation,
-  saveConversationsHistory,
-  saveSelectedConversation,
-  updateConversationHistory
-} from "@/utils/app/conversations"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {createNewConversation, getConversationsHistory, getSelectedConversation, saveConversationsHistory, saveSelectedConversation, updateConversationHistory} from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
@@ -27,11 +20,10 @@ import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
-import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
+import {fallbackOpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {Chat} from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
-import {Navbar} from "@/components/Mobile/Navbar"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
@@ -57,17 +49,17 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   } = contextValue
 
   const {data: modelData, error} = useQuery(
-    ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
-    ({signal}) => {
-      if (!unlocked) {
-        return null
-      } else if (!apiKey && !serverSideApiKeyIsSet) {
-        return null
-      } else {
-        return getModels({key: apiKey}, signal)
-      }
-    },
-    {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
+      ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
+      ({signal}) => {
+        if (!unlocked) {
+          return null
+        } else if (!apiKey && !serverSideApiKeyIsSet) {
+          return null
+        } else {
+          return getModels({key: apiKey}, signal)
+        }
+      },
+      {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
 
   const stopConversationRef = useRef<boolean>(false)
@@ -141,9 +133,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const handleNewConversation = () => {
     const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
     const newConversation = createNewConversation(
-      t("New conversation"),
-      lastConversation?.model ?? OpenAIModels[defaultModelId],
-      lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        t(NEW_CONVERSATION_TITLE),
+        lastConversation?.model ?? OpenAIModels[defaultModelId],
+        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
     )
     const updatedConversations = [...conversations, newConversation]
 
@@ -172,18 +164,19 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // Read factory prompts file.
   useEffect(() => {
     console.debug(`useEffect: triggerFactoryPrompts:${triggerFactoryPrompts}`)
-    const filename = `${router.basePath}/factory-prompts.json`
     if (triggerFactoryPrompts) {
+      const filename = `${router.basePath}/factory-prompts.json`
+      console.debug(`useEffect: fetch:${filename}`)
       homeDispatch({field: "triggerFactoryPrompts", value: false})
       fetch(filename)
-        .then((response) => response.text())
-        .then((text) => {
-          let factoryData: LatestFileFormat = JSON.parse(text)
-          const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
-          homeDispatch({field: "folders", value: folders})
-          homeDispatch({field: "prompts", value: prompts})
-        })
-        .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
+          .then((response) => response.text())
+          .then((text) => {
+            let factoryData: LatestFileFormat = JSON.parse(text)
+            const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
+            homeDispatch({field: "folders", value: folders})
+            homeDispatch({field: "prompts", value: prompts})
+          })
+          .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
   }, [triggerFactoryPrompts])
 
@@ -205,15 +198,15 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
     serverSideApiKeyIsSet &&
-      homeDispatch({
-        field: "serverSideApiKeyIsSet",
-        value: serverSideApiKeyIsSet
-      })
+    homeDispatch({
+      field: "serverSideApiKeyIsSet",
+      value: serverSideApiKeyIsSet
+    })
     serverSidePluginKeysSet &&
-      homeDispatch({
-        field: "serverSidePluginKeysSet",
-        value: serverSidePluginKeysSet
-      })
+    homeDispatch({
+      field: "serverSidePluginKeysSet",
+      value: serverSidePluginKeysSet
+    })
   }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // Load settings from local storage.
@@ -222,21 +215,21 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     const apiKey = getApiKey()
 
     serverSideApiKeyIsSet &&
-      homeDispatch({
-        field: "serverSideApiKeyIsSet",
-        value: serverSideApiKeyIsSet
-      })
+    homeDispatch({
+      field: "serverSideApiKeyIsSet",
+      value: serverSideApiKeyIsSet
+    })
     serverSidePluginKeysSet &&
-      homeDispatch({
-        field: "serverSidePluginKeysSet",
-        value: serverSidePluginKeysSet
-      })
+    homeDispatch({
+      field: "serverSidePluginKeysSet",
+      value: serverSidePluginKeysSet
+    })
 
     defaultModelId &&
-      homeDispatch({
-        field: "defaultModelId",
-        value: defaultModelId
-      })
+    homeDispatch({
+      field: "defaultModelId",
+      value: defaultModelId
+    })
 
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
@@ -291,9 +284,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       homeDispatch({
         field: "selectedConversation",
         value: createNewConversation(
-          t("New conversation"),
-          lastConversation?.model ?? OpenAIModels[defaultModelId],
-          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+            t(NEW_CONVERSATION_TITLE),
+            lastConversation?.model ?? OpenAIModels[defaultModelId],
+            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
       })
     }
@@ -303,44 +296,44 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
   const title = "Chatty"
   return (
-    <HomeContext.Provider
-      value={{
-        ...contextValue,
-        handleNewConversation,
-        handleCreateFolder,
-        handleDeleteFolder,
-        handleUpdateFolder,
-        handleSelectConversation,
-        handleUpdateConversation
-      }}
-    >
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content="ChatGPT but better." />
-        <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
-        <link rel="icon" href={`${router.basePath}/favicon.ico`} />
-      </Head>
-      {selectedConversation && (
-        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
-          <div className="flex h-full w-full overflow-y-hidden pt-0">
-            <ChatBar />
-            <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} />
-            </div>
-            <PromptBar />
-          </div>
-        </main>
-      )}
-    </HomeContext.Provider>
+      <HomeContext.Provider
+          value={{
+            ...contextValue,
+            handleNewConversation,
+            handleCreateFolder,
+            handleDeleteFolder,
+            handleUpdateFolder,
+            handleSelectConversation,
+            handleUpdateConversation
+          }}
+      >
+        <Head>
+          <title>{title}</title>
+          <meta name="description" content="ChatGPT but better."/>
+          <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
+          <link rel="icon" href={`${router.basePath}/favicon.ico`}/>
+        </Head>
+        {selectedConversation && (
+            <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
+              <div className="flex h-full w-full overflow-y-hidden pt-0">
+                <ChatBar/>
+                <div className="flex flex-1">
+                  <Chat stopConversationRef={stopConversationRef}/>
+                </div>
+                <PromptBar/>
+              </div>
+            </main>
+        )}
+      </HomeContext.Provider>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
-    (process.env.OPENAI_DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-      process.env.OPENAI_DEFAULT_MODEL) ||
-    fallbackOpenAIModel.id
+      (process.env.OPENAI_DEFAULT_MODEL &&
+          Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
+          process.env.OPENAI_DEFAULT_MODEL) ||
+      fallbackOpenAIModel.id
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY

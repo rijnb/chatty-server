@@ -19,3 +19,4 @@ export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID
 // Other constants.
 export const TOAST_DURATION_MS = 8000
 export const RESPONSE_TIMEOUT_MS = 20000
+export const NEW_CONVERSATION_TITLE = "New conversation"
