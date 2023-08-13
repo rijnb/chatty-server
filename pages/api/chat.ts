@@ -1,10 +1,16 @@
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
-import {ChatCompletionStream} from "@/utils/server"
+import {
+  ChatCompletionStream,
+  GenericOpenAIError,
+  OpenAIAuthError,
+  OpenAIError,
+  OpenAILimitExceeded,
+  OpenAIRateLimited
+} from "@/utils/server/openAiClient"
 import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModels} from "@/types/openai"
-
 
 export const config = {
   runtime: "edge"
@@ -40,18 +46,93 @@ temperature:${temperature}}`)
     return ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
   } catch (error) {
     const {status, statusText, content, message} = error as any
-    console.error(`HTTP stream handler error, error=${JSON.stringify(error)}`)
-    if (error instanceof TypeError) {
-      return new Response(`Error: Server responded with: ${error.message}`, {
-        status: 500,
-        statusText: `Server responded with: ${error.message}`
-      })
-    } else {
-      return new Response("Error: Server responded with an error.", {
-        status: 500,
-        statusText: "Server responded with an error."
-      })
+    console.warn(
+      `HTTP stream error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`
+    )
+    if (error instanceof OpenAIRateLimited) {
+      return new Response(
+        JSON.stringify({
+          errorType: "rate_limit",
+          retryAfter: error.retryAfterSeconds
+        }),
+        {
+          status: 429
+        }
+      )
     }
+
+    if (error instanceof OpenAIAuthError) {
+      return new Response(
+        JSON.stringify({
+          errorType: "openai_auth_error"
+        }),
+        {
+          status: 401
+        }
+      )
+    }
+
+    if (error instanceof OpenAILimitExceeded) {
+      return new Response(
+        JSON.stringify({
+          errorType: "context_length_exceeded",
+          limit: error.limit,
+          requested: error.requested
+        }),
+        {
+          status: 400
+        }
+      )
+    }
+
+    if (error instanceof GenericOpenAIError) {
+      return new Response(
+        JSON.stringify({
+          errorType: error.type,
+          message: error.message,
+          param: error.param,
+          code: error.code
+        }),
+        {
+          status: 500
+        }
+      )
+    }
+
+    if (error instanceof OpenAIError) {
+      return new Response(
+        JSON.stringify({
+          errorType: "openai_error",
+          message: error.message
+        }),
+        {
+          status: 500
+        }
+      )
+    }
+
+    if (error instanceof TypeError) {
+      console.error(`Type error, message:${error.message}, error.stack:${error.stack}`)
+      return new Response(
+        JSON.stringify({
+          errorType: "type_error",
+          message: error.message
+        }),
+        {
+          status: 500
+        }
+      )
+    }
+
+    console.error(`Other stream error, error:${error}`)
+    return new Response(
+      JSON.stringify({
+        errorType: "unknown_error"
+      }),
+      {
+        status: 500
+      }
+    )
   }
 }
 

@@ -11,18 +11,47 @@ import {
 import {OpenAIStream, StreamingTextResponse} from "ai"
 import {Configuration, OpenAIApi} from "openai-edge"
 
-
 export class OpenAIError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
+
+export class GenericOpenAIError extends OpenAIError {
   type: string
   param: string
   code: string
 
   constructor(message: string, type: string, param: string, code: string) {
     super(message)
-    this.name = "OpenAIError"
     this.type = type
     this.param = param
     this.code = code
+  }
+}
+
+export class OpenAIAuthError extends OpenAIError {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
+export class OpenAIRateLimited extends OpenAIError {
+  retryAfterSeconds?: number
+  constructor(message: string, retryAfterSeconds?: number) {
+    super(message)
+    this.retryAfterSeconds = retryAfterSeconds
+  }
+}
+
+export class OpenAILimitExceeded extends OpenAIError {
+  limit?: number
+  requested?: number
+  constructor(message: string, limit?: number, requested?: number) {
+    super(message)
+    this.limit = limit
+    this.requested = requested
   }
 }
 
@@ -83,11 +112,31 @@ export const ChatCompletionStream = async (
   // HTTP POST error handling
   if (response.status !== 200) {
     const result = await response.json()
-    if (result.error) {
-      throw new OpenAIError(result.error.message, result.error.type, result.error.param, result.error.code)
-    } else {
-      throw new Error(`${OPENAI_API_TYPE} returned an error: ${decoder.decode(result?.value) || result.statusText}`)
+    if (response.status === 401) {
+      throw new OpenAIAuthError(result.message)
     }
+
+    if (response.status === 429 && result.error) {
+      const match = result.error.message.match(/retry after (\d+) seconds/)
+      const retryAfter = match ? parseInt(match[1]) : undefined
+      throw new OpenAIRateLimited(result.error.message, retryAfter)
+    }
+
+    if (result.error && result.error.code === "context_length_exceeded") {
+      const match = result.error.message.match(
+        /maximum context length is (\d+) tokens. However, you requested (\d+) tokens/
+      )
+      const limit = match ? parseInt(match[1]) : undefined
+      const requested = match ? parseInt(match[2]) : undefined
+
+      throw new OpenAILimitExceeded(result.error.message, limit, requested)
+    }
+
+    if (result.error) {
+      throw new GenericOpenAIError(result.error.message, result.error.type, result.error.param, result.error.code)
+    }
+
+    throw new Error(`${OPENAI_API_TYPE} returned an error: ${decoder.decode(result?.value) || result.statusText}`)
   }
 
   // Convert the response into a friendly text-stream
