@@ -6,6 +6,12 @@ export async function getTiktokenEncoding(): Promise<Tiktoken> {
   return new Tiktoken(cl100k_base)
 }
 
+/**
+ * Prepares messages to send to OpenAI.
+ * Drop messages starting from the second until the total number of tokens (prompt+reply) is below the model limit.
+ * The user prompt (first message) and the last message (user intent) is always sent.
+ * If it's not possible error is thrown.
+ */
 export async function prepareMessagesToSend(
   tokenLimit: number,
   maxReplyTokens: number,
@@ -19,10 +25,14 @@ export async function prepareMessagesToSend(
   const messagesToSend: Message[] = messages.slice()
 
   while (
-    messagesToSend.length > 0 &&
+    messagesToSend.length > 1 &&
     numTokensInConversation(encoding, [systemPrompt, ...messagesToSend], modelId) + maxReplyTokens > tokenLimit
   ) {
-    messagesToSend.shift()
+    messagesToSend.splice(1, 1)
+  }
+
+  if (messagesToSend.length === 1) {
+    throw new Error("Not enough tokens to send a message.")
   }
 
   return messagesToSend
