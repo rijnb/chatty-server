@@ -1,4 +1,5 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
+import {useRouter} from "next/router"
 import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
@@ -33,6 +34,7 @@ export const ChatInput = ({
   showScrollDownButton
 }: Props) => {
   const {t} = useTranslation("chat")
+  const router = useRouter()
 
   const {
     state: {selectedConversation, messageIsStreaming, prompts}
@@ -340,13 +342,13 @@ export const ChatInput = ({
           )}
         </div>
       </div>
-      <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
-        <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
+      <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50 flex items-center justify-center">
+        <img src={`${router.basePath}/icon-16.png`} alt="icon" className="mx-2" />
+        <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
         &nbsp;was developed by Rijn Buve and Oleksii Kulyk
-      </div>
-    </div>
+      </div>    </div>
   )
 }
 
