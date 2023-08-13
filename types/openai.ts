@@ -17,25 +17,25 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
     id: OpenAIModelID.GPT_3_5,
     name: OpenAIModelID.GPT_3_5,
     maxLength: 12000,
-    tokenLimit: 4000
+    tokenLimit: 4096
   },
   [OpenAIModelID.GPT_3_5_AZ]: {
     id: OpenAIModelID.GPT_3_5_AZ,
     name: OpenAIModelID.GPT_3_5_AZ,
     maxLength: 12000,
-    tokenLimit: 4000
+    tokenLimit: 4096
   },
   [OpenAIModelID.GPT_4]: {
     id: OpenAIModelID.GPT_4,
     name: OpenAIModelID.GPT_4,
     maxLength: 24000,
-    tokenLimit: 8000
+    tokenLimit: 8192
   },
   [OpenAIModelID.GPT_4_32K]: {
     id: OpenAIModelID.GPT_4_32K,
     name: OpenAIModelID.GPT_4_32K,
     maxLength: 96000,
-    tokenLimit: 32000
+    tokenLimit: 32768
   }
 }
 

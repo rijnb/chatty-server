@@ -540,7 +540,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           )}
         </>
       )}
-      <ReleaseNotes isOpen={isReleaseNotesDialogOpen} close={() => setIsReleaseNotesDialogOpen(false)} />
+      {isReleaseNotesDialogOpen && <ReleaseNotes close={() => setIsReleaseNotesDialogOpen(false)} />}
     </div>
   )
 })

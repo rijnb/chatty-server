@@ -8,7 +8,8 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "../app/const"
-import {ParsedEvent, ReconnectInterval, createParser} from "eventsource-parser"
+import {OpenAIStream, StreamingTextResponse} from "ai"
+import {Configuration, OpenAIApi} from "openai-edge"
 
 
 export class OpenAIError extends Error {
@@ -25,41 +26,51 @@ export class OpenAIError extends Error {
   }
 }
 
-export const OpenAIStream = async (
+function createOpenaiConfiguration(apiKey: string) {
+  if (OPENAI_API_TYPE === "azure") {
+    let config = new Configuration({
+      basePath: `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}`,
+      defaultQueryParams: new URLSearchParams({
+        "api-version": OPENAI_API_VERSION
+      }),
+      baseOptions: {
+        headers: {
+          "api-key": apiKey ? apiKey : process.env.OPENAI_API_KEY
+        }
+      }
+    })
+    //hack to remove OpenAI authorization header
+    delete config.baseOptions.headers["Authorization"]
+    return config
+  } else {
+    return new Configuration({
+      basePath: `${OPENAI_API_HOST}/v1`,
+      apiKey: apiKey ? apiKey : process.env.OPENAI_API_KEY,
+      organization: OPENAI_ORGANIZATION
+    })
+  }
+}
+
+function createOpenAiClient(configuration: Configuration) {
+  return new OpenAIApi(configuration)
+}
+
+export const ChatCompletionStream = async (
   model: OpenAIModel,
   systemPrompt: string,
   temperature: number,
   apiKey: string,
   messages: Message[]
 ) => {
-  let url = `${OPENAI_API_HOST}/v1/chat/completions`
-  if (OPENAI_API_TYPE === "azure") {
-    url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
-  }
+  const configuration = createOpenaiConfiguration(apiKey)
+  const openai = createOpenAiClient(configuration)
 
   if (messages.length === 0) {
     throw new Error("No messages in history")
   }
 
-  // HTTP POST full context to OpenAI.
-  const headers = {
-    "Content-Type": "application/json",
-
-    // OpenAI headers.
-    ...(OPENAI_API_TYPE === "openai" && {
-      Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
-    }),
-    ...(OPENAI_API_TYPE === "openai" &&
-      OPENAI_ORGANIZATION && {
-        "OpenAI-Organization": OPENAI_ORGANIZATION
-      }),
-
-    // Azure headers.
-    ...(OPENAI_API_TYPE === "azure" && {
-      "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
-    })
-  }
-  const body = JSON.stringify({
+  // Ask OpenAI for a streaming chat completion given the prompt
+  const response = await openai.createChatCompletion({
     model: model.id,
     messages: [{role: "system", content: systemPrompt}, ...messages],
     max_tokens: OPENAI_API_MAX_TOKENS,
@@ -67,12 +78,6 @@ export const OpenAIStream = async (
     stream: true
   })
 
-  const response = await fetch(url, {
-    headers: headers,
-    method: "POST",
-    body: body
-  })
-  const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
   // HTTP POST error handling
@@ -85,39 +90,8 @@ export const OpenAIStream = async (
     }
   }
 
-  // Read stream from OpenAI.
-  return new ReadableStream({
-    async start(controller) {
-      const onParse = (event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === "event") {
-          const data = event.data
-
-          // Read next event.
-          try {
-            const json = JSON.parse(data)
-
-            // If it's the last message, close the stream.
-            if (json.choices[0].finish_reason != null) {
-              controller.close()
-              return
-            }
-
-            // Otherwise, send the message to the controller.
-            const text = json.choices[0].delta.content
-            const queue = encoder.encode(text)
-            controller.enqueue(queue)
-          } catch (e) {
-            controller.error(e)
-            // Do not rethrow. The stream will be closed.
-          }
-        }
-      }
-
-      // Create the parser with the callback.
-      const parser = createParser(onParse)
-      for await (const chunk of response.body as any) {
-        parser.feed(decoder.decode(chunk))
-      }
-    }
-  })
+  // Convert the response into a friendly text-stream
+  const stream = OpenAIStream(response)
+  // Respond with the stream
+  return new StreamingTextResponse(stream)
 }

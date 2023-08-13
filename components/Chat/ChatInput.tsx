@@ -1,4 +1,5 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
+import {useRouter} from "next/router"
 import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
@@ -33,6 +34,7 @@ export const ChatInput = ({
   showScrollDownButton
 }: Props) => {
   const {t} = useTranslation("chat")
+  const router = useRouter()
 
   const {
     state: {selectedConversation, messageIsStreaming, prompts}
@@ -181,6 +183,7 @@ export const ChatInput = ({
   }
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
+    setIsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
@@ -254,7 +257,6 @@ export const ChatInput = ({
           >
             {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
           </button>
-
           {showPluginSelect && (
             <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
               <PluginSelect
@@ -277,11 +279,9 @@ export const ChatInput = ({
               />
             </div>
           )}
-
           <div className="pointer-events-none absolute bottom-full mx-auto mb-4 flex w-full justify-end">
             <ChatInputTokenCount content={content} tokenLimit={model.tokenLimit} />
           </div>
-
           <textarea
             ref={textareaRef}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-10 pr-8 text-black dark:bg-transparent dark:text-white"
@@ -301,7 +301,6 @@ export const ChatInput = ({
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
           />
-
           <button
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSendMessage}
@@ -312,7 +311,6 @@ export const ChatInput = ({
               <IconSend size={18} />
             )}
           </button>
-
           {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:-right-10 lg:bottom-0">
               <button
@@ -323,7 +321,6 @@ export const ChatInput = ({
               </button>
             </div>
           )}
-
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
               <PromptPopupList
@@ -335,25 +332,23 @@ export const ChatInput = ({
               />
             </div>
           )}
-
           {isModalVisible && (
             <PromptInputVars
               prompt={filteredPrompts[activePromptIndex]}
               promptVariables={variables}
               onSubmit={handlePromptSubmit}
               onCancel={handlePromptCancel}
-              onClose={() => setIsModalVisible(false)}
             />
           )}
         </div>
       </div>
-      <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
-        <a href="https://github.com/rijnb/chatty-server" target="_blank" className="underline">
+      <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50 flex items-center justify-center">
+        <img src={`${router.basePath}/icon-16.png`} alt="icon" className="mx-2" />
+        <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
         &nbsp;was developed by Rijn Buve and Oleksii Kulyk
-      </div>
-    </div>
+      </div>    </div>
   )
 }
 
