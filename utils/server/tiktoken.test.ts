@@ -12,104 +12,133 @@ describe("Tiktoken", () => {
       expect(encoder).toBeDefined()
     })
 
-    describe("Prepare messages to send", () => {
-      const prompt = "You are a helpful assistant." // 10 tokens
-      const messages: Message[] = [
-        {role: "user", content: "Knock knock."}, // 8 tokens
-        {role: "assistant", content: "Who's there?"}, //8 tokens
-        {role: "user", content: "Orange."} //6 tokens
-      ] // 35 tokens
+    describe("gpt4 Tokenizer", () => {
+      it("should count tokens", async () => {
+        const encoder = await getTiktokenEncoding()
 
-      it("should retain messages if fit into the limit", async () => {
-        expect(await prepareMessagesToSend(4000, 1000, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual(messages)
+        const messages: Message[] = [
+          {
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: "what's up ?"
+          }
+        ]
+
+        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(21)
       })
 
-      it("should skip first message if doesn't fit into the limit", async () => {
-        expect(await prepareMessagesToSend(100, 73, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual([
-          {role: "assistant", content: "Who's there?"},
-          {role: "user", content: "Orange."}
-        ])
+      it("should count tokens2", async () => {
+        const encoder = await getTiktokenEncoding()
+
+        const messages: Message[] = [
+          {
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: "ping"
+          }
+        ]
+        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(18)
+      })
+    })
+
+    describe("gpt3 Tokenizer", () => {
+      it("should count tokens", async () => {
+        const encoder = await getTiktokenEncoding()
+
+        const messages: Message[] = [
+          {
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: "what's up ?"
+          }
+        ]
+
+        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(23)
       })
 
-      it("should skip first two messages if doesn't fit into the limit", async () => {
-        expect(await prepareMessagesToSend(100, 80, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual([
-          {role: "user", content: "Orange."}
-        ])
-      })
+      it("should count tokens2", async () => {
+        const encoder = await getTiktokenEncoding()
 
-      it("should return empty if no messages fit", async () => {
-        expect(await prepareMessagesToSend(100, 100, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual([])
+        const messages: Message[] = [
+          {
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: "ping"
+          }
+        ]
+        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(20)
       })
     })
   })
 
-  describe("gpt4 Tokenizer", () => {
-    it("should count tokens", async () => {
-      const encoder = await getTiktokenEncoding()
+  describe("Prepare messages to send", () => {
+    const prompt = "You are ChatGPT, a large language model trained by OpenAI. Respond using markdown."
+    const messages: Message[] = [
+      {
+        role: "user",
+        content: "You'll talk like a pirate. How is the weather?"
+      },
+      {
+        role: "assistant",
+        content:
+          "Ahoy matey! Th' weather be a fine one fer sailin', with clear skies an' a gentle breeze blowin'. A perfect day fer plunderin' an' seekin' adventure on th' high seas! Arr!"
+      },
+      {role: "user", content: "Where are you sailing?"},
+      {
+        role: "assistant",
+        content:
+          "Ahoy! We be sailin' towards th' mystic island o' Tortuga, where we'll be findin' treasures, grog, an' merry tales aplenty. Arrr, it be a haven fer pirates like us, seekin' fortune an' adventure on th' boundless deep!"
+      },
+      {
+        role: "user",
+        content: "Did you find treasure?"
+      }
+    ]
 
-      const messages: Message[] = [
-        {
-          role: "system",
-          content: "You are a helpful assistant."
-        },
-        {
-          role: "user",
-          content: "what's up ?"
-        }
-      ]
-
-      expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(21)
+    it("should retain messages if fit into the limit", async () => {
+      expect(await prepareMessagesToSend(4000, 1000, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual(messages)
     })
 
-    it("should count tokens2", async () => {
-      const encoder = await getTiktokenEncoding()
+    const testCases = [
+      {tokenLimit: 200, maxReplyTokens: 70, expectedMessages: [messages[0], messages[2], messages[3], messages[4]]},
+      {
+        tokenLimit: 200,
+        maxReplyTokens: 80,
+        expectedMessages: [messages[0], messages[3], messages[4]]
+      },
+      {
+        tokenLimit: 200,
+        maxReplyTokens: 149,
+        expectedMessages: [messages[0], messages[4]]
+      }
+    ]
 
-      const messages: Message[] = [
-        {
-          role: "system",
-          content: "You are a helpful assistant."
-        },
-        {
-          role: "user",
-          content: "ping"
-        }
-      ]
-      expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(18)
-    })
-  })
+    testCases.forEach((testCase) => {
+      const {tokenLimit, maxReplyTokens, expectedMessages} = testCase
 
-  describe("gpt3 Tokenizer", () => {
-    it("should count tokens", async () => {
-      const encoder = await getTiktokenEncoding()
-
-      const messages: Message[] = [
-        {
-          role: "system",
-          content: "You are a helpful assistant."
-        },
-        {
-          role: "user",
-          content: "what's up ?"
-        }
-      ]
-
-      expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(23)
+      it(`should drop messages starting from 2nd until fit the limit: tokenLimit=${tokenLimit}, maxReplyTokens=${maxReplyTokens}`, async () => {
+        expect(
+          await prepareMessagesToSend(tokenLimit, maxReplyTokens, prompt, messages, OpenAIModelID.GPT_4_32K)
+        ).toEqual(expectedMessages)
+      })
     })
 
-    it("should count tokens2", async () => {
-      const encoder = await getTiktokenEncoding()
-
-      const messages: Message[] = [
-        {
-          role: "system",
-          content: "You are a helpful assistant."
-        },
-        {
-          role: "user",
-          content: "ping"
-        }
-      ]
-      expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(20)
+    it("should throw if no messages fit (for completeness)", async () => {
+      await expect(prepareMessagesToSend(200, 180, prompt, messages, OpenAIModelID.GPT_4_32K)).rejects.toThrow(
+        "Not enough tokens to send a message."
+      )
     })
   })
 })
