@@ -31,7 +31,7 @@ export async function prepareMessagesToSend(
     messagesToSend.splice(1, 1)
   }
 
-  if (messagesToSend.length === 1) {
+  if (messagesToSend.length === 1 && messages.length > 1) {
     throw new Error("Not enough tokens to send a message.")
   }
 

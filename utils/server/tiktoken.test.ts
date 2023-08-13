@@ -111,6 +111,12 @@ describe("Tiktoken", () => {
       expect(await prepareMessagesToSend(4000, 1000, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual(messages)
     })
 
+    it("should allow single message", async () => {
+      expect(await prepareMessagesToSend(4000, 1000, prompt, [messages[1]], OpenAIModelID.GPT_4_32K)).toEqual([
+        messages[1]
+      ])
+    })
+
     const testCases = [
       {tokenLimit: 200, maxReplyTokens: 70, expectedMessages: [messages[0], messages[2], messages[3], messages[4]]},
       {
