@@ -2,8 +2,6 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/
 import {isJsonFormatV4, isLatestJsonFormat, upgradeDataToLatestFormat} from "@/utils/app/import"
 import {FileFormatV4} from "@/types/export"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
-import {describe, expect, it} from "vitest"
-
 
 describe("Export Format Functions", () => {
   describe("isExportFormatV4", () => {
@@ -67,7 +65,7 @@ describe("cleanData Functions", () => {
       expect(isLatestJsonFormat(obj)).toBe(true)
       expect(obj).toEqual({
         version: 4,
-        conversationHistory: [
+        history: [
           {
             id: "1",
             name: "conversation 1",

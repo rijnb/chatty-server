@@ -181,6 +181,7 @@ export const ChatInput = ({
   }
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
+    setIsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
@@ -254,7 +255,6 @@ export const ChatInput = ({
           >
             {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
           </button>
-
           {showPluginSelect && (
             <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
               <PluginSelect
@@ -277,11 +277,9 @@ export const ChatInput = ({
               />
             </div>
           )}
-
           <div className="pointer-events-none absolute bottom-full mx-auto mb-4 flex w-full justify-end">
             <ChatInputTokenCount content={content} tokenLimit={model.tokenLimit} />
           </div>
-
           <textarea
             ref={textareaRef}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-10 pr-8 text-black dark:bg-transparent dark:text-white"
@@ -301,7 +299,6 @@ export const ChatInput = ({
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
           />
-
           <button
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSendMessage}
@@ -312,7 +309,6 @@ export const ChatInput = ({
               <IconSend size={18} />
             )}
           </button>
-
           {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:-right-10 lg:bottom-0">
               <button
@@ -323,7 +319,6 @@ export const ChatInput = ({
               </button>
             </div>
           )}
-
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
               <PromptPopupList
@@ -335,14 +330,12 @@ export const ChatInput = ({
               />
             </div>
           )}
-
           {isModalVisible && (
             <PromptInputVars
               prompt={filteredPrompts[activePromptIndex]}
               promptVariables={variables}
               onSubmit={handlePromptSubmit}
               onCancel={handlePromptCancel}
-              onClose={() => setIsModalVisible(false)}
             />
           )}
         </div>

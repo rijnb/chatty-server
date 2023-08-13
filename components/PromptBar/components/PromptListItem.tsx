@@ -16,6 +16,7 @@ export const PromptListItem = ({prompt}: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleUpdate = (prompt: Prompt) => {
+    setShowModal(false)
     handleUpdatePrompt(prompt)
     promptDispatch({field: "searchTerm", value: ""})
   }
