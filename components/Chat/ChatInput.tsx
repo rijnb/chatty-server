@@ -343,11 +343,14 @@ export const ChatInput = ({
         </div>
       </div>
       <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50 flex items-center justify-center">
-        <img src={`${router.basePath}/icon-16.png`} alt="icon" className="mx-2" />
         <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
         &nbsp;was developed by Rijn Buve and Oleksii Kulyk
+        <img src={`${router.basePath}/icon-16.png`} alt="icon" className="mx-2" />
+        <a href="https://github.com/rijnb/chatty-server/issues/new?title=Describe%20problem%20or%20feature%20request%20here...%20&body=Provide%20steps%20to%20reproduce%20the%20problem%20here..." target="_blank" rel="noreferrer" className="underline">
+          report a problem
+        </a>
       </div>    </div>
   )
 }
