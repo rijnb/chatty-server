@@ -320,6 +320,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // LAYOUT --------------------------------------------
 
   const title = "Chatty"
+  const icon = `${router.basePath}/favicon.png`
   return (
       <HomeContext.Provider
           value={{
@@ -334,9 +335,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       >
         <Head>
           <title>{title}</title>
+          <link rel="icon" href={icon} type="image/png"/>
           <meta name="description" content="ChatGPT but better."/>
           <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
-          <link rel="icon" href={`${router.basePath}/favicon.ico`}/>
         </Head>
         {selectedConversation && (
             <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
