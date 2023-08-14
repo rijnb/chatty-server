@@ -319,7 +319,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
   // LAYOUT --------------------------------------------
 
-  const title = "Chatty"
   return (
       <HomeContext.Provider
           value={{
@@ -333,10 +332,18 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           }}
       >
         <Head>
-          <title>{title}</title>
+          <title>Chatty</title>
+
+          <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`}/>
+          <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`}/>
+          <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`}/>
+          <link rel="manifest" href={`${router.basePath}/site.webmanifest`}/>
+          <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444"/>
+          <meta name="msapplication-TileColor" content="#da532c"/>
+          <meta name="theme-color" content="#ffffff"/>
+
           <meta name="description" content="ChatGPT but better."/>
           <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
-          <link rel="icon" href={`${router.basePath}/favicon.ico`}/>
         </Head>
         {selectedConversation && (
             <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
