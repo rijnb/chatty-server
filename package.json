@@ -23,10 +23,8 @@
     "files": [
       "build/**/*",
       "node_modules/**/*",
+      "public/**/*",
       "RELEASE_NOTES.md",
-      "*.png",
-      "*.ico",
-      "factory-presets.json",
       "package.json"
     ],
     "mac": {

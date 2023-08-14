@@ -1,13 +1,15 @@
 # Chatty Server (`chatty-server`)
 
+__Note: You can find the most recent release notes [here](./public/RELEASE_NOTES.md).__
+
+
 **Chatty Server** is a client interface for GPT-3.5 and GPT-4. It allows you to use
-GPT-4 for many tasks. For that, it allows you to store
-"prompts" (in folders), that allows you to quickly have GPT-4 analyze your text
+GPT-4 for many tasks. For that, it allows you to store "prompts" (in folders), 
+that allows you to quickly have GPT-4 analyze your text
 in a certain way and respond to you.
 
-I've created a bunch of prompts to start with. To use them, import the file
-`examples/example-prompts.json` with `Import prompts`. Then, on the prompt line,
-type `/` and search for a prompt and press enter.
+I've created a bunch of prompts to start with. These are automatically imported 
+as factory prompts. On the prompt line, type `/` and search for a prompt and press enter.
 
 For example, to summarize a mail thread efficiently, select the entire mail text
 in your mail client, click on the input box in Chatty, press `/`, type `mail` and
@@ -16,13 +18,13 @@ select `Summarize mail`.
 Paste the text in the dialog and press Enter. This produces the full prompt you for
 GPT-4. Just press Enter again to execute it.
 
-## Using a browser or ChattyUI
+## Using a browser or Chatty
 
 Chatty Server is a web-based which can be accessed by browser. It is deployed on
 a server with a basepath of `/chatty/1/chat` (for the actual value, check [config.js](./config.js)).
 So, if you deploy it on `https://myserver.com`, you can access it at `https://myserver.com/chatty/1/chat`.
 
-There a thin client for Mac called [ChattyUI](https://github.com/rijnb/ChattyUI) that you may want
+There a thin client for Mac called [Chatty](https://github.com/rijnb/ChattyUI) that you may want
 to check out. It is a thin wrapper around a web view, that allows you to use Chatty Server as a
 stand-alone application on a Mac.
 
@@ -32,7 +34,7 @@ Happy chatting!
 
 **Rijn Buve**
 
-![Chatbot UI](./public/screenshots/screenshot_1.jpg)
+![Chatty](./public/screenshots/screenshot_1.jpg)
 
 ## Is it safe to use?
 
@@ -43,7 +45,7 @@ on the server.
 All sensitive information is kept client side and stored in browser 'local storage'.
 
 Conversations are sent (through SSL) to the server, of course, but not logged or persisted
-server-side. (*Exception:* The server logs may contain at most the first 8 characters of
+server-side. (*Exception:* The server logs may contain at most the first +/-20 characters of
 your prompts or returned answers for debugging purposes, but never more).
 
 ## Technical documentation
