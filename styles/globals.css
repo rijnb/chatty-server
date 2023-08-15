@@ -70,6 +70,6 @@ pre:has(div.codeblock) {
 
 .drop-zone:hover {
   background-color: #555555;
-  border-color: #999999;
+  border-color: #ff9999;
   color: white;
 }
