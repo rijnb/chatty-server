@@ -1,15 +1,16 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import SidebarButton from "../Sidebar/SidebarButton"
+
 
 interface Props {
   apiKey: string
   onApiKeyChange: (apiKey: string) => void
 }
 
-export const ApiKey: FC<Props> = ({apiKey, onApiKeyChange}) => {
+export const ApiKey = ({apiKey, onApiKeyChange}: Props) => {
   const {t} = useTranslation("sidebar")
   const [isChanging, setIsChanging] = useState(false)
   const [newKey, setNewKey] = useState(apiKey)

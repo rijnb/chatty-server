@@ -1,7 +1,8 @@
-import {FC, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {KeyboardEvent, useEffect, useRef, useState} from "react"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 import {ModalDialog} from "@/components/ModalDialog"
+
 
 interface Props {
   prompt: Prompt
@@ -10,7 +11,7 @@ interface Props {
   onCancel: () => void
 }
 
-export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, onCancel}) => {
+export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: Props) => {
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
@@ -28,8 +29,7 @@ export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, o
   }
 
   const handleSubmit = () => {
-    onSubmit(updatedPromptVariables.map((variable) =>
-      variable.value === "" ? " " : variable.value))
+    onSubmit(updatedPromptVariables.map((variable) => (variable.value === "" ? " " : variable.value)))
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -54,21 +54,21 @@ export const PromptInputVars: FC<Props> = ({prompt, promptVariables, onSubmit, o
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>
         <div className="mb-4 text-sm text-black dark:text-neutral-200">{prompt.description}</div>
 
-          {updatedPromptVariables.map((variable, index) => (
-              <div className="mb-4" key={index}>
-                <div className="mb-2 text-sm font-bold text-neutral-200">{variable.key}:</div>
+        {updatedPromptVariables.map((variable, index) => (
+          <div className="mb-4" key={index}>
+            <div className="mb-2 text-sm font-bold text-neutral-200">{variable.key}:</div>
 
-                <textarea
-                    ref={index === 0 ? nameInputRef : undefined}
-                    className="mt-1 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-                    style={{resize: "none"}}
-                    placeholder={`${variable.key}...`}
-                    value={variable.value}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    rows={5}
-                />
-              </div>
-          ))}
+            <textarea
+              ref={index === 0 ? nameInputRef : undefined}
+              className="mt-1 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
+              style={{resize: "none"}}
+              placeholder={`${variable.key}...`}
+              value={variable.value}
+              onChange={(e) => handleChange(index, e.target.value)}
+              rows={5}
+            />
+          </div>
+        ))}
 
         <button
           className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"

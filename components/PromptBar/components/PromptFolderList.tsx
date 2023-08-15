@@ -6,7 +6,9 @@ import PromptListItem from "@/components/PromptBar/components/PromptListItem"
 import PromptBarContext from "../PromptBar.context"
 
 
-export const PromptFolderList = () => {
+interface Props {}
+
+export const PromptFolderList = ({}: Props) => {
   const {
     state: {folders}
   } = useContext(HomeContext)

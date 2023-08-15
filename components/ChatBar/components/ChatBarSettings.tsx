@@ -1,16 +1,21 @@
-import {IconFileExport} from "@tabler/icons-react"
-import React, {useContext} from "react"
-import {useTranslation} from "next-i18next"
-import HomeContext from "@/pages/api/home/home.context"
-import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import ClearConversations from "@/components/ChatBar/components/ClearConversations"
-import PluginKeyList from "@/components/ChatBar/components/PluginKeyList"
-import ApiKey from "@/components/Settings/ApiKey"
-import ImportData from "@/components/Settings/ImportData"
-import SidebarButton from "@/components/Sidebar/SidebarButton"
-import {UnlockCodeEditor, useUnlock} from "@/components/UnlockCode"
+import { IconFileExport } from "@tabler/icons-react";
+import React, { useContext } from "react";
+import { useTranslation } from "next-i18next";
+import { ErrorMessage } from "@/types/error";
+import HomeContext from "@/pages/api/home/home.context";
+import ChatBarContext from "@/components/ChatBar/ChatBar.context";
+import ClearConversations from "@/components/ChatBar/components/ClearConversations";
+import PluginKeyList from "@/components/ChatBar/components/PluginKeyList";
+import ApiKey from "@/components/Settings/ApiKey";
+import ImportData from "@/components/Settings/ImportData";
+import SidebarButton from "@/components/Sidebar/SidebarButton";
+import { UnlockCodeEditor, useUnlock } from "@/components/UnlockCode";
 
-export const ChatBarSettings = () => {
+
+interface Props {
+}
+
+export const ChatBarSettings = ({}: Props) => {
   const {t} = useTranslation("sidebar")
 
   const {isProtected, code, setCode} = useUnlock()

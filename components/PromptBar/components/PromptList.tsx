@@ -1,13 +1,11 @@
-import {FC} from "react"
 import {Prompt} from "@/types/prompt"
 import PromptListItem from "./PromptListItem"
-
 
 interface Props {
   prompts: Prompt[]
 }
 
-export const PromptList: FC<Props> = ({prompts}) => {
+export const PromptList = ({prompts}: Props) => {
   return (
     <div className="flex w-full flex-col gap-1">
       {prompts
