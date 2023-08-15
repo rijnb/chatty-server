@@ -22,18 +22,24 @@ type DroppedFile = {
   content: string
 }
 
+type DroppedContent = {
+  numberOfFiles: number
+  value: string
+}
+
 export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: Props) => {
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
       .filter((item, index, array) => array.findIndex((t) => t.key === item.key) === index)
   )
-  const [filesDropped, setFilesDropped] = useState<number>(0)
+  const [numberOfFilesDropped, setNumberOfFilesDropped] = useState<number>(0)
 
   const nameInputRef = useRef<HTMLTextAreaElement>(null)
 
   const readDroppedFiles = async (e: ChangeEvent<HTMLInputElement>) => {
     let value = ""
+    let numberOfFiles = 0
     const files = e.target.files
 
     if (files) {
@@ -51,11 +57,12 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
         })
 
       const droppedFiles = await Promise.all(readFilePromises)
+      numberOfFiles = droppedFiles.length
       value = droppedFiles
         .map((droppedFile) => `File: ${droppedFile.name}\n` + "```\n" + droppedFile.content + "\n```\n")
         .join("\n")
     }
-    return value
+    return {numberOfFiles: numberOfFiles, value: value}
   }
 
   const handleDrop = async (index: number, e: DragEvent<HTMLLabelElement>) => {
@@ -63,9 +70,9 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
     if (e.dataTransfer.files) {
       const fileInput = document.getElementById("file-input") as HTMLInputElement
       fileInput.files = e.dataTransfer.files
-      const value = (await readDroppedFiles({target: fileInput} as ChangeEvent<HTMLInputElement>)).trim()
-      if (value != "") {
-        setFilesDropped(filesDropped + 1)
+      const {numberOfFiles, value} = await readDroppedFiles({target: fileInput} as ChangeEvent<HTMLInputElement>)
+      if (numberOfFiles > 0 && value != "") {
+        setNumberOfFilesDropped(numberOfFilesDropped + numberOfFiles)
       }
       const oldValue = updatedPromptVariables.at(index)?.value ?? ""
       handleChange(index, `${oldValue}${oldValue !== "" ? "\n\n" : ""}${value}`)
@@ -121,8 +128,8 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => handleDrop(index, e)}
                   >
-                    Drop your files here (or click to select){" "}
-                    {filesDropped > 0 ? `: dropped ${filesDropped} files` : ""}
+                    Drop files here (or click to select)
+                    {numberOfFilesDropped > 0 ? `: dropped ${numberOfFilesDropped} files` : ""}
                   </label>
                 ) : (
                   // Otherwise, it is a text input field.
