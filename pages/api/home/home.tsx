@@ -1,22 +1,15 @@
-import {Chat} from "@/components/Chat/Chat"
-import {ChatBar} from "@/components/ChatBar/ChatBar"
-import PromptBar from "@/components/PromptBar"
-import {useUnlock} from "@/components/UnlockCode"
+import {useEffect, useRef} from "react"
+import {useQuery} from "react-query"
+import {GetServerSideProps} from "next"
+import {useTranslation} from "next-i18next"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations"
+import Head from "next/head"
+import {useRouter} from "next/router"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
-import {Conversation} from "@/types/chat"
-import {KeyValuePair} from "@/types/data"
-import {LatestFileFormat} from "@/types/export"
-import {FolderType} from "@/types/folder"
-import {fallbackOpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
-import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {
-  DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS,
-  NEW_CONVERSATION_TITLE,
-  OPENAI_DEFAULT_TEMPERATURE
-} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -30,21 +23,30 @@ import {importData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
-import {GetServerSideProps} from "next"
-import {useTranslation} from "next-i18next"
-import {serverSideTranslations} from "next-i18next/serverSideTranslations"
-import Head from "next/head"
-import {useRouter} from "next/router"
-import {useEffect, useRef} from "react"
-import {useQuery} from "react-query"
+import {numTokensInConversation} from "@/utils/server/tiktoken"
+import {Conversation, Message} from "@/types/chat"
+import {KeyValuePair} from "@/types/data"
+import {LatestFileFormat} from "@/types/export"
+import {FolderType} from "@/types/folder"
+import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
+import {Prompt} from "@/types/prompt"
+import {Chat} from "@/components/Chat/Chat"
+import {ChatBar} from "@/components/ChatBar/ChatBar"
+import PromptBar from "@/components/PromptBar"
+import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
+import {Tiktoken} from "js-tiktoken/lite"
+import cl100k_base from "js-tiktoken/ranks/cl100k_base";
+
 
 interface Props {
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
   defaultModelId: OpenAIModelID
 }
+
+const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
   const {t} = useTranslation("chat")
@@ -53,6 +55,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
   const router = useRouter()
   const {unlocked} = useUnlock()
+  const encoding = new Tiktoken(cl100k_base)
 
   const {
     state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
@@ -60,17 +63,17 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   } = contextValue
 
   const {data: modelData, error} = useQuery(
-      ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
-      ({signal}) => {
-        if (!unlocked) {
-          return null
-        } else if (!apiKey && !serverSideApiKeyIsSet) {
-          return null
-        } else {
-          return getModels({key: apiKey}, signal)
-        }
-      },
-      {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
+    ({signal}) => {
+      if (!unlocked) {
+        return null
+      } else if (!apiKey && !serverSideApiKeyIsSet) {
+        return null
+      } else {
+        return getModels({key: apiKey}, signal)
+      }
+    },
+    {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
 
   const stopConversationRef = useRef<boolean>(false)
@@ -143,18 +146,24 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
   const handleNewConversation = () => {
     const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
-    const newConversation = createNewConversation(
+    if (
+      lastConversation &&
+      lastConversation.name === t(NEW_CONVERSATION_TITLE) &&
+      lastConversation.messages.length === 0
+    ) {
+      homeDispatch({field: "selectedConversation", value: lastConversation})
+    } else {
+      const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
         lastConversation?.model ?? OpenAIModels[defaultModelId],
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
-    )
-    const updatedConversations = [...conversations, newConversation]
-
-    homeDispatch({field: "selectedConversation", value: newConversation})
-    homeDispatch({field: "conversations", value: updatedConversations})
-
-    saveSelectedConversation(newConversation)
-    saveConversationsHistory(updatedConversations)
+      )
+      const updatedConversations = [...conversations, newConversation]
+      homeDispatch({field: "selectedConversation", value: newConversation})
+      homeDispatch({field: "conversations", value: updatedConversations})
+      saveSelectedConversation(newConversation)
+      saveConversationsHistory(updatedConversations)
+    }
 
     homeDispatch({field: "loading", value: false})
   }
@@ -180,14 +189,14 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       console.debug(`useEffect: fetch:${filename}`)
       homeDispatch({field: "triggerFactoryPrompts", value: false})
       fetch(filename)
-      .then((response) => response.text())
-      .then((text) => {
-        let factoryData: LatestFileFormat = JSON.parse(text)
-        const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
-        homeDispatch({field: "folders", value: folders})
-        homeDispatch({field: "prompts", value: prompts})
-      })
-      .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
+        .then((response) => response.text())
+        .then((text) => {
+          let factoryData: LatestFileFormat = JSON.parse(text)
+          const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
+          homeDispatch({field: "folders", value: folders})
+          homeDispatch({field: "prompts", value: prompts})
+        })
+        .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
   }, [triggerFactoryPrompts])
 
@@ -209,15 +218,15 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
     serverSideApiKeyIsSet &&
-    homeDispatch({
-      field: "serverSideApiKeyIsSet",
-      value: serverSideApiKeyIsSet
-    })
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
     serverSidePluginKeysSet &&
-    homeDispatch({
-      field: "serverSidePluginKeysSet",
-      value: serverSidePluginKeysSet
-    })
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
   }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // Load settings from local storage.
@@ -226,21 +235,21 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     const apiKey = getApiKey()
 
     serverSideApiKeyIsSet &&
-    homeDispatch({
-      field: "serverSideApiKeyIsSet",
-      value: serverSideApiKeyIsSet
-    })
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
     serverSidePluginKeysSet &&
-    homeDispatch({
-      field: "serverSidePluginKeysSet",
-      value: serverSidePluginKeysSet
-    })
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
 
     defaultModelId &&
-    homeDispatch({
-      field: "defaultModelId",
-      value: defaultModelId
-    })
+      homeDispatch({
+        field: "defaultModelId",
+        value: defaultModelId
+      })
 
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
@@ -293,10 +302,18 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
     }
 
-    const totalChars = selectedConversation ? selectedConversation?.messages.reduce((acc, message) => acc + message.content.length, 0) : -1
-    if (totalChars < 0 || totalChars > DO_NOT_RESTART_CONVERSATION_IF_LARGER_THAN_CHARS) {
+    const allMessages: Message[] = [
+      {
+        role: "system",
+        content: selectedConversation?.prompt ?? ""
+      },
+      ...(selectedConversation?.messages ?? [])
+    ]
+    const tokenCount = numTokensInConversation(encoding, allMessages, selectedConversation?.model.id ?? "")
+    console.debug(`useEffect: tokenCount:${tokenCount}`)
+    if (tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
       const lastConversation =
-          conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
+        conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
       if (lastConversation && lastConversation.messages.length === 0) {
         // If no conversation was selected, select the last conversation if it was empty.
         homeDispatch({field: "conversations", value: cleanedConversationHistory})
@@ -304,9 +321,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       } else {
         // Or create a new empty conversation.
         const newConversation = createNewConversation(
-            t(NEW_CONVERSATION_TITLE),
-            lastConversation?.model ?? OpenAIModels[defaultModelId],
-            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+          t(NEW_CONVERSATION_TITLE),
+          lastConversation?.model ?? OpenAIModels[defaultModelId],
+          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
         // Only add a new conversation to the history if there are existing conversations.
         if (cleanedConversationHistory.length > 0) {
@@ -320,52 +337,52 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // LAYOUT --------------------------------------------
 
   return (
-      <HomeContext.Provider
-          value={{
-            ...contextValue,
-            handleNewConversation,
-            handleCreateFolder,
-            handleDeleteFolder,
-            handleUpdateFolder,
-            handleSelectConversation,
-            handleUpdateConversation
-          }}
-      >
-        <Head>
-          <title>Chatty</title>
+    <HomeContext.Provider
+      value={{
+        ...contextValue,
+        handleNewConversation,
+        handleCreateFolder,
+        handleDeleteFolder,
+        handleUpdateFolder,
+        handleSelectConversation,
+        handleUpdateConversation
+      }}
+    >
+      <Head>
+        <title>Chatty</title>
 
-          <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`}/>
-          <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`}/>
-          <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`}/>
-          <link rel="manifest" href={`${router.basePath}/site.webmanifest`}/>
-          <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444"/>
-          <meta name="msapplication-TileColor" content="#da532c"/>
-          <meta name="theme-color" content="#ffffff"/>
+        <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
+        <link rel="manifest" href={`${router.basePath}/site.webmanifest`} />
+        <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
 
-          <meta name="description" content="ChatGPT but better."/>
-          <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
-        </Head>
-        {selectedConversation && (
-            <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
-              <div className="flex h-full w-full overflow-y-hidden pt-0">
-                <ChatBar/>
-                <div className="flex flex-1">
-                  <Chat stopConversationRef={stopConversationRef}/>
-                </div>
-                <PromptBar/>
-              </div>
-            </main>
-        )}
-      </HomeContext.Provider>
+        <meta name="description" content="ChatGPT but better." />
+        <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
+      </Head>
+      {selectedConversation && (
+        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
+          <div className="flex h-full w-full overflow-y-hidden pt-0">
+            <ChatBar />
+            <div className="flex flex-1">
+              <Chat stopConversationRef={stopConversationRef} />
+            </div>
+            <PromptBar />
+          </div>
+        </main>
+      )}
+    </HomeContext.Provider>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
-      (process.env.OPENAI_DEFAULT_MODEL &&
-          Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-          process.env.OPENAI_DEFAULT_MODEL) ||
-      fallbackOpenAIModel.id
+    (process.env.OPENAI_DEFAULT_MODEL &&
+      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
+      process.env.OPENAI_DEFAULT_MODEL) ||
+    fallbackOpenAIModel.id
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
