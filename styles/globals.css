@@ -60,3 +60,16 @@ pre:has(div.codeblock) {
   background-color: #f0f0f0;
   color: #333;
 }
+
+.drop-zone {
+  background-color: #cccccc;
+  border-color: #cccccc;
+  transition: background-color 0.2s;
+  color: black;
+}
+
+.drop-zone:hover {
+  background-color: #555555;
+  border-color: #ff9999;
+  color: white;
+}

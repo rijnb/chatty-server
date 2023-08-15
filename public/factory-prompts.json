@@ -3,6 +3,32 @@
   "history": [],
   "prompts": [
     {
+      "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
+      "name": "Paste a code snippet",
+      "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
+      "content": "Consider the following code. Just respond with “OK, ask me about your code.” if you get this.\n\n```\n{{Paste a code snippet or complete file}}\n```",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1"
+    },
+    {
+      "id": "a07c4d13-b7a8-416a-af30-da4c39401cf3",
+      "name": "Drop some code files",
+      "description": "Just drop your code files in chat so we can use it in our chat. The filenames are automatically used to differentiate between files.",
+      "content": "Consider the following code files and their contents. Just respond with “OK, ask me about your code.” if you get this.\n\n{{Drop your code files here #DROP}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1"
+    },
+    {
       "id": "a61f9571-e997-4d43-9a49-216f0fe2e4a1",
       "name": "Brainstorm",
       "description": "Give me a subject and I'll brainstorm on it.",
@@ -560,19 +586,6 @@
         "tokenLimit": 32000
       },
       "folderId": "652556cb-c731-4724-aee3-a022dfd2179c"
-    },
-    {
-      "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
-      "name": "Add code to chat",
-      "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
-      "content": "Consider the following code. Just respond with “OK, ask me about your code.” if you get this.\n\nFilename: {{Filename of code (no extension needed), or just type 'x'}}\n```\n{{Paste a code snippet or complete file}}\n```",
-      "model": {
-        "id": "gpt-4-32k",
-        "name": "gpt-4-32k",
-        "maxLength": 96000,
-        "tokenLimit": 32000
-      },
-      "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1"
     },
     {
       "id": "efcb0e4d-e798-47cd-9be2-664765767512",
