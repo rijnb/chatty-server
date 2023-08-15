@@ -17,12 +17,12 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     state: {selectedConversation}
   } = useContext(HomeContext)
 
-  const [tokenizer, setTokenizer] = useState<Tiktoken | null>(null)
+  const [encoding, setEncoding] = useState<Tiktoken | null>(null)
 
   useEffect(() => {
     const initToken = async () => {
       let tokenizer = await getTiktokenEncoding()
-      setTokenizer(tokenizer)
+      setEncoding(tokenizer)
     }
 
     initToken()
@@ -34,11 +34,11 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     {role: "user", content: content ?? ""}
   ]
 
-  if (tokenizer == null) {
+  if (encoding == null) {
     return null
   }
 
-  const count = numTokensInConversation(tokenizer, messages, selectedConversation?.model.id ?? "")
+  const count = numTokensInConversation(encoding, messages, selectedConversation?.model.id ?? "")
 
   return count > tokenLimit ? (
     <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
