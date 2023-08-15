@@ -3,6 +3,19 @@
   "history": [],
   "prompts": [
     {
+      "id": "84988981-33c1-46a9-8e65-adfa66cc2258",
+      "name": "Analyze text file",
+      "description": "Just drop your text file(s) here and we can chat about it. The text file can be anything. Excel exported as CSV, JSON, Markdown, whatever.",
+      "content": "Consider the following text files and their contents. Just respond with “OK, ask me about your files.” if you get this.\n\n{{Drop your text files here #DROP}}",
+      "model": {
+        "id": "gpt-4-32k",
+        "name": "gpt-4-32k",
+        "maxLength": 96000,
+        "tokenLimit": 32000
+      },
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6"
+    },
+    {
       "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
       "name": "Paste a code snippet",
       "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",

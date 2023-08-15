@@ -1,4 +1,6 @@
+import {programmingLanguages} from "@/utils/app/codeblock"
 import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
+import {useTheme} from "next-themes"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 import {ModalDialog} from "@/components/ModalDialog"
@@ -28,6 +30,7 @@ type DroppedContent = {
 }
 
 export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: Props) => {
+  const {theme, setTheme} = useTheme()
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
@@ -44,7 +47,10 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
     if (files) {
       const readFilePromises = Array.from(files)
-        .filter((file) => file.type === "text/plain")
+        .filter((file) => {
+          const ext = file.name.split(".").pop() ?? ""
+          return file.type === "text/plain" || programmingLanguages[ext] !== undefined
+        })
         .map((file) => {
           return new Promise<DroppedFile>((resolve) => {
             const reader = new FileReader()
@@ -117,7 +123,9 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
         {updatedPromptVariables.map((variable, index) => (
           <div className="mb-4" key={index}>
-            <div className="mb-2 text-sm font-bold text-neutral-200">{stripPromptKeywords(variable.key)}:</div>
+            <div className={`mb-2 text-sm font-bold ${theme === "dark" ? "text-neutral-200" : "text-neutral-800"}`}>
+              {stripPromptKeywords(variable.key)}:
+            </div>
             <div role="dialog" onKeyDown={handleKeyDown}>
               {
                 // If this is the last variable and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
