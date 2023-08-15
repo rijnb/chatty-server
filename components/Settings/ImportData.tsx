@@ -1,5 +1,5 @@
 import {IconFileImport} from "@tabler/icons-react"
-import {FC, useState} from "react"
+import {useState} from "react"
 import {isValidJsonData} from "@/utils/app/import"
 import {SupportedFileFormats} from "@/types/export"
 import SidebarButton from "../Sidebar/SidebarButton"
@@ -11,7 +11,7 @@ interface Props {
   onImport: (data: SupportedFileFormats) => void
 }
 
-export const ImportData: FC<Props> = ({id, text, onImport}) => {
+export const ImportData = ({id, text, onImport}: Props) => {
   const [errors, setErrors] = useState<string[]>([])
   return (
     <>

@@ -3,7 +3,10 @@ import React from "react"
 import {ModalDialog} from "@/components/ModalDialog"
 import {UnlockCodeEditor, useUnlock} from "@/components/UnlockCode"
 
-export const UnlockOverlay = () => {
+
+interface Props {}
+
+export const UnlockOverlay = ({}: Props) => {
   const {unlocked, code, setCode, invalidCode} = useUnlock()
 
   return (

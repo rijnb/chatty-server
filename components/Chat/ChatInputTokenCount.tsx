@@ -1,16 +1,17 @@
-import {FC, useContext, useEffect, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {getTiktokenEncoding, numTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import HomeContext from "@/pages/api/home/home.context"
 import {Tiktoken} from "js-tiktoken"
 
+
 interface Props {
   content: string | undefined
   tokenLimit: number
 }
 
-export const ChatInputTokenCount: FC<Props> = ({content, tokenLimit}) => {
+export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("chat")
   const {
     state: {selectedConversation}

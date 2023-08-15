@@ -3,6 +3,7 @@ import {useRouter} from "next/router"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {ModalDialog} from "@/components/ModalDialog"
 
+
 export interface Props {
   close: () => void
 }
@@ -19,7 +20,7 @@ const useMarkdownFile = (filename: string) => {
   return fileContent
 }
 
-export default function ReleaseNotes({close}: Props) {
+export const ReleaseNotes = ({close}: Props) => {
   const {basePath} = useRouter()
 
   const releaseNotesMarkdown = useMarkdownFile(`${basePath}/RELEASE_NOTES.md`)
@@ -47,3 +48,5 @@ export default function ReleaseNotes({close}: Props) {
     </ModalDialog>
   )
 }
+
+export default ReleaseNotes

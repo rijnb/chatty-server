@@ -1,5 +1,5 @@
 import {IconFileExport} from "@tabler/icons-react"
-import {FC, useContext} from "react"
+import {useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 import PromptBarContext from "@/components/PromptBar/PromptBar.context"
@@ -10,7 +10,7 @@ import ClearPrompts from "./ClearPrompts"
 
 interface Props {}
 
-export const PromptBarSettings: FC<Props> = () => {
+export const PromptBarSettings = ({}: Props) => {
   const {t} = useTranslation("sidebar")
   const {
     state: {prompts}

@@ -22,12 +22,12 @@ export const useUnlock = () => {
   return context
 }
 
-interface UnlockProviderProps {
+interface Props {
   isProtected: boolean
   children: React.ReactNode
 }
 
-export const UnlockProvider = ({isProtected, children}: UnlockProviderProps) => {
+export const UnlockProvider = ({isProtected, children}: Props) => {
   const [loading, setLoading] = useState(isProtected)
 
   const [code, setCode] = useState("")
