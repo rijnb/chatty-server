@@ -1,8 +1,9 @@
-import {FC, KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
+import {KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 import {ModalDialog} from "@/components/ModalDialog"
+
 
 interface Props {
   prompt: Prompt
@@ -10,7 +11,7 @@ interface Props {
   onUpdatePrompt: (prompt: Prompt) => void
 }
 
-export const PromptEditModal: FC<Props> = ({prompt, onClose, onUpdatePrompt}) => {
+export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
   const {t} = useTranslation("promptbar")
   const [name, setName] = useState(prompt.name)
   const [description, setDescription] = useState(prompt.description)

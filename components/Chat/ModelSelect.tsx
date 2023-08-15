@@ -2,8 +2,9 @@ import React, {useContext} from "react"
 import {useTranslation} from "next-i18next"
 import HomeContext from "@/pages/api/home/home.context"
 
+interface Props {}
 
-export const ModelSelect = () => {
+export const ModelSelect = ({}: Props) => {
   const {t} = useTranslation("chat")
 
   const {

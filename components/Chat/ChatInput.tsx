@@ -55,7 +55,7 @@ export const ChatInput = ({
   const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()))
 
   const parsePromptVariables = (content: string) => {
-    const regex = /{{(.*?)}}/g
+    const regex = /{{(.*?)}}/g        // Match non-greedy, because there may be multiple variables in a prompt.
     const foundPromptVariables = []
     let match
 

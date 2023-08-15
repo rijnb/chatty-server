@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useRef} from "react"
+import React, {useEffect, useRef} from "react"
 import {useTranslation} from "next-i18next"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Plugin, PluginList} from "@/types/plugin"
@@ -10,7 +10,7 @@ interface Props {
   onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement>) => void
 }
 
-export const PluginSelect: FC<Props> = ({plugin, onPluginChange, onKeyDown}) => {
+export const PluginSelect = ({plugin, onPluginChange, onKeyDown}: Props) => {
   const {t} = useTranslation("chat")
 
   const selectRef = useRef<HTMLSelectElement>(null)

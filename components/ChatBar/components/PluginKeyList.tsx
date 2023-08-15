@@ -8,7 +8,9 @@ import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 
-export const PluginKeyList = () => {
+interface Props {}
+
+export const PluginKeyList = ({}: Props) => {
   const {t} = useTranslation("sidebar")
 
   const {
@@ -53,12 +55,12 @@ export const PluginKeyList = () => {
           onKeyDown={handleKeyDown}
         >
           <div className="fixed inset-0 z-10 overflow-hidden">
-            <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="flex min-h-screen items-center justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
               <div className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true" />
 
               <div
                 ref={modalRef}
-                className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
+                className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
                 role="dialog"
               >
                 <div className="mb-10 text-4xl">Google API key</div>
