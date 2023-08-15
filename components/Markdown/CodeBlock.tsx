@@ -13,7 +13,7 @@ interface Props {
   value: string
 }
 
-export const CodeBlock: FC<Props> = memo(({language, value}: Props) => {
+export const CodeBlock = memo(({language, value}: Props) => {
   const {t} = useTranslation("markdown")
   const {theme, setTheme} = useTheme()
   const [isCopied, setIsCopied] = useState<Boolean>(false)
