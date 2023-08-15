@@ -58,6 +58,39 @@ If you want to change a `factory prompt`, just click on it and a prompt
 edit dialog will be shown. Change anything and press "Save" and the prompt
 will be copied to your user prompts. You can now edit it as you like.
 
+### Creating prompts
+
+You can create your own prompts by clicking on "New prompt". A new prompt
+will be created. Click on it in the right menu bar to edit it. 
+A prompt consists of:
+
+* **Name**: this is the name of the prompt, which is shown in the prompt list.
+* **Description**: this is a description of the prompt, which is shown in the prompt list.
+* **Prompt**: this is the text that is shown in the input box when you select the prompt.
+
+In the `Prompt` box you can use `{{Variable name, or title to show}}` to indicate a variable. 
+When you select the prompt from the chat input (using `/`), a dialog will appear where you can 
+enter the values in edit boxes. 
+
+You can also add `#DROP` as the last word the prompt. This will allow you to drop
+files in the input box when you select the prompt. The files will be uploaded to
+the server. This works only for plain text files. (Note that `#DROP` must be the last
+word in the prompt.)
+
+Dropped files are added as code blocks, prefixed with their filenames, like:
+
+```
+File: SomeCode.java
+'''
+Contents of the file...
+'''
+
+File: NextFile.txt
+'''
+Contents of the next file...
+'''
+```
+
 ## Using Google search
 
 If you have Google API key and a Google search engine ID, you can use the Google 
@@ -76,6 +109,16 @@ _Rijn Buve & Oleksii Kulyk_
 ---
 
 ## Release notes
+
+### 2023-08-11
+
+#### Features
+
+* Added support for dropping files using `#DROP` in a prompt.
+
+#### Bug fixes
+
+* Cleanup of `FC` objects.
 
 ### 2023-08-11
 
