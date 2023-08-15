@@ -1,7 +1,6 @@
 import {IconX} from "@tabler/icons-react"
-import React, {FC} from "react"
+import React from "react"
 import {useTranslation} from "next-i18next"
-
 
 interface Props {
   placeholder: string
@@ -9,7 +8,7 @@ interface Props {
   onSearch: (searchTerm: string) => void
 }
 
-const Search: FC<Props> = ({placeholder, searchTerm, onSearch}) => {
+const Search = ({placeholder, searchTerm, onSearch}: Props) => {
   const {t} = useTranslation("sidebar")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +22,7 @@ const Search: FC<Props> = ({placeholder, searchTerm, onSearch}) => {
   return (
     <div className="relative flex items-center">
       <input
-        className="w-full flex-1 rounded-md border border-gray-300 dark:border-gray-600/20 bg-gray-100 dark:bg-[#202123] px-4 py-3 pr-10 text-[14px] leading-3 text-black dark:text-white"
+        className="w-full flex-1 rounded-md border border-gray-300 bg-gray-100 px-4 py-3 pr-10 text-[14px] leading-3 text-black dark:border-gray-600/20 dark:bg-[#202123] dark:text-white"
         type="text"
         placeholder={t(placeholder)}
         value={searchTerm}

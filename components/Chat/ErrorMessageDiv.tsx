@@ -1,13 +1,11 @@
 import {IconCircleX} from "@tabler/icons-react"
-import {FC} from "react"
 import {ErrorMessage} from "@/types/error"
-
 
 interface Props {
   error: ErrorMessage
 }
 
-export const ErrorMessageDiv: FC<Props> = ({error}) => {
+export const ErrorMessageDiv = ({error}: Props) => {
   return (
     <div className="mx-6 flex h-full flex-col items-center justify-center text-red-500">
       <div className="mb-5">
