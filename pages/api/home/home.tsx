@@ -342,7 +342,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
     )
     console.debug(`useEffect: tokenCount:${tokenCount}`)
-    if (tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
+    if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
       const lastConversation =
         conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
       if (lastConversation && lastConversation.messages.length === 0) {
