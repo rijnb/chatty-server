@@ -2,32 +2,44 @@ import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
 import {getPrompts} from "@/utils/app/prompts"
-import {FileFormatV4, LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
+import {ConversationV5, FileFormatV5, FolderInterfaceV4, PromptV5} from "@/types/import"
 
-export function isExportFormatV4(obj: any): obj is FileFormatV4 {
-  return obj.version === 4
-}
 
 export const exportData = (prefix: string, type: FolderType) => {
-  let conversations = getConversationsHistory()
-  let prompts = getPrompts()
-  let folders = getFolders().filter((folder) => folder.type === type)
+  let conversationsToExport: ConversationV5[] = getConversationsHistory().map((conversation) => {
+    const {model, ...rest} = conversation
+    return {model: model.id, ...rest}
+  })
 
-  const data = {
-    version: 4,
-    history: type === "chat" ? conversations : [],
-    prompts: type == "prompt" ? prompts
-        .map((prompt, index, all) => {
-          if (prompt.folderId) {
-            return prompt
-          } else {
-            const {folderId, ...rest} = prompt
-            return rest
-          }
-        }) : [],
-    folders: folders
-  } as LatestFileFormat
+  let promptsToExport: PromptV5[] = getPrompts().map((prompt) => {
+    const {model, ...rest} = prompt
+    return {model: model.id, ...rest} as PromptV5
+  })
+
+  let foldersToExport: FolderInterfaceV4[] = getFolders().filter(
+    (folder) => folder.type === type
+  ) as FolderInterfaceV4[]
+
+  /**
+   * Create body of file.
+   */
+  const data: FileFormatV5 = {
+    version: 5,
+    history: type === "chat" ? conversationsToExport : [],
+    prompts:
+      type == "prompt"
+        ? promptsToExport.map((prompt, index, all) => {
+            if (prompt.folderId) {
+              return prompt
+            } else {
+              const {folderId, ...rest} = prompt
+              return rest
+            }
+          })
+        : [],
+    folders: foldersToExport
+  } as FileFormatV5
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json"

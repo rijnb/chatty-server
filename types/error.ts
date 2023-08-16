@@ -1,5 +1,5 @@
 export interface ErrorMessage {
-  code: String | null
+  code: String | undefined
   title: String
   messageLines: String[]
 }

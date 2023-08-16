@@ -1,6 +1,6 @@
 import {Dispatch, createContext} from "react"
 import {ActionType} from "@/hooks/useCreateReducer"
-import {SupportedFileFormats} from "@/types/export"
+import {SupportedFileFormats} from "@/types/import"
 import {Prompt} from "@/types/prompt"
 import {PromptBarInitialState} from "./PromptBar.state"
 

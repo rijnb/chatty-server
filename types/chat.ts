@@ -14,9 +14,9 @@ export const equals = (msg1: Message, msg2: Message) => {
 }
 
 export interface ChatBody {
-  model: OpenAIModel
-  messages: Message[]
   key: string
+  messages: Message[]
+  model: OpenAIModel
   prompt: string
   temperature: number
 }
@@ -28,6 +28,6 @@ export interface Conversation {
   model: OpenAIModel
   prompt: string
   temperature: number
-  folderId: string | null
+  folderId: string | undefined
   time: number
 }

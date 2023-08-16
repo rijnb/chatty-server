@@ -6,6 +6,6 @@ export interface Prompt {
   description: string
   content: string
   model: OpenAIModel
-  folderId: string | null
-  factory: boolean | null
+  folderId: string | undefined
+  factory: boolean | undefined
 }

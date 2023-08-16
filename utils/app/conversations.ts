@@ -15,18 +15,18 @@ export const createNewConversation = (name: string, model: OpenAIModel, temperat
     model: model,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
-    folderId: null,
+    folderId: undefined,
     time: new Date().getTime()
   }
 }
 
-export const getSelectedConversation = (): Conversation | null => {
+export const getSelectedConversation = (): Conversation | undefined => {
   const conversation = localStorage.getItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
   try {
     return conversation ? JSON.parse(conversation) : undefined
   } catch (error) {
     console.error(`Local storage error:${error}`)
-    return null
+    return undefined
   }
 }
 

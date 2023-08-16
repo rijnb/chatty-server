@@ -26,7 +26,7 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
   if (!updatedConversation.folderId) {
     updatedConversation = {
       ...updatedConversation,
-      folderId: updatedConversation.folderId || null
+      folderId: updatedConversation.folderId || undefined
     }
   }
   if (!updatedConversation.messages) {
@@ -59,7 +59,7 @@ export const cleanConversationHistory = (history: any[]): Conversation[] => {
       }
 
       if (!conversation.folderId) {
-        conversation.folderId = null
+        conversation.folderId = undefined
       }
 
       if (!conversation.messages) {
