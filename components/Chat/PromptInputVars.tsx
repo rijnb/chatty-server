@@ -1,9 +1,10 @@
 import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTheme} from "next-themes"
-import {programmingLanguages} from "@/utils/app/codeblock"
+import {isLanguageSupported} from "@/utils/app/codeblock"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 import {ModalDialog} from "@/components/ModalDialog"
+
 
 interface Props {
   prompt: Prompt
@@ -41,10 +42,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
     if (files) {
       const readFilePromises = Array.from(files)
-        .filter((file) => {
-          const ext = file.name.split(".").pop() ?? ""
-          return file.type === "text/plain" || programmingLanguages[ext] !== undefined
-        })
+        .filter((file) => file.type === "text/plain" || isLanguageSupported(file.name))
         .map((file) => {
           return new Promise<DroppedFile>((resolve) => {
             const reader = new FileReader()
