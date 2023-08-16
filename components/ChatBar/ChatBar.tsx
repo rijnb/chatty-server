@@ -16,7 +16,7 @@ import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
-import {OpenAIModels, fallbackOpenAIModelID} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ChatBarSettings from "./components/ChatBarSettings"
@@ -28,7 +28,7 @@ import {ChatBarInitialState, initialState} from "./ChatBar.state"
 
 
 export const ChatBar = () => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
   const chatBarContextValue = useCreateReducer<ChatBarInitialState>({initialState})
 
   const {
@@ -88,7 +88,7 @@ export const ChatBar = () => {
     if (defaultModelId) {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        OpenAIModels[defaultModelId],
+        defaultModelId || FALLBACK_OPENAI_MODEL_ID,
         OPENAI_DEFAULT_TEMPERATURE
       )
       homeDispatch({
@@ -111,7 +111,7 @@ export const ChatBar = () => {
           ? history[history.length - 1]
           : createNewConversation(
               t(NEW_CONVERSATION_TITLE),
-              OpenAIModels[defaultModelId || fallbackOpenAIModelID],
+              defaultModelId || FALLBACK_OPENAI_MODEL_ID,
               OPENAI_DEFAULT_TEMPERATURE
             )
     })
@@ -142,7 +142,7 @@ export const ChatBar = () => {
           field: "selectedConversation",
           value: createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            OpenAIModels[defaultModelId],
+            defaultModelId || FALLBACK_OPENAI_MODEL_ID,
             OPENAI_DEFAULT_TEMPERATURE
           )
         })
@@ -184,6 +184,7 @@ export const ChatBar = () => {
         value: conversations
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, conversations])
 
   return (

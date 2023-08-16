@@ -15,7 +15,7 @@ export const TemperatureSlider = ({label, onChangeTemperature}: Props) => {
   } = useContext(HomeContext)
   const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
   const [temperature, setTemperature] = useState(lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE)
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(event.target.value)
     setTemperature(newValue)

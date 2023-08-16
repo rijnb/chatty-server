@@ -1,18 +1,18 @@
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {Conversation} from "@/types/chat"
-import {OpenAIModel} from "@/types/openai"
+import {OpenAIModelID} from "@/types/openai"
 import {v4 as uuidv4} from "uuid"
 
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
 
-export const createNewConversation = (name: string, model: OpenAIModel, temperature: number): Conversation => {
+export const createNewConversation = (name: string, modelId: OpenAIModelID, temperature: number): Conversation => {
   return {
     id: uuidv4(),
     name: name,
     messages: [],
-    model: model,
+    modelId: modelId,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
     folderId: undefined,

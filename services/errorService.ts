@@ -4,7 +4,7 @@ import {ErrorMessage} from "@/types/error"
 
 
 const useErrorService = () => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
 
   return {
     getModelsError: useMemo(

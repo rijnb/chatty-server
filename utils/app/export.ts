@@ -8,13 +8,13 @@ import {ConversationV5, FileFormatV5, FolderInterfaceV4, PromptV5} from "@/types
 
 export const exportData = (prefix: string, type: FolderType) => {
   let conversationsToExport: ConversationV5[] = getConversationsHistory().map((conversation) => {
-    const {model, ...rest} = conversation
-    return {model: model.id, ...rest}
+    const {modelId, ...rest} = conversation
+    return {modelId: modelId, ...rest}
   })
 
   let promptsToExport: PromptV5[] = getPrompts().map((prompt) => {
-    const {model, ...rest} = prompt
-    return {model: model.id, ...rest} as PromptV5
+    const {modelId, ...rest} = prompt
+    return {modelId: modelId, ...rest} as PromptV5
   })
 
   let foldersToExport: FolderInterfaceV4[] = getFolders().filter(

@@ -1,19 +1,19 @@
-import {OpenAIModel} from "@/types/openai"
+import {OpenAIModelID} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {v4 as uuidv4} from "uuid"
 
 
 export const STORAGE_KEY_PROMPTS = "prompts"
 
-export const createNewPrompt = (name: string, model: OpenAIModel): Prompt => {
+export const createNewPrompt = (name: string, modelId: OpenAIModelID): Prompt => {
   return {
     id: uuidv4(),
     name: name,
     description: "",
     content: "",
-    model: model,
+    modelId: modelId,
     folderId: undefined,
-    factory : undefined
+    factory: undefined
   }
 }
 

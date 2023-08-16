@@ -1,14 +1,14 @@
 import {Conversation} from "@/types/chat"
-import {OpenAIModelID, OpenAIModels} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
   let updatedConversation = conversation
-  if (!updatedConversation.model) {
+  if (!updatedConversation.modelId) {
     updatedConversation = {
       ...updatedConversation,
-      model: updatedConversation.model || OpenAIModels[OpenAIModelID.GPT_3_5]
+      modelId: updatedConversation.modelId || FALLBACK_OPENAI_MODEL_ID
     }
   }
   if (!updatedConversation.prompt) {
@@ -38,38 +38,33 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
   return updatedConversation
 }
 
-export const cleanConversationHistory = (history: any[]): Conversation[] => {
+export const cleanConversationHistory = (history: Conversation[]): Conversation[] => {
   if (!Array.isArray(history)) {
-    console.warn("History is not an array. Returning an empty array.")
+    console.warn("Error: History is not an array. Returning an empty array.")
     return []
   }
 
-  return history.reduce((acc: any[], conversation) => {
+  return history.reduce((acc: Conversation[], conversation) => {
     try {
-      if (!conversation.model) {
-        conversation.model = OpenAIModels[OpenAIModelID.GPT_3_5]
+      if (!conversation.modelId) {
+        conversation.modelId = FALLBACK_OPENAI_MODEL_ID
       }
-
       if (!conversation.prompt) {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT
       }
-
-      if (conversation.temperature === undefined || conversation.temperature === null) {
+      if (!conversation.temperature) {
         conversation.temperature = OPENAI_DEFAULT_TEMPERATURE
       }
-
       if (!conversation.folderId) {
         conversation.folderId = undefined
       }
-
       if (!conversation.messages) {
         conversation.messages = []
       }
-
       acc.push(conversation)
       return acc
     } catch (error) {
-      console.warn(`Error while cleaning conversations history. Removing culprit`, error)
+      console.warn(`Error: Error while cleaning conversations history. Removing culprit:`, error)
     }
     return acc
   }, [])

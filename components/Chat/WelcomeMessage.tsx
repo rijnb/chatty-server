@@ -1,3 +1,4 @@
+import Image from "next/image"
 import {useRouter} from "next/router"
 
 export interface Props {}
@@ -24,7 +25,7 @@ export const WelcomeMessage = ({}: Props) => {
           </div>
           <div className="text-center text-gray-700 dark:text-gray-400">
             <div>&nbsp;</div>
-            <img src={`${router.basePath}/icon-256.png`} alt="icon" className="mx-auto mb-6 h-32 w-32" />
+            <Image src={`${router.basePath}/icon-256.png`} height="256" width="256" alt="icon" className="mx-auto mb-6 h-32 w-32" />
             <div>&nbsp;</div>
             <div className="font-light">Chatty is 100% unaffiliated with OpenAI.</div>
             <div>&nbsp;</div>

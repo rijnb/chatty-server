@@ -1,7 +1,7 @@
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {ChatCompletionStream, OpenAIError} from "@/utils/server"
-import {getTiktokenEncoding, numTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
+import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
 
@@ -11,34 +11,28 @@ export const config = {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  const encoding = await getTiktokenEncoding()
   try {
-    const {model, messages, key, prompt, temperature} = (await req.json()) as ChatBody
-    const {tokenLimit} = OpenAIModels[model.id as OpenAIModelID]
+    const {messages, apiKey, modelId, prompt, temperature} = (await req.json()) as ChatBody
+    const {tokenLimit} = OpenAIModels[modelId]
+    const encoding = await getTiktokenEncoding()
 
     let promptToSend = prompt || OPENAI_DEFAULT_SYSTEM_PROMPT
     let temperatureToUse = temperature || OPENAI_DEFAULT_TEMPERATURE
 
-    let messagesToSend = await prepareMessagesToSend(
-      tokenLimit,
-      OPENAI_API_MAX_TOKENS,
-      promptToSend,
-      messages,
-      model.id
-    )
+    let messagesToSend = await prepareMessagesToSend(tokenLimit, OPENAI_API_MAX_TOKENS, promptToSend, messages, modelId)
 
     // Log prompt statistics (not just debugging, also for checking use of service).
     const allMessages: Message[] = [{role: "system", content: promptToSend}, ...(messagesToSend ?? [])]
-    const latestMessage = allMessages[allMessages.length - 1]
+    const message = allMessages[allMessages.length - 1]
     console.info(`sendRequest: {\
-lastMessage:'${trimForPrivacy(latestMessage.content)}', \
-lastMessageLengthInChars:${latestMessage.content.length}, \
-tokenCount:${numTokensInConversation(encoding, allMessages, model.id)}, \
-tokenLimit:${model.tokenLimit}, \
-nrOfMessagesTotal:${allMessages.length}, \
-model:'${model.id}', \
+message:'${trimForPrivacy(message.content)}', \
+messageLengthInChars:${message.content.length}, \
+totalNumberOfMessages:${allMessages.length}, \
+totalNumberOfTokens:${numberOfTokensInConversation(encoding, allMessages, modelId)}, \
+modelId:'${modelId}', \
 temperature:${temperature}}`)
-    return ChatCompletionStream(model, promptToSend, temperatureToUse, key, messagesToSend)
+
+    return ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
   } catch (error) {
     const {status, statusText, content, message} = error as any
     console.warn(

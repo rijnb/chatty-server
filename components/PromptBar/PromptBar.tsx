@@ -7,7 +7,6 @@ import {importData} from "@/utils/app/import"
 import {createNewPrompt, removePrompts, savePrompts} from "@/utils/app/prompts"
 import {saveShowPromptBar} from "@/utils/app/settings"
 import {SupportedFileFormats} from "@/types/import"
-import {OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
 import PromptBarSettings from "./components/PromptBarSettings"
@@ -16,11 +15,11 @@ import PromptList from "./components/PromptList"
 import Sidebar from "../Sidebar"
 import PromptBarContext from "./PromptBar.context"
 import {PromptBarInitialState, initialState} from "./PromptBar.state"
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid"
 
 
 const PromptBar = () => {
-  const {t} = useTranslation("promptbar")
+  const {t} = useTranslation("common")
   const promptBarContextValue = useCreateReducer<PromptBarInitialState>({initialState})
 
   const {
@@ -44,7 +43,7 @@ const PromptBar = () => {
       const nrFactoryPrompts = prompts.filter((p) => p.factory).length
       const updatedPrompts = [
         ...prompts,
-        createNewPrompt(`Prompt ${prompts.length - nrFactoryPrompts + 1}`, OpenAIModels[defaultModelId])
+        createNewPrompt(`Prompt ${prompts.length - nrFactoryPrompts + 1}`, defaultModelId)
       ]
       homeDispatch({field: "prompts", value: updatedPrompts})
       savePrompts(updatedPrompts)
@@ -131,6 +130,7 @@ const PromptBar = () => {
     } else {
       promptDispatch({field: "filteredPrompts", value: prompts})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, prompts])
 
   return (

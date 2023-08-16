@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import {getTiktokenEncoding, numTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
+import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
 
@@ -27,7 +27,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(21)
+        expect(numberOfTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(21)
       })
 
       it("should count tokens2", async () => {
@@ -43,7 +43,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(18)
+        expect(numberOfTokensInConversation(encoder, messages, OpenAIModelID.GPT_4_32K)).toEqual(18)
       })
     })
 
@@ -62,7 +62,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(23)
+        expect(numberOfTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(23)
       })
 
       it("should count tokens2", async () => {
@@ -78,7 +78,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(numTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(20)
+        expect(numberOfTokensInConversation(encoder, messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(20)
       })
     })
   })

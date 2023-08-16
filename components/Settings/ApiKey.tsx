@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const ApiKey = ({apiKey, onApiKeyChange}: Props) => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
   const [isChanging, setIsChanging] = useState(false)
   const [newKey, setNewKey] = useState(apiKey)
   const inputRef = useRef<HTMLInputElement>(null)

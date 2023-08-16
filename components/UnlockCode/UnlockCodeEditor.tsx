@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const UnlockCodeEditor = ({unlockCode, onUnlockCodeChange}: Props) => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
   const [isChanging, setIsChanging] = useState(false)
   const [newUnlockCode, setNewUnlockCode] = useState(unlockCode)
   const inputRef = useRef<HTMLInputElement>(null)

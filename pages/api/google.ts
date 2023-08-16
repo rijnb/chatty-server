@@ -17,7 +17,7 @@ import jsdom, {JSDOM} from "jsdom"
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const {messages, key, model, googleAPIKey, googleCSEId} = req.body as GoogleBody
+    const {messages, apiKey, modelId, googleAPIKey, googleCSEId} = req.body as GoogleBody
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
     }
@@ -75,9 +75,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const answerPrompt = endent`
     Provide me with the information I requested. Use the sources to provide an accurate response.
     Respond in markdown format. Cite the sources you used as a markdown link as you use them at the 
-    end of each sentence by number of the source (example: [[1]](link.com)). 
-    Provide an accurate response and then stop. Maximum 10 sentences. 
-    Today's date is ${new Date().toLocaleDateString()}.
+    end of each sentence by number of the source (example: [[1]](link.com)). Make sure the references
+    are counted properly and are in order. Provide an accurate response and then stop. 
+    Maximum 10 sentences. Today's date is ${new Date().toLocaleDateString()}.
 
     Example Input:
     What's the weather in San Francisco today?
@@ -112,10 +112,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       headers: {
         "Content-Type": "application/json",
         ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
+          Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
+          "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {
@@ -124,9 +124,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       method: "POST",
       body: JSON.stringify({
-        model: model.id,
+        model: modelId,
         messages: [answerMessage],
-        max_tokens: 1000,
+        max_tokens: 2000,
         temperature: 1,
         stream: false
       })

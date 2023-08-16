@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const ChatBarSettings = ({}: Props) => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
 
   const {isProtected, code, setCode} = useUnlock()
 
