@@ -109,7 +109,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
       for (const message of historyItem.messages) {
         if (
           (message.role && typeof message.role !== "string") ||
-          !(message.role in ["user", "assistant"]) ||
+          !["user", "assistant"].includes(message.role) ||
           (message.content && typeof message.content !== "string")
         ) {
           errors.push(`Invalid message in history; expected {role, content}\nGot: ${JSON.stringify(message)}`)
