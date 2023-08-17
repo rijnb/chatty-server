@@ -8,7 +8,7 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const {key} = (await req.json()) as {key: string}
+    const {apiKey} = (await req.json()) as {apiKey: string}
 
     let url = `${OPENAI_API_HOST}/v1/models`
     if (OPENAI_API_TYPE === "azure") {
@@ -18,14 +18,14 @@ const handler = async (req: Request): Promise<Response> => {
     const headers = {
       "Content-Type": "application/json",
       ...(OPENAI_API_TYPE === "openai" && {
-        Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
       }),
       ...(OPENAI_API_TYPE === "openai" &&
         OPENAI_ORGANIZATION && {
           "OpenAI-Organization": OPENAI_ORGANIZATION
         }),
       ...(OPENAI_API_TYPE === "azure" && {
-        "api-key": `${key ? key : process.env.OPENAI_API_KEY}`
+        "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
       })
     }
     const response = await fetch(url, {headers: headers})
@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
       })
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
-    console.error(`Error:${error}`)
+    console.error(`Error retrieving models, error:${error}`)
     return new Response("Error", {status: 500, statusText: error ? error.toString() : ""})
   }
 }

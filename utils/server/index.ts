@@ -1,5 +1,5 @@
 import {Message} from "@/types/chat"
-import {OpenAIModel} from "@/types/openai"
+import {OpenAIModelID} from "@/types/openai"
 import {
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
@@ -56,7 +56,7 @@ function createOpenAiClient(configuration: Configuration) {
 }
 
 export const ChatCompletionStream = async (
-  model: OpenAIModel,
+  modelId: OpenAIModelID,
   systemPrompt: string,
   temperature: number,
   apiKey: string,
@@ -71,7 +71,7 @@ export const ChatCompletionStream = async (
 
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.createChatCompletion({
-    model: model.id,
+    model: modelId,
     messages: [{role: "system", content: systemPrompt}, ...messages],
     max_tokens: OPENAI_API_MAX_TOKENS,
     temperature: temperature,

@@ -1,5 +1,5 @@
 import {IconCheck, IconClipboard, IconDownload} from "@tabler/icons-react"
-import {FC, memo, useState} from "react"
+import {memo, useState} from "react"
 import {Prism as SyntaxHighlighter} from "react-syntax-highlighter"
 import {oneDark, oneLight} from "react-syntax-highlighter/dist/cjs/styles/prism"
 import {useTranslation} from "next-i18next"
@@ -14,8 +14,8 @@ interface Props {
 }
 
 export const CodeBlock = memo(({language, value}: Props) => {
-  const {t} = useTranslation("markdown")
-  const {theme, setTheme} = useTheme()
+  const {t} = useTranslation("common")
+  const {theme} = useTheme()
   const [isCopied, setIsCopied] = useState<Boolean>(false)
 
   const handleCopyToClipboard = () => {

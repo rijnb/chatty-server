@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
-import {getTiktokenEncoding, numTokensInConversation} from "@/utils/server/tiktoken"
+import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import HomeContext from "@/pages/api/home/home.context"
 import {Tiktoken} from "js-tiktoken"
@@ -8,23 +8,22 @@ import {Tiktoken} from "js-tiktoken"
 
 interface Props {
   content: string | undefined
-  tokenLimit: number
+  tokenLimit: number | undefined
 }
 
 export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
   const {
     state: {selectedConversation}
   } = useContext(HomeContext)
 
-  const [tokenizer, setTokenizer] = useState<Tiktoken | null>(null)
+  const [encoding, setEncoding] = useState<Tiktoken | null>(null)
 
   useEffect(() => {
     const initToken = async () => {
       let tokenizer = await getTiktokenEncoding()
-      setTokenizer(tokenizer)
+      setEncoding(tokenizer)
     }
-
     initToken()
   }, [])
 
@@ -34,12 +33,10 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     {role: "user", content: content ?? ""}
   ]
 
-  if (tokenizer == null) {
+  if (!encoding || !tokenLimit || !selectedConversation) {
     return null
   }
-
-  const count = numTokensInConversation(tokenizer, messages, selectedConversation?.model.id ?? "")
-
+  const count = numberOfTokensInConversation(encoding, messages, selectedConversation.modelId)
   return count > tokenLimit ? (
     <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
       {count} / {tokenLimit} {t("tokens")}

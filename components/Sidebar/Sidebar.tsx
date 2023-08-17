@@ -35,7 +35,7 @@ const Sidebar = <T,>({
   handleCreateFolder,
   handleDrop
 }: Props<T>) => {
-  const {t} = useTranslation("promptbar")
+  const {t} = useTranslation("common")
 
   const handleDragOver = (e: any) => {
     e.preventDefault()

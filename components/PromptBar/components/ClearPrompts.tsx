@@ -10,7 +10,7 @@ interface Props {
 export const ClearPrompts = ({onClearPrompts}: Props) => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false)
 
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
 
   const handleClearPrompts = () => {
     onClearPrompts()

@@ -1,4 +1,4 @@
-import {OpenAIModel} from "./openai"
+import {OpenAIModelID} from "./openai"
 
 export const titleNewConversation = 'asd'
 
@@ -14,9 +14,9 @@ export const equals = (msg1: Message, msg2: Message) => {
 }
 
 export interface ChatBody {
-  model: OpenAIModel
+  apiKey: string
   messages: Message[]
-  key: string
+  modelId: OpenAIModelID
   prompt: string
   temperature: number
 }
@@ -25,9 +25,9 @@ export interface Conversation {
   id: string
   name: string
   messages: Message[]
-  model: OpenAIModel
+  modelId: OpenAIModelID
   prompt: string
   temperature: number
-  folderId: string | null
+  folderId: string | undefined
   time: number
 }

@@ -20,9 +20,11 @@ export const PromptFolderList = ({}: Props) => {
 
   const handleDrop = (e: any, folder: FolderInterface) => {
     if (e.dataTransfer) {
-      const prompt = JSON.parse(e.dataTransfer.getData("prompt"))
-      const updatedPrompt = {...prompt, folderId: folder.id}
-      handleUpdatePrompt(updatedPrompt)
+      const data = e.dataTransfer.getData("prompt")
+      if (data) {
+        const prompt = JSON.parse(data)
+        handleUpdatePrompt({...prompt, folderId: folder.id})
+      }
     }
   }
 

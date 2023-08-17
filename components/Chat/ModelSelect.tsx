@@ -5,7 +5,7 @@ import HomeContext from "@/pages/api/home/home.context"
 interface Props {}
 
 export const ModelSelect = ({}: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
 
   const {
     state: {selectedConversation, models, defaultModelId},
@@ -29,7 +29,7 @@ export const ModelSelect = ({}: Props) => {
         <select
           className="w-full bg-transparent p-2"
           placeholder={t("Select a model")}
-          value={selectedConversation?.model?.id || defaultModelId}
+          value={selectedConversation?.modelId || defaultModelId}
           onChange={handleSelectModel}
         >
           {models.map((model) => (

@@ -1,6 +1,6 @@
-import {programmingLanguages} from "@/utils/app/codeblock"
 import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTheme} from "next-themes"
+import {isLanguageSupported} from "@/utils/app/codeblock"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Prompt} from "@/types/prompt"
 import {ModalDialog} from "@/components/ModalDialog"
@@ -24,13 +24,8 @@ type DroppedFile = {
   content: string
 }
 
-type DroppedContent = {
-  numberOfFiles: number
-  value: string
-}
-
 export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: Props) => {
-  const {theme, setTheme} = useTheme()
+  const {theme} = useTheme()
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
@@ -47,10 +42,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
     if (files) {
       const readFilePromises = Array.from(files)
-        .filter((file) => {
-          const ext = file.name.split(".").pop() ?? ""
-          return file.type === "text/plain" || programmingLanguages[ext] !== undefined
-        })
+        .filter((file) => file.type === "text/plain" || isLanguageSupported(file.name))
         .map((file) => {
           return new Promise<DroppedFile>((resolve) => {
             const reader = new FileReader()
@@ -128,7 +120,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
             </div>
             <div role="dialog" onKeyDown={handleKeyDown}>
               {
-                // If this is the last variable and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
+                // If this is the last variable, and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
                 index === updatedPromptVariables.length - 1 && variable.key.endsWith(PROMPT_KEYWORD_DROP) ? (
                   <label
                     htmlFor="file-input"

@@ -1,15 +1,15 @@
-export interface OpenAIModel {
-  id: string
-  name: string
-  maxLength: number
-  tokenLimit: number
-}
-
 export enum OpenAIModelID {
   GPT_3_5 = "gpt-3.5-turbo",
   GPT_3_5_AZ = "gpt-35-turbo",
   GPT_4 = "gpt-4",
   GPT_4_32K = "gpt-4-32k"
+}
+
+export interface OpenAIModel {
+  id: OpenAIModelID
+  name: string
+  maxLength: number
+  tokenLimit: number
 }
 
 export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
@@ -40,5 +40,4 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
 }
 
 // In case the `OPENAI_DEFAULT_MODEL` environment variable is not set or set to an unsupported model.
-export const fallbackOpenAIModelID = OpenAIModelID.GPT_4_32K
-export const fallbackOpenAIModel = OpenAIModels[fallbackOpenAIModelID]
+export const FALLBACK_OPENAI_MODEL_ID = OpenAIModelID.GPT_4_32K

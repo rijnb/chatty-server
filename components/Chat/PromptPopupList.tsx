@@ -27,6 +27,7 @@ export const PromptPopupList = ({prompts, activePromptIndex, onSelect, onMouseOv
     return () => {
       ref?.removeEventListener("scroll", handleScroll)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

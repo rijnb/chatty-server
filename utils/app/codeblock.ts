@@ -1,5 +1,5 @@
 interface languageMap {
-  [key: string]: string | undefined
+  [key: string]: string
 }
 
 export const programmingLanguages: languageMap = {
@@ -288,5 +288,10 @@ export const programmingLanguages: languageMap = {
   // Add more file extensions here. Make sure the key is same as language prop from the SyntaxHighlighter.
   "c#": ".cs",
   "c++": ".cpp",
-  "objective-c": ".m",
+  "objective-c": ".m"
+}
+
+export const isLanguageSupported = (filename: string) => {
+  const fileExtension = "." + filename.split(".").pop()
+  return fileExtension ? Object.values(programmingLanguages).includes(fileExtension) : false
 }

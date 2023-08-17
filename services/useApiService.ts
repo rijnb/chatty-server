@@ -5,7 +5,7 @@ import {useFetchWithUnlockCode} from "@/components/UnlockCode"
 
 
 export interface GetModelsRequestProps {
-  key: string
+  apiKey: string
 }
 
 const useApiService = () => {
@@ -15,7 +15,7 @@ const useApiService = () => {
   const getModels = useCallback(
     (params: GetModelsRequestProps, signal?: AbortSignal) => {
       return fetchService.post<GetModelsRequestProps>(getApiUrl("/api/models"), {
-        body: {key: params.key},
+        body: {apiKey: params.apiKey},
         headers: {
           "Content-Type": "application/json"
         },
@@ -27,15 +27,11 @@ const useApiService = () => {
 
   const getEndpoint = useCallback(
     (plugin: Plugin | null) => {
-      if (!plugin) {
+      if (plugin && plugin.id === PluginID.GOOGLE_SEARCH) {
+        return getApiUrl("/api/google")
+      } else {
         return getApiUrl("/api/chat")
       }
-
-      if (plugin.id === PluginID.GOOGLE_SEARCH) {
-        return getApiUrl("/api/google")
-      }
-
-      return getApiUrl("/api/chat")
     },
     [getApiUrl]
   )
