@@ -1,7 +1,7 @@
 import {IconFileImport} from "@tabler/icons-react"
 import {useState} from "react"
 import {isValidJsonData} from "@/utils/app/import"
-import {SupportedFileFormats} from "@/types/export"
+import {SupportedFileFormats} from "@/types/import"
 import SidebarButton from "../Sidebar/SidebarButton"
 
 

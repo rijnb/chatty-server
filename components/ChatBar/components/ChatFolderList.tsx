@@ -17,11 +17,11 @@ export const ChatFolderList = ({searchTerm}: Props) => {
 
   const handleDrop = (e: any, folder: FolderInterface) => {
     if (e.dataTransfer) {
-      const conversation = JSON.parse(e.dataTransfer.getData("conversation"))
-      handleUpdateConversation(conversation, {
-        key: "folderId",
-        value: folder.id
-      })
+      const data = e.dataTransfer.getData("conversation")
+      if (data) {
+        const conversation = JSON.parse(data)
+        handleUpdateConversation(conversation, {key: "folderId", value: folder.id})
+      }
     }
   }
 
@@ -34,7 +34,10 @@ export const ChatFolderList = ({searchTerm}: Props) => {
           if (conversation.folderId === currentFolder.id) {
             return (
               <div key={index} className="ml-5 gap-2 border-l pl-2">
-                <ConversationListItem conversation={conversation} isSelected={conversation.id == selectedConversation?.id} />
+                <ConversationListItem
+                  conversation={conversation}
+                  isSelected={conversation.id == selectedConversation?.id}
+                />
               </div>
             )
           }

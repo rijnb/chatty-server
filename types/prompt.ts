@@ -1,11 +1,11 @@
-import {OpenAIModel} from "./openai"
+import {OpenAIModelID} from "@/types/openai"
 
 export interface Prompt {
   id: string
   name: string
   description: string
   content: string
-  model: OpenAIModel
-  folderId: string | null
-  factory: boolean | null
+  modelId: OpenAIModelID
+  folderId: string | undefined
+  factory: boolean | undefined
 }

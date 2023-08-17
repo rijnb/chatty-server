@@ -17,7 +17,7 @@ import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/co
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
 import {ChatBody, Conversation, Message} from "@/types/chat"
-import {fallbackOpenAIModel} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import HomeContext from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
@@ -31,12 +31,13 @@ import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
 
+
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
 }
 
 export const Chat = memo(({stopConversationRef}: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
   const {theme, setTheme} = useTheme()
   const {unlocked} = useUnlock()
 
@@ -94,9 +95,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           homeDispatch({field: "loading", value: true})
           homeDispatch({field: "messageIsStreaming", value: true})
           const chatBody: ChatBody = {
-            model: updatedConversation.model,
+            modelId: updatedConversation.modelId,
             messages: updatedConversation.messages,
-            key: apiKey,
+            apiKey: apiKey,
             prompt: updatedConversation.prompt,
             temperature: updatedConversation.temperature
           }
@@ -161,7 +162,8 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
               const {content} = message
               const maxTitleLength = 30
-              const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
+              const customName =
+                content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
               updatedConversation = {
                 ...updatedConversation,
                 name: customName,
@@ -290,6 +292,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         return
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       apiKey,
       conversations,
@@ -346,10 +349,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const onClearConversationMessages = () => {
     setIsReleaseNotesDialogOpen(false)
     if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, {
-        key: "messages",
-        value: []
-      })
+      handleUpdateConversation(selectedConversation, {key: "messages", value: []})
     }
   }
 
@@ -447,7 +447,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         <>
           <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleChatScroll}>
             <div className="sticky top-0 z-10 flex min-w-[768px] justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-              {t("Model")}: {selectedConversation?.model.name}
+              {t("Model")}: {selectedConversation?.modelId ?? "(none)"}
               &nbsp;&nbsp;&nbsp;|&nbsp;
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleReleaseNotes}>
                 <IconHelp size={18} />
@@ -493,7 +493,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 </div>
               )}
               {models.length === 0 && (
-                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-semibold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
+                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
                   <div>
                     Loading models...
                     <Spinner size="16px" className="mx-auto" />
@@ -524,7 +524,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
             <ChatInput
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
-              model={selectedConversation ? selectedConversation.model : fallbackOpenAIModel}
+              modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
               onSend={(message, plugin) => {
                 setCurrentMessage(message)
                 handleSendMessage(message, 0, plugin)

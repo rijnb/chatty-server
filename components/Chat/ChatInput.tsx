@@ -1,10 +1,11 @@
 import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
-import {useRouter} from "next/router"
 import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
+import Image from "next/image"
+import {useRouter} from "next/router"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {Message} from "@/types/chat"
-import {OpenAIModel} from "@/types/openai"
+import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 import HomeContext from "@/pages/api/home/home.context"
@@ -15,7 +16,7 @@ import PromptPopupList from "./PromptPopupList"
 
 
 interface Props {
-  model: OpenAIModel
+  modelId: OpenAIModelID
   onSend: (message: Message, plugin: Plugin | null) => void
   onRegenerate: () => void
   onScrollDownClick: () => void
@@ -25,7 +26,7 @@ interface Props {
 }
 
 export const ChatInput = ({
-  model,
+  modelId,
   onSend,
   onRegenerate,
   onScrollDownClick,
@@ -33,11 +34,10 @@ export const ChatInput = ({
   textareaRef,
   showScrollDownButton
 }: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
   const router = useRouter()
-
   const {
-    state: {selectedConversation, messageIsStreaming, prompts}
+    state: {models, selectedConversation, messageIsStreaming, prompts}
   } = useContext(HomeContext)
 
   const [content, setContent] = useState<string>()
@@ -55,7 +55,7 @@ export const ChatInput = ({
   const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()))
 
   const parsePromptVariables = (content: string) => {
-    const regex = /{{(.*?)}}/g        // Match non-greedy, because there may be multiple variables in a prompt.
+    const regex = /{{(.*?)}}/g // Match non-greedy, because there may be multiple variables in a prompt.
     const foundPromptVariables = []
     let match
 
@@ -80,8 +80,7 @@ export const ChatInput = ({
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
-    const maxLength = selectedConversation?.model.maxLength
-
+    const maxLength = models.find((model) => model.id === modelId)?.tokenLimit
     if (maxLength && value.length > maxLength) {
       alert(
         t(`Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`, {
@@ -91,7 +90,6 @@ export const ChatInput = ({
       )
       return
     }
-
     setContent(value)
     updatePromptListVisibility(value)
   }
@@ -215,6 +213,7 @@ export const ChatInput = ({
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`
       textareaRef.current.style.overflow = `${textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"}`
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content])
 
   useEffect(() => {
@@ -280,7 +279,10 @@ export const ChatInput = ({
             </div>
           )}
           <div className="pointer-events-none absolute bottom-full mx-auto mb-4 flex w-full justify-end">
-            <ChatInputTokenCount content={content} tokenLimit={model.tokenLimit} />
+            <ChatInputTokenCount
+              content={content}
+              tokenLimit={models.find((model) => model.id === modelId)?.tokenLimit}
+            />
           </div>
           <textarea
             ref={textareaRef}
@@ -342,16 +344,22 @@ export const ChatInput = ({
           )}
         </div>
       </div>
-      <div className="px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50 flex items-center justify-center">
+      <div className="flex items-center justify-center px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
         <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
         &nbsp;was developed by Rijn Buve and Oleksii Kulyk
-        <img src={`${router.basePath}/icon-16.png`} alt="icon" className="mx-2" />
-        <a href="https://github.com/rijnb/chatty-server/issues/new?title=Describe%20problem%20or%20feature%20request%20here...%20&body=Provide%20steps%20to%20reproduce%20the%20problem%20here..." target="_blank" rel="noreferrer" className="underline">
+        <Image src={`${router.basePath}/icon-16.png`} height="16" width="16" alt="icon" className="mx-2" />
+        <a
+          href="https://github.com/rijnb/chatty-server/issues/new?title=Describe%20problem%20or%20feature%20request%20here...%20&body=Provide%20steps%20to%20reproduce%20the%20problem%20here..."
+          target="_blank"
+          rel="noreferrer"
+          className="underline"
+        >
           report a problem
         </a>
-      </div>    </div>
+      </div>
+    </div>
   )
 }
 

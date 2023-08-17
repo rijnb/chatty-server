@@ -1,18 +1,18 @@
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {isJsonFormatV4, isLatestJsonFormat, upgradeDataToLatestFormat} from "@/utils/app/import"
-import {FileFormatV4} from "@/types/export"
+import {isFileFormatV4, isFileFormatV5, readData} from "@/utils/app/import"
+import {FileFormatV4} from "@/types/import"
 import {OpenAIModelID, OpenAIModels} from "@/types/openai"
 
 describe("Export Format Functions", () => {
   describe("isExportFormatV4", () => {
     it("should return true for v4 format", () => {
       const obj = {version: 4, conversationHistory: [], folders: [], prompts: []}
-      expect(isJsonFormatV4(obj)).toBe(true)
+      expect(isFileFormatV4(obj)).toBe(true)
     })
 
     it("should return false for non-v4 formats", () => {
       const obj = {version: 5, conversationHistory: [], folders: [], prompts: []}
-      expect(isJsonFormatV4(obj)).toBe(false)
+      expect(isFileFormatV4(obj)).toBe(false)
     })
   })
 })
@@ -39,7 +39,7 @@ describe("cleanData Functions", () => {
             model: OpenAIModels[OpenAIModelID.GPT_3_5],
             prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
             temperature: OPENAI_DEFAULT_TEMPERATURE,
-            folderId: null
+            folderId: undefined
           }
         ],
         folders: [
@@ -56,13 +56,13 @@ describe("cleanData Functions", () => {
             description: "",
             content: "",
             model: OpenAIModels[OpenAIModelID.GPT_3_5],
-            folderId: null
+            folderId: undefined
           }
         ]
       } as FileFormatV4
 
-      const obj = upgradeDataToLatestFormat(data)
-      expect(isLatestJsonFormat(obj)).toBe(true)
+      const obj = readData(data)
+      expect(isFileFormatV5(obj)).toBe(true)
       expect(obj).toEqual({
         version: 4,
         history: [
@@ -82,7 +82,7 @@ describe("cleanData Functions", () => {
             model: OpenAIModels[OpenAIModelID.GPT_3_5],
             prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
             temperature: OPENAI_DEFAULT_TEMPERATURE,
-            folderId: null
+            folderId: undefined
           }
         ],
         folders: [
@@ -99,7 +99,7 @@ describe("cleanData Functions", () => {
             description: "",
             content: "",
             model: OpenAIModels[OpenAIModelID.GPT_3_5],
-            folderId: null
+            folderId: undefined
           }
         ]
       })

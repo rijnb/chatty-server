@@ -11,7 +11,7 @@ import SidebarButton from "@/components/Sidebar/SidebarButton"
 interface Props {}
 
 export const PluginKeyList = ({}: Props) => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
 
   const {
     state: {pluginKeys}

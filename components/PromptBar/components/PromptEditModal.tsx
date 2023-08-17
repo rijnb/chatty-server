@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
-  const {t} = useTranslation("promptbar")
+  const {t} = useTranslation("common")
   const [name, setName] = useState(prompt.name)
   const [description, setDescription] = useState(prompt.description)
   const [content, setContent] = useState(prompt.content)

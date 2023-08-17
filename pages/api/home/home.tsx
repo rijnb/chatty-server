@@ -19,16 +19,15 @@ import {
   updateConversationHistory
 } from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
-import {importData} from "@/utils/app/import"
+import {importData, isValidJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
-import {numTokensInConversation} from "@/utils/server/tiktoken"
+import {numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
-import {LatestFileFormat} from "@/types/export"
 import {FolderType} from "@/types/folder"
-import {OpenAIModelID, OpenAIModels, fallbackOpenAIModel} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL_ID, OpenAIModelID} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {Chat} from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
@@ -48,8 +47,31 @@ interface Props {
 
 const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
+export const getServerSideProps: GetServerSideProps = async ({locale}) => {
+  const defaultModelId =
+    (process.env.OPENAI_DEFAULT_MODEL &&
+      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
+      process.env.OPENAI_DEFAULT_MODEL) ||
+    FALLBACK_OPENAI_MODEL_ID
+
+  let serverSidePluginKeysSet = false
+  const googleApiKey = process.env.GOOGLE_API_KEY
+  const googleCSEId = process.env.GOOGLE_CSE_ID
+  if (googleApiKey && googleCSEId) {
+    serverSidePluginKeysSet = true
+  }
+  return {
+    props: {
+      serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
+      defaultModelId,
+      serverSidePluginKeysSet,
+      ...(await serverSideTranslations(locale ?? "en", ["common"]))
+    }
+  }
+}
+
 const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
@@ -70,7 +92,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       } else if (!apiKey && !serverSideApiKeyIsSet) {
         return null
       } else {
-        return getModels({key: apiKey}, signal)
+        return getModels({apiKey: apiKey}, signal)
       }
     },
     {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
@@ -96,7 +118,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       if (conversation.folderId === folderId) {
         return {
           ...conversation,
-          folderId: null
+          folderId: undefined
         }
       }
       return conversation
@@ -109,7 +131,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       if (prompt.folderId === folderId) {
         return {
           ...prompt,
-          folderId: null
+          folderId: undefined
         }
       }
       return prompt
@@ -155,7 +177,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     } else {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        lastConversation?.model ?? OpenAIModels[defaultModelId],
+        lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
       )
       const updatedConversations = [...conversations, newConversation]
@@ -169,10 +191,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   }
 
   const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
-    const updatedConversation = {
-      ...conversation,
-      [data.key]: data.value
-    }
+    const updatedConversation = {...conversation, [data.key]: data.value}
 
     const conversationHistory = updateConversationHistory(updatedConversation, conversations)
     homeDispatch({field: "selectedConversation", value: updatedConversation})
@@ -191,13 +210,20 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       fetch(filename)
         .then((response) => response.text())
         .then((text) => {
-          let factoryData: LatestFileFormat = JSON.parse(text)
-          const {folders, prompts}: LatestFileFormat = importData(factoryData, true)
-          homeDispatch({field: "folders", value: folders})
-          homeDispatch({field: "prompts", value: prompts})
+          let factoryData = JSON.parse(text)
+          const validationErrors = isValidJsonData(factoryData)
+          if (validationErrors.length === 0) {
+            console.debug(`Importing factory prompts file: ${filename}`)
+            const {folders, prompts} = importData(factoryData, true)
+            homeDispatch({field: "folders", value: folders})
+            homeDispatch({field: "prompts", value: prompts})
+          } else {
+            console.error(`Invalid JSON file; file:${filename}, errors:\n${validationErrors.join("\n")}`)
+          }
         })
         .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFactoryPrompts])
 
   // Retrieved models from API.
@@ -212,6 +238,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   useEffect(() => {
     console.debug("useEffect: error")
     homeDispatch({field: "modelError", value: getModelsError(error)})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, homeDispatch])
 
   // Server side props changed.
@@ -309,7 +336,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       },
       ...(selectedConversation?.messages ?? [])
     ]
-    const tokenCount = numTokensInConversation(encoding, allMessages, selectedConversation?.model.id ?? "")
+    const tokenCount = numberOfTokensInConversation(
+      encoding,
+      allMessages,
+      selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+    )
     console.debug(`useEffect: tokenCount:${tokenCount}`)
     if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
       const lastConversation =
@@ -322,7 +353,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         // Or create a new empty conversation.
         const newConversation = createNewConversation(
           t(NEW_CONVERSATION_TITLE),
-          lastConversation?.model ?? OpenAIModels[defaultModelId],
+          lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
           lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
         )
         // Only add a new conversation to the history if there are existing conversations.
@@ -332,6 +363,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         homeDispatch({field: "selectedConversation", value: newConversation})
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // LAYOUT --------------------------------------------
@@ -350,7 +382,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     >
       <Head>
         <title>Chatty</title>
-
         <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
         <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
         <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
@@ -358,7 +389,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
-
         <meta name="description" content="ChatGPT but better." />
         <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
       </Head>
@@ -375,29 +405,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       )}
     </HomeContext.Provider>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async ({locale}) => {
-  const defaultModelId =
-    (process.env.OPENAI_DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-      process.env.OPENAI_DEFAULT_MODEL) ||
-    fallbackOpenAIModel.id
-
-  let serverSidePluginKeysSet = false
-  const googleApiKey = process.env.GOOGLE_API_KEY
-  const googleCSEId = process.env.GOOGLE_CSE_ID
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true
-  }
-  return {
-    props: {
-      serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      defaultModelId,
-      serverSidePluginKeysSet,
-      ...(await serverSideTranslations(locale ?? "en", ["common", "chat", "sidebar", "markdown", "promptbar"]))
-    }
-  }
 }
 
 export default Home

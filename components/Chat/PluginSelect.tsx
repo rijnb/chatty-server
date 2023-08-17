@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const PluginSelect = ({plugin, onPluginChange, onKeyDown}: Props) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
 
   const selectRef = useRef<HTMLSelectElement>(null)
 

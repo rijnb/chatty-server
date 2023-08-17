@@ -19,7 +19,7 @@ export interface Props {
 }
 
 export const ChatMessage: FC<Props> = memo(({message, messageIndex, onEdit}) => {
-  const {t} = useTranslation("chat")
+  const {t} = useTranslation("common")
 
   const {
     state: {selectedConversation, conversations, messageIsStreaming},

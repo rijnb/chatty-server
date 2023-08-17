@@ -11,7 +11,7 @@ import ClearPrompts from "./ClearPrompts"
 interface Props {}
 
 export const PromptBarSettings = ({}: Props) => {
-  const {t} = useTranslation("sidebar")
+  const {t} = useTranslation("common")
   const {
     state: {prompts}
   } = useContext(HomeContext)
