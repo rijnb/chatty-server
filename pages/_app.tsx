@@ -9,7 +9,7 @@ import {UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
 
 
-const inter = PT_Sans({subsets: ["latin"], weight: "400"})
+const inter = PT_Sans({subsets: ["latin"], weight: ["400", "700"]})
 
 type ChattyAppProps = {
   isProtected: boolean

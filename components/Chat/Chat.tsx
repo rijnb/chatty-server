@@ -493,7 +493,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
                 </div>
               )}
               {models.length === 0 && (
-                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-semibold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
+                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
                   <div>
                     Loading models...
                     <Spinner size="16px" className="mx-auto" />
