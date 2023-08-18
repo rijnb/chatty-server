@@ -3,7 +3,6 @@ import useApiHelper from "@/hooks/useApiHelper"
 import {Plugin, PluginID} from "@/types/plugin"
 import {useFetchWithUnlockCode} from "@/components/UnlockCode"
 
-
 export interface GetModelsRequestProps {
   apiKey: string
 }
@@ -14,7 +13,7 @@ const useApiService = () => {
 
   const getModels = useCallback(
     (params: GetModelsRequestProps, signal?: AbortSignal) => {
-      return fetchService.post<GetModelsRequestProps>(getApiUrl("/api/models"), {
+      return fetchService.post(getApiUrl("/api/models"), {
         body: {apiKey: params.apiKey},
         headers: {
           "Content-Type": "application/json"

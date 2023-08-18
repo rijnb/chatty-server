@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"

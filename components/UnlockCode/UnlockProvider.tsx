@@ -1,26 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getUnlockCode, removeUnlockCode, saveUnlockCode } from "@/utils/app/settings";
-import { UnlockOverlay } from "@/components/UnlockCode/UnlockOverlay";
-
-
-interface UnlockContextType {
-  isProtected: boolean
-  unlocked: boolean
-  code: string
-  setCode: (code: string) => void
-  invalidCode: boolean
-  setInvalidCode: (invalid: boolean) => void
-}
-
-const UnlockContext = createContext<UnlockContextType | undefined>(undefined)
-
-export const useUnlock = () => {
-  const context = useContext(UnlockContext)
-  if (!context) {
-    throw new Error("useUnlock must be used within UnlockProvider")
-  }
-  return context
-}
+import {useEffect, useState} from "react"
+import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
+import {UnlockContext, UnlockContextType} from "./UnlockContext"
+import {UnlockOverlay} from "./UnlockOverlay"
 
 interface Props {
   isProtected: boolean

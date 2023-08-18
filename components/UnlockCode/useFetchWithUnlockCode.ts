@@ -1,5 +1,5 @@
 import {RequestModel, RequestWithBodyModel, useFetch} from "@/hooks/useFetch"
-import {useUnlock} from "@/components/UnlockCode"
+import {useUnlock} from "./UnlockContext"
 
 export const useFetchWithUnlockCode = () => {
   const originalFetch = useFetch()
@@ -17,10 +17,7 @@ export const useFetchWithUnlockCode = () => {
     try {
       return await fetchMethod(url, request)
     } catch (error: any) {
-      if (
-        error.status === 401 &&
-        error.content.includes("Unlock code")
-      ) {
+      if (error.status === 401 && error.content.includes("Unlock code")) {
         setInvalidCode(true)
       }
       throw error
@@ -28,11 +25,12 @@ export const useFetchWithUnlockCode = () => {
   }
 
   return {
-    get: async <T>(url: string, request?: RequestModel): Promise<T> =>
-      fetchWithErrorHandling(originalFetch.get, url, {
+    async get<T>(url: string, request?: RequestModel): Promise<T> {
+      return fetchWithErrorHandling(originalFetch.get, url, {
         ...request,
         headers: {...request?.headers, Authorization: `${code}`}
-      }),
+      })
+    },
     post: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> =>
       fetchWithErrorHandling(originalFetch.post, url, {
         ...request,

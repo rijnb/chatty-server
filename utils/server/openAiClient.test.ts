@@ -1,8 +1,6 @@
-/**
- * @jest-environment node
- */
 import {
   ChatCompletionStream,
+  GenericOpenAIError,
   OpenAIAuthError,
   OpenAILimitExceeded,
   OpenAIRateLimited
@@ -16,7 +14,7 @@ import fetchMock from "jest-fetch-mock"
  */
 describe("OpenAI Client", () => {
   const testCases = {
-    "should throw if exceeding token limit": {
+    "should handle token limit error": {
       openAiResponse: {
         body: {
           error: {
@@ -75,6 +73,44 @@ describe("OpenAI Client", () => {
       expectedError: new OpenAIRateLimited(
         "Requests to the Creates a completion for the chat message Operation under Azure OpenAI API version 2023-05-15 have exceeded token rate limit of your current OpenAI S0 pricing tier. Please retry after 26 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.",
         26
+      )
+    },
+    "should handle generic openai error": {
+      openAiResponse: {
+        body: {
+          error: {
+            message: "Some human readable description",
+            type: "unknown_error_type",
+            param: "some_parameter",
+            code: "useful_error_code"
+          }
+        },
+        status: 400
+      },
+      expectedError: new GenericOpenAIError(
+        "Some human readable description",
+        "unknown_error_type",
+        "some_parameter",
+        "useful_error_code"
+      )
+    },
+    "should handle openai error": {
+      openAiResponse: {
+        body: {
+          error: {
+            message: "Some human readable description",
+            type: "unknown_error_type",
+            param: "some_parameter",
+            code: "useful_error_code"
+          }
+        },
+        status: 400
+      },
+      expectedError: new GenericOpenAIError(
+        "Some human readable description",
+        "unknown_error_type",
+        "some_parameter",
+        "useful_error_code"
       )
     }
   }

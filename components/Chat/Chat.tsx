@@ -1,5 +1,12 @@
-import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
-import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
+import {
+  IconBulbFilled,
+  IconBulbOff,
+  IconHelp,
+  IconMarkdown,
+  IconRobot,
+  IconScreenshot
+} from "@tabler/icons-react"
+import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
@@ -11,7 +18,7 @@ import {throttle} from "@/utils/data/throttle"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
 import {useFetchWithUnlockCode, useUnlock} from "@/components/UnlockCode"
@@ -23,12 +30,11 @@ import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import { toPng } from "html-to-image";
 
-
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
 }
 
-export const Chat = memo(({stopConversationRef}: Props) => {
+const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
   const {theme, setTheme} = useTheme()
   const {unlocked} = useUnlock()
@@ -46,7 +52,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     },
     handleUpdateConversation,
     dispatch: homeDispatch
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const [currentMessage, setCurrentMessage] = useState<Message>()
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
@@ -122,6 +128,54 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
+
+            const error = await response.json()
+
+            if (error.errorType === "openai_auth_error") {
+              toast.error("Invalid API Key. Please enter the correct Azure OpenAI key in left menu bar of Chatty.", {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "context_length_exceeded") {
+              toast.error(
+                `This model's maximum context length is exceeded (${error.limit} tokens but ${error.requested} tokens requested). Please reduce the number of tokens in the request`,
+                {
+                  duration: TOAST_DURATION_MS
+                }
+              )
+              return
+            }
+
+            if (error.errorType === "rate_limit") {
+              toast.error(`Too many requests. Please wait ${error.retryAfter} seconds before trying again.`, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "generic_openai_error") {
+              toast.error(error.message, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "openai_error") {
+              toast.error(error.message, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "unexpected_error") {
+              toast.error("Unexpected server error. Please try again a bit later.", {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
             let errorText = await response.text()
             console.debug(`HTTP error, text:${errorText}`)
             console.debug(
@@ -397,29 +451,30 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     selectedConversation && setCurrentMessage(selectedConversation.messages[selectedConversation.messages.length - 2])
   }, [selectedConversation, throttledScrollDown])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setAutoScrollEnabled(entry.isIntersecting)
-        if (entry.isIntersecting) {
-          textareaRef.current?.focus()
-        }
-      },
-      {
-        root: null,
-        threshold: 0.5
-      }
-    )
-    const messagesEndElement = messagesEndRef.current
-    if (messagesEndElement) {
-      observer.observe(messagesEndElement)
-    }
-    return () => {
-      if (messagesEndElement) {
-        observer.unobserve(messagesEndElement)
-      }
-    }
-  }, [messagesEndRef])
+  // TODO
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       setAutoScrollEnabled(entry.isIntersecting)
+  //       if (entry.isIntersecting) {
+  //         textareaRef.current?.focus()
+  //       }
+  //     },
+  //     {
+  //       root: null,
+  //       threshold: 0.5
+  //     }
+  //   )
+  //   const messagesEndElement = messagesEndRef.current
+  //   if (messagesEndElement) {
+  //     observer.observe(messagesEndElement)
+  //   }
+  //   return () => {
+  //     if (messagesEndElement) {
+  //       observer.unobserve(messagesEndElement)
+  //     }
+  //   }
+  // }, [messagesEndRef])
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">

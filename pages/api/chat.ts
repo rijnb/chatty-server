@@ -45,10 +45,6 @@ temperature:${temperature}}`)
 
     return ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
   } catch (error) {
-    const {status, statusText, content, message} = error as any
-    console.warn(
-      `HTTP stream error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`
-    )
     if (error instanceof OpenAIRateLimited) {
       return new Response(
         JSON.stringify({
@@ -88,13 +84,11 @@ temperature:${temperature}}`)
     if (error instanceof GenericOpenAIError) {
       return new Response(
         JSON.stringify({
-          errorType: error.type,
-          message: error.message,
-          param: error.param,
-          code: error.code
+          errorType: "generic_openai_error",
+          message: error.message
         }),
         {
-          status: 500
+          status: 400
         }
       )
     }
@@ -111,11 +105,11 @@ temperature:${temperature}}`)
       )
     }
 
-    if (error instanceof TypeError) {
-      console.error(`Type error, message:${error.message}, error.stack:${error.stack}`)
+    console.error("Unexpected error", error)
+    if (error instanceof Error) {
       return new Response(
         JSON.stringify({
-          errorType: "type_error",
+          errorType: "unexpected_error",
           message: error.message
         }),
         {
@@ -124,10 +118,10 @@ temperature:${temperature}}`)
       )
     }
 
-    console.error(`Other stream error, error:${error}`)
     return new Response(
       JSON.stringify({
-        errorType: "unknown_error"
+        errorType: "unexpected_error",
+        message: "Unknown error"
       }),
       {
         status: 500
