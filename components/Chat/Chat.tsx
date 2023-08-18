@@ -1,12 +1,4 @@
-import {
-  IconBulbFilled,
-  IconBulbOff,
-  IconEraser,
-  IconHelp,
-  IconMarkdown,
-  IconRobot,
-  IconScreenshot
-} from "@tabler/icons-react"
+import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
@@ -29,7 +21,7 @@ import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-import {toPng} from "html-to-image"
+import { toPng } from "html-to-image";
 
 
 interface Props {
@@ -266,7 +258,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         }
       } catch (error) {
         const {status, statusText, content, message} = error as any
-        console.warn(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
+        console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
         if (status === 401) {
           // Not authorized.
           toast.error(`${content}`, {duration: TOAST_DURATION_MS})
@@ -279,12 +271,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
+          const show = message ? message : statusText ? statusText : content ? content : "Try again later."
           if (statusText && statusText !== "") {
-            toast.error(`The server returned an error...\n\n${statusText}`, {duration: TOAST_DURATION_MS})
-          } else if (message && message !== "") {
-            toast.error(`The server returned an error...\n\n${message}`, {duration: TOAST_DURATION_MS})
-          } else {
-            toast.error(`The server returned an error... Try again later.`, {duration: TOAST_DURATION_MS})
+            toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
           }
         }
         homeDispatch({field: "loading", value: false})
@@ -344,13 +333,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       handleScrollToBottom()
     }
     setShowSettings(!showSettings)
-  }
-
-  const onClearConversationMessages = () => {
-    setIsReleaseNotesDialogOpen(false)
-    if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, {key: "messages", value: []})
-    }
   }
 
   const scrollDown = () => {
@@ -461,9 +443,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               </button>
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleSettings}>
                 <IconRobot size={18} />
-              </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearConversationMessages}>
-                <IconEraser size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
               {selectedConversation ? (
