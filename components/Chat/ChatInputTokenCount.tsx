@@ -1,5 +1,6 @@
 import {useContext, useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
+import {OPENAI_API_MAX_TOKENS} from "@/utils/app/const"
 import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import HomeContext from "@/pages/api/home/home.context"
@@ -18,6 +19,8 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   } = useContext(HomeContext)
 
   const [encoding, setEncoding] = useState<Tiktoken | null>(null)
+  const [updateAllowed, setUpdateAllowed] = useState<boolean>(true)
+  const [tokenCount, setTokenCount] = useState<number>(0)
 
   useEffect(() => {
     const initToken = async () => {
@@ -25,6 +28,15 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       setEncoding(tokenizer)
     }
     initToken()
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateAllowed(true)
+    }, 3000)
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval)
   }, [])
 
   const messages: Message[] = [
@@ -36,14 +48,19 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   if (!encoding || !tokenLimit || !selectedConversation) {
     return null
   }
-  const count = numberOfTokensInConversation(encoding, messages, selectedConversation.modelId)
-  return count > tokenLimit ? (
+
+  // Rate limit the token counting to keep snappy typing.
+  if (updateAllowed) {
+    setTokenCount(numberOfTokensInConversation(encoding, messages, selectedConversation.modelId))
+    setUpdateAllowed(false)
+  }
+  return tokenCount > tokenLimit - OPENAI_API_MAX_TOKENS ? (
     <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
-      {count} / {tokenLimit} {t("tokens")}
+      {tokenCount} / {tokenLimit} {t("tokens")}
     </div>
   ) : (
     <div className="pointer-events-auto rounded-full bg-neutral-300 bg-opacity-10 px-2 py-1 text-xs text-neutral-400">
-      {count} / {tokenLimit} {t("tokens")}
+      {tokenCount} / {tokenLimit} {t("tokens")}
     </div>
   )
 }
