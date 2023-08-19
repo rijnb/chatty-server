@@ -6,7 +6,7 @@ import {
   OpenAILimitExceeded,
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
-import chatHandler from "@/pages/api/chat"
+import chatHandler from "@/pages/api/chat.api"
 import {asMock} from "@/testutils"
 
 jest.mock("@/utils/server/openAiClient", () => {
