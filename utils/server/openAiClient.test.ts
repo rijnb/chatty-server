@@ -59,6 +59,21 @@ describe("OpenAI Client", () => {
         "Access denied due to missing subscription key. Make sure to include subscription key when making requests to an API."
       )
     },
+    "should handle another auth error": {
+      openAiResponse: {
+        body: {
+          error: {
+            code: "401",
+            message:
+              "Access denied due to invalid subscription key or wrong API endpoint. Make sure to provide a valid key for an active subscription and use a correct regional API endpoint for your resource."
+          }
+        },
+        status: 401
+      },
+      expectedError: new OpenAIAuthError(
+        "Access denied due to invalid subscription key or wrong API endpoint. Make sure to provide a valid key for an active subscription and use a correct regional API endpoint for your resource."
+      )
+    },
     "should handle quota limit error": {
       openAiResponse: {
         body: {

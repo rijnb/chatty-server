@@ -6,9 +6,10 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE, TOAST_DURATION
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
 import {HomeContextProps, useHomeContext} from "@/pages/api/home/home.context"
 import Chat from "@/components/Chat/Chat"
-import {useFetchWithUnlockCode, useUnlock} from "@/components/UnlockCode"
+import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {asMock} from "@/testutils"
 import userEvent from "@testing-library/user-event"
+import fetchMock from "jest-fetch-mock"
 import {v4 as uuidv4} from "uuid"
 
 jest.mock("react-i18next", () => ({
@@ -37,28 +38,19 @@ jest.mock("@/components/UnlockCode", () => {
   return {
     ...jest.requireActual("@/components/UnlockCode"),
     useUnlock: jest.fn(),
-    useFetchWithUnlockCode: jest.fn()
+    useUnlockCodeInterceptor: jest.fn()
   }
 })
 
+const intersectionObserverMock = () => ({
+  observe: () => null,
+  unobserve: () => null
+})
+window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
 Element.prototype.scrollIntoView = jest.fn()
 
-function mockResponse(response: Response) {
-  asMock(useFetchWithUnlockCode).mockImplementation(() => {
-    return {
-      async get<T>(): Promise<T> {
-        throw new Error("Not implemented")
-      },
-      async post<T>(): Promise<T> {
-        return response as unknown as T
-      }
-    }
-  })
-}
-
 describe("<Chat/>", () => {
-  beforeEach(() => {
-    jest.resetAllMocks()
+  beforeAll(() => {
     asMock(useUnlock).mockReturnValue({
       isProtected: false,
       unlocked: true,
@@ -66,6 +58,15 @@ describe("<Chat/>", () => {
       setCode: () => {},
       invalidCode: false,
       setInvalidCode: () => {}
+    })
+
+    asMock(useUnlockCodeInterceptor).mockReturnValue({
+      request: async ({options}) => {
+        return options
+      },
+      response: async ({response}) => {
+        return response
+      }
     })
 
     asMock(useHomeContext).mockReturnValue({
@@ -99,12 +100,8 @@ describe("<Chat/>", () => {
 
   const stopConversationRef: MutableRefObject<boolean> = {current: false}
 
-  it("should render", () => {
-    // expect(container).toMatchSnapshot()
-  })
-
   it("should handle auth error", async () => {
-    mockResponse(new Response(JSON.stringify({errorType: "openai_auth_error"}), {status: 401}))
+    fetchMock.mockResponseOnce(JSON.stringify({errorType: "openai_auth_error"}), {status: 401})
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
@@ -119,15 +116,13 @@ describe("<Chat/>", () => {
   })
 
   it("should handle context length error", async () => {
-    mockResponse(
-      new Response(
-        JSON.stringify({
-          errorType: "context_length_exceeded",
-          limit: 16384,
-          requested: 50189
-        }),
-        {status: 400}
-      )
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        errorType: "context_length_exceeded",
+        limit: 16384,
+        requested: 50189
+      }),
+      {status: 400}
     )
 
     render(<Chat stopConversationRef={stopConversationRef} />)
@@ -143,14 +138,12 @@ describe("<Chat/>", () => {
   })
 
   it("should handle rate limit error", async () => {
-    mockResponse(
-      new Response(
-        JSON.stringify({
-          errorType: "rate_limit",
-          retryAfter: 26
-        }),
-        {status: 429}
-      )
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        errorType: "rate_limit",
+        retryAfter: 26
+      }),
+      {status: 429}
     )
 
     render(<Chat stopConversationRef={stopConversationRef} />)
@@ -167,14 +160,12 @@ describe("<Chat/>", () => {
   })
 
   it("should handle generic openai error", async () => {
-    mockResponse(
-      new Response(
-        JSON.stringify({
-          errorType: "generic_openai_error",
-          message: "Some human readable description"
-        }),
-        {status: 400}
-      )
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        errorType: "generic_openai_error",
+        message: "Some human readable description"
+      }),
+      {status: 400}
     )
 
     render(<Chat stopConversationRef={stopConversationRef} />)
@@ -189,14 +180,12 @@ describe("<Chat/>", () => {
   })
 
   it("should handle openai error", async () => {
-    mockResponse(
-      new Response(
-        JSON.stringify({
-          errorType: "openai_error",
-          message: "Some human readable description"
-        }),
-        {status: 500}
-      )
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        errorType: "openai_error",
+        message: "Some human readable description"
+      }),
+      {status: 500}
     )
 
     render(<Chat stopConversationRef={stopConversationRef} />)
@@ -211,14 +200,12 @@ describe("<Chat/>", () => {
   })
 
   it("should handle unknown error", async () => {
-    mockResponse(
-      new Response(
-        JSON.stringify({
-          errorType: "unexpected_error",
-          message: "Some type error"
-        }),
-        {status: 500}
-      )
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        errorType: "unexpected_error",
+        message: "Some type error"
+      }),
+      {status: 500}
     )
 
     render(<Chat stopConversationRef={stopConversationRef} />)

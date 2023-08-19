@@ -1,15 +1,9 @@
-import {
-  IconBulbFilled,
-  IconBulbOff,
-  IconHelp,
-  IconMarkdown,
-  IconRobot,
-  IconScreenshot
-} from "@tabler/icons-react"
+import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
+import {useFetch} from "@/hooks/useFetch"
 import useApiService from "@/services/useApiService"
 import {NEW_CONVERSATION_TITLE, RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -21,14 +15,14 @@ import {Plugin} from "@/types/plugin"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
-import {useFetchWithUnlockCode, useUnlock} from "@/components/UnlockCode"
+import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-import { toPng } from "html-to-image";
+import {toPng} from "html-to-image"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -60,7 +54,9 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
-  const fetchService = useFetchWithUnlockCode()
+  const fetchService = useFetch({
+    interceptors: useUnlockCodeInterceptor()
+  })
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -118,11 +114,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
           console.debug(`HTTP fetch:${endpoint}`)
           const response = await fetchService.post<Response>(endpoint, {
-            headers: {
-              "Content-Type": "application/json"
-            },
             body,
-            rawResponse: true,
+            returnRawResponse: true,
             signal: controller.signal
           })
           if (!response.ok) {
@@ -451,30 +444,29 @@ const Chat = memo(({stopConversationRef}: Props) => {
     selectedConversation && setCurrentMessage(selectedConversation.messages[selectedConversation.messages.length - 2])
   }, [selectedConversation, throttledScrollDown])
 
-  // TODO
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => {
-  //       setAutoScrollEnabled(entry.isIntersecting)
-  //       if (entry.isIntersecting) {
-  //         textareaRef.current?.focus()
-  //       }
-  //     },
-  //     {
-  //       root: null,
-  //       threshold: 0.5
-  //     }
-  //   )
-  //   const messagesEndElement = messagesEndRef.current
-  //   if (messagesEndElement) {
-  //     observer.observe(messagesEndElement)
-  //   }
-  //   return () => {
-  //     if (messagesEndElement) {
-  //       observer.unobserve(messagesEndElement)
-  //     }
-  //   }
-  // }, [messagesEndRef])
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setAutoScrollEnabled(entry.isIntersecting)
+        if (entry.isIntersecting) {
+          textareaRef.current?.focus()
+        }
+      },
+      {
+        root: null,
+        threshold: 0.5
+      }
+    )
+    const messagesEndElement = messagesEndRef.current
+    if (messagesEndElement) {
+      observer.observe(messagesEndElement)
+    }
+    return () => {
+      if (messagesEndElement) {
+        observer.unobserve(messagesEndElement)
+      }
+    }
+  }, [messagesEndRef])
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">

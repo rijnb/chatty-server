@@ -113,6 +113,10 @@ export const ChatCompletionStream = async (
   if (response.status !== 200) {
     const result = await response.json()
     if (response.status === 401) {
+      if (result.error) {
+        throw new OpenAIAuthError(result.error.message)
+      }
+
       throw new OpenAIAuthError(result.message)
     }
 
@@ -133,6 +137,7 @@ export const ChatCompletionStream = async (
     }
 
     if (result.error) {
+      console.error("GenericOpenAIError", result)
       throw new GenericOpenAIError(result.error.message, result.error.type, result.error.param, result.error.code)
     }
 

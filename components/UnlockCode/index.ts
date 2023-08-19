@@ -1,5 +1,5 @@
 export {UnlockProvider} from "./UnlockProvider"
-export {useFetchWithUnlockCode} from "./useFetchWithUnlockCode"
 export {UnlockCodeEditor} from "./UnlockCodeEditor"
 export {UnlockOverlay} from "./UnlockOverlay"
+export {useUnlockCodeInterceptor} from "./useUnlockCodeInterceptor"
 export {useUnlock} from "./UnlockContext"

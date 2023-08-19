@@ -36,6 +36,7 @@ const customJestConfig = {
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   automock: false,
+  clearMocks: true,
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {prefix: "<rootDir>/"}),
