@@ -29,7 +29,7 @@ describe("Chat Error Handling", () => {
       })
     })
 
-  const streamError = (error: any) => () => {
+  const streamError = (error: any) => async () => {
     throw error
   }
 
@@ -56,6 +56,7 @@ describe("Chat Error Handling", () => {
       requested: 50189
     })
     expect(response.status).toEqual(400)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle invalid key error", async () => {
@@ -73,6 +74,7 @@ describe("Chat Error Handling", () => {
       errorType: "openai_auth_error"
     })
     expect(response.status).toEqual(401)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle missing key error", async () => {
@@ -90,6 +92,7 @@ describe("Chat Error Handling", () => {
       errorType: "openai_auth_error"
     })
     expect(response.status).toEqual(401)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle rate limit error", async () => {
@@ -109,6 +112,7 @@ describe("Chat Error Handling", () => {
       retryAfter: 26
     })
     expect(response.status).toEqual(429)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle generic openai error", async () => {
@@ -130,6 +134,7 @@ describe("Chat Error Handling", () => {
       message: "Some human readable description"
     })
     expect(response.status).toEqual(400)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle openai error", async () => {
@@ -142,6 +147,7 @@ describe("Chat Error Handling", () => {
       message: "Some human readable description"
     })
     expect(response.status).toEqual(500)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
   })
 
   it("should handle unknown error", async () => {
@@ -156,6 +162,7 @@ describe("Chat Error Handling", () => {
     })
 
     expect(response.status).toEqual(500)
+    expect(response.headers.get("Content-Type")).toBe("application/json")
     expect(console.error).toHaveBeenCalledWith("Unexpected error", typeError)
   })
 
@@ -169,7 +176,7 @@ describe("Chat Error Handling", () => {
       message: "Unknown error"
     })
     expect(response.status).toEqual(500)
-
+    expect(response.headers.get("Content-Type")).toBe("application/json")
     expect(console.error).toHaveBeenCalledWith("Unexpected error", 42)
   })
 })

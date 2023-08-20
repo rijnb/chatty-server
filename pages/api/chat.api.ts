@@ -16,6 +16,15 @@ export const config = {
   runtime: "edge"
 }
 
+function errorResponse(body: any, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+}
+
 const handler = async (req: Request): Promise<Response> => {
   try {
     const encoding = await getTiktokenEncoding()
@@ -43,89 +52,75 @@ messageLengthInChars:${message.content.length}, \
 totalNumberOfMessages:${allMessages.length}, \
 temperature:${temperature}}`)
 
-    return ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
+    return await ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
   } catch (error) {
     if (error instanceof OpenAIRateLimited) {
-      return new Response(
-        JSON.stringify({
+      return errorResponse(
+        {
           errorType: "rate_limit",
           retryAfter: error.retryAfterSeconds
-        }),
-        {
-          status: 429
-        }
+        },
+        429
       )
     }
 
     if (error instanceof OpenAIAuthError) {
-      return new Response(
-        JSON.stringify({
-          errorType: "openai_auth_error"
-        }),
+      return errorResponse(
         {
-          status: 401
-        }
+          errorType: "openai_auth_error"
+        },
+        401
       )
     }
 
     if (error instanceof OpenAILimitExceeded) {
-      return new Response(
-        JSON.stringify({
+      return errorResponse(
+        {
           errorType: "context_length_exceeded",
           limit: error.limit,
           requested: error.requested
-        }),
-        {
-          status: 400
-        }
+        },
+        400
       )
     }
 
     if (error instanceof GenericOpenAIError) {
-      return new Response(
-        JSON.stringify({
+      return errorResponse(
+        {
           errorType: "generic_openai_error",
           message: error.message
-        }),
-        {
-          status: 400
-        }
+        },
+        400
       )
     }
 
     if (error instanceof OpenAIError) {
-      return new Response(
-        JSON.stringify({
+      return errorResponse(
+        {
           errorType: "openai_error",
           message: error.message
-        }),
-        {
-          status: 500
-        }
+        },
+        500
       )
     }
 
     console.error("Unexpected error", error)
     if (error instanceof Error) {
-      return new Response(
-        JSON.stringify({
+      return errorResponse(
+        {
           errorType: "unexpected_error",
           message: error.message
-        }),
-        {
-          status: 500
-        }
+        },
+        500
       )
     }
 
-    return new Response(
-      JSON.stringify({
+    return errorResponse(
+      {
         errorType: "unexpected_error",
         message: "Unknown error"
-      }),
-      {
-        status: 500
-      }
+      },
+      500
     )
   }
 }
