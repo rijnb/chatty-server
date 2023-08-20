@@ -1,1 +1,1 @@
-export {throwsExactly} from "./throwsExactly"
+export {toThrowExactly} from "./toThrowExactly"

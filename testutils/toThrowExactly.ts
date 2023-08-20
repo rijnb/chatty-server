@@ -6,7 +6,7 @@ const extractErrorProperties = (error: Error) => {
     .reduce((acc, key) => ({...acc, [key]: (error as any)[key]}), {})
 }
 
-export const throwsExactly: MatcherFunction<[expected: Error]> = function (actual, expected) {
+export const toThrowExactly: MatcherFunction<[expected: Error]> = function (actual, expected) {
   const actualProperties = Object.getOwnPropertyNames(actual)
     .filter((key) => key !== "stack")
     .reduce((acc, key) => ({...acc, [key]: (actual as any)[key]}), {})

@@ -1,3 +1,4 @@
+import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
 import {Tiktoken} from "js-tiktoken/lite"
@@ -11,7 +12,7 @@ export async function getTiktokenEncoding(): Promise<Tiktoken> {
  * Prepares messages to send to OpenAI.
  * Drop messages starting from the second until the total number of tokens (prompt+reply) is below the model limit.
  * The user prompt (first message) and the last message (user intent) is always sent.
- * If it's not possible error is thrown.
+ * If it's not possible, error is thrown.
  */
 export async function prepareMessagesToSend(
   tokenLimit: number,
@@ -21,19 +22,45 @@ export async function prepareMessagesToSend(
   modelId: OpenAIModelID
 ): Promise<Message[]> {
   const encoding = await getTiktokenEncoding()
+  const [messagesToSend, requiredTokens] = reduceMessagesToSend(
+    tokenLimit,
+    maxReplyTokens,
+    prompt,
+    messages,
+    modelId,
+    encoding
+  )
+
+  if (requiredTokens > tokenLimit) {
+    throw new OpenAILimitExceeded("Not enough tokens to send a message.", tokenLimit, requiredTokens)
+  }
+
+  return messagesToSend
+}
+
+/**
+ * Reduces the number of messages to send in order to fit within the token limit.
+ */
+function reduceMessagesToSend(
+  tokenLimit: number,
+  maxReplyTokens: number,
+  prompt: string,
+  messages: Message[],
+  modelId: OpenAIModelID,
+  encoding: Tiktoken
+): [Message[], number] {
   const systemPrompt: Message = {role: "assistant", content: prompt}
   const messagesToSend: Message[] = messages.slice()
 
-  while (
-    messagesToSend.length > 1 &&
-    numberOfTokensInConversation(encoding, [systemPrompt, ...messagesToSend], modelId) + maxReplyTokens > tokenLimit
-  ) {
+  const requiredTokens = () => {
+    return numberOfTokensInConversation(encoding, [systemPrompt, ...messagesToSend], modelId) + maxReplyTokens
+  }
+
+  while (messagesToSend.length > 1 && requiredTokens() > tokenLimit) {
     messagesToSend.splice(1, 1)
   }
-  if (messagesToSend.length === 1 && messages.length > 1) {
-    throw new Error("Not enough tokens to send a message.")
-  }
-  return messagesToSend
+
+  return [messagesToSend, requiredTokens()]
 }
 
 function isModelGpt3(modelId: OpenAIModelID): boolean {

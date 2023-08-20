@@ -137,6 +137,6 @@ describe("OpenAI Client", () => {
       {role: "user", content: "ping"}
     ])
 
-    await expect(result).rejects.throwsExactly(expectedError)
+    await expect(result).rejects.toThrowExactly(expectedError)
   })
 })

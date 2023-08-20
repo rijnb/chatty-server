@@ -1,3 +1,4 @@
+import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
@@ -139,8 +140,8 @@ describe("Tiktoken", () => {
     })
 
     it("should throw if no messages fit (for completeness)", async () => {
-      await expect(prepareMessagesToSend(200, 180, prompt, messages, OpenAIModelID.GPT_4_32K)).rejects.toThrow(
-        "Not enough tokens to send a message."
+      await expect(prepareMessagesToSend(200, 180, prompt, messages, OpenAIModelID.GPT_4_32K)).rejects.toThrowExactly(
+        new OpenAILimitExceeded("Not enough tokens to send a message.", 200, 222)
       )
     })
   })
