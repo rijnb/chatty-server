@@ -132,7 +132,7 @@ describe("<Chat/>", () => {
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith(
-      "This model's maximum context length is exceeded (16384 tokens but 50189 tokens requested). Please reduce the number of tokens in the request",
+      "The conversation has become too long. Please reduce the number of messages to shorten it. It's using 50189 tokens, where the limit is 16384 tokens.",
       {duration: TOAST_DURATION_MS}
     )
   })

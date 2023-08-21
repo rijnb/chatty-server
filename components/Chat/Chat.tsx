@@ -133,7 +133,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
             if (error.errorType === "context_length_exceeded") {
               toast.error(
-                `This model's maximum context length is exceeded (${error.limit} tokens but ${error.requested} tokens requested). Please reduce the number of tokens in the request`,
+                `The conversation has become too long. Please reduce the number of messages to shorten it. It's using ${error.requested} tokens, where the limit is ${error.limit} tokens.`,
                 {
                   duration: TOAST_DURATION_MS
                 }
