@@ -34,7 +34,7 @@ export const useUnlockCodeInterceptor = () => {
         const clonedResponse = response.clone()
         if (clonedResponse.headers.get("content-type")?.indexOf("text/plain") !== -1) {
           const error = await clonedResponse.text()
-          if (error.includes("You are not authorized to use the service. Check your Unlock code.")) {
+          if (error.includes("Unlock code")) {
             setInvalidCode(true)
             throw new Error("You are not authorized to use the service. Check your Unlock code.")
           }
