@@ -121,15 +121,13 @@ export const ChatCompletionStream = async (
     }
 
     if (response.status === 429 && result.error) {
-      const match = result.error.message.match(/retry after (\d+) seconds/)
+      const match = result.error.message.match(/retry.* (\d+) sec/)
       const retryAfter = match ? parseInt(match[1]) : undefined
       throw new OpenAIRateLimited(result.error.message, retryAfter)
     }
 
     if (result.error && result.error.code === "context_length_exceeded") {
-      const match = result.error.message.match(
-        /maximum context length is (\d+) tokens. However, you requested (\d+) tokens/
-      )
+      const match = result.error.message.match(/max.*length.* (\d+) tokens.*requested (\d+) tokens/)
       const limit = match ? parseInt(match[1]) : undefined
       const requested = match ? parseInt(match[2]) : undefined
 
