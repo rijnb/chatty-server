@@ -14,6 +14,10 @@
     "test": "jest --watch",
     "test:ci": "jest --ci"
   },
+  "engines": {
+    "node": "^20.5.0",
+    "npm": "^9.8.0"
+  },
   "build": {
     "appId": "com.info.chatty",
     "productName": "Chatty",
