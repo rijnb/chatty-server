@@ -1,16 +1,9 @@
-import {
-  IconBulbFilled,
-  IconBulbOff,
-  IconEraser,
-  IconHelp,
-  IconMarkdown,
-  IconRobot,
-  IconScreenshot
-} from "@tabler/icons-react"
-import React, {MutableRefObject, memo, useCallback, useContext, useEffect, useRef, useState} from "react"
+import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
+import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
+import {useFetch} from "@/hooks/useFetch"
 import useApiService from "@/services/useApiService"
 import {NEW_CONVERSATION_TITLE, RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -19,10 +12,10 @@ import {throttle} from "@/utils/data/throttle"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
-import {useFetchWithUnlockCode, useUnlock} from "@/components/UnlockCode"
+import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ChatLoader} from "./ChatLoader"
@@ -31,12 +24,11 @@ import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
 import {toPng} from "html-to-image"
 
-
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
 }
 
-export const Chat = memo(({stopConversationRef}: Props) => {
+const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
   const {theme, setTheme} = useTheme()
   const {unlocked} = useUnlock()
@@ -54,7 +46,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
     },
     handleUpdateConversation,
     dispatch: homeDispatch
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const [currentMessage, setCurrentMessage] = useState<Message>()
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
@@ -62,7 +54,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
-  const fetchService = useFetchWithUnlockCode()
+  const fetchService = useFetch({
+    interceptors: useUnlockCodeInterceptor()
+  })
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -120,16 +114,61 @@ export const Chat = memo(({stopConversationRef}: Props) => {
 
           console.debug(`HTTP fetch:${endpoint}`)
           const response = await fetchService.post<Response>(endpoint, {
-            headers: {
-              "Content-Type": "application/json"
-            },
             body,
-            rawResponse: true,
+            returnRawResponse: true,
             signal: controller.signal
           })
           if (!response.ok) {
             homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
+
+            const error = await response.json()
+
+            if (error.errorType === "openai_auth_error") {
+              toast.error("Invalid API Key. Please enter the correct Azure OpenAI key in left menu bar of Chatty.", {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "context_length_exceeded") {
+              toast.error(
+                `The conversation has become too long. Please reduce the number of messages to shorten it. It's using ${error.requested} tokens, where the limit is ${error.limit} tokens.`,
+                {
+                  duration: TOAST_DURATION_MS
+                }
+              )
+              return
+            }
+
+            if (error.errorType === "rate_limit") {
+              toast.error(`Too many requests. Please wait ${error.retryAfter} seconds before trying again.`, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "generic_openai_error") {
+              toast.error(error.message, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "openai_error") {
+              toast.error(error.message, {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
+            if (error.errorType === "unexpected_error") {
+              toast.error("Unexpected server error. Please try again a bit later.", {
+                duration: TOAST_DURATION_MS
+              })
+              return
+            }
+
             let errorText = await response.text()
             console.debug(`HTTP error, text:${errorText}`)
             console.debug(
@@ -266,7 +305,7 @@ export const Chat = memo(({stopConversationRef}: Props) => {
         }
       } catch (error) {
         const {status, statusText, content, message} = error as any
-        console.warn(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
+        console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
         if (status === 401) {
           // Not authorized.
           toast.error(`${content}`, {duration: TOAST_DURATION_MS})
@@ -279,12 +318,9 @@ export const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
+          const show = message ? message : statusText ? statusText : content ? content : "Try again later."
           if (statusText && statusText !== "") {
-            toast.error(`The server returned an error...\n\n${statusText}`, {duration: TOAST_DURATION_MS})
-          } else if (message && message !== "") {
-            toast.error(`The server returned an error...\n\n${message}`, {duration: TOAST_DURATION_MS})
-          } else {
-            toast.error(`The server returned an error... Try again later.`, {duration: TOAST_DURATION_MS})
+            toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
           }
         }
         homeDispatch({field: "loading", value: false})
@@ -344,13 +380,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
       handleScrollToBottom()
     }
     setShowSettings(!showSettings)
-  }
-
-  const onClearConversationMessages = () => {
-    setIsReleaseNotesDialogOpen(false)
-    if (confirm(t("Are you sure you want to clear all messages in this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, {key: "messages", value: []})
-    }
   }
 
   const scrollDown = () => {
@@ -461,9 +490,6 @@ export const Chat = memo(({stopConversationRef}: Props) => {
               </button>
               <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleSettings}>
                 <IconRobot size={18} />
-              </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onClearConversationMessages}>
-                <IconEraser size={18} />
               </button>
               &nbsp;&nbsp;&nbsp;|&nbsp;
               {selectedConversation ? (

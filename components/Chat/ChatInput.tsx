@@ -1,19 +1,28 @@
-import {IconArrowDown, IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
-import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
+import {
+  IconArrowDown,
+  IconBolt,
+  IconBrandGoogle,
+  IconEraser,
+  IconPlayerStop,
+  IconRepeat,
+  IconSend
+} from "@tabler/icons-react"
+import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import ChatInputTokenCount from "./ChatInputTokenCount"
 import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
-
+import {Tiktoken} from "js-tiktoken"
 
 interface Props {
   modelId: OpenAIModelID
@@ -37,8 +46,9 @@ export const ChatInput = ({
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, selectedConversation, messageIsStreaming, prompts}
-  } = useContext(HomeContext)
+    state: {models, selectedConversation, messageIsStreaming, prompts},
+    handleUpdateConversation
+  } = useHomeContext()
 
   const [content, setContent] = useState<string>()
   const [isTyping, setIsTyping] = useState<boolean>(false)
@@ -49,6 +59,15 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
+  const [encoding, setEncoding] = useState<Tiktoken | null>(null)
+
+  useEffect(() => {
+    const initToken = async () => {
+      let tokenizer = await getTiktokenEncoding()
+      setEncoding(tokenizer)
+    }
+    initToken()
+  }, [])
 
   const promptListRef = useRef<HTMLUListElement | null>(null)
 
@@ -80,16 +99,6 @@ export const ChatInput = ({
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
-    const maxLength = models.find((model) => model.id === modelId)?.tokenLimit
-    if (maxLength && value.length > maxLength) {
-      alert(
-        t(`Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`, {
-          maxLength,
-          valueLength: value.length
-        })
-      )
-      return
-    }
     setContent(value)
     updatePromptListVisibility(value)
   }
@@ -103,11 +112,25 @@ export const ChatInput = ({
     if (messageIsStreaming) {
       return
     }
-    if (!content) {
+    if (!content || !encoding || !selectedConversation || !models) {
       return
     }
 
-    onSend({role: "user", content: removeSuperfluousWhitespace(content)}, plugin)
+    // Show an alert and bail out early if we're using too many tokens.
+    const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
+    const systemPrompt: Message = {role: "system", content: selectedConversation.prompt}
+    const allMessages = [...selectedConversation.messages, systemPrompt, message]
+    const tokenCount = numberOfTokensInConversation(encoding, allMessages, selectedConversation.modelId)
+    const tokenLimit = models.find((model) => model.id === modelId)?.tokenLimit ?? 0
+    if (tokenCount >= tokenLimit) {
+      alert(`The input message (with the full conversation history) is too long...\
+It's using ${tokenCount} tokens in total while the limit is ${tokenLimit} tokens.\n\n\
+Please remove some messages from the conversation, or simply clear all previous messages in this conversation by clicking on the eraser icon next to the input box.`)
+
+      return
+    }
+
+    onSend(message, plugin)
     setContent("")
     setPlugin(null)
 
@@ -201,6 +224,12 @@ export const ChatInput = ({
     }
   }
 
+  const onClearConversationMessages = () => {
+    if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
+      handleUpdateConversation(selectedConversation, {key: "messages", value: []})
+    }
+  }
+
   useEffect(() => {
     if (promptListRef.current) {
       promptListRef.current.scrollTop = activePromptIndex * 36
@@ -251,7 +280,13 @@ export const ChatInput = ({
 
         <div className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <button
-            className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            className="absolute left-1 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            onClick={onClearConversationMessages}
+          >
+            <IconEraser size={20} />
+          </button>
+          <button
+            className="absolute left-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={() => setShowPluginSelect(!showPluginSelect)}
           >
             {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
@@ -286,7 +321,7 @@ export const ChatInput = ({
           </div>
           <textarea
             ref={textareaRef}
-            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-10 pr-8 text-black dark:bg-transparent dark:text-white"
+            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-16 pr-8 text-black dark:bg-transparent dark:text-white"
             style={{
               resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -304,6 +339,7 @@ export const ChatInput = ({
             onKeyDown={handleKeyDown}
           />
           <button
+            aria-label="Send message"
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSendMessage}
           >

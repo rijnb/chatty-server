@@ -11,16 +11,13 @@ const nextConfig = {
     unoptimized: true
   },
   basePath,
+  pageExtensions: ["page.tsx", "page.ts", "api.tsx", "api.ts", "infra.ts"],
 
   webpack(config, {isServer, dev}) {
     config.experiments = {
       asyncWebAssembly: true,
       layers: true
     }
-
-    // For packages that depend on `fs` module; fs doesn't exist in browser
-    // needed for adm-zip
-    config.resolve.fallback = {fs: false, "original-fs": false}
 
     return config
   }

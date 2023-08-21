@@ -1,77 +1,110 @@
-export type RequestModel = {
-  params?: object
-  headers?: object
+export type BaseOptions = {
+  interceptors?: Interceptors
+  returnRawResponse?: boolean
   signal?: AbortSignal
-  rawResponse?: boolean
 }
 
-export type RequestWithBodyModel = RequestModel & {
-  body?: object | FormData
+export type RequestOptions = BaseOptions & {
+  body?: any
+  headers?: HeadersInit
 }
 
-export const useFetch = () => {
-  const handleFetch = async (url: string, request: any) => {
-    const requestUrl = request?.params ? `${url}${request.params}` : url
-    const requestBody = request?.body
-      ? request.body instanceof FormData
-        ? {...request, body: request.body}
-        : {...request, body: JSON.stringify(request.body)}
-      : request
-    const headers = {
-      ...(request?.headers
-        ? request.headers
-        : request?.body && request.body instanceof FormData
-        ? {}
-        : {"Content-type": "application/json"})
-    }
-    console.debug(`useFetch: url:${requestUrl}`)
-    return fetch(requestUrl, {...requestBody, headers})
-      .then((response) => {
-        if (!response.ok) {
-          console.debug(`useFetch: not OK, status:${response.status}, statusText:${response.statusText}`)
-          throw response
-        }
-        console.debug(`useFetch: OK, status:${response.status}, statusText:${response.statusText}`)
+export class FetchError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
 
-        if (request.rawResponse) {
-          return response
-        }
+export class RemoteError extends FetchError {
+  status: number
+  statusText: string
+  error: any
 
-        const contentType = response.headers.get("content-type")
-        const contentDisposition = response.headers.get("content-disposition")
-        return contentType &&
-          (contentType?.indexOf("application/json") !== -1 || contentType?.indexOf("text/plain") !== -1)
-          ? response.json()
-          : contentDisposition?.indexOf("attachment") !== -1
-          ? response.blob()
-          : response
-      })
-      .catch(async (error) => {
-        const contentType = error.headers.get("content-type")
-        const errContent =
-          contentType && contentType === ("application/problem+json" || "application/json")
-            ? await error.json()
-            : await error.text()
-        console.debug(`useFetch exception, HTTP status:${error.status}, statusText:${error.statusText}`)
-        throw {status: error.status, statusText: error.statusText, content: errContent}
-      })
+  constructor(status: number, statusText: string, error: any) {
+    super(`${status} ${statusText}`)
+    this.status = status
+    this.statusText = statusText
+    this.error = error
+  }
+}
+
+export type Interceptors = {
+  request?: ({options, url}: {options: RequestInit; url?: string}) => Promise<RequestInit> | RequestInit
+  response?: ({response}: {response: Response; request: RequestInit}) => Promise<Response>
+}
+
+function createArgs(baseOptions: BaseOptions, requestOptions: RequestOptions, method: string) {
+  const effectiveOptions: RequestOptions = {
+    ...baseOptions,
+    ...requestOptions
   }
 
-  return {
-    get: async <T>(url: string, request?: RequestModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "get"})
-    },
-    post: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "post"})
-    },
-    put: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "put"})
-    },
-    patch: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "patch"})
-    },
-    delete: async <T>(url: string, request?: RequestWithBodyModel): Promise<T> => {
-      return handleFetch(url, {...request, method: "delete"})
+  const headers = effectiveOptions.body
+    ? {...requestOptions.headers, "Content-Type": "application/json"}
+    : requestOptions.headers
+
+  const requestInit: RequestInit = {
+    method,
+    ...(effectiveOptions.body && {body: JSON.stringify(effectiveOptions.body)}),
+    ...(effectiveOptions.signal && {signal: effectiveOptions.signal}),
+    ...(headers && {headers})
+  }
+  return {effectiveOptions, requestInit}
+}
+
+async function handleResponse<T>(response: Response, returnRawResponse: boolean = false): Promise<T> {
+  if (returnRawResponse) {
+    return response as unknown as T
+  }
+
+  if (response.ok) {
+    return await response.json()
+  } else {
+    const errorContent =
+      response.headers.get("content-type")?.indexOf("application/json") !== -1
+        ? await response.json()
+        : await response.text()
+
+    const remoteError = new RemoteError(response.status, response.statusText, errorContent)
+    console.error("RemoteError", remoteError)
+    throw remoteError
+  }
+}
+
+async function safeFetch(url: string, callOptions: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, callOptions)
+  } catch (error: any) {
+    if (error.name === "AbortError") {
+      console.error("Request was cancelled", error)
+      throw new Error("Request was cancelled")
     }
+    console.error("Unexpected error", error)
+    throw new Error(`Request failed with error ${error}`)
+  }
+}
+
+async function doFetch<T>(
+  url: string,
+  method: string,
+  baseOptions: BaseOptions,
+  requestOptions: RequestOptions = {}
+): Promise<T> {
+  const {effectiveOptions, requestInit} = createArgs(baseOptions, requestOptions, method)
+
+  const callOptions = (await effectiveOptions.interceptors?.request?.({options: requestInit, url})) ?? requestInit
+
+  const raw = await safeFetch(url, callOptions)
+  const response = (await effectiveOptions.interceptors?.response?.({response: raw, request: callOptions})) ?? raw
+  return handleResponse<T>(response, effectiveOptions.returnRawResponse)
+}
+
+export const useFetch = (baseOptions: BaseOptions = {}) => {
+  return {
+    get: async <T>(url: string, requestOptions?: RequestOptions): Promise<T> =>
+      doFetch<T>(url, "GET", baseOptions, requestOptions),
+    post: async <T>(url: string, requestOptions?: RequestOptions): Promise<T> =>
+      doFetch<T>(url, "POST", baseOptions, requestOptions)
   }
 }

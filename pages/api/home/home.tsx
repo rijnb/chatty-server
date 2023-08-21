@@ -29,15 +29,14 @@ import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModelID} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
-import {Chat} from "@/components/Chat/Chat"
+import Chat from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 import {Tiktoken} from "js-tiktoken/lite"
-import cl100k_base from "js-tiktoken/ranks/cl100k_base";
-
+import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
 interface Props {
   serverSideApiKeyIsSet: boolean
@@ -385,7 +384,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
         <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
         <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
-        <link rel="manifest" href={`${router.basePath}/site.webmanifest`} />
+        <link rel="manifest" href={`${router.basePath}/site.webmanifest`} crossOrigin="use-credentials" />
         <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
