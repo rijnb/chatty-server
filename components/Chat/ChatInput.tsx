@@ -7,7 +7,7 @@ import {
   IconRepeat,
   IconSend
 } from "@tabler/icons-react"
-import React, {KeyboardEvent, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react"
+import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
@@ -17,13 +17,12 @@ import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import ChatInputTokenCount from "./ChatInputTokenCount"
 import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import {Tiktoken} from "js-tiktoken"
-
 
 interface Props {
   modelId: OpenAIModelID
@@ -49,7 +48,7 @@ export const ChatInput = ({
   const {
     state: {models, selectedConversation, messageIsStreaming, prompts},
     handleUpdateConversation
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const [content, setContent] = useState<string>()
   const [isTyping, setIsTyping] = useState<boolean>(false)
@@ -340,6 +339,7 @@ Please remove some messages from the conversation, or simply clear all previous 
             onKeyDown={handleKeyDown}
           />
           <button
+            aria-label="Send message"
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSendMessage}
           >

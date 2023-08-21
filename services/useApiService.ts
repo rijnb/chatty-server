@@ -1,24 +1,23 @@
 import {useCallback} from "react"
 import useApiHelper from "@/hooks/useApiHelper"
+import {useFetch} from "@/hooks/useFetch"
 import {Plugin, PluginID} from "@/types/plugin"
-import {useFetchWithUnlockCode} from "@/components/UnlockCode"
-
+import {useUnlockCodeInterceptor} from "@/components/UnlockCode"
 
 export interface GetModelsRequestProps {
   apiKey: string
 }
 
 const useApiService = () => {
-  const fetchService = useFetchWithUnlockCode()
+  const fetchService = useFetch({
+    interceptors: useUnlockCodeInterceptor()
+  })
   const {getApiUrl} = useApiHelper()
 
   const getModels = useCallback(
     (params: GetModelsRequestProps, signal?: AbortSignal) => {
-      return fetchService.post<GetModelsRequestProps>(getApiUrl("/api/models"), {
+      return fetchService.post(getApiUrl("/api/models"), {
         body: {apiKey: params.apiKey},
-        headers: {
-          "Content-Type": "application/json"
-        },
         signal
       })
     },

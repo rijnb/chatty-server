@@ -29,15 +29,14 @@ import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModelID} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
-import {Chat} from "@/components/Chat/Chat"
+import Chat from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 import {Tiktoken} from "js-tiktoken/lite"
-import cl100k_base from "js-tiktoken/ranks/cl100k_base";
-
+import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
 interface Props {
   serverSideApiKeyIsSet: boolean

@@ -1,11 +1,10 @@
-import {useContext, useEffect, useState} from "react"
+import {useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {OPENAI_API_MAX_TOKENS} from "@/utils/app/const"
 import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {Tiktoken} from "js-tiktoken"
-
 
 interface Props {
   content: string | undefined
@@ -16,7 +15,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {
     state: {selectedConversation}
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const [encoding, setEncoding] = useState<Tiktoken | null>(null)
   const [updateAllowed, setUpdateAllowed] = useState<boolean>(true)
