@@ -22,7 +22,8 @@ import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import {MemoizedChatMessage} from "./MemoizedChatMessage"
 import {ModelSelect} from "./ModelSelect"
-import {toPng} from "html-to-image"
+import { toPng } from "html-to-image";
+
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -44,7 +45,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
       modelError,
       loading
     },
-    handleUpdateConversation,
     dispatch: homeDispatch
   } = useHomeContext()
 

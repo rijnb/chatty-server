@@ -11,6 +11,7 @@ import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, 
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
@@ -23,6 +24,7 @@ import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import {Tiktoken} from "js-tiktoken"
+
 
 interface Props {
   modelId: OpenAIModelID
@@ -226,7 +228,13 @@ Please remove some messages from the conversation, or simply clear all previous 
 
   const onClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, {key: "messages", value: []})
+      handleUpdateConversation(selectedConversation, [
+        {key: "name", value: NEW_CONVERSATION_TITLE},
+        {
+          key: "messages",
+          value: []
+        }
+      ])
     }
   }
 

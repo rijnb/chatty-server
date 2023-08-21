@@ -159,7 +159,7 @@ export const ChatBar = () => {
       const data = e.dataTransfer.getData("conversation")
       if (data) {
         const conversation = JSON.parse(data)
-        handleUpdateConversation(conversation, {key: "folderId", value: 0})
+        handleUpdateConversation(conversation, [{key: "folderId", value: 0}])
       }
       chatDispatch({field: "searchTerm", value: ""})
       e.target.style.background = "none"
