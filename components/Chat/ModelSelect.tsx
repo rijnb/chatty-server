@@ -14,10 +14,10 @@ export const ModelSelect = ({}: Props) => {
 
   const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectedConversation &&
-      handleUpdateConversation(selectedConversation, {
+      handleUpdateConversation(selectedConversation, [{
         key: "model",
         value: models.find((model) => model.id === e.target.value)
-      })
+      }])
   }
 
   return (

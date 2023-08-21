@@ -20,7 +20,7 @@ export const ChatFolderList = ({searchTerm}: Props) => {
       const data = e.dataTransfer.getData("conversation")
       if (data) {
         const conversation = JSON.parse(data)
-        handleUpdateConversation(conversation, {key: "folderId", value: folder.id})
+        handleUpdateConversation(conversation, [{key: "folderId", value: folder.id}])
       }
     }
   }

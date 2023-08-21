@@ -6,6 +6,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 
+
 interface Props {
   conversation: Conversation
   isSelected: boolean
@@ -39,10 +40,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
 
   const handleRename = (conversation: Conversation) => {
     if (renameValue.trim().length > 0) {
-      handleUpdateConversation(conversation, {
-        key: "name",
-        value: renameValue
-      })
+      handleUpdateConversation(conversation, [{key: "name", value: renameValue}])
       setRenameValue("")
       setIsRenaming(false)
     }

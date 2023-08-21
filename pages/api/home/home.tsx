@@ -189,13 +189,16 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     homeDispatch({field: "loading", value: false})
   }
 
-  const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
-    const updatedConversation = {...conversation, [data.key]: data.value}
+  const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair[]) => {
+    const updatedConversation = data.reduce((acc, curr) => {
+      return {...acc, [curr.key]: curr.value};
+    }, conversation);
 
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
-    homeDispatch({field: "selectedConversation", value: updatedConversation})
-    homeDispatch({field: "conversations", value: conversationHistory})
+    const conversationHistory = updateConversationHistory(updatedConversation, conversations);
+    homeDispatch({field: "selectedConversation", value: updatedConversation});
+    homeDispatch({field: "conversations", value: conversationHistory});
   }
+
 
   // EFFECTS  --------------------------------------------
 
