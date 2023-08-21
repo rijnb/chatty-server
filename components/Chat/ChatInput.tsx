@@ -339,7 +339,7 @@ Please remove some messages from the conversation, or simply clear all previous 
             onKeyDown={handleKeyDown}
           />
           <button
-            aria-label="Send Message"
+            aria-label="Send message"
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSendMessage}
           >
