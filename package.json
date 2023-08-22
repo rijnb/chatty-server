@@ -15,8 +15,8 @@
     "test:ci": "jest --ci"
   },
   "engines": {
-    "node": "^20.5.0",
-    "npm": "^9.8.1"
+    "node": "^v20.5.0",
+    "npm": "^9.8.0"
   },
   "build": {
     "appId": "com.info.chatty",
