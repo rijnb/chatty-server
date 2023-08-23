@@ -1,9 +1,10 @@
-import {IconBuildingFactory2, IconCheck, IconTrash, IconUserCircle, IconX} from "@tabler/icons-react"
-import {DragEvent, MouseEventHandler, useContext, useState} from "react"
-import {Prompt} from "@/types/prompt"
-import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import PromptBarContext from "../PromptBar.context"
-import PromptEditModal from "./PromptEditModal"
+import { IconBuildingFactory2, IconCheck, IconTrash, IconUserCircle, IconX } from "@tabler/icons-react";
+import { DragEvent, MouseEventHandler, useContext, useState } from "react";
+import { Prompt } from "@/types/prompt";
+import SidebarActionButton from "@/components/Buttons/SidebarActionButton";
+import PromptBarContext from "../PromptBar.context";
+import PromptEditModal from "./PromptEditModal";
+
 
 interface Props {
   prompt: Prompt
@@ -44,6 +45,10 @@ export const PromptListItem = ({prompt}: Props) => {
     if (e.dataTransfer) {
       e.dataTransfer.setData("prompt", JSON.stringify(prompt))
     }
+  }
+
+  const handleCloseModal = () => {
+    return () => setShowModal(false)
   }
 
   return (
@@ -91,7 +96,7 @@ export const PromptListItem = ({prompt}: Props) => {
       )}
 
       {showModal && (
-        <PromptEditModal prompt={prompt} onClose={() => setShowModal(false)} onUpdatePrompt={handleUpdate} />
+        <PromptEditModal prompt={prompt} onClose={handleCloseModal()} onUpdatePrompt={handleUpdate} />
       )}
     </div>
   )

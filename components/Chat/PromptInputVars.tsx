@@ -35,11 +35,10 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
   const nameInputRef = useRef<HTMLTextAreaElement>(null)
 
-  const readDroppedFiles = async (e: ChangeEvent<HTMLInputElement>) => {
+  const readSelectedFiles = async (e: ChangeEvent<HTMLInputElement>) => {
     let value = ""
     let numberOfFiles = 0
     const files = e.target.files
-
     if (files) {
       const readFilePromises = Array.from(files)
         .filter((file) => file.type === "text/plain" || isLanguageSupported(file.name))
@@ -54,9 +53,9 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
           })
         })
 
-      const droppedFiles = await Promise.all(readFilePromises)
-      numberOfFiles = droppedFiles.length
-      value = droppedFiles
+      const readFiles = await Promise.all(readFilePromises)
+      numberOfFiles = readFiles.length
+      value = readFiles
         .map((droppedFile) => `File: ${droppedFile.name}\n` + "```\n" + droppedFile.content + "\n```\n")
         .join("\n")
     }
@@ -68,7 +67,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
     if (e.dataTransfer.files) {
       const fileInput = document.getElementById("file-input") as HTMLInputElement
       fileInput.files = e.dataTransfer.files
-      const {numberOfFiles, value} = await readDroppedFiles({target: fileInput} as ChangeEvent<HTMLInputElement>)
+      const {numberOfFiles, value} = await readSelectedFiles({target: fileInput} as ChangeEvent<HTMLInputElement>)
       if (numberOfFiles > 0 && value != "") {
         setNumberOfFilesDropped(numberOfFilesDropped + numberOfFiles)
       }
@@ -104,10 +103,11 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
   return (
     <>
-      <input type="file" id="file-input" className="hidden" multiple onChange={readDroppedFiles} />
+      <input type="file" id="file-input" className="hidden" multiple onChange={readSelectedFiles} />
 
       <ModalDialog
         className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
+        onSubmit={handleSubmit}
         onClose={onCancel}
       >
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>

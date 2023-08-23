@@ -153,7 +153,7 @@ export const programmingLanguages: languageMap = {
   lua: ".lua",
   magma: ".magma",
   makefile: ".make",
-  markdown: ".markdown",
+  markdown: ".md",
   markup: ".markup",
   markupTemplating: ".markup",
   matlab: ".matlab",
