@@ -110,6 +110,21 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-08-23
+
+#### Features
+
+* Erasing conversation history button moved to bottom.
+* Added support for selecting markdown and C# files in the file selector.
+
+#### Bug fixes
+
+* Fixed bug that would show the wrong title of a prompt in the dialog.
+* Fixed bug that prevent pressing Enter on the prompt dialog when there's a file drop zone.
+* Fixed bug that caused selecting files not to work.
+* Greatly improved handling of token counting.
+* Greatly improved server error handling.
+
 ### 2023-08-11
 
 #### Features

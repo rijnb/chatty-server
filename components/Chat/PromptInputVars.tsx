@@ -31,15 +31,14 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
       .map((promptVariable) => ({key: promptVariable, value: ""}))
       .filter((item, index, array) => array.findIndex((t) => t.key === item.key) === index)
   )
-  const [numberOfFilesDropped, setNumberOfFilesDropped] = useState<number>(0)
+  const [numberOfSelectedFiles, setNumberOfSelectedFiles] = useState<number>(0)
 
   const nameInputRef = useRef<HTMLTextAreaElement>(null)
 
-  const readDroppedFiles = async (e: ChangeEvent<HTMLInputElement>) => {
-    let value = ""
+  const readSelectedFiles = async (e: ChangeEvent<HTMLInputElement>) => {
+    let content = ""
     let numberOfFiles = 0
     const files = e.target.files
-
     if (files) {
       const readFilePromises = Array.from(files)
         .filter((file) => file.type === "text/plain" || isLanguageSupported(file.name))
@@ -54,26 +53,31 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
           })
         })
 
-      const droppedFiles = await Promise.all(readFilePromises)
-      numberOfFiles = droppedFiles.length
-      value = droppedFiles
+      const readFiles = await Promise.all(readFilePromises)
+      numberOfFiles = readFiles.length
+      content = readFiles
         .map((droppedFile) => `File: ${droppedFile.name}\n` + "```\n" + droppedFile.content + "\n```\n")
         .join("\n")
     }
-    return {numberOfFiles: numberOfFiles, value: value}
+    return {numberOfFiles: numberOfFiles, content: content}
   }
 
-  const handleDrop = async (index: number, e: DragEvent<HTMLLabelElement>) => {
+  const handleSelectFiles = async (index: number, e: ChangeEvent<HTMLInputElement>) => {
+    const {numberOfFiles, content} = await readSelectedFiles(e)
+    console.debug("numberOfFiles", numberOfFiles, "content", content) //!!
+    if (numberOfFiles > 0 && content.length > 0) {
+      setNumberOfSelectedFiles(numberOfSelectedFiles + numberOfFiles)
+    }
+    const oldValue = updatedPromptVariables.at(index)?.value ?? ""
+    handleChange(index, `${oldValue}${oldValue !== "" ? "\n\n" : ""}${content}`)
+  }
+
+  const handleDropFiles = async (index: number, e: DragEvent<HTMLLabelElement>) => {
     e.preventDefault()
     if (e.dataTransfer.files) {
       const fileInput = document.getElementById("file-input") as HTMLInputElement
       fileInput.files = e.dataTransfer.files
-      const {numberOfFiles, value} = await readDroppedFiles({target: fileInput} as ChangeEvent<HTMLInputElement>)
-      if (numberOfFiles > 0 && value != "") {
-        setNumberOfFilesDropped(numberOfFilesDropped + numberOfFiles)
-      }
-      const oldValue = updatedPromptVariables.at(index)?.value ?? ""
-      handleChange(index, `${oldValue}${oldValue !== "" ? "\n\n" : ""}${value}`)
+      handleSelectFiles(index, {target: fileInput} as ChangeEvent<HTMLInputElement>)
     }
   }
 
@@ -104,10 +108,9 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
   return (
     <>
-      <input type="file" id="file-input" className="hidden" multiple onChange={readDroppedFiles} />
-
       <ModalDialog
         className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
+        onSubmit={handleSubmit}
         onClose={onCancel}
       >
         <div className="mb-4 text-xl font-bold text-black dark:text-neutral-200">{prompt.name}</div>
@@ -122,15 +125,24 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
               {
                 // If this is the last variable, and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
                 index === updatedPromptVariables.length - 1 && variable.key.endsWith(PROMPT_KEYWORD_DROP) ? (
-                  <label
-                    htmlFor="file-input"
-                    className="drop-zone flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 text-center text-neutral-600"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => handleDrop(index, e)}
-                  >
-                    Drop files here (or click to select)
-                    {numberOfFilesDropped > 0 ? `: dropped ${numberOfFilesDropped} files` : ""}
-                  </label>
+                  <div>
+                    <input
+                      type="file"
+                      id="file-input"
+                      className="hidden"
+                      multiple
+                      onChange={(e) => handleSelectFiles(index, e)}
+                    />
+                    <label
+                      htmlFor="file-input"
+                      className="drop-zone flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border-2 text-center text-neutral-600"
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleDropFiles(index, e)}
+                    >
+                      Drop files here (or click to select)
+                      {numberOfSelectedFiles > 0 ? `: uploaded ${numberOfSelectedFiles} files` : ""}
+                    </label>
+                  </div>
                 ) : (
                   // Otherwise, it is a text input field.
                   <textarea
