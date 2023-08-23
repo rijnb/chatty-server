@@ -59,6 +59,7 @@ export const ChatInput = ({
   const [promptInputValue, setPromptInputValue] = useState("")
   const [variables, setPromptVariables] = useState<string[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
   const [encoding, setEncoding] = useState<Tiktoken | null>(null)
@@ -89,7 +90,6 @@ export const ChatInput = ({
 
   const updatePromptListVisibility = useCallback((text: string) => {
     const match = text.match(/^\/(.*)$/)
-
     if (match) {
       setShowPromptList(true)
       setPromptInputValue(match[0].slice(1))
@@ -148,17 +148,6 @@ Please remove some messages from the conversation, or simply clear all previous 
     }, 3000)
   }
 
-  const handleInitializeModal = () => {
-    const selectedPrompt = filteredPrompts[activePromptIndex]
-    if (selectedPrompt) {
-      setContent((prevContent) => {
-        return prevContent?.replace(/\/\w*$/, selectedPrompt.content)
-      })
-      handlePromptSelect(selectedPrompt)
-    }
-    setShowPromptList(false)
-  }
-
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
       if (e.key === "ArrowDown") {
@@ -172,7 +161,8 @@ Please remove some messages from the conversation, or simply clear all previous 
         setActivePromptIndex((prevIndex) => (prevIndex < filteredPrompts.length - 1 ? prevIndex + 1 : 0))
       } else if (isKeyboardEnter(e)) {
         e.preventDefault()
-        handleInitializeModal()
+        e.stopPropagation() // Prevent the modal dialog to immediately close.
+        handleSelectPrompt()
       } else if (e.key === "Escape") {
         e.preventDefault()
         setShowPromptList(false)
@@ -191,17 +181,19 @@ Please remove some messages from the conversation, or simply clear all previous 
     }
   }
 
-  const handlePromptSelect = (prompt: Prompt) => {
-    const parsedPromptVariables = parsePromptVariables(prompt.content)
-    setPromptVariables(parsedPromptVariables)
-
-    if (parsedPromptVariables.length > 0) {
-      setIsModalVisible(true)
-    } else {
-      setContent((prevContent) => {
-        return prevContent?.replace(/\/\w*$/, prompt.content)
-      })
-      updatePromptListVisibility(prompt.content)
+  const handleSelectPrompt = () => {
+    const selectedPrompt = filteredPrompts[activePromptIndex]
+    setSelectedPrompt(selectedPrompt)
+    setShowPromptList(false)
+    if (selectedPrompt) {
+      const parsedPromptVariables = parsePromptVariables(selectedPrompt.content)
+      setPromptVariables(parsedPromptVariables)
+      setContent(selectedPrompt.content)
+      if (parsedPromptVariables.length > 0) {
+        setIsModalVisible(true)
+      } else {
+        updatePromptListVisibility(selectedPrompt.content)
+      }
     }
   }
 
@@ -211,7 +203,6 @@ Please remove some messages from the conversation, or simply clear all previous 
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
     })
-
     setContent(newContent)
     if (textareaRef && textareaRef.current) {
       textareaRef.current.focus()
@@ -226,7 +217,27 @@ Please remove some messages from the conversation, or simply clear all previous 
     }
   }
 
-  const onClearConversationMessages = () => {
+  const handlePlugInKeyDown = () => {
+    return (e: any) => {
+      if (e.key === "Escape") {
+        e.preventDefault()
+        setShowPluginSelect(false)
+        textareaRef.current?.focus()
+      }
+    }
+  }
+
+  const handlePlugInChange = () => {
+    return (plugin: Plugin) => {
+      setPlugin(plugin)
+      setShowPluginSelect(false)
+      if (textareaRef && textareaRef.current) {
+        textareaRef.current.focus()
+      }
+    }
+  }
+
+  const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, [
         {key: "name", value: NEW_CONVERSATION_TITLE},
@@ -289,7 +300,7 @@ Please remove some messages from the conversation, or simply clear all previous 
         <div className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <button
             className="absolute left-1 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={onClearConversationMessages}
+            onClick={handleClearConversationMessages}
           >
             <IconEraser size={20} />
           </button>
@@ -301,24 +312,7 @@ Please remove some messages from the conversation, or simply clear all previous 
           </button>
           {showPluginSelect && (
             <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
-              <PluginSelect
-                plugin={plugin}
-                onKeyDown={(e: any) => {
-                  if (e.key === "Escape") {
-                    e.preventDefault()
-                    setShowPluginSelect(false)
-                    textareaRef.current?.focus()
-                  }
-                }}
-                onPluginChange={(plugin: Plugin) => {
-                  setPlugin(plugin)
-                  setShowPluginSelect(false)
-
-                  if (textareaRef && textareaRef.current) {
-                    textareaRef.current.focus()
-                  }
-                }}
-              />
+              <PluginSelect plugin={plugin} onKeyDown={handlePlugInKeyDown()} onPluginChange={handlePlugInChange()} />
             </div>
           )}
           <div className="pointer-events-none absolute bottom-full mx-auto mb-4 flex w-full justify-end">
@@ -370,17 +364,17 @@ Please remove some messages from the conversation, or simply clear all previous 
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
               <PromptPopupList
-                activePromptIndex={activePromptIndex}
                 prompts={filteredPrompts}
-                onSelect={handleInitializeModal}
+                activePromptIndex={activePromptIndex}
+                onSelect={handleSelectPrompt}
                 onMouseOver={setActivePromptIndex}
                 promptListRef={promptListRef}
               />
             </div>
           )}
-          {isModalVisible && (
+          {isModalVisible && selectedPrompt && (
             <PromptInputVars
-              prompt={filteredPrompts[activePromptIndex]}
+              prompt={selectedPrompt}
               promptVariables={variables}
               onSubmit={handlePromptSubmit}
               onCancel={handlePromptCancel}

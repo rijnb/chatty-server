@@ -32,6 +32,10 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
     }
   }
 
+  const handleSubmit = () => {
+    onUpdatePrompt(updatedPrompt)
+  }
+
   useEffect(() => {
     nameInputRef.current?.focus()
   }, [])
@@ -40,7 +44,8 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
     <ModalDialog
       className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
       onClose={onClose}
-      onClickAway={() => onUpdatePrompt(updatedPrompt)}
+      onSubmit={handleSubmit}
+      onClickAway={handleSubmit}
     >
       <div role="dialog" onKeyDown={handleKeyDown}>
         <div className="text-sm font-bold text-black dark:text-neutral-200">{t("Name")}</div>
@@ -80,9 +85,7 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
         <button
           type="button"
           className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
-          onClick={() => {
-            onUpdatePrompt(updatedPrompt)
-          }}
+          onClick={handleSubmit}
         >
           {t("Save")}
         </button>
