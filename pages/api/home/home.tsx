@@ -23,7 +23,7 @@ import {importData, isValidJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
-import {numberOfTokensInConversation} from "@/utils/server/tiktoken"
+import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
@@ -35,8 +35,6 @@ import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
-import {Tiktoken} from "js-tiktoken/lite"
-import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
 interface Props {
   serverSideApiKeyIsSet: boolean
@@ -76,7 +74,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const contextValue = useCreateReducer<HomeInitialState>({initialState})
   const router = useRouter()
   const {unlocked} = useUnlock()
-  const encoding = new Tiktoken(cl100k_base)
 
   const {
     state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
@@ -191,14 +188,13 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
   const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair[]) => {
     const updatedConversation = data.reduce((acc, curr) => {
-      return {...acc, [curr.key]: curr.value};
-    }, conversation);
+      return {...acc, [curr.key]: curr.value}
+    }, conversation)
 
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations);
-    homeDispatch({field: "selectedConversation", value: updatedConversation});
-    homeDispatch({field: "conversations", value: conversationHistory});
+    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    homeDispatch({field: "selectedConversation", value: updatedConversation})
+    homeDispatch({field: "conversations", value: conversationHistory})
   }
-
 
   // EFFECTS  --------------------------------------------
 
@@ -324,47 +320,59 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
 
     // Re-select the previous conversation. But only if it wasn't too long (to avoid using lost of tokens).
-    const selectedConversation = getSelectedConversation()
-    if (selectedConversation) {
-      const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
-      homeDispatch({field: "conversations", value: cleanedConversationHistory})
-      homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
-    }
-
-    const allMessages: Message[] = [
-      {
-        role: "system",
-        content: selectedConversation?.prompt ?? ""
-      },
-      ...(selectedConversation?.messages ?? [])
-    ]
-    const tokenCount = numberOfTokensInConversation(
-      encoding,
-      allMessages,
-      selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
-    )
-    console.debug(`useEffect: tokenCount:${tokenCount}`)
-    if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
-      const lastConversation =
-        conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
-      if (lastConversation && lastConversation.messages.length === 0) {
-        // If no conversation was selected, select the last conversation if it was empty.
+    const reselectPreviousConversation = async () => {
+      const selectedConversation = getSelectedConversation()
+      if (selectedConversation) {
+        const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
         homeDispatch({field: "conversations", value: cleanedConversationHistory})
-        homeDispatch({field: "selectedConversation", value: lastConversation})
-      } else {
-        // Or create a new empty conversation.
-        const newConversation = createNewConversation(
-          t(NEW_CONVERSATION_TITLE),
-          lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
-          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+      }
+
+      let tokenCount = 0
+      if (selectedConversation) {
+        const allMessages: Message[] = [
+          {
+            role: "system",
+            content: selectedConversation?.prompt ?? ""
+          },
+          ...(selectedConversation?.messages ?? [])
+        ]
+
+        const encoding = await getTiktokenEncoding()
+
+        tokenCount = numberOfTokensInConversation(
+          encoding,
+          allMessages,
+          selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
         )
-        // Only add a new conversation to the history if there are existing conversations.
-        if (cleanedConversationHistory.length > 0) {
-          homeDispatch({field: "conversations", value: [...cleanedConversationHistory, newConversation]})
+      }
+
+      console.debug(`useEffect: tokenCount:${tokenCount}`)
+      if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
+        const lastConversation =
+          conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
+        if (lastConversation && lastConversation.messages.length === 0) {
+          // If no conversation was selected, select the last conversation if it was empty.
+          homeDispatch({field: "conversations", value: cleanedConversationHistory})
+          homeDispatch({field: "selectedConversation", value: lastConversation})
+        } else {
+          // Or create a new empty conversation.
+          const newConversation = createNewConversation(
+            t(NEW_CONVERSATION_TITLE),
+            lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+          )
+          // Only add a new conversation to the history if there are existing conversations.
+          if (cleanedConversationHistory.length > 0) {
+            homeDispatch({field: "conversations", value: [...cleanedConversationHistory, newConversation]})
+          }
+          homeDispatch({field: "selectedConversation", value: newConversation})
         }
-        homeDispatch({field: "selectedConversation", value: newConversation})
       }
     }
+
+    reselectPreviousConversation().catch((error) => console.error(`Error reselecting previous conversation: ${error}`))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
