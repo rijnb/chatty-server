@@ -5,13 +5,13 @@ import React, {MutableRefObject} from "react"
 import toast from "react-hot-toast"
 import {v4 as uuidv4} from "uuid"
 
-import Chat from "@/components/Chat/Chat"
+import Chat, {TOAST_DURATION_MS} from "@/components/Chat/Chat"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {HomeContextProps, useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {asMock} from "@/testutils"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE, TOAST_DURATION_MS} from "@/utils/app/const"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => {
