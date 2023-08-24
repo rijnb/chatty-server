@@ -1,11 +1,11 @@
 import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
 import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {Conversation} from "@/types/chat"
-import HomeContext from "@/pages/api/home/home.context"
+
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-
+import HomeContext from "@/pages/api/home/home.context"
+import {Conversation} from "@/types/chat"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   conversation: Conversation

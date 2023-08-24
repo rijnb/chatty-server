@@ -1,6 +1,6 @@
 import {OpenAIModelID} from "./openai"
 
-export const titleNewConversation = 'asd'
+export const titleNewConversation = "asd"
 
 export type Role = "system" | "assistant" | "user"
 

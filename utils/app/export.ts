@@ -1,10 +1,9 @@
+import {FolderType} from "@/types/folder"
+import {ConversationV5, FileFormatV5, FolderInterfaceV4, PromptV5} from "@/types/import"
 import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
 import {getPrompts} from "@/utils/app/prompts"
-import {FolderType} from "@/types/folder"
-import {ConversationV5, FileFormatV5, FolderInterfaceV4, PromptV5} from "@/types/import"
-
 
 export const exportData = (prefix: string, type: FolderType) => {
   let conversationsToExport: ConversationV5[] = getConversationsHistory().map((conversation) => {

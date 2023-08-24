@@ -1,4 +1,10 @@
+import {Readability} from "@mozilla/readability"
+import endent from "endent"
+import jsdom, {JSDOM} from "jsdom"
 import {NextApiRequest, NextApiResponse} from "next"
+
+import {Message} from "@/types/chat"
+import {GoogleBody, GoogleSource} from "@/types/google"
 import {
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
@@ -8,12 +14,6 @@ import {
 } from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {cleanSourceText} from "@/utils/server/google"
-import {Message} from "@/types/chat"
-import {GoogleBody, GoogleSource} from "@/types/google"
-import {Readability} from "@mozilla/readability"
-import endent from "endent"
-import jsdom, {JSDOM} from "jsdom"
-
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

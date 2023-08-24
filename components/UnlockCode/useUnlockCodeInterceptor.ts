@@ -1,5 +1,5 @@
-import {Interceptors} from "@/hooks/useFetch"
 import {useUnlock} from "@/components/UnlockCode/UnlockContext"
+import {Interceptors} from "@/hooks/useFetch"
 
 export const useUnlockCodeInterceptor = () => {
   const {isProtected, code, invalidCode, setInvalidCode} = useUnlock()

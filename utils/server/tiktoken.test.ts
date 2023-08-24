@@ -1,7 +1,7 @@
-import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
-import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
+import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
+import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
 
 describe("Tiktoken", () => {
   describe("Encoder", () => {
@@ -82,7 +82,8 @@ describe("Tiktoken", () => {
   })
 
   describe("Prepare messages to send", () => {
-    const prompt =  "You are Chatty, a large conversational model based on ChatGPT. Follow the user's instructions carefully. Respond using markdown. If you provide code examples, always include the language."
+    const prompt =
+      "You are Chatty, a large conversational model based on ChatGPT. Follow the user's instructions carefully. Respond using markdown. If you provide code examples, always include the language."
     const messages: Message[] = [
       {
         role: "user",

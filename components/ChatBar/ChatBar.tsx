@@ -1,6 +1,18 @@
-import {useCallback, useContext, useEffect} from "react"
 import {useTranslation} from "next-i18next"
+import {useCallback, useContext, useEffect} from "react"
+
+import Sidebar from "../Sidebar"
+import ChatBarContext from "./ChatBar.context"
+import {ChatBarInitialState, initialState} from "./ChatBar.state"
+import ChatBarSettings from "./components/ChatBarSettings"
+import ChatFolderList from "./components/ChatFolderList"
+import ConversationList from "./components/ConversationList"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
+import HomeContext from "@/pages/api/home/home.context"
+import {Conversation} from "@/types/chat"
+import {SupportedFileFormats} from "@/types/import"
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {PluginKey} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
@@ -14,18 +26,6 @@ import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
 import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
-import {Conversation} from "@/types/chat"
-import {SupportedFileFormats} from "@/types/import"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
-import {PluginKey} from "@/types/plugin"
-import HomeContext from "@/pages/api/home/home.context"
-import ChatBarSettings from "./components/ChatBarSettings"
-import ChatFolderList from "./components/ChatFolderList"
-import ConversationList from "./components/ConversationList"
-import Sidebar from "../Sidebar"
-import ChatBarContext from "./ChatBar.context"
-import {ChatBarInitialState, initialState} from "./ChatBar.state"
-
 
 export const ChatBar = () => {
   const {t} = useTranslation("common")

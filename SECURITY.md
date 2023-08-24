@@ -65,4 +65,3 @@ a pull request related to security, please mention that it addresses a security 
 
 By adhering to this security policy, you contribute to the overall security and stability of the project. Thank you for
 your cooperation and responsible handling of vulnerabilities and secrets.
-

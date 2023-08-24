@@ -1,5 +1,6 @@
-import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
+import {OpenAIStream, StreamingTextResponse} from "ai"
+import {Configuration, OpenAIApi} from "openai-edge"
+
 import {
   OPENAI_API_HOST,
   OPENAI_API_MAX_TOKENS,
@@ -8,8 +9,8 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "../app/const"
-import {OpenAIStream, StreamingTextResponse} from "ai"
-import {Configuration, OpenAIApi} from "openai-edge"
+import {Message} from "@/types/chat"
+import {OpenAIModelID} from "@/types/openai"
 
 export class OpenAIError extends Error {
   constructor(message: string) {

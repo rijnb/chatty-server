@@ -9,10 +9,11 @@ import {
   IconX
 } from "@tabler/icons-react"
 import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {FolderInterface} from "@/types/folder"
-import HomeContext from "@/pages/api/home/home.context"
+
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
+import HomeContext from "@/pages/api/home/home.context"
+import {FolderInterface} from "@/types/folder"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   folder: FolderInterface

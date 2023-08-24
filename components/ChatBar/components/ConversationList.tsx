@@ -1,5 +1,5 @@
-import {Conversation} from "@/types/chat"
 import ConversationListItem from "./ConversationListItem"
+import {Conversation} from "@/types/chat"
 
 interface Props {
   conversations: Conversation[]

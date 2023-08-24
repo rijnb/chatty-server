@@ -1,8 +1,9 @@
 import {IconLock} from "@tabler/icons-react"
 import React from "react"
-import {ModalDialog} from "@/components/ModalDialog"
+
 import {UnlockCodeEditor} from "./UnlockCodeEditor"
 import {useUnlock} from "./UnlockContext"
+import {ModalDialog} from "@/components/ModalDialog"
 
 interface Props {}
 

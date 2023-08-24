@@ -1,8 +1,9 @@
 import {IconCheck, IconKey, IconX} from "@tabler/icons-react"
-import {KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {KeyboardEvent, useEffect, useRef, useState} from "react"
+
 import SidebarButton from "../Sidebar/SidebarButton"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   unlockCode: string

@@ -2,7 +2,7 @@
 
 ### Getting started
 
-Whenever you start asking me questions in the input box below, I will try to answer them. 
+Whenever you start asking me questions in the input box below, I will try to answer them.
 The questions and answers are stored in a "conversation". I use this conversation as a context
 to provide you the next answer. It serves as my memory during the conversation.
 
@@ -24,16 +24,16 @@ is shown in the top right corner of the conversation. If you exceed this limit, 
 start to forget the oldest messages. This is not a problem if you are just asking
 questions and I am answering them.
 
-There is also a cost associated with the number of tokens in your current conversation. 
+There is also a cost associated with the number of tokens in your current conversation.
 The more tokens there are in the current conversation, the more expensive it is to
-generate the next answer. This is why  it is good practice to regularly start new 
-conversations. 
+generate the next answer. This is why it is good practice to regularly start new
+conversations.
 
 ## Using prompts (right menu bar)
 
 Prompts are an extremely powerful feature. They allow you to quickly tell me to
 perform a certain task. For example, you can tell me to summarize a long email
-thread efficiently. Or you can tell me to debug a piece of code. 
+thread efficiently. Or you can tell me to debug a piece of code.
 
 You activate a prompt by typing "/" in the input box. A list of prompts will
 appear. You can select a prompt by clicking on it, or using the up and
@@ -49,7 +49,7 @@ There are `factory prompts` and `user prompts`. Factory prompts are provided by 
 every time you start up. They are kept up to date by me and you cannot edit them.
 They are organized in their own (factory) folders, which you cannot use.
 
-You can create and organize your own prompts in the `user prompts` section. 
+You can create and organize your own prompts in the `user prompts` section.
 Just click on "New prompt" to create a new prompt. You can also import and export
 prompts. Factory prompts are exported as well, but you cannot change and re-import
 them. They are automatically fetched from the server.
@@ -61,16 +61,16 @@ will be copied to your user prompts. You can now edit it as you like.
 ### Creating prompts
 
 You can create your own prompts by clicking on "New prompt". A new prompt
-will be created. Click on it in the right menu bar to edit it. 
+will be created. Click on it in the right menu bar to edit it.
 A prompt consists of:
 
-* **Name**: this is the name of the prompt, which is shown in the prompt list.
-* **Description**: this is a description of the prompt, which is shown in the prompt list.
-* **Prompt**: this is the text that is shown in the input box when you select the prompt.
+- **Name**: this is the name of the prompt, which is shown in the prompt list.
+- **Description**: this is a description of the prompt, which is shown in the prompt list.
+- **Prompt**: this is the text that is shown in the input box when you select the prompt.
 
-In the `Prompt` box you can use `{{Variable name, or title to show}}` to indicate a variable. 
-When you select the prompt from the chat input (using `/`), a dialog will appear where you can 
-enter the values in edit boxes. 
+In the `Prompt` box you can use `{{Variable name, or title to show}}` to indicate a variable.
+When you select the prompt from the chat input (using `/`), a dialog will appear where you can
+enter the values in edit boxes.
 
 You can also add `#DROP` as the last word the prompt. This will allow you to drop
 files in the input box when you select the prompt. The files will be uploaded to
@@ -93,14 +93,13 @@ Contents of the next file...
 
 ## Using Google search
 
-If you have Google API key and a Google search engine ID, you can use the Google 
-search plugin in Chatty. The Google plugin can be selected by clicking on the plugin 
+If you have Google API key and a Google search engine ID, you can use the Google
+search plugin in Chatty. The Google plugin can be selected by clicking on the plugin
 symbol left of the input bar (looks like a lightning bolt).
 
 When Google is selected, the input you type will be sent to Google and the Google
 search results will be interpreted and summarized by me, with references to the
 original pages Google came up with.
-
 
 _Happy chatting!_
 
@@ -114,117 +113,117 @@ _Rijn Buve & Oleksii Kulyk_
 
 #### Features
 
-* Erasing conversation history button moved to bottom.
-* Added support for selecting markdown and C# files in the file selector.
+- Erasing conversation history button moved to bottom.
+- Added support for selecting markdown and C# files in the file selector.
 
 #### Bug fixes
 
-* Fixed bug that would show the wrong title of a prompt in the dialog.
-* Fixed bug that prevent pressing Enter on the prompt dialog when there's a file drop zone.
-* Fixed bug that caused selecting files not to work.
-* Greatly improved handling of token counting.
-* Greatly improved server error handling.
+- Fixed bug that would show the wrong title of a prompt in the dialog.
+- Fixed bug that prevent pressing Enter on the prompt dialog when there's a file drop zone.
+- Fixed bug that caused selecting files not to work.
+- Greatly improved handling of token counting.
+- Greatly improved server error handling.
 
 ### 2023-08-11
 
 #### Features
 
-* Added support for dropping files using `#DROP` in a prompt.
+- Added support for dropping files using `#DROP` in a prompt.
 
 #### Bug fixes
 
-* Cleanup of `FC` objects.
+- Cleanup of `FC` objects.
 
 ### 2023-08-11
 
 #### Features
 
-* Improved handling of window resizes and width of conversation column.
-* The previous conversation is now automatically selected when you start Chatty unless it's larger than a threshold (to avoid consuming too many tokens by accident).
+- Improved handling of window resizes and width of conversation column.
+- The previous conversation is now automatically selected when you start Chatty unless it's larger than a threshold (to avoid consuming too many tokens by accident).
 
 #### Bug fixes
 
-* Fixed incorrect visual artifacts for code blocks.
-* Release notes readable in dark theme.
-* Improved log messages.
-* Fixed unlock code handling.
-* Fixed startup issue and r
+- Fixed incorrect visual artifacts for code blocks.
+- Release notes readable in dark theme.
+- Improved log messages.
+- Fixed unlock code handling.
+- Fixed startup issue and r
 
 ### 2023-08-06
 
 #### Features
 
-* Improved handling of factory folder; shows dividers for factory/user folders.
-* Escape clears input buffer.
+- Improved handling of factory folder; shows dividers for factory/user folders.
+- Escape clears input buffer.
 
 ### 2023-08-03
 
 #### Features
 
-* Factory folders have a different icon now.
-* Handle content management policy violations by Azure OpenAI in a more user friendly way.
-* Great new factory prompts to play with!
+- Factory folders have a different icon now.
+- Handle content management policy violations by Azure OpenAI in a more user friendly way.
+- Great new factory prompts to play with!
 
 #### Bug fixes
 
-* Factory Prompts are cloned even if no changes are made (#32).
-* Improved handling of editing factory prompts.
-* Fixed pop-up prompts list selection error.
+- Factory Prompts are cloned even if no changes are made (#32).
+- Improved handling of editing factory prompts.
+- Fixed pop-up prompts list selection error.
 
 ### 2023-07-29
 
 #### Features
 
-* Added factory prompts. Everyone receives the factory prompts. They are automatically updated when you start. If you
+- Added factory prompts. Everyone receives the factory prompts. They are automatically updated when you start. If you
   edit them, they become 'user prompts'. If you wish tp get the factory one back, just delete it and reload the page.
-* Removed settings menu (with only a theme selection) and created icon to slip between dark/light theme instead.
-* Sorted prompt list.
+- Removed settings menu (with only a theme selection) and created icon to slip between dark/light theme instead.
+- Sorted prompt list.
 
 #### Bug fixes
 
-* Source code cleanup.
-* Fixed bug when importing would trigger wrong `onChange` handler and the handler would not always be called.
-* Removed delete button for factory prompts.
+- Source code cleanup.
+- Fixed bug when importing would trigger wrong `onChange` handler and the handler would not always be called.
+- Removed delete button for factory prompts.
 
 ### 2023-07-26
 
 #### Features
 
-* Improved welcome screen and handling of API key, unlock code and loading models.
-* Top status now always visible, to choose model and show release notes.
-* Improved message input box to only show "/" if applicable.
+- Improved welcome screen and handling of API key, unlock code and loading models.
+- Top status now always visible, to choose model and show release notes.
+- Improved message input box to only show "/" if applicable.
 
 #### Bug fixes
 
-* Fixed prompt selector. Only works on start of line and cannot scroll below list.
-* Fixed cancelling prompt. Now empties input bar.
-* Fixed message delete, which sometimes failed.
+- Fixed prompt selector. Only works on start of line and cannot scroll below list.
+- Fixed cancelling prompt. Now empties input bar.
+- Fixed message delete, which sometimes failed.
 
 ### 2023-07-24
 
 #### Features
 
-* Added token usage counter that turns red when older messages are being automatically discarded.
-* Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the
+- Added token usage counter that turns red when older messages are being automatically discarded.
+- Separated importing/exporting conversations and prompts. Both use the same file format and are compatible with the
   existing V4 format.
-* Added menu on right side to deal with prompts.
-* Added Markdown export of current conversation.
-* Added screenshot export of current conversation.
-* Added release notes button.
-* Imported prompts update existing prompts and adds new prompts.
-* Added multi-file selector for importing prompts.
+- Added menu on right side to deal with prompts.
+- Added Markdown export of current conversation.
+- Added screenshot export of current conversation.
+- Added release notes button.
+- Imported prompts update existing prompts and adds new prompts.
+- Added multi-file selector for importing prompts.
 
 #### Bug fixes
 
-* Fixed time stamp bug when creating a new conversation.
-* Improved server error handling and exception handling.
-* Improved server timeout handling.
-* Introduced 2 minute timout for really long responses.
-* Fixed token count.
-* Fixed screen width issues.
-* Fixed icon of settings on top.
-* Improved layout of top bar.
-* Full cleanup of source code and directory structure, removal of old files.
+- Fixed time stamp bug when creating a new conversation.
+- Improved server error handling and exception handling.
+- Improved server timeout handling.
+- Introduced 2 minute timout for really long responses.
+- Fixed token count.
+- Fixed screen width issues.
+- Fixed icon of settings on top.
+- Improved layout of top bar.
+- Full cleanup of source code and directory structure, removal of old files.
 
 ### Found an issue?
 
