@@ -8,8 +8,6 @@ module.exports = {
   trailingComma: "none",
   bracketSpacing: false,
   bracketSameLine: false,
-  jsxBracketSameLine: false,
-  arrowFunctionParentheses: "always",
   arrowParens: "always",
   htmlWhitespaceSensitivity: "css",
   insertPragma: false,
