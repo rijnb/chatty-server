@@ -20,7 +20,7 @@ import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE, RESPONSE_TIMEOUT_MS, TOAST_DURATION_MS} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
@@ -28,6 +28,9 @@ import {throttle} from "@/utils/data/throttle"
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
 }
+
+export const TOAST_DURATION_MS = 8000
+export const RESPONSE_TIMEOUT_MS = 20000
 
 const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
