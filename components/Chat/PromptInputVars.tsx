@@ -56,7 +56,10 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
       const readFiles = await Promise.all(readFilePromises)
       numberOfFiles = readFiles.length
       content = readFiles
-        .map((droppedFile) => `File: ${droppedFile.name}\n` + "```\n" + droppedFile.content + "\n```\n")
+        .map((droppedFile) => {
+          const ext = droppedFile.name.split(".").pop()?.toLowerCase() ?? ""
+          return `File: ${droppedFile.name}\n` + "```" + `${ext}\n${droppedFile.content}\n` + "```\n"
+        })
         .join("\n")
     }
     return {numberOfFiles: numberOfFiles, content: content}
