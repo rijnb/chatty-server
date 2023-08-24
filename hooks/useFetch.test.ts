@@ -1,5 +1,6 @@
-import {Interceptors, RemoteError, useFetch} from "@/hooks/useFetch"
 import fetchMock from "jest-fetch-mock"
+
+import {Interceptors, RemoteError, useFetch} from "@/hooks/useFetch"
 
 jest.spyOn(global.console, "error").mockImplementation()
 

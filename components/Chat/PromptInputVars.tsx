@@ -1,10 +1,10 @@
-import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTheme} from "next-themes"
+import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
+
+import {ModalDialog} from "@/components/ModalDialog"
+import {Prompt} from "@/types/prompt"
 import {isLanguageSupported} from "@/utils/app/codeblock"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {Prompt} from "@/types/prompt"
-import {ModalDialog} from "@/components/ModalDialog"
-
 
 interface Props {
   prompt: Prompt

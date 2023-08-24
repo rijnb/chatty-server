@@ -1,13 +1,13 @@
-import {Toaster} from "react-hot-toast"
-import {QueryClient, QueryClientProvider} from "react-query"
 import {appWithTranslation} from "next-i18next"
 import {ThemeProvider} from "next-themes"
 import type {AppContext, AppInitialProps, AppProps} from "next/app"
 import App from "next/app"
 import {PT_Sans} from "next/font/google"
+import {Toaster} from "react-hot-toast"
+import {QueryClient, QueryClientProvider} from "react-query"
+
 import {UnlockProvider} from "@/components/UnlockCode"
 import "@/styles/globals.css"
-
 
 const inter = PT_Sans({subsets: ["latin"], weight: ["400", "700"]})
 

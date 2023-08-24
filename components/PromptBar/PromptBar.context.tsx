@@ -1,9 +1,9 @@
 import {Dispatch, createContext} from "react"
+
+import {PromptBarInitialState} from "./PromptBar.state"
 import {ActionType} from "@/hooks/useCreateReducer"
 import {SupportedFileFormats} from "@/types/import"
 import {Prompt} from "@/types/prompt"
-import {PromptBarInitialState} from "./PromptBar.state"
-
 
 export interface PromptBarContextProps {
   state: PromptBarInitialState

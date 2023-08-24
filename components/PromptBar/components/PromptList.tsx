@@ -1,5 +1,5 @@
-import {Prompt} from "@/types/prompt"
 import PromptListItem from "./PromptListItem"
+import {Prompt} from "@/types/prompt"
 
 interface Props {
   prompts: Prompt[]

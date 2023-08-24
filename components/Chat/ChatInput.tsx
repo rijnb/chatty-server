@@ -7,24 +7,24 @@ import {
   IconRepeat,
   IconSend
 } from "@tabler/icons-react"
-import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
+import {Tiktoken} from "js-tiktoken"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
-import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
-import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
-import {Plugin} from "@/types/plugin"
-import {Prompt} from "@/types/prompt"
-import {useHomeContext} from "@/pages/api/home/home.context"
+import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
+
 import ChatInputTokenCount from "./ChatInputTokenCount"
 import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
-import {Tiktoken} from "js-tiktoken"
-
+import {useHomeContext} from "@/pages/api/home/home.context"
+import {Message} from "@/types/chat"
+import {OpenAIModelID} from "@/types/openai"
+import {Plugin} from "@/types/plugin"
+import {Prompt} from "@/types/prompt"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
 
 interface Props {
   modelId: OpenAIModelID

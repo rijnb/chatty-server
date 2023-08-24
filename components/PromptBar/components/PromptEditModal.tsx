@@ -1,9 +1,9 @@
-import {KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {Prompt} from "@/types/prompt"
-import {ModalDialog} from "@/components/ModalDialog"
+import {KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
 
+import {ModalDialog} from "@/components/ModalDialog"
+import {Prompt} from "@/types/prompt"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   prompt: Prompt

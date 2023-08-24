@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react"
-import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
+
 import {UnlockContext, UnlockContextType} from "./UnlockContext"
 import {UnlockOverlay} from "./UnlockOverlay"
+import {getUnlockCode, removeUnlockCode, saveUnlockCode} from "@/utils/app/settings"
 
 interface Props {
   isProtected: boolean

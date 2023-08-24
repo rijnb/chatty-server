@@ -1,16 +1,17 @@
 import {IconCheck, IconCopy, IconEdit, IconRobot, IconTrash, IconUser} from "@tabler/icons-react"
-import React, {FC, memo, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {updateConversationHistory} from "@/utils/app/conversations"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {trimForPrivacy} from "@/utils/app/privacy"
-import {Message, equals} from "@/types/chat"
-import HomeContext from "@/pages/api/home/home.context"
-import {CodeBlock} from "../Markdown/CodeBlock"
-import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown"
+import React, {FC, memo, useContext, useEffect, useRef, useState} from "react"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
+
+import {CodeBlock} from "../Markdown/CodeBlock"
+import {MemoizedReactMarkdown} from "../Markdown/MemoizedReactMarkdown"
+import HomeContext from "@/pages/api/home/home.context"
+import {Message, equals} from "@/types/chat"
+import {updateConversationHistory} from "@/utils/app/conversations"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {trimForPrivacy} from "@/utils/app/privacy"
 
 export interface Props {
   message: Message

@@ -25,7 +25,13 @@ export const WelcomeMessage = ({}: Props) => {
           </div>
           <div className="text-center text-gray-700 dark:text-gray-400">
             <div>&nbsp;</div>
-            <Image src={`${router.basePath}/icon-256.png`} height="256" width="256" alt="icon" className="mx-auto mb-6 h-24 w-24" />
+            <Image
+              src={`${router.basePath}/icon-256.png`}
+              height="256"
+              width="256"
+              alt="icon"
+              className="mx-auto mb-6 h-24 w-24"
+            />
             <div>&nbsp;</div>
             <div className="font-light">You can start chatting in the box below.</div>
             <div className="font-light">Click on (?) in the top menu for instructions and release notes.</div>

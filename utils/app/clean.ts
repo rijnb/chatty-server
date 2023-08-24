@@ -1,7 +1,6 @@
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
-
 
 export const cleanSelectedConversation = (conversation: Conversation) => {
   let updatedConversation = conversation

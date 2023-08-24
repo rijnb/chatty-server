@@ -1,22 +1,22 @@
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
+import {v4 as uuidv4} from "uuid"
+
+import Sidebar from "../Sidebar"
+import PromptBarContext from "./PromptBar.context"
+import {PromptBarInitialState, initialState} from "./PromptBar.state"
+import PromptBarSettings from "./components/PromptBarSettings"
+import PromptFolderList from "./components/PromptFolderList"
+import PromptList from "./components/PromptList"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
+import HomeContext from "@/pages/api/home/home.context"
+import {SupportedFileFormats} from "@/types/import"
+import {Prompt} from "@/types/prompt"
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
 import {createNewPrompt, removePrompts, savePrompts} from "@/utils/app/prompts"
 import {saveShowPromptBar} from "@/utils/app/settings"
-import {SupportedFileFormats} from "@/types/import"
-import {Prompt} from "@/types/prompt"
-import HomeContext from "@/pages/api/home/home.context"
-import PromptBarSettings from "./components/PromptBarSettings"
-import PromptFolderList from "./components/PromptFolderList"
-import PromptList from "./components/PromptList"
-import Sidebar from "../Sidebar"
-import PromptBarContext from "./PromptBar.context"
-import {PromptBarInitialState, initialState} from "./PromptBar.state"
-import {v4 as uuidv4} from "uuid"
-
 
 const PromptBar = () => {
   const {t} = useTranslation("common")

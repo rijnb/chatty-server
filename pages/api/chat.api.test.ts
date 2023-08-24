@@ -1,3 +1,7 @@
+import chatHandler from "@/pages/api/chat.api"
+import {asMock} from "@/testutils"
+import {ChatBody} from "@/types/chat"
+import {OpenAIModelID} from "@/types/openai"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
@@ -6,10 +10,6 @@ import {
   OpenAILimitExceeded,
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
-import {ChatBody} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
-import chatHandler from "@/pages/api/chat.api"
-import {asMock} from "@/testutils"
 
 jest.mock("@/utils/server/openAiClient", () => {
   return {

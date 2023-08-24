@@ -1,9 +1,10 @@
 import {Dispatch, createContext, useContext} from "react"
+
+import {HomeInitialState} from "./home.state"
 import {ActionType} from "@/hooks/useCreateReducer"
 import {Conversation} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
-import {HomeInitialState} from "./home.state"
 
 export interface HomeContextProps {
   state: HomeInitialState
