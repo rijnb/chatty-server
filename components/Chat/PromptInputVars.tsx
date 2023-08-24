@@ -1,10 +1,10 @@
-import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
 import {useTheme} from "next-themes"
+import {ChangeEvent, DragEvent, KeyboardEvent, useEffect, useRef, useState} from "react"
+
+import {ModalDialog} from "@/components/ModalDialog"
+import {Prompt} from "@/types/prompt"
 import {isLanguageSupported} from "@/utils/app/codeblock"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {Prompt} from "@/types/prompt"
-import {ModalDialog} from "@/components/ModalDialog"
-
 
 interface Props {
   prompt: Prompt
@@ -56,7 +56,10 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
       const readFiles = await Promise.all(readFilePromises)
       numberOfFiles = readFiles.length
       content = readFiles
-        .map((droppedFile) => `File: ${droppedFile.name}\n` + "```\n" + droppedFile.content + "\n```\n")
+        .map((droppedFile) => {
+          const ext = droppedFile.name.split(".").pop()?.toLowerCase() ?? ""
+          return `File: ${droppedFile.name}\n` + "```" + `${ext}\n${droppedFile.content}\n` + "```\n"
+        })
         .join("\n")
     }
     return {numberOfFiles: numberOfFiles, content: content}

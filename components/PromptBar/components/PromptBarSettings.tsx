@@ -1,12 +1,12 @@
 import {IconFileExport} from "@tabler/icons-react"
-import {useContext} from "react"
 import {useTranslation} from "next-i18next"
-import HomeContext from "@/pages/api/home/home.context"
+import {useContext} from "react"
+
+import ClearPrompts from "./ClearPrompts"
 import PromptBarContext from "@/components/PromptBar/PromptBar.context"
 import ImportData from "@/components/Settings/ImportData"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
-import ClearPrompts from "./ClearPrompts"
-
+import HomeContext from "@/pages/api/home/home.context"
 
 interface Props {}
 

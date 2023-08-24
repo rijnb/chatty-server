@@ -1,3 +1,6 @@
+import fetchMock from "jest-fetch-mock"
+
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
@@ -5,8 +8,6 @@ import {
   OpenAILimitExceeded,
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
-import fetchMock from "jest-fetch-mock"
 
 /**
  * This test is verbose on purpose.

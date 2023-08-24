@@ -1,8 +1,8 @@
-import React, {useContext, useState} from "react"
 import {useTranslation} from "next-i18next"
-import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import HomeContext from "@/pages/api/home/home.context"
+import React, {useContext, useState} from "react"
 
+import HomeContext from "@/pages/api/home/home.context"
+import {OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
   label: string

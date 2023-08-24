@@ -1,14 +1,13 @@
 # Chatty Server (`chatty-server`)
 
-__Note: You can find the most recent release notes [here](./public/RELEASE_NOTES.md).__
-
+**Note: You can find the most recent release notes [here](./public/RELEASE_NOTES.md).**
 
 **Chatty Server** is a client interface for GPT-3.5 and GPT-4. It allows you to use
-GPT-4 for many tasks. For that, it allows you to store "prompts" (in folders), 
+GPT-4 for many tasks. For that, it allows you to store "prompts" (in folders),
 that allows you to quickly have GPT-4 analyze your text
 in a certain way and respond to you.
 
-I've created a bunch of prompts to start with. These are automatically imported 
+I've created a bunch of prompts to start with. These are automatically imported
 as factory prompts. On the prompt line, type `/` and search for a prompt and press enter.
 
 For example, to summarize a mail thread efficiently, select the entire mail text
@@ -39,13 +38,13 @@ Happy chatting!
 ## Is it safe to use?
 
 The `chatty-server` can run on any server, but it tries to be as secure as possible.
-It does *not* store or log any of the prompts, conversations, API keys or other secrets
+It does _not_ store or log any of the prompts, conversations, API keys or other secrets
 on the server.
 
 All sensitive information is kept client side and stored in browser 'local storage'.
 
 Conversations are sent (through SSL) to the server, of course, but not logged or persisted
-server-side. (*Exception:* The server logs may contain at most the first +/-20 characters of
+server-side. (_Exception:_ The server logs may contain at most the first +/-20 characters of
 your prompts or returned answers for debugging purposes, but never more).
 
 ## Technical documentation
@@ -53,12 +52,12 @@ your prompts or returned answers for debugging purposes, but never more).
 When deploying `chatty-server`, make sure you set the following environment variables:
 
 | Environment Variable           |
-|--------------------------------|
+| ------------------------------ |
 | OPENAI_API_TYPE                |
-| OPENAI_API_HOST                | 
-| OPENAI_VERSION                 | 
-| OPENAI_MAX_TOKENS              | 
-| OPENAI_AZURE_DEPLOYMENT_ID     | 
+| OPENAI_API_HOST                |
+| OPENAI_VERSION                 |
+| OPENAI_MAX_TOKENS              |
+| OPENAI_AZURE_DEPLOYMENT_ID     |
 | OPENAI_DEFAULT_MODEL           |
 | ------------------------------ |
 
@@ -103,7 +102,7 @@ You should be able to start chatting at `http://localhost:3000/chatty/1/chat`.
 When deploying the application, the following environment variables can be set:
 
 | Environment Variable         | Default value                  | Description                                                                                                                               |
-|------------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | OPENAI_API_KEY               |                                | The default API key used for authentication with OpenAI                                                                                   |
 | OPENAI_API_HOST              | `https://api.openai.com`       | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
 | OPENAI_API_TYPE              | `openai`                       | The API type, options are `openai` or `azure`                                                                                             |

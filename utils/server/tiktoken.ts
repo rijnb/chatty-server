@@ -1,7 +1,8 @@
-import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
+import {Tiktoken} from "js-tiktoken/lite"
+
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
-import {Tiktoken} from "js-tiktoken/lite"
+import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 
 export async function getTiktokenEncoding(): Promise<Tiktoken> {
   const cl100k_base = await import("js-tiktoken/ranks/cl100k_base")

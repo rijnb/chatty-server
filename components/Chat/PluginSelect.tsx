@@ -1,8 +1,8 @@
-import React, {useEffect, useRef} from "react"
 import {useTranslation} from "next-i18next"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {Plugin, PluginList} from "@/types/plugin"
+import React, {useEffect, useRef} from "react"
 
+import {Plugin, PluginList} from "@/types/plugin"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   plugin: Plugin | null

@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react"
 import {useRouter} from "next/router"
+import React, {useEffect, useState} from "react"
+
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {ModalDialog} from "@/components/ModalDialog"
-
 
 export interface Props {
   close: () => void

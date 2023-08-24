@@ -1,5 +1,6 @@
-import React, {useContext} from "react"
 import {useTranslation} from "next-i18next"
+import React, {useContext} from "react"
+
 import HomeContext from "@/pages/api/home/home.context"
 
 interface Props {}
@@ -14,10 +15,12 @@ export const ModelSelect = ({}: Props) => {
 
   const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectedConversation &&
-      handleUpdateConversation(selectedConversation, [{
-        key: "model",
-        value: models.find((model) => model.id === e.target.value)
-      }])
+      handleUpdateConversation(selectedConversation, [
+        {
+          key: "model",
+          value: models.find((model) => model.id === e.target.value)
+        }
+      ])
   }
 
   return (

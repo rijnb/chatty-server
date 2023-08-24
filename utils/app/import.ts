@@ -1,3 +1,7 @@
+import {Conversation} from "@/types/chat"
+import {FolderInterface} from "@/types/folder"
+import {ConversationV4, FileFormatV4, FileFormatV5, PromptV4, SupportedFileFormats} from "@/types/import"
+import {Prompt} from "@/types/prompt"
 import {
   getConversationsHistory,
   removeSelectedConversation,
@@ -7,11 +11,6 @@ import {
 import {getFolders, saveFolders} from "@/utils/app/folders"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
-import {Conversation} from "@/types/chat"
-import {FolderInterface} from "@/types/folder"
-import {ConversationV4, FileFormatV4, FileFormatV5, PromptV4, SupportedFileFormats} from "@/types/import"
-import {Prompt} from "@/types/prompt"
-
 
 type Data = {
   history: Conversation[]

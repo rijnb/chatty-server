@@ -1,9 +1,9 @@
 import {useContext} from "react"
-import {FolderInterface} from "@/types/folder"
-import HomeContext from "@/pages/api/home/home.context"
-import Folder from "@/components/Folder"
-import ConversationListItem from "./ConversationListItem"
 
+import ConversationListItem from "./ConversationListItem"
+import Folder from "@/components/Folder"
+import HomeContext from "@/pages/api/home/home.context"
+import {FolderInterface} from "@/types/folder"
 
 interface Props {
   searchTerm: string

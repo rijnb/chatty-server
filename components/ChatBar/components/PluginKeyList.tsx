@@ -1,12 +1,12 @@
 import {IconKey} from "@tabler/icons-react"
 import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react"
 import {useTranslation} from "react-i18next"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {PluginID, PluginKey} from "@/types/plugin"
-import HomeContext from "@/pages/api/home/home.context"
+
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
-
+import HomeContext from "@/pages/api/home/home.context"
+import {PluginID, PluginKey} from "@/types/plugin"
+import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {}
 

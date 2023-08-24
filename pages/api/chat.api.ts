@@ -1,3 +1,5 @@
+import {ChatBody, Message} from "@/types/chat"
+import {OpenAIModels} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {
@@ -9,8 +11,6 @@ import {
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
 import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
-import {ChatBody, Message} from "@/types/chat"
-import {OpenAIModels} from "@/types/openai"
 
 export const config = {
   runtime: "edge"

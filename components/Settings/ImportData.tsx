@@ -1,9 +1,9 @@
 import {IconFileImport} from "@tabler/icons-react"
 import {useState} from "react"
-import {isValidJsonData} from "@/utils/app/import"
-import {SupportedFileFormats} from "@/types/import"
-import SidebarButton from "../Sidebar/SidebarButton"
 
+import SidebarButton from "../Sidebar/SidebarButton"
+import {SupportedFileFormats} from "@/types/import"
+import {isValidJsonData} from "@/utils/app/import"
 
 interface Props {
   id: string

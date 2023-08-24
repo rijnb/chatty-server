@@ -8,8 +8,6 @@ module.exports = {
   trailingComma: "none",
   bracketSpacing: false,
   bracketSameLine: false,
-  jsxBracketSameLine: false,
-  arrowFunctionParentheses: "always",
   arrowParens: "always",
   htmlWhitespaceSensitivity: "css",
   insertPragma: false,
@@ -17,20 +15,9 @@ module.exports = {
   quoteProps: "as-needed",
   plugins: ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
   importOrder: [
-    "react", // React
-    "^react-.*$", // React-related imports
-    "^next", // Next-related imports
-    "^next-.*$", // Next-related imports
-    "^next/.*$", // Next-related imports
-    "^.*/hooks/.*$", // Hooks
-    "^.*/services/.*$", // Services
-    "^.*/utils/.*$", // Utils
-    "^.*/types/.*$", // Types
-    "^.*/pages/.*$", // Components
-    "^.*/components/.*$", // Components
-    "^[./]", // Other imports
-    ".*" // Any uncaught imports
+    "^[@A-Za-z][^./]", // Non-project import.
+    "^(@|[.]+)/" // Project imports.
   ],
-  importOrderSeparation: false,
+  importOrderSeparation: true,
   importOrderSortSpecifiers: true
 }

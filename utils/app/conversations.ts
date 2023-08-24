@@ -1,8 +1,8 @@
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
-import {Conversation} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {v4 as uuidv4} from "uuid"
 
+import {Conversation} from "@/types/chat"
+import {OpenAIModelID} from "@/types/openai"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
