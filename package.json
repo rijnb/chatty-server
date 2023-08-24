@@ -17,31 +17,6 @@
   "engines": {
     "node": ">=18"
   },
-  "build": {
-    "appId": "com.info.chatty",
-    "productName": "Chatty",
-    "directories": {
-      "buildResources": "assets"
-    },
-    "files": [
-      "build/**/*",
-      "node_modules/**/*",
-      "public/**/*",
-      "RELEASE_NOTES.md",
-      "package.json"
-    ],
-    "mac": {
-      "icon": "assets/icons/icon.icns",
-      "target": [
-        "dmg"
-      ]
-    },
-    "dmg": {
-      "sign": false
-    },
-    "generateUpdatesFilesForAllChannels": false,
-    "asar": true
-  },
   "dependencies": {
     "@tabler/icons-react": "^2.32.0",
     "ai": "^2.2.7",
