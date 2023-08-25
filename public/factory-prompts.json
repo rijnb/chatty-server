@@ -19,7 +19,7 @@
       "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
       "name": "Paste a code snippet",
       "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
-      "content": "Consider the following code. Just respond with “OK, ask me about your code.” if you get this.\n\n```\n{{Paste a code snippet or complete file}}\n```",
+      "content": "Consider the following code. Just respond with “OK, ask me about your code.” if you get this. Nothing else, no explanations.\n\n```\n{{Paste a code snippet or complete file}}\n```",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
@@ -32,7 +32,7 @@
       "id": "a07c4d13-b7a8-416a-af30-da4c39401cf3",
       "name": "Drop some code files",
       "description": "Just drop your code files in chat so we can use it in our chat. The filenames are automatically used to differentiate between files.",
-      "content": "Consider the following code files and their contents. Just respond with “OK, ask me about your code.” if you get this.\n\n{{Drop your code files here #DROP}}",
+      "content": "Consider the following code files and their contents. Just respond with “OK, ask me about your code.” if you get this. Nothing else, no explanations.\n\n{{Drop your code files here #DROP}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
