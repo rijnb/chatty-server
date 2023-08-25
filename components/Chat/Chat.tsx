@@ -57,6 +57,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
+  const [waitTime, setWaitTime] = useState<number | null>(null)
+
   const fetchService = useFetch({
     interceptors: useUnlockCodeInterceptor()
   })
@@ -145,6 +147,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
             }
 
             if (error.errorType === "rate_limit") {
+              setWaitTime(error.retryAfter)
+              setTimeout(() => setWaitTime(null), error.retryAfter * 1000)
               toast.error(`Too many requests. Please wait ${error.retryAfter} seconds before trying again.`, {
                 duration: TOAST_DURATION_MS
               })
@@ -471,6 +475,15 @@ const Chat = memo(({stopConversationRef}: Props) => {
     }
   }, [messagesEndRef])
 
+  useEffect(() => {
+    if (waitTime && waitTime > 0) {
+      const timer = setTimeout(() => {
+        setWaitTime(waitTime - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [waitTime])
+
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
       {modelError ? (
@@ -505,6 +518,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
                   <IconMarkdown size={18} />
                 </button>
               ) : null}
+              {waitTime && (
+                <div>
+                  &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+                  {`busy... please wait ${waitTime} seconds`}
+                </div>
+              )}
             </div>
             {showSettings && (
               <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
