@@ -24,7 +24,6 @@ interface Props {
   onRegenerate: () => void
   stopConversationRef: MutableRefObject<boolean>
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>
-  showScrollDownButton: boolean
 }
 
 export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef}: Props) => {

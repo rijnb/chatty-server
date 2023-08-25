@@ -5,7 +5,6 @@ import toast from "react-hot-toast"
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
-import {ModelSelect} from "./ModelSelect"
 import ChatConversation from "@/components/Chat/ChatConversation"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
@@ -32,23 +31,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const {unlocked} = useUnlock()
 
   const {
-    state: {
-      selectedConversation,
-      conversations,
-      models,
-      apiKey,
-      pluginKeys,
-      serverSideApiKeyIsSet,
-      modelError,
-      loading
-    },
+    state: {selectedConversation, conversations, models, apiKey, pluginKeys, serverSideApiKeyIsSet, modelError},
     dispatch: homeDispatch
   } = useHomeContext()
 
   const [currentMessage, setCurrentMessage] = useState<Message>()
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
-  const [showSettings, setShowSettings] = useState<boolean>(false)
-  const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
   const [waitTime, setWaitTime] = useState<number | null>(null)
@@ -393,20 +381,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
       ) : (
         <>
           <div className="h-full overflow-hidden">
-            {showSettings && (
-              <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
-                <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
-                  <ModelSelect />
-                </div>
-              </div>
-            )}
             {waitTime && (
               <div>
                 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
                 {`busy... please wait ${waitTime} seconds`}
               </div>
             )}
-
             <>
               {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
               {!serverSideApiKeyIsSet && !apiKey && (
@@ -431,9 +411,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
                   }}
                 />
               )}
-
-              {/*TODO - re-add loader*/}
-              {/*{loading && <ChatLoader />}*/}
             </>
           </div>
 
@@ -451,7 +428,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
                   handleSendMessage(currentMessage, 2, null)
                 }
               }}
-              showScrollDownButton={showScrollDownButton}
             />
           )}
         </>

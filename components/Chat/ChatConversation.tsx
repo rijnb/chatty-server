@@ -1,10 +1,12 @@
-import {useTranslation} from "next-i18next"
-import React, {useEffect, useRef, useState} from "react"
+import React, {useEffect, useRef} from "react"
 
-import ChatHeader from "@/components/Chat/ChatHeader"
+import ChatLoader from "@/components/Chat/ChatLoader"
+import ChatMenu from "@/components/Chat/ChatMenu"
 import ChatMessage from "@/components/Chat/ChatMessage"
+import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import ScrollDownButton from "@/components/Chat/ScrollDownButton"
 import useScroll from "@/components/Hooks/useScroll"
+import useReleaseNotes from "@/hooks/useReleaseNotes"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation, Message} from "@/types/chat"
 import {updateConversationHistory} from "@/utils/app/conversations"
@@ -17,7 +19,7 @@ interface Props {
 
 const ChatConversation = ({selectedConversation, onSend}: Props) => {
   const {
-    state: {conversations},
+    state: {conversations, models, loading},
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -25,6 +27,7 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const {showScrollDownButton, handleScroll, jumpToBottom} = useScroll(chatContainerRef)
+  const {isReleaseNotesDialogOpen, closeReleaseNotes, openReleaseNotes} = useReleaseNotes()
 
   useEffect(() => {
     jumpToBottom()
@@ -59,7 +62,13 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
 
   return (
     <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
-      <ChatHeader conversation={selectedConversation} chatContainerRef={chatContainerRef} />
+      <ChatMenu
+        conversation={selectedConversation}
+        models={models}
+        container={chatContainerRef}
+        onOpenReleaseNotes={openReleaseNotes}
+      />
+      <div className="h-[37px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
       {selectedConversation?.messages.map((message, index) => (
         <ChatMessage
           key={index}
@@ -73,6 +82,7 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
           }}
         />
       ))}
+      {loading && <ChatLoader />}
 
       {showScrollDownButton && (
         <div className="absolute bottom-[180px] right-10">
@@ -80,6 +90,7 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
         </div>
       )}
       <div className="h-[162px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
+      {isReleaseNotesDialogOpen && <ReleaseNotes close={closeReleaseNotes} />}
     </div>
   )
 }

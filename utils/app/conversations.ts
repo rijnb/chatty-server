@@ -2,7 +2,7 @@ import {v4 as uuidv4} from "uuid"
 
 import {Conversation} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
@@ -15,6 +15,7 @@ export const createNewConversation = (name: string, modelId: OpenAIModelID, temp
     modelId: modelId,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
+    maxTokens: OPENAI_API_MAX_TOKENS,
     folderId: undefined,
     time: new Date().getTime()
   }

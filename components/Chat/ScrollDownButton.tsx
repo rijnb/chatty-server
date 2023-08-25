@@ -15,7 +15,7 @@ const ScrollDownButton = ({container}: Props) => {
 
   return (
     <button
-      className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-neutral-200"
+      className="flex h-7 w-7 items-center justify-center  rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:bg-gray-700 dark:text-neutral-200 dark:focus:ring-gray-500"
       onClick={handleScrollToBottom}
     >
       <IconArrowDown size={18} />
