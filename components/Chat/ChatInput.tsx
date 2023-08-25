@@ -1,12 +1,4 @@
-import {
-  IconArrowDown,
-  IconBolt,
-  IconBrandGoogle,
-  IconEraser,
-  IconPlayerStop,
-  IconRepeat,
-  IconSend
-} from "@tabler/icons-react"
+import {IconBolt, IconBrandGoogle, IconEraser, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {Tiktoken} from "js-tiktoken"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
@@ -30,21 +22,12 @@ interface Props {
   modelId: OpenAIModelID
   onSend: (message: Message, plugin: Plugin | null) => void
   onRegenerate: () => void
-  onScrollDownClick: () => void
   stopConversationRef: MutableRefObject<boolean>
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>
   showScrollDownButton: boolean
 }
 
-export const ChatInput = ({
-  modelId,
-  onSend,
-  onRegenerate,
-  onScrollDownClick,
-  stopConversationRef,
-  textareaRef,
-  showScrollDownButton
-}: Props) => {
+export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef}: Props) => {
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
@@ -351,16 +334,6 @@ Please remove some messages from the conversation, or simply clear all previous 
               <IconSend size={18} />
             )}
           </button>
-          {showScrollDownButton && (
-            <div className="absolute bottom-12 right-0 lg:-right-10 lg:bottom-0">
-              <button
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-neutral-200"
-                onClick={onScrollDownClick}
-              >
-                <IconArrowDown size={18} />
-              </button>
-            </div>
-          )}
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
               <PromptPopupList

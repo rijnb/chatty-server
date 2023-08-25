@@ -49,7 +49,6 @@ const EditPanel = ({message, onSaveMessage, onFinishEditing}: EditPanelProps) =>
 }
 
 const UserMessage = ({message, onSaveMessage, onDeleteMessage}: UserMessageProps) => {
-  const {t} = useTranslation("common")
   const [isEditing, setIsEditing] = useState(false)
 
   return isEditing ? (
