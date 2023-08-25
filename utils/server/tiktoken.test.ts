@@ -82,8 +82,7 @@ describe("Tiktoken", () => {
   })
 
   describe("Prepare messages to send", () => {
-    const prompt =
-      "You are Chatty, a large conversational model based on ChatGPT. Follow the user's instructions carefully. Respond using markdown. If you provide code examples, always include the language."
+    const prompt = "You are ChatGPT, a large language model trained by OpenAI. Respond using markdown."
     const messages: Message[] = [
       {
         role: "user",
