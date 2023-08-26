@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react"
 
 import ChatLoader from "@/components/Chat/ChatLoader"
 import ChatMenu from "@/components/Chat/ChatMenu"
-import ChatMessage from "@/components/Chat/ChatMessage"
+import MemoizedChatMessage from "@/components/Chat/MemoizedChatMessage"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import ScrollDownButton from "@/components/Chat/ScrollDownButton"
 import useScroll from "@/components/Hooks/useScroll"
@@ -70,13 +70,11 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
       />
       <div className="h-[37px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
       {selectedConversation?.messages.map((message, index) => (
-        <ChatMessage
+        <MemoizedChatMessage
           key={index}
-          conversation={selectedConversation}
           message={message}
-          messageIndex={index}
-          messageIsStreaming={messageIsStreaming}
-          onDeleteMessage={() => handleDeleteMessage(index)}
+          isComplete={index < (selectedConversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
+          onDelete={() => handleDeleteMessage(index)}
           onEdit={(editedMessage) => {
             // Discard edited message and the ones that come after then resend.
             onSend(editedMessage, index)
