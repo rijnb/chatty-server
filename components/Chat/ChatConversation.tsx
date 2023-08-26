@@ -19,7 +19,7 @@ interface Props {
 
 const ChatConversation = ({selectedConversation, onSend}: Props) => {
   const {
-    state: {conversations, models, loading},
+    state: {conversations, models, loading, messageIsStreaming},
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -75,6 +75,7 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
           conversation={selectedConversation}
           message={message}
           messageIndex={index}
+          messageIsStreaming={messageIsStreaming}
           onDeleteMessage={() => handleDeleteMessage(index)}
           onEdit={(editedMessage) => {
             // Discard edited message and the ones that come after then resend.
