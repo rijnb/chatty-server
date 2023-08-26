@@ -405,7 +405,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
               {selectedConversation && (
                 <ChatConversation
-                  selectedConversation={selectedConversation}
+                  conversation={selectedConversation}
                   onSend={(message, index) => {
                     handleSendMessage(message, selectedConversation?.messages.length - index)
                   }}

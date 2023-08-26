@@ -14,9 +14,10 @@ interface Props {
   container: React.RefObject<HTMLDivElement>
   models: OpenAIModel[]
   onOpenReleaseNotes: () => void
+  onUpdateConversation: (conversation: Conversation) => void
 }
 
-const ChatMenu = ({conversation, container, models, onOpenReleaseNotes}: Props) => {
+const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpenReleaseNotes}: Props) => {
   const {t} = useTranslation("common")
 
   const {theme, setTheme} = useTheme()
@@ -24,24 +25,28 @@ const ChatMenu = ({conversation, container, models, onOpenReleaseNotes}: Props) 
   const {onSaveMarkdown} = useSaveMarkdown(conversation)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [temperature, setTemperature] = useState(conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE)
-  const [maxTokens, setMaxTokens] = useState(conversation.maxTokens ?? OPENAI_API_MAX_TOKENS)
-  const [modelId, setModelId] = useState(conversation.modelId ?? FALLBACK_OPENAI_MODEL_ID)
+
+  const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+  const modelId = conversation.modelId ?? FALLBACK_OPENAI_MODEL_ID
+  const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   const handleTemperatureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTemperature(Number(event.target.value))
+    conversation.temperature = Number(event.target.value)
+    onUpdateConversation(conversation)
   }
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setModelId(e.target.value as OpenAIModelID)
+    conversation.modelId = e.target.value as OpenAIModelID
+    onUpdateConversation(conversation)
   }
 
   const handleMaxTokensChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxTokens(Number(event.target.value))
+    conversation.maxTokens = Number(event.target.value)
+    onUpdateConversation(conversation)
   }
 
   return (

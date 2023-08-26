@@ -12,12 +12,12 @@ import {Conversation, Message} from "@/types/chat"
 import {updateConversationHistory} from "@/utils/app/conversations"
 
 interface Props {
-  selectedConversation: Conversation
+  conversation: Conversation
   //todo should discard messages here and not in Chat.tsx
   onSend: (message: Message, index: number) => void
 }
 
-const ChatConversation = ({selectedConversation, onSend}: Props) => {
+const ChatConversation = ({conversation, onSend}: Props) => {
   const {
     state: {conversations, models, loading, messageIsStreaming},
     dispatch: homeDispatch
@@ -31,14 +31,14 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
 
   useEffect(() => {
     jumpToBottom()
-  }, [jumpToBottom, selectedConversation])
+  }, [jumpToBottom, conversation])
 
   const handleDeleteMessage = (messageIndex: number) => {
-    if (!selectedConversation) {
+    if (!conversation) {
       return
     }
 
-    const {messages} = selectedConversation
+    const {messages} = conversation
 
     if (messages[messageIndex].role === "assistant") {
       messages.splice(messageIndex, 1)
@@ -51,7 +51,7 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
     }
 
     const updatedConversation = {
-      ...selectedConversation,
+      ...conversation,
       messages
     }
 
@@ -63,17 +63,22 @@ const ChatConversation = ({selectedConversation, onSend}: Props) => {
   return (
     <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
       <ChatMenu
-        conversation={selectedConversation}
+        conversation={conversation}
         models={models}
         container={chatContainerRef}
         onOpenReleaseNotes={openReleaseNotes}
+        onUpdateConversation={(conversation) => {
+          const conversationHistory = updateConversationHistory(conversation, conversations)
+          homeDispatch({field: "selectedConversation", value: conversation})
+          homeDispatch({field: "conversations", value: conversationHistory})
+        }}
       />
       <div className="h-[37px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
-      {selectedConversation?.messages.map((message, index) => (
+      {conversation?.messages.map((message, index) => (
         <MemoizedChatMessage
           key={index}
           message={message}
-          isComplete={index < (selectedConversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
+          isComplete={index < (conversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
           onDelete={() => handleDeleteMessage(index)}
           onEdit={(editedMessage) => {
             // Discard edited message and the ones that come after then resend.
