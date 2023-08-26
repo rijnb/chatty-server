@@ -381,43 +381,36 @@ const Chat = memo(({stopConversationRef}: Props) => {
       ) : (
         <>
           <div className="h-full overflow-hidden">
-            {waitTime && (
-              <div>
-                &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
-                {`busy... please wait ${waitTime} seconds`}
+            {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
+            {!serverSideApiKeyIsSet && !apiKey && (
+              <div className="mb-2 text-center text-red-800 dark:text-red-400">
+                Please enter the correct Azure OpenAI key in left menu bar of Chatty.
               </div>
             )}
-            <>
-              {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
-              {!serverSideApiKeyIsSet && !apiKey && (
-                <div className="mb-2 text-center text-red-800 dark:text-red-400">
-                  Please enter the correct Azure OpenAI key in left menu bar of Chatty.
+            {models.length === 0 && (
+              <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
+                <div>
+                  Loading models...
+                  <Spinner size="16px" className="mx-auto" />
                 </div>
-              )}
-              {models.length === 0 && (
-                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
-                  <div>
-                    Loading models...
-                    <Spinner size="16px" className="mx-auto" />
-                  </div>
-                </div>
-              )}
+              </div>
+            )}
 
-              {selectedConversation && (
-                <ChatConversation
-                  conversation={selectedConversation}
-                  onSend={(message, index) => {
-                    handleSendMessage(message, selectedConversation?.messages.length - index)
-                  }}
-                />
-              )}
-            </>
+            {selectedConversation && (
+              <ChatConversation
+                conversation={selectedConversation}
+                onSend={(message, index) => {
+                  handleSendMessage(message, selectedConversation?.messages.length - index)
+                }}
+              />
+            )}
           </div>
 
           {(serverSideApiKeyIsSet || apiKey) && unlocked && models.length > 0 && (
             <ChatInput
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
+              retryAfter={waitTime}
               modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
               onSend={(message, plugin) => {
                 setCurrentMessage(message)

@@ -24,15 +24,18 @@ interface Props {
   onRegenerate: () => void
   stopConversationRef: MutableRefObject<boolean>
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>
+  retryAfter: number | null
 }
 
-export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef}: Props) => {
+export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef, retryAfter}: Props) => {
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
     state: {models, selectedConversation, messageIsStreaming, prompts},
     handleUpdateConversation
   } = useHomeContext()
+
+  const disabled = retryAfter !== null
 
   const [content, setContent] = useState<string>()
   const [isTyping, setIsTyping] = useState<boolean>(false)
@@ -272,7 +275,8 @@ Please remove some messages from the conversation, or simply clear all previous 
 
         {!messageIsStreaming && selectedConversation && selectedConversation.messages.length > 0 && (
           <button
-            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
+            disabled={disabled}
+            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 disabled:pointer-events-none disabled:text-gray-300 dark:border-neutral-600 dark:bg-[#343541] dark:text-white dark:disabled:text-gray-600"
             onClick={onRegenerate}
           >
             <IconRepeat size={16} /> {t("Regenerate response")}
@@ -305,6 +309,7 @@ Please remove some messages from the conversation, or simply clear all previous 
           </div>
           <textarea
             ref={textareaRef}
+            disabled={disabled}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-16 pr-8 text-black dark:bg-transparent dark:text-white"
             style={{
               resize: "none",
@@ -313,7 +318,11 @@ Please remove some messages from the conversation, or simply clear all previous 
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
             }}
             placeholder={
-              prompts.length > 0 ? t('Type a message or type "/" to select a prompt...') : t("Type a message...")
+              disabled
+                ? t("Please wait {{waitTime}} seconds", {waitTime: retryAfter})
+                : prompts.length > 0
+                ? t('Type a message or type "/" to select a prompt...')
+                : t("Type a message...")
             }
             value={content}
             rows={1}
@@ -324,7 +333,8 @@ Please remove some messages from the conversation, or simply clear all previous 
           />
           <button
             aria-label="Send message"
-            className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            disabled={disabled}
+            className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 disabled:pointer-events-none disabled:text-gray-300 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200 dark:disabled:text-gray-600"
             onClick={handleSendMessage}
           >
             {messageIsStreaming ? (
