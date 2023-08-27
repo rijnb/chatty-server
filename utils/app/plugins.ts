@@ -1,6 +1,6 @@
 import {PluginKey} from "@/types/plugin"
 
-export const STORAGE_KEY_PLUGIN_KEYS = "pluginKey"
+export const STORAGE_KEY_PLUGIN_KEYS = "pluginKeys"
 
 export const getPluginKeys = (): PluginKey[] => {
   const PluginKeyAsString = localStorage.getItem(STORAGE_KEY_PLUGIN_KEYS)
@@ -13,7 +13,7 @@ export const getPluginKeys = (): PluginKey[] => {
 }
 
 export const savePluginKeys = (pluginKeys: PluginKey[]) =>
-  localStorage.setItem("pluginKeys", JSON.stringify(pluginKeys))
+  localStorage.setItem(STORAGE_KEY_PLUGIN_KEYS, JSON.stringify(pluginKeys))
 
 export const removePluginKeys = () => {
   localStorage.removeItem(STORAGE_KEY_PLUGIN_KEYS)

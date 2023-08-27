@@ -5,6 +5,7 @@ import React, {useState} from "react"
 
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
+import {FormLabel, FormText, Input, Select} from "@/components/Styled"
 import {Conversation} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
@@ -55,62 +56,48 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
         isMenuOpen ? "translate-y-0 shadow-xl " : "-translate-y-full shadow-none"
       }`}
     >
-      <div
-        className={`dark:border-netural-400 w-full rounded-b-lg border-x border-b border-gray-300 bg-white p-6 dark:bg-[#202123]`}
-      >
+      <div className="w-full rounded-b-lg border-x border-b border-gray-300 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex flex-col">
-          <select
-            className="w-full rounded-lg border border-neutral-200 bg-transparent px-2 py-2 text-neutral-900 shadow dark:border-neutral-600 dark:text-white"
-            placeholder={t("Select a model")}
-            value={modelId}
-            onChange={handleModelChange}
-          >
+          <Select placeholder={t("Select a model")} value={modelId} onChange={handleModelChange}>
             {models.map((model) => (
-              <option key={model.id} value={model.id} className="dark:bg-[#343541] dark:text-white">
+              <option key={model.id} value={model.id}>
                 {model.id === FALLBACK_OPENAI_MODEL_ID ? `Default (${model.name})` : model.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div className="flex flex-col pt-2">
-          <label htmlFor="temperature" className="text-lg font-medium text-black dark:text-neutral-200">
-            Temperature
-          </label>
-          <span className="text-sm font-medium text-gray-500 dark:text-neutral-300">
+          <FormLabel htmlFor="temperature">Temperature</FormLabel>
+          <FormText>
             Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 for ones
             with a well-defined answer.
-          </span>
-          <input
+          </FormText>
+          <Input
             id="temperature"
-            name="temperature"
             type="range"
             min="0"
             max="2"
             step="0.1"
             value={temperature}
             onChange={handleTemperatureChange}
-            className="mt-2 w-full rounded-lg border border-neutral-500 py-2 text-neutral-900 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
+            className="mt-2"
           />
-          <span className="text-center text-sm text-gray-500 dark:text-neutral-300">{temperature}</span>
+          <FormText className="text-center">{temperature}</FormText>
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
+          <FormLabel htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
             Response Token Limit
-          </label>
-          <span className="text-sm font-medium text-gray-500 dark:text-neutral-300">
-            The maximum number of tokens to generate in the completion
-          </span>
-          <input
+          </FormLabel>
+          <FormText>The maximum number of tokens to generate in the completion</FormText>
+          <Input
             id="maxTokens"
-            name="maxTokens"
             type="number"
             min="0"
             max={OpenAIModels[modelId].tokenLimit}
             value={maxTokens}
             onChange={handleMaxTokensChange}
-            className="mt-2 w-fit rounded-lg border border-neutral-200 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-600 dark:text-white"
           />
         </div>
       </div>

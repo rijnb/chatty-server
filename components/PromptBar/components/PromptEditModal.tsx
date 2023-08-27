@@ -1,9 +1,8 @@
 import {useTranslation} from "next-i18next"
-import {KeyboardEvent, useEffect, useMemo, useRef, useState} from "react"
+import {useEffect, useMemo, useRef, useState} from "react"
 
-import {ModalDialog} from "@/components/ModalDialog"
+import {Button, Dialog, FormDisclaimer, FormLabel, Input, TextArea} from "@/components/Styled"
 import {Prompt} from "@/types/prompt"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
   prompt: Prompt
@@ -25,13 +24,6 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
     [prompt, name, description, content, factory]
   )
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isKeyboardEnter(e) && !e.shiftKey) {
-      e.preventDefault()
-      onUpdatePrompt(updatedPrompt)
-    }
-  }
-
   const handleSubmit = () => {
     onUpdatePrompt(updatedPrompt)
   }
@@ -41,64 +33,48 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
   }, [])
 
   return (
-    <ModalDialog
-      className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      onClickAway={handleSubmit}
-    >
-      <div role="dialog" onKeyDown={handleKeyDown}>
-        <div className="text-sm font-bold text-black dark:text-neutral-200">{t("Name")}</div>
-        <input
-          ref={nameInputRef}
-          className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-          placeholder={t("A name for your prompt.")}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          onBlur={(e) => setName(e.target.value)}
-        />
+    <Dialog onClose={onClose} onSubmit={handleSubmit} onClickAway={handleSubmit}>
+      <FormLabel>{t("Name")}</FormLabel>
+      <Input
+        ref={nameInputRef}
+        placeholder={t("A name for your prompt.")}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onBlur={(e) => setName(e.target.value)}
+      />
 
-        <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">{t("Description")}</div>
-        <textarea
-          className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-          style={{resize: "none"}}
-          placeholder={t("A description for your prompt.")}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          onBlur={(e) => setDescription(e.target.value)}
-          rows={3}
-        />
+      <FormLabel className="mt-2">{t("Description")}</FormLabel>
+      <TextArea
+        placeholder={t("A description for your prompt.")}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        onBlur={(e) => setDescription(e.target.value)}
+        rows={3}
+      />
 
-        <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">{t("Prompt")}</div>
-        <textarea
-          className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-          style={{resize: "none"}}
-          placeholder={t(
-            "Prompt content. Use {{}} to denote variables. For example: {{Translate this text}} {{Into this language}}"
-          )}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onBlur={(e) => setContent(e.target.value)}
-          rows={9}
-        />
-
-        <button
-          type="button"
-          className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
-          onClick={handleSubmit}
-        >
-          {t("Save")}
-        </button>
-
-        {prompt.factory && (
-          <div className="mt-2 text-sm text-red-900 dark:text-red-300">
-            {t(
-              "This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted."
-            )}
-          </div>
+      <FormLabel className="mt-2">{t("Prompt")}</FormLabel>
+      <TextArea
+        placeholder={t(
+          "Prompt content. Use {{}} to denote variables. For example: {{Translate this text}} {{Into this language}}"
         )}
-      </div>
-    </ModalDialog>
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onBlur={(e) => setContent(e.target.value)}
+        rows={9}
+      />
+
+      <Button className="mt-2" onClick={handleSubmit}>
+        {t("Save")}
+      </Button>
+
+      {prompt.factory && (
+        <FormDisclaimer className="mt-2">
+          {t(
+            "This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted."
+          )}
+        </FormDisclaimer>
+      )}
+    </Dialog>
   )
 }
 
