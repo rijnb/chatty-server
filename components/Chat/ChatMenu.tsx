@@ -1,8 +1,9 @@
 import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconScreenshot} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
-import React, {useState} from "react"
+import React, {useRef, useState} from "react"
 
+import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Input, Select} from "@/components/Styled"
@@ -30,6 +31,17 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
   const modelId = conversation.modelId ?? FALLBACK_OPENAI_MODEL_ID
   const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
+  const ref = useRef<HTMLDivElement>(null)
+
+  useClickAway(ref, isMenuOpen, () => {
+    setIsMenuOpen(false)
+  })
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      setIsMenuOpen(false)
+    }
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -52,19 +64,28 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   return (
     <div
-      className={`fixed left-1/2 top-0 z-50 flex max-w-lg -translate-x-1/2 transform flex-col items-center justify-center transition-all duration-500 ease-in-out ${
+      ref={ref}
+      className={`fixed left-1/2 top-0 z-50 flex max-w-lg -translate-x-1/2 transform flex-col items-center justify-center rounded-b-lg border-x border-b border-gray-300 bg-gray-50 p-6 transition-all duration-500 ease-in-out dark:border-gray-700 dark:bg-gray-800 ${
         isMenuOpen ? "translate-y-0 shadow-xl " : "-translate-y-full shadow-none"
       }`}
+      onKeyDown={handleKeyDown}
     >
-      <div className="w-full rounded-b-lg border-x border-b border-gray-300 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+      <div className="w-full">
         <div className="flex flex-col">
-          <Select placeholder={t("Select a model")} value={modelId} onChange={handleModelChange}>
+          <Select
+            disabled={true}
+            className="disabled:pointer-events-none disabled:text-gray-300"
+            placeholder={t("Select a model")}
+            value={modelId}
+            onChange={handleModelChange}
+          >
             {models.map((model) => (
               <option key={model.id} value={model.id}>
                 {model.id === FALLBACK_OPENAI_MODEL_ID ? `Default (${model.name})` : model.name}
               </option>
             ))}
           </Select>
+          <FormText>Coming soon</FormText>
         </div>
 
         <div className="flex flex-col pt-2">
