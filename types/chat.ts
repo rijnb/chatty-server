@@ -28,6 +28,7 @@ export interface Conversation {
   modelId: OpenAIModelID
   prompt: string
   temperature: number
+  maxTokens: number
   folderId: string | undefined
   time: number
 }
