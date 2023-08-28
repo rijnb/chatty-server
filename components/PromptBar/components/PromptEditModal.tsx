@@ -93,10 +93,13 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
         {prompt.factory && (
           <div className="mt-2 text-sm text-red-900 dark:text-red-300">
             {t(
-              "This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted."
+              "This is a factory prompt. A factory prompt cannot be edited or deleted. If you save it, a new user prompt will be created instead."
             )}
           </div>
         )}
+        <div className="mt-2 text-sm">
+          {t('To execute this prompt, type "/" in the input box as the first character.')}
+        </div>
       </div>
     </ModalDialog>
   )

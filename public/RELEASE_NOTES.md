@@ -109,6 +109,18 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-08-29
+
+#### Features
+
+- Added better main menu.
+- Added support for "IntelliJ"-like search for prompts (just type characters to match prompt name).
+- Improved handling of large conversations with code. Large files are not syntax highlighted anymore.
+
+#### Bug fixes
+
+- Refactored code to be better componentized.
+
 ### 2023-08-23
 
 #### Features
