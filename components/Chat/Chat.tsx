@@ -79,7 +79,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
             messages: updatedConversation.messages,
             apiKey: apiKey,
             prompt: updatedConversation.prompt,
-            temperature: updatedConversation.temperature
+            temperature: updatedConversation.temperature,
+            maxTokens: updatedConversation.maxTokens
           }
           const endpoint = getEndpoint(plugin)
           let body

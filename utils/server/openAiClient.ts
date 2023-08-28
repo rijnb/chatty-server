@@ -3,7 +3,6 @@ import {Configuration, OpenAIApi} from "openai-edge"
 
 import {
   OPENAI_API_HOST,
-  OPENAI_API_MAX_TOKENS,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
   OPENAI_AZURE_DEPLOYMENT_ID,
@@ -89,6 +88,7 @@ export const ChatCompletionStream = async (
   modelId: OpenAIModelID,
   systemPrompt: string,
   temperature: number,
+  maxTokens: number,
   apiKey: string,
   messages: Message[]
 ) => {
@@ -103,7 +103,7 @@ export const ChatCompletionStream = async (
   const response = await openai.createChatCompletion({
     model: modelId,
     messages: [{role: "system", content: systemPrompt}, ...messages],
-    max_tokens: OPENAI_API_MAX_TOKENS,
+    max_tokens: maxTokens,
     temperature: temperature,
     stream: true
   })

@@ -1,5 +1,4 @@
 import {IconBolt, IconBrandGoogle, IconEraser, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
-import {Tiktoken} from "js-tiktoken"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
@@ -16,7 +15,7 @@ import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
   modelId: OpenAIModelID
@@ -47,12 +46,12 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
-  const [encoding, setEncoding] = useState<Tiktoken | null>(null)
+  const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
 
   useEffect(() => {
     const initToken = async () => {
-      let tokenizer = await getTiktokenEncoding()
-      setEncoding(tokenizer)
+      let encoder = await TiktokenEncoder.create()
+      setEncoder(encoder)
     }
     initToken()
   }, [])
@@ -101,7 +100,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     if (messageIsStreaming) {
       return
     }
-    if (!content || !encoding || !selectedConversation || !models) {
+    if (!content || !encoder || !selectedConversation || !models) {
       return
     }
 
@@ -109,7 +108,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
     const systemPrompt: Message = {role: "system", content: selectedConversation.prompt}
     const allMessages = [...selectedConversation.messages, systemPrompt, message]
-    const tokenCount = numberOfTokensInConversation(encoding, allMessages, selectedConversation.modelId)
+    const tokenCount = encoder.numberOfTokensInConversation(allMessages, selectedConversation.modelId)
     const tokenLimit = models.find((model) => model.id === modelId)?.tokenLimit ?? 0
     if (tokenCount >= tokenLimit) {
       alert(`The input message (with the full conversation history) is too long...\
