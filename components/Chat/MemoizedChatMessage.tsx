@@ -1,10 +1,12 @@
-import {FC, memo} from "react"
+import {memo} from "react"
 
-import {ChatMessage, Props} from "./ChatMessage"
+import ChatMessage from "./ChatMessage"
 
-export const MemoizedChatMessage: FC<Props> = memo(
+const MemoizedChatMessage = memo(
   ChatMessage,
-  (prevProps, nextProps) => prevProps.message.content == nextProps.message.content
+  (prevProps, nextProps) =>
+    prevProps.message.content == nextProps.message.content && prevProps.isComplete == nextProps.isComplete
 )
 
+MemoizedChatMessage.displayName = "MemoizedChatMessage"
 export default MemoizedChatMessage

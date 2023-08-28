@@ -1,16 +1,11 @@
-import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconRobot, IconScreenshot} from "@tabler/icons-react"
-import {toPng} from "html-to-image"
 import {useTranslation} from "next-i18next"
-import {useTheme} from "next-themes"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
 import Spinner from "../Spinner"
 import {ChatInput} from "./ChatInput"
-import {ChatLoader} from "./ChatLoader"
 import {ErrorMessageDiv} from "./ErrorMessageDiv"
-import {MemoizedChatMessage} from "./MemoizedChatMessage"
-import {ModelSelect} from "./ModelSelect"
+import ChatConversation from "@/components/Chat/ChatConversation"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import {WelcomeMessage} from "@/components/Chat/WelcomeMessage"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
@@ -22,7 +17,6 @@ import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
-import {generateFilename} from "@/utils/app/filename"
 import {throttle} from "@/utils/data/throttle"
 
 interface Props {
@@ -34,35 +28,24 @@ export const RESPONSE_TIMEOUT_MS = 20000
 
 const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
-  const {theme, setTheme} = useTheme()
   const {unlocked} = useUnlock()
 
   const {
-    state: {
-      selectedConversation,
-      conversations,
-      models,
-      apiKey,
-      pluginKeys,
-      serverSideApiKeyIsSet,
-      modelError,
-      loading
-    },
+    state: {selectedConversation, conversations, models, apiKey, pluginKeys, serverSideApiKeyIsSet, modelError},
     dispatch: homeDispatch
   } = useHomeContext()
 
   const [currentMessage, setCurrentMessage] = useState<Message>()
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
-  const [showSettings, setShowSettings] = useState<boolean>(false)
-  const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
+  const [waitTime, setWaitTime] = useState<number | null>(null)
+
   const fetchService = useFetch({
     interceptors: useUnlockCodeInterceptor()
   })
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const chatContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSendMessage = useCallback(
@@ -145,7 +128,10 @@ const Chat = memo(({stopConversationRef}: Props) => {
             }
 
             if (error.errorType === "rate_limit") {
-              toast.error(`Too many requests. Please wait ${error.retryAfter} seconds before trying again.`, {
+              const waitSecs = Math.min(Math.max(error.retryAfter, 60), 1)
+              setWaitTime(waitSecs)
+              setTimeout(() => setWaitTime(null), waitSecs * 1000)
+              toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {
                 duration: TOAST_DURATION_MS
               })
               return
@@ -344,103 +330,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
     ]
   )
 
-  const handleChatScroll = () => {
-    if (chatContainerRef.current) {
-      const {scrollTop, scrollHeight, clientHeight} = chatContainerRef.current
-      const bottomTolerance = 30
-
-      if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
-        setAutoScrollEnabled(false)
-        setShowScrollDownButton(true)
-      } else {
-        setAutoScrollEnabled(true)
-        setShowScrollDownButton(false)
-      }
-    }
-  }
-
-  const handleScrollToTop = () => {
-    chatContainerRef.current?.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    })
-  }
-
-  const handleScrollToBottom = () => {
-    chatContainerRef.current?.scrollTo({
-      top: chatContainerRef.current.scrollHeight,
-      behavior: "smooth"
-    })
-  }
-
-  const handleToggleSettings = () => {
-    setIsReleaseNotesDialogOpen(false)
-    if (!showSettings) {
-      setAutoScrollEnabled(false)
-      handleScrollToTop()
-    } else {
-      setAutoScrollEnabled(true)
-      handleScrollToBottom()
-    }
-    setShowSettings(!showSettings)
-  }
-
   const scrollDown = () => {
     if (autoScrollEnabled) {
       messagesEndRef.current?.scrollIntoView(true)
     }
   }
   const throttledScrollDown = throttle(scrollDown, 250)
-
-  const onSaveScreenshot = () => {
-    setIsReleaseNotesDialogOpen(false)
-    if (chatContainerRef.current === null) {
-      return
-    }
-
-    chatContainerRef.current.classList.remove("max-h-full")
-    toPng(chatContainerRef.current, {cacheBust: true})
-      .then((dataUrl) => {
-        const link = document.createElement("a")
-        link.download = `${generateFilename("screenshot", "png")}`
-        link.href = dataUrl
-        link.click()
-        if (chatContainerRef.current) {
-          chatContainerRef.current.classList.add("max-h-full")
-        }
-      })
-      .catch((error) => {
-        console.warn(`Error saving images: ${error}`)
-      })
-  }
-
-  const onSaveMarkdown = () => {
-    setIsReleaseNotesDialogOpen(false)
-    if (!selectedConversation) {
-      return
-    }
-
-    let markdownContent = `# ${selectedConversation.name}\n\n(${new Date(
-      selectedConversation.time
-    ).toLocaleString()})\n\n`
-    for (const message of selectedConversation.messages) {
-      markdownContent += `## ${message.role.charAt(0).toUpperCase() + message.role.slice(1)}\n\n${message.content}\n\n`
-    }
-
-    const url = URL.createObjectURL(new Blob([markdownContent]))
-    const link = document.createElement("a")
-    link.download = generateFilename("markdown", "md")
-    link.href = url
-    link.style.display = "none"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
-  const handleToggleReleaseNotes = () => {
-    setIsReleaseNotesDialogOpen(!isReleaseNotesDialogOpen)
-  }
 
   useEffect(() => {
     throttledScrollDown()
@@ -471,100 +366,62 @@ const Chat = memo(({stopConversationRef}: Props) => {
     }
   }, [messagesEndRef])
 
+  useEffect(() => {
+    if (waitTime && waitTime > 0) {
+      const timer = setTimeout(() => {
+        setWaitTime(waitTime - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [waitTime])
+
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
       {modelError ? (
         <ErrorMessageDiv error={modelError} />
       ) : (
         <>
-          <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleChatScroll}>
-            <div className="sticky top-0 z-10 flex min-w-[768px] justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-              {t("Model")}: {selectedConversation?.modelId ?? "(none)"}
-              &nbsp;&nbsp;&nbsp;|&nbsp;
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleReleaseNotes}>
-                <IconHelp size={18} />
-              </button>
-              &nbsp;&nbsp;&nbsp;|&nbsp;
-              <button
-                className="ml-2 cursor-pointer hover:opacity-50"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              >
-                {theme === "dark" ? <IconBulbFilled size={18} /> : <IconBulbOff size={18} />}
-              </button>
-              <button className="ml-2 cursor-pointer hover:opacity-50" onClick={handleToggleSettings}>
-                <IconRobot size={18} />
-              </button>
-              &nbsp;&nbsp;&nbsp;|&nbsp;
-              {selectedConversation ? (
-                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveScreenshot}>
-                  <IconScreenshot size={18} />
-                </button>
-              ) : null}
-              {selectedConversation ? (
-                <button className="ml-2 cursor-pointer hover:opacity-50" onClick={onSaveMarkdown}>
-                  <IconMarkdown size={18} />
-                </button>
-              ) : null}
-            </div>
-            {showSettings && (
-              <div className="flex flex-col space-y-10 md:mx-auto md:max-w-xl md:gap-6 md:py-3 md:pt-6 lg:max-w-2xl lg:px-0 xl:max-w-3xl">
-                <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 p-4 dark:border-neutral-600 md:rounded-lg md:border">
-                  <ModelSelect />
+          <div className="h-full overflow-hidden">
+            {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
+            {!serverSideApiKeyIsSet && !apiKey && (
+              <div className="mb-2 text-center text-red-800 dark:text-red-400">
+                Please enter the correct Azure OpenAI key in left menu bar of Chatty.
+              </div>
+            )}
+            {models.length === 0 && (
+              <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
+                <div>
+                  Loading models...
+                  <Spinner size="16px" className="mx-auto" />
                 </div>
               </div>
             )}
 
-            <>
-              {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
-              {!serverSideApiKeyIsSet && !apiKey && (
-                <div className="mb-2 text-center text-red-800 dark:text-red-400">
-                  Please enter the correct Azure OpenAI key in left menu bar of Chatty.
-                </div>
-              )}
-              {models.length === 0 && (
-                <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 text-center font-bold text-gray-600 dark:text-gray-300 sm:max-w-[600px] md:space-y-10 md:pt-12">
-                  <div>
-                    Loading models...
-                    <Spinner size="16px" className="mx-auto" />
-                  </div>
-                </div>
-              )}
-
-              {selectedConversation?.messages.map((message, index) => (
-                <MemoizedChatMessage
-                  key={index}
-                  message={message}
-                  messageIndex={index}
-                  onEdit={(editedMessage) => {
-                    setCurrentMessage(editedMessage)
-
-                    // Discard edited message and the ones that come after then resend.
-                    handleSendMessage(editedMessage, selectedConversation?.messages.length - index)
-                  }}
-                />
-              ))}
-
-              {loading && <ChatLoader />}
-              <div className="h-[162px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
-            </>
+            {selectedConversation && (
+              <ChatConversation
+                conversation={selectedConversation}
+                onSend={(message, index) => {
+                  handleSendMessage(message, selectedConversation?.messages.length - index)
+                }}
+              />
+            )}
           </div>
 
           {(serverSideApiKeyIsSet || apiKey) && unlocked && models.length > 0 && (
             <ChatInput
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
+              retryAfter={waitTime}
               modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
               onSend={(message, plugin) => {
                 setCurrentMessage(message)
                 handleSendMessage(message, 0, plugin)
               }}
-              onScrollDownClick={handleScrollToBottom}
               onRegenerate={() => {
                 if (currentMessage) {
                   handleSendMessage(currentMessage, 2, null)
                 }
               }}
-              showScrollDownButton={showScrollDownButton}
             />
           )}
         </>
