@@ -71,6 +71,9 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
       onKeyDown={handleKeyDown}
     >
       <div className="w-full">
+        <FormLabel htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
+          Conversation model
+        </FormLabel>
         <div className="flex flex-col">
           <Select
             disabled={true}
@@ -85,20 +88,20 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
               </option>
             ))}
           </Select>
-          <FormText>Coming soon</FormText>
+          <FormText>Coming soon: currently only the default model is supported...</FormText>
         </div>
 
         <div className="flex flex-col pt-2">
           <FormLabel htmlFor="temperature">Temperature</FormLabel>
           <FormText>
-            Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 for ones
-            with a well-defined answer.
+            Higher values means the model will take more risks or be more creative. Try 0 for more predictable answers
+            and 1 for more creative ones.
           </FormText>
           <Input
             id="temperature"
             type="range"
             min="0"
-            max="2"
+            max="1"
             step="0.1"
             value={temperature}
             onChange={handleTemperatureChange}
@@ -109,9 +112,9 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
         <div className="flex flex-col">
           <FormLabel htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
-            Response Token Limit
+            Response token limit
           </FormLabel>
-          <FormText>The maximum number of tokens to generate in the completion</FormText>
+          <FormText>The maximum number of tokens used to generate an answer.</FormText>
           <Input
             id="maxTokens"
             type="number"
