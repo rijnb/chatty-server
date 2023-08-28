@@ -47,14 +47,22 @@ export const PluginKeyList = ({}: Props) => {
 
   return (
     <>
-      <SidebarButton text={t("Google API key")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
+      <SidebarButton
+        text={t("Google Search API key")}
+        icon={<IconKey size={18} />}
+        onClick={() => setIsChanging(true)}
+      />
 
       {isChanging && (
         <Dialog onClose={onClose} onClickAway={onClose}>
           <FormHeader>Google Search plugin</FormHeader>
-          <FormText>Please enter your Google API key and Google CSE ID to enable the Google Search plugin.</FormText>
+          <FormText>
+            If you enter a valid Google Search API key and Google Custom Search Engine (CSE) ID, the Google Search
+            plugin is enabled. This allows you to search the web from the chat bar. The search results will be
+            interpreted by Chatty and presented as a chat message, with references to found pages.
+          </FormText>
 
-          <FormLabel className="mt-4">Google API key</FormLabel>
+          <FormLabel className="mt-4">Google Search API key</FormLabel>
           <Input
             type="password"
             value={googleApiKey}
@@ -63,7 +71,7 @@ export const PluginKeyList = ({}: Props) => {
             }}
           />
 
-          <FormLabel className="mt-4">Google CSE ID</FormLabel>
+          <FormLabel className="mt-4">Google Custom Search Engine (CSE) ID</FormLabel>
           <Input
             type="password"
             value={googleCseId}
@@ -83,7 +91,7 @@ export const PluginKeyList = ({}: Props) => {
                 handleClearPluginKey(PluginID.GOOGLE_SEARCH)
               }}
             >
-              Clear Google Search API key
+              Clear API key and CSE ID
             </Button>
           </div>
         </Dialog>
