@@ -69,11 +69,16 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
 
       {prompt.factory && (
         <FormDisclaimer className="mt-2">
-          {t(
-            "This is factory prompt. If you edit and save it, a new user prompt will be created. The factory prompt cannot be edited or deleted."
-          )}
+            {t(
+              "This is a factory prompt. A factory prompt cannot be edited or deleted. If you save it, a new user prompt will be created instead."
+            )}
         </FormDisclaimer>
       )}
+      <FormDisclaimer className="mt-2">
+          {t(
+          {t('To execute this prompt, type "/" in the input box as the first character.')}
+          )}
+      </FormDisclaimer>
     </Dialog>
   )
 }

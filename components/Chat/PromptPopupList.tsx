@@ -57,7 +57,7 @@ export const PromptPopupList = ({prompts, activePromptIndex, onSelect, onMouseOv
               }
             }}
           >
-            {prompt.name}
+            {(prompt.factory ? "🛠" : "👤") + " " + prompt.name}
           </li>
         )
       )}

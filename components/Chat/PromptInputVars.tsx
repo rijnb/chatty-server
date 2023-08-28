@@ -12,6 +12,7 @@ interface Props {
 }
 
 const PROMPT_KEYWORD_DROP = "#DROP"
+const MAX_SIZE_FOR_SYNTAX_HIGHLIGHTING = 2500
 
 const stripPromptKeywords = (promptVariable: string) => {
   return promptVariable.replace(PROMPT_KEYWORD_DROP, "").trim()
@@ -55,7 +56,15 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
       content = readFiles
         .map((droppedFile) => {
           const ext = droppedFile.name.split(".").pop()?.toLowerCase() ?? ""
-          return `File: ${droppedFile.name}\n` + "```" + `${ext}\n${droppedFile.content}\n` + "```\n"
+          return (
+            `File: ${droppedFile.name}\n` +
+            "```" +
+            // Only add the extension if the file is small enough to be syntax highlighted.
+            (droppedFile.content.length <= MAX_SIZE_FOR_SYNTAX_HIGHLIGHTING ? `${ext}` : "") +
+            "\n" +
+            `${droppedFile.content}` +
+            "\n```\n"
+          )
         })
         .join("\n")
     }
