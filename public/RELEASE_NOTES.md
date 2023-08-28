@@ -93,7 +93,7 @@ Contents of the next file...
 
 ## Using Google search
 
-If you have Google API key and a Google search engine ID, you can use the Google
+If you have Google Search API key and a Google search engine ID, you can use the Google
 search plugin in Chatty. The Google plugin can be selected by clicking on the plugin
 symbol left of the input bar (looks like a lightning bolt).
 
