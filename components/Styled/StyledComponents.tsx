@@ -39,10 +39,7 @@ export const FormText = createStyledComponent<React.HTMLAttributes<HTMLSpanEleme
   "span",
   "block text-sm font-medium text-gray-500 dark:text-gray-400"
 )
-export const FormDisclaimer = createStyledComponent<React.HTMLAttributes<HTMLSpanElement>>(
-  "span",
-  "block text-sm text-red-900 dark:text-red-300"
-)
+export const FormDisclaimer = createStyledComponent<React.HTMLAttributes<HTMLSpanElement>>("span", "block text-sm")
 
 export const Button = createStyledComponent<React.ButtonHTMLAttributes<HTMLButtonElement>>(
   "button",
