@@ -12,7 +12,7 @@ import HomeContext from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
-import {PluginKey} from "@/types/plugin"
+import {PluginID, PluginKey} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
@@ -69,8 +69,8 @@ export const ChatBar = () => {
     }
   }
 
-  const handleClearPluginKey = (pluginKey: PluginKey) => {
-    const updatedPluginKeys = pluginKeys.filter((key) => key.pluginId !== pluginKey.pluginId)
+  const handleClearPluginKey = (pluginId: PluginID) => {
+    const updatedPluginKeys = pluginKeys.filter((key) => key.pluginId !== pluginId)
 
     if (updatedPluginKeys.length === 0) {
       homeDispatch({field: "pluginKeys", value: []})

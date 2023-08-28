@@ -1,12 +1,12 @@
 import {IconKey} from "@tabler/icons-react"
-import {KeyboardEvent, useContext, useEffect, useRef, useState} from "react"
+import React, {useContext, useState} from "react"
 import {useTranslation} from "react-i18next"
 
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
-import HomeContext from "@/pages/api/home/home.context"
-import {PluginID, PluginKey} from "@/types/plugin"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
+import {Button, Dialog, FormHeader, FormLabel, FormText, Input} from "@/components/Styled"
+import {useHomeContext} from "@/pages/api/home/home.context"
+import {PluginID} from "@/types/plugin"
 
 interface Props {}
 
@@ -15,183 +15,78 @@ export const PluginKeyList = ({}: Props) => {
 
   const {
     state: {pluginKeys}
-  } = useContext(HomeContext)
+  } = useHomeContext()
   const {handlePluginKeyChange, handleClearPluginKey} = useContext(ChatBarContext)
 
   const [isChanging, setIsChanging] = useState(false)
 
-  const modalRef = useRef<HTMLDivElement>(null)
+  const [googleApiKey, setGoogleApiKey] = useState(findKey("GOOGLE_API_KEY")?.value ?? "")
+  const [googleCseId, setGoogleCseId] = useState(findKey("GOOGLE_CSE_ID")?.value ?? "")
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isKeyboardEnter(e) && !e.shiftKey) {
-      e.preventDefault()
-      setIsChanging(false)
-    }
+  function findKey(key: string) {
+    return pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)?.requiredKeys.find((k) => k.key === key)
   }
 
-  useEffect(() => {
-    const handleMouseDown = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        window.addEventListener("mouseup", handleMouseUp)
-      }
-    }
-    const handleMouseUp = () => {
-      window.removeEventListener("mouseup", handleMouseUp)
-      setIsChanging(false)
-    }
-    window.addEventListener("mousedown", handleMouseDown)
-    return () => {
-      window.removeEventListener("mousedown", handleMouseDown)
-    }
-  }, [])
+  const onClose = () => {
+    handlePluginKeyChange({
+      pluginId: PluginID.GOOGLE_SEARCH,
+      requiredKeys: [
+        {
+          key: "GOOGLE_API_KEY",
+          value: googleApiKey
+        },
+        {
+          key: "GOOGLE_CSE_ID",
+          value: googleCseId
+        }
+      ]
+    })
+
+    setIsChanging(false)
+  }
 
   return (
     <>
       <SidebarButton text={t("Google API key")} icon={<IconKey size={18} />} onClick={() => setIsChanging(true)} />
 
       {isChanging && (
-        <div
-          className="z-100 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          onKeyDown={handleKeyDown}
-        >
-          <div className="fixed inset-0 z-10 overflow-hidden">
-            <div className="flex min-h-screen items-center justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-              <div className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true" />
+        <Dialog onClose={onClose} onClickAway={onClose}>
+          <FormHeader>Google Search plugin</FormHeader>
+          <FormText>Please enter your Google API key and Google CSE ID to enable the Google Search plugin.</FormText>
 
-              <div
-                ref={modalRef}
-                className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
-                role="dialog"
-              >
-                <div className="mb-10 text-4xl">Google API key</div>
+          <FormLabel className="mt-4">Google API key</FormLabel>
+          <Input
+            type="password"
+            value={googleApiKey}
+            onChange={(e) => {
+              setGoogleApiKey(e.target.value)
+            }}
+          />
 
-                <div className="mt-6 rounded border p-4">
-                  <div className="text-xl font-bold">Google Search plugin</div>
-                  <div className="mt-4 italic">
-                    Please enter your Google API key and Google CSE ID to enable the Google Search plugin.
-                  </div>
+          <FormLabel className="mt-4">Google CSE ID</FormLabel>
+          <Input
+            type="password"
+            value={googleCseId}
+            onChange={(e) => {
+              setGoogleCseId(e.target.value)
+            }}
+          />
+          <div className="mt-4 flex flex-row gap-3">
+            <Button type="button" onClick={onClose}>
+              {t("Save")}
+            </Button>
 
-                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">Google API key</div>
-                  <input
-                    className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-                    type="password"
-                    value={
-                      pluginKeys
-                        .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                        ?.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")?.value
-                    }
-                    onChange={(e) => {
-                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-
-                      if (pluginKey) {
-                        const requiredKey = pluginKey.requiredKeys.find((k) => k.key === "GOOGLE_API_KEY")
-
-                        if (requiredKey) {
-                          const updatedPluginKey = {
-                            ...pluginKey,
-                            requiredKeys: pluginKey.requiredKeys.map((k) => {
-                              if (k.key === "GOOGLE_API_KEY") {
-                                return {
-                                  ...k,
-                                  value: e.target.value
-                                }
-                              }
-                              return k
-                            })
-                          }
-                          handlePluginKeyChange(updatedPluginKey)
-                        }
-                      } else {
-                        const newPluginKey: PluginKey = {
-                          pluginId: PluginID.GOOGLE_SEARCH,
-                          requiredKeys: [
-                            {
-                              key: "GOOGLE_API_KEY",
-                              value: e.target.value
-                            },
-                            {
-                              key: "GOOGLE_CSE_ID",
-                              value: ""
-                            }
-                          ]
-                        }
-                        handlePluginKeyChange(newPluginKey)
-                      }
-                    }}
-                  />
-
-                  <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">Google CSE ID</div>
-                  <input
-                    className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
-                    type="password"
-                    value={
-                      pluginKeys
-                        .find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-                        ?.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")?.value
-                    }
-                    onChange={(e) => {
-                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-
-                      if (pluginKey) {
-                        const requiredKey = pluginKey.requiredKeys.find((k) => k.key === "GOOGLE_CSE_ID")
-
-                        if (requiredKey) {
-                          const updatedPluginKey = {
-                            ...pluginKey,
-                            requiredKeys: pluginKey.requiredKeys.map((k) => {
-                              if (k.key === "GOOGLE_CSE_ID") {
-                                return {
-                                  ...k,
-                                  value: e.target.value
-                                }
-                              }
-                              return k
-                            })
-                          }
-                          handlePluginKeyChange(updatedPluginKey)
-                        }
-                      } else {
-                        const newPluginKey: PluginKey = {
-                          pluginId: PluginID.GOOGLE_SEARCH,
-                          requiredKeys: [
-                            {
-                              key: "GOOGLE_API_KEY",
-                              value: ""
-                            },
-                            {
-                              key: "GOOGLE_CSE_ID",
-                              value: e.target.value
-                            }
-                          ]
-                        }
-                        handlePluginKeyChange(newPluginKey)
-                      }
-                    }}
-                  />
-                  <button
-                    className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
-                    onClick={() => {
-                      const pluginKey = pluginKeys.find((p) => p.pluginId === PluginID.GOOGLE_SEARCH)
-
-                      if (pluginKey) {
-                        handleClearPluginKey(pluginKey)
-                      }
-                    }}
-                  >
-                    Clear Google Search API key
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  className="mt-6 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
-                  onClick={() => setIsChanging(false)}
-                >
-                  {t("Save")}
-                </button>
-              </div>
-            </div>
+            <Button
+              onClick={() => {
+                setGoogleApiKey("")
+                setGoogleCseId("")
+                handleClearPluginKey(PluginID.GOOGLE_SEARCH)
+              }}
+            >
+              Clear Google Search API key
+            </Button>
           </div>
-        </div>
+        </Dialog>
       )}
     </>
   )
