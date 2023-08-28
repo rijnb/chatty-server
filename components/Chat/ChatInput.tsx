@@ -59,7 +59,9 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
   const promptListRef = useRef<HTMLUListElement | null>(null)
 
-  const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()))
+  // Allow user to type individual characters to match prompts.
+  const regex = promptInputValue.split("").join("(.*)?")
+  const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().match(regex.toLowerCase()))
 
   const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g // Match non-greedy, because there may be multiple variables in a prompt.
