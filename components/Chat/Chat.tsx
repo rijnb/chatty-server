@@ -128,9 +128,10 @@ const Chat = memo(({stopConversationRef}: Props) => {
             }
 
             if (error.errorType === "rate_limit") {
-              setWaitTime(error.retryAfter)
-              setTimeout(() => setWaitTime(null), error.retryAfter * 1000)
-              toast.error(`Too many requests. Please wait ${error.retryAfter} seconds before trying again.`, {
+              const waitSecs = Math.min(Math.max(error.retryAfter, 60), 1)
+              setWaitTime(waitSecs)
+              setTimeout(() => setWaitTime(null), waitSecs * 1000)
+              toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {
                 duration: TOAST_DURATION_MS
               })
               return
