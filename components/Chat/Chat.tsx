@@ -79,7 +79,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
             messages: updatedConversation.messages,
             apiKey: apiKey,
             prompt: updatedConversation.prompt,
-            temperature: updatedConversation.temperature
+            temperature: updatedConversation.temperature,
+            maxTokens: updatedConversation.maxTokens
           }
           const endpoint = getEndpoint(plugin)
           let body
@@ -128,7 +129,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             }
 
             if (error.errorType === "rate_limit") {
-              const waitSecs = Math.min(Math.max(error.retryAfter, 60), 1)
+              const waitSecs = Math.max(Math.min(error.retryAfter, 60), 1)
               setWaitTime(waitSecs)
               setTimeout(() => setWaitTime(null), waitSecs * 1000)
               toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {

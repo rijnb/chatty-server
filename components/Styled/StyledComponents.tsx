@@ -51,6 +51,11 @@ export const Input = createStyledComponent<React.InputHTMLAttributes<HTMLInputEl
   "input",
   "w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-800 shadow focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
 )
+export const Range = createStyledComponent<React.InputHTMLAttributes<HTMLInputElement>>(
+  "input",
+  "w-full appearance-none rounded-lg border border-gray-300 shadow focus:outline-none dark:border-gray-600 dark:bg-gray-700",
+  {type: "range"}
+)
 export const TextArea = createStyledComponent<React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
   "textarea",
   "w-full resize-none rounded-lg border border-gray-300 px-4 py-2 text-gray-800 shadow focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"

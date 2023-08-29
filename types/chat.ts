@@ -19,6 +19,7 @@ export interface ChatBody {
   modelId: OpenAIModelID
   prompt: string
   temperature: number
+  maxTokens: number
 }
 
 export interface Conversation {
