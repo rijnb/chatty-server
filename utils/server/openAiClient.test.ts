@@ -134,7 +134,7 @@ describe("OpenAI Client", () => {
   test.each(Object.entries(testCases))("%s", async (_, {openAiResponse, expectedError}) => {
     fetchMock.mockResponse(JSON.stringify(openAiResponse.body), {status: openAiResponse.status})
 
-    const result = ChatCompletionStream(FALLBACK_OPENAI_MODEL_ID, "system prompt", 0.8, "key", [
+    const result = ChatCompletionStream(FALLBACK_OPENAI_MODEL_ID, "system prompt", 0.8, 32, "key", [
       {role: "user", content: "ping"}
     ])
 

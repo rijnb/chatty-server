@@ -1,11 +1,11 @@
-import {Tiktoken} from "js-tiktoken"
-import {useEffect, useState} from "react"
+import {useEffect, useMemo, useState} from "react"
 import {useTranslation} from "react-i18next"
 
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
+import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS} from "@/utils/app/const"
-import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
   content: string | undefined
@@ -18,49 +18,42 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     state: {selectedConversation}
   } = useHomeContext()
 
-  const [encoding, setEncoding] = useState<Tiktoken | null>(null)
-  const [updateAllowed, setUpdateAllowed] = useState<boolean>(true)
-  const [tokenCount, setTokenCount] = useState<number>(0)
+  const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
+  const [tokensInConversation, setTokensInConversation] = useState(0)
 
   useEffect(() => {
     const initToken = async () => {
-      let tokenizer = await getTiktokenEncoding()
-      setEncoding(tokenizer)
+      let tokenizer = await TiktokenEncoder.create()
+      setEncoder(tokenizer)
     }
     initToken()
   }, [])
 
+  const prompt = selectedConversation?.prompt ?? ""
+  const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
+  const modelId = selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateAllowed(true)
-    }, 3000)
+    if (encoder) {
+      const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
+      setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
+    }
+  }, [encoder, messages, modelId, prompt])
 
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(interval)
-  }, [])
-
-  const messages: Message[] = [
-    {role: "system", content: selectedConversation?.prompt ?? ""},
-    ...(selectedConversation?.messages ?? []),
-    {role: "user", content: content ?? ""}
-  ]
-
-  if (!encoding || !tokenLimit || !selectedConversation) {
+  if (!encoder || !tokenLimit || !selectedConversation) {
     return null
   }
 
-  // Rate limit the token counting to keep snappy typing.
-  if (updateAllowed) {
-    setTokenCount(numberOfTokensInConversation(encoding, messages, selectedConversation.modelId))
-    setUpdateAllowed(false)
-  }
-  return tokenCount > tokenLimit - OPENAI_API_MAX_TOKENS ? (
+  const tokenCount = tokensInConversation + encoder.numberOfTokensInString(content ?? "")
+  const maxTokens = selectedConversation.maxTokens ?? OPENAI_API_MAX_TOKENS
+
+  return tokenCount + maxTokens > tokenLimit ? (
     <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
-      {tokenCount} / {tokenLimit} {t("tokens")}
+      {tokenCount} / {tokenLimit} ({maxTokens}) {t("tokens")}
     </div>
   ) : (
     <div className="pointer-events-auto rounded-full bg-neutral-300 bg-opacity-10 px-2 py-1 text-xs text-neutral-400">
-      {tokenCount} / {tokenLimit} {t("tokens")}
+      {tokenCount} / {tokenLimit} ({maxTokens}) {t("tokens")}
     </div>
   )
 }

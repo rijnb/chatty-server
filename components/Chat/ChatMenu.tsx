@@ -6,7 +6,7 @@ import React, {useRef, useState} from "react"
 import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
-import {FormLabel, FormText, Input, Select} from "@/components/Styled"
+import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {Conversation} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
@@ -71,11 +71,10 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
       onKeyDown={handleKeyDown}
     >
       <div className="w-full">
-        <FormLabel htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
-          Conversation model
-        </FormLabel>
         <div className="flex flex-col">
+          <FormLabel htmlFor="model">Conversation model</FormLabel>
           <Select
+            id="model"
             disabled={true}
             className="disabled:pointer-events-none disabled:text-gray-300"
             placeholder={t("Select a model")}
@@ -97,32 +96,31 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             Higher values means the model will take more risks or be more creative. Try 0 for more predictable answers
             and 1 for more creative ones.
           </FormText>
-          <Input
+          <Range
             id="temperature"
-            type="range"
+            className="mt-2"
             min="0"
             max="1"
             step="0.1"
             value={temperature}
             onChange={handleTemperatureChange}
-            className="mt-2"
           />
           <FormText className="text-center">{temperature}</FormText>
         </div>
 
         <div className="flex flex-col">
-          <FormLabel htmlFor="maxTokens" className="text-lg font-medium text-black dark:text-neutral-200">
-            Response token limit
-          </FormLabel>
+          <FormLabel htmlFor="maxTokens">Response token limit</FormLabel>
           <FormText>The maximum number of tokens used to generate an answer.</FormText>
-          <Input
+          <Range
             id="maxTokens"
-            type="number"
+            className="mt-2"
             min="0"
             max={OpenAIModels[modelId].tokenLimit}
+            step="1000"
             value={maxTokens}
             onChange={handleMaxTokensChange}
           />
+          <FormText className="text-center">{maxTokens}</FormText>
         </div>
       </div>
 

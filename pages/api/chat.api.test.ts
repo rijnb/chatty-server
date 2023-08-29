@@ -44,13 +44,19 @@ describe("Chat Error Handling", () => {
           messages: [{role: "user", content: "ping"}],
           apiKey: "somekey",
           prompt: "You are a helpful assistant",
-          temperature: 1.2
+          temperature: 1.2,
+          maxTokens: 32
         })
       )
 
-      expect(ChatCompletionStream).toHaveBeenCalledWith("gpt-4-32k", "You are a helpful assistant", 1.2, "somekey", [
-        {role: "user", content: "ping"}
-      ])
+      expect(ChatCompletionStream).toHaveBeenCalledWith(
+        "gpt-4-32k",
+        "You are a helpful assistant",
+        1.2,
+        32,
+        "somekey",
+        [{role: "user", content: "ping"}]
+      )
     })
   })
 

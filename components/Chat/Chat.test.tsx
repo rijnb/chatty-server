@@ -49,6 +49,7 @@ const intersectionObserverMock = () => ({
 })
 window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
 Element.prototype.scrollIntoView = jest.fn()
+Element.prototype.scrollTo = jest.fn()
 
 describe("<Chat/>", () => {
   beforeAll(() => {

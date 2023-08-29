@@ -10,7 +10,7 @@ import {
   OpenAILimitExceeded,
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
-import {getTiktokenEncoding, numberOfTokensInConversation, prepareMessagesToSend} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 export const config = {
   runtime: "edge"
@@ -27,18 +27,13 @@ function errorResponse(body: any, status: number) {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const encoding = await getTiktokenEncoding()
-    const {messages, apiKey, modelId, prompt, temperature} = (await req.json()) as ChatBody
+    const encoder = await TiktokenEncoder.create()
+    const {messages, apiKey, modelId, prompt, temperature, maxTokens} = (await req.json()) as ChatBody
     const {tokenLimit} = OpenAIModels[modelId]
 
+    const maxTokensToUse = maxTokens || OPENAI_API_MAX_TOKENS
     const promptToSend = prompt || OPENAI_DEFAULT_SYSTEM_PROMPT
-    const messagesToSend = await prepareMessagesToSend(
-      tokenLimit,
-      OPENAI_API_MAX_TOKENS,
-      promptToSend,
-      messages,
-      modelId
-    )
+    const messagesToSend = encoder.prepareMessagesToSend(tokenLimit, maxTokensToUse, promptToSend, messages, modelId)
     const temperatureToUse = temperature || OPENAI_DEFAULT_TEMPERATURE
 
     // Log prompt statistics (not just debugging, also for checking use of service).
@@ -46,13 +41,14 @@ const handler = async (req: Request): Promise<Response> => {
     const message = allMessages[allMessages.length - 1]
     console.info(`sendRequest: {\
 message:'${trimForPrivacy(message.content)}', \
-totalNumberOfTokens:${numberOfTokensInConversation(encoding, allMessages, modelId)}, \
+totalNumberOfTokens:${encoder.numberOfTokensInConversation(allMessages, modelId)}, \
 modelId:'${modelId}', \
 messageLengthInChars:${message.content.length}, \
 totalNumberOfMessages:${allMessages.length}, \
-temperature:${temperature}}`)
+temperature:${temperature}, \
+maxTokens:${maxTokens}}`)
 
-    return await ChatCompletionStream(modelId, promptToSend, temperatureToUse, apiKey, messagesToSend)
+    return await ChatCompletionStream(modelId, promptToSend, temperatureToUse, maxTokensToUse, apiKey, messagesToSend)
   } catch (error) {
     if (error instanceof OpenAIRateLimited) {
       return errorResponse(

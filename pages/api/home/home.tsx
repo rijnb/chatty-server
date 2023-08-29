@@ -35,7 +35,7 @@ import {importData, isValidJsonData} from "@/utils/app/import"
 import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
-import {getTiktokenEncoding, numberOfTokensInConversation} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
   serverSideApiKeyIsSet: boolean
@@ -339,10 +339,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           ...(selectedConversation?.messages ?? [])
         ]
 
-        const encoding = await getTiktokenEncoding()
+        const encoder = await TiktokenEncoder.create()
 
-        tokenCount = numberOfTokensInConversation(
-          encoding,
+        tokenCount = encoder.numberOfTokensInConversation(
           allMessages,
           selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
         )
