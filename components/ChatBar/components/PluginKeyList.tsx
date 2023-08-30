@@ -8,9 +8,7 @@ import {Button, Dialog, FormHeader, FormLabel, FormText, Input} from "@/componen
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {PluginID} from "@/types/plugin"
 
-interface Props {}
-
-export const PluginKeyList = ({}: Props) => {
+export const PluginKeyList = () => {
   const {t} = useTranslation("common")
 
   const {

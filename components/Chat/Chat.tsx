@@ -162,7 +162,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             let errorText = await response.text()
             console.debug(`HTTP error, text:${errorText}`)
             console.debug(
-              `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText: ${errorText}, headers:${response.headers}`
+              `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText: ${errorText}`
             )
             // Fall back to statusText if errorText is empty.
             if (errorText.length == 0) {
@@ -208,7 +208,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
               if (stopConversationRef.current) {
                 console.debug("Stopped conversation...")
                 controller.abort()
-                done = true
                 break
               }
               const chunkResponse = await Promise.race([
@@ -308,7 +307,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
-          const show = message ? message : statusText ? statusText : content ? content : "Try again later."
+          const show = message || statusText || (content ? content : "Try again later.")
           if (statusText && statusText !== "") {
             toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
           }
@@ -402,6 +401,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               <ChatConversation
                 conversation={selectedConversation}
                 onSend={(message, index) => {
+                  // noinspection JSIgnoredPromiseFromCall
                   handleSendMessage(message, selectedConversation?.messages.length - index)
                 }}
               />
@@ -416,10 +416,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
               modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
               onSend={(message, plugin) => {
                 setCurrentMessage(message)
+                // noinspection JSIgnoredPromiseFromCall
                 handleSendMessage(message, 0, plugin)
               }}
               onRegenerate={() => {
                 if (currentMessage) {
+                  // noinspection JSIgnoredPromiseFromCall
                   handleSendMessage(currentMessage, 2, null)
                 }
               }}

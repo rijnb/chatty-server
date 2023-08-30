@@ -53,6 +53,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       let encoder = await TiktokenEncoder.create()
       setEncoder(encoder)
     }
+    // noinspection JSIgnoredPromiseFromCall
     initToken()
   }, [])
 
@@ -60,7 +61,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
   // Allow user to type individual characters to match prompts.
   const regex = promptInputValue.split("").join("(.*)?")
-  const filteredPrompts = prompts.filter((prompt) => prompt.name.toLowerCase().match(regex.toLowerCase()))
+  const filteredPrompts = prompts.filter((prompt) => RegExp(regex.toLowerCase()).exec(prompt.name.toLowerCase()))
 
   const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g // Match non-greedy, because there may be multiple variables in a prompt.
@@ -75,7 +76,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = text.match(/^\/(.*)$/)
+    const match = RegExp(/^\/(.*)$/).exec(text)
     if (match) {
       setShowPromptList(true)
       setPromptInputValue(match[0].slice(1))
@@ -190,7 +191,7 @@ Please remove some messages from the conversation, or simply clear all previous 
       return updatedPromptVariables[index]
     })
     setContent(newContent)
-    if (textareaRef && textareaRef.current) {
+    if (textareaRef?.current) {
       textareaRef.current.focus()
     }
   }
@@ -198,7 +199,7 @@ Please remove some messages from the conversation, or simply clear all previous 
   const handlePromptCancel = () => {
     setIsModalVisible(false)
     setContent("")
-    if (textareaRef && textareaRef.current) {
+    if (textareaRef?.current) {
       textareaRef.current.focus()
     }
   }
@@ -217,7 +218,7 @@ Please remove some messages from the conversation, or simply clear all previous 
     return (plugin: Plugin) => {
       setPlugin(plugin)
       setShowPluginSelect(false)
-      if (textareaRef && textareaRef.current) {
+      if (textareaRef?.current) {
         textareaRef.current.focus()
       }
     }
@@ -242,7 +243,7 @@ Please remove some messages from the conversation, or simply clear all previous 
   }, [activePromptIndex])
 
   useEffect(() => {
-    if (textareaRef && textareaRef.current) {
+    if (textareaRef?.current) {
       textareaRef.current.style.height = "inherit"
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`
       textareaRef.current.style.overflow = `${textareaRef?.current?.scrollHeight > 400 ? "auto" : "hidden"}`

@@ -86,6 +86,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
     if (e.dataTransfer.files) {
       const fileInput = document.getElementById("file-input") as HTMLInputElement
       fileInput.files = e.dataTransfer.files
+      // noinspection ES6MissingAwait
       handleSelectFiles(index, {target: fileInput} as ChangeEvent<HTMLInputElement>)
     }
   }
