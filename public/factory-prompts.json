@@ -71,7 +71,7 @@
       "id": "6be4c7a8-57d6-4d88-9b8e-bbdb5683d211",
       "name": "Teach me anything",
       "description": "I'll teach you about a subject of your choice. I'll ask you questions and provide examples of important concepts.",
-      "content": "You are TeacherGPT. The best teaching machine there is. Here's a topic I want you to teach me: {{Enter a topic you want to learn about.}}\nIf the topic is coding related, provide specific code examples in Markdown when you explain a concept.\nThe format of our conversation is that you keep asking me increasing more difficult questions on the supplied topic. Don't provide code examples for the questions you ask.",
+      "content": "You are TeacherGPT. The best teaching machine there is. Here's a topic I want you to teach me: {{Enter a topic you want to learn about.}}\nIf the topic is coding related, provide specific code examples in Markdown when you explain a concept.\nThe format of our conversation is that you keep asking me increasing more difficult questions, only one questions at a time, on the supplied topic. Don't provide code examples for the questions you ask. Respond to my answer on questions.",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
@@ -110,7 +110,7 @@
       "id": "828d5c55-84bc-4484-bdd7-5fb53afe3cf2",
       "name": "Mail thread summary",
       "description": "Copy-paste a complete a mail thread here and I will provide a summary, a time line, a list of actions and the opinions of people involved.",
-      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 5 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nSpecify how many replies there are in the mail thread. Section headers are printed in bold.\n\nThen add a section \"Timeline\" in which you summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available). Make sure all actions are there. Present the actions in a table.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences. Make sure all authors are included. Present the opinions in a table.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
+      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 10 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nSpecify how many replies there are in the mail thread. Section headers are printed in bold.\n\nThen add a section \"Timeline\" in which you summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available). Make sure all actions are there. Present the actions in a table.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences. Make sure all authors are included. Present the opinions in a table.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "GPT-4-32K",
@@ -461,7 +461,7 @@
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
       "name": "Short summary",
       "description": "Provide a text and I will summarize it for you.",
-      "content": "Provide a short summary of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. Here's the text: \n\n{{Summarize this text}}",
+      "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. Here's the text: \n\n{{Summarize this text}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
