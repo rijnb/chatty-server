@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from "react"
 
 const useScroll = (container: React.RefObject<HTMLDivElement>) => {
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
 
   const handleScroll = () => {
@@ -10,10 +9,8 @@ const useScroll = (container: React.RefObject<HTMLDivElement>) => {
       const bottomTolerance = 30
 
       if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
-        setAutoScrollEnabled(false)
         setShowScrollDownButton(true)
       } else {
-        setAutoScrollEnabled(true)
         setShowScrollDownButton(false)
       }
     }

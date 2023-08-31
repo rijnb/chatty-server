@@ -62,12 +62,10 @@ export const UnlockProvider = ({isProtected, children}: Props) => {
     return null
   }
 
-  {
-    return (
-      <UnlockContext.Provider value={value}>
-        {children}
-        <UnlockOverlay />
-      </UnlockContext.Provider>
-    )
-  }
+  return (
+    <UnlockContext.Provider value={value}>
+      {children}
+      <UnlockOverlay />
+    </UnlockContext.Provider>
+  )
 }

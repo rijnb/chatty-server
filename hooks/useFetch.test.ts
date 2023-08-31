@@ -188,12 +188,12 @@ describe("useFetch", () => {
     })
 
     it("should parse error if not 200", async () => {
-      fetchMock.mockResponseOnce(JSON.stringify({errorCode: "mistery"}), {
+      fetchMock.mockResponseOnce(JSON.stringify({errorCode: "mystery"}), {
         status: 400,
         headers: {"content-type": "application/json"}
       })
 
-      const expectedError = new RemoteError(400, "Bad Request", {errorCode: "mistery"})
+      const expectedError = new RemoteError(400, "Bad Request", {errorCode: "mystery"})
 
       await expect(useFetch().get("/api/test")).rejects.toThrow(expectedError)
       expect(console.error).toHaveBeenCalledWith("RemoteError", expectedError)

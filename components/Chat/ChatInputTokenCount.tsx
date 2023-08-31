@@ -26,6 +26,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       let tokenizer = await TiktokenEncoder.create()
       setEncoder(tokenizer)
     }
+    // noinspection JSIgnoredPromiseFromCall
     initToken()
   }, [])
 

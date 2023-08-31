@@ -13,7 +13,7 @@ by clicking on the "New conversation" button. You can also import and export con
 
 You can also edit the name of conversations or organize them in folders. This is
 useful if you want to switch between conversation contexts. For example, suppose you are
-debugging code in a conversation and you have a added code blocks and questions. Now
+debugging code in a conversation, and you have an added code blocks and questions. Now
 you want me to quickly summarize an unrelated long email thread. In that case, it's best
 to just quickly start a new conversation, a new context, and switch back to the code
 conversation later.
@@ -22,7 +22,7 @@ You should also note that there is a limit to the amount of context I can handle
 in conversations. This limit is "32000" tokens. The number of tokens in a conversation
 is shown in the top right corner of the conversation. If you exceed this limit, I will
 start to forget the oldest messages. This is not a problem if you are just asking
-questions and I am answering them.
+questions, and I am answering them.
 
 There is also a cost associated with the number of tokens in your current conversation.
 The more tokens there are in the current conversation, the more expensive it is to
@@ -46,7 +46,7 @@ thread, or a piece of code.
 ### Factory prompts and user prompts
 
 There are `factory prompts` and `user prompts`. Factory prompts are provided by me
-every time you start up. They are kept up to date by me and you cannot edit them.
+every time you start up. They are kept up to date by me, and you cannot edit them.
 They are organized in their own (factory) folders, which you cannot use.
 
 You can create and organize your own prompts in the `user prompts` section.
@@ -173,7 +173,7 @@ _Rijn Buve & Oleksii Kulyk_
 #### Features
 
 - Factory folders have a different icon now.
-- Handle content management policy violations by Azure OpenAI in a more user friendly way.
+- Handle content management policy violations by Azure OpenAI in a more user-friendly way.
 - Great new factory prompts to play with!
 
 #### Bug fixes

@@ -17,14 +17,14 @@ const handler = async (req: Request): Promise<Response> => {
     const headers = {
       "Content-Type": "application/json",
       ...(OPENAI_API_TYPE === "openai" && {
-        Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
       }),
       ...(OPENAI_API_TYPE === "openai" &&
         OPENAI_ORGANIZATION && {
           "OpenAI-Organization": OPENAI_ORGANIZATION
         }),
       ...(OPENAI_API_TYPE === "azure" && {
-        "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+        "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
       })
     }
     const response = await fetch(url, {headers: headers})
@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
     console.error(`Error retrieving models, error:${error}`)
-    return new Response("Error", {status: 500, statusText: error ? error.toString() : ""})
+    return new Response("Error", {status: 500, statusText: error ? JSON.stringify(error) : ""})
   }
 }
 

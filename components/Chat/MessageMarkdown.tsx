@@ -27,7 +27,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
             children[0] = (children[0] as string).replace("`▍`", "▍")
           }
 
-          const match = /language-(\w+)/.exec(className || "")
+          const match = /language-(\w+)/.exec(className ?? "")
           return !inline ? (
             <CodeBlock
               key={Math.random()}
