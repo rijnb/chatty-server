@@ -31,7 +31,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
           return !inline ? (
             <CodeBlock
               key={Math.random()}
-              language={(match && match.length > 0 && match[1]) || ""}
+              language={(match && match[1]) || ""}
               value={String(children).replace(/\n\n$/, "\n")}
               {...props}
             />
