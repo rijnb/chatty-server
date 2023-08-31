@@ -10,7 +10,6 @@ import {TiktokenEncoder} from "@/utils/server/tiktoken"
 interface Props {
   content: string | undefined
   tokenLimit: number | undefined
-  theme: string
 }
 
 export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
