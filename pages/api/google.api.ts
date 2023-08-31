@@ -26,9 +26,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.debug(`Google search, query:${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
-      `https://customsearch.googleapis.com/customsearch/v1?key=${
-        googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
-      }&cx=${googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID}&q=${query}&num=5`
+      `https://customsearch.googleapis.com/customsearch/v1?key=${googleAPIKey || process.env.GOOGLE_API_KEY}&cx=${
+        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+      }&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
     const sources: GoogleSource[] = googleData.items.map((item: any) => ({

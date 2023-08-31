@@ -10,11 +10,8 @@ import ImportData from "@/components/Settings/ImportData"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
 import {UnlockCodeEditor, useUnlock} from "@/components/UnlockCode"
 import HomeContext from "@/pages/api/home/home.context"
-import {ErrorMessage} from "@/types/error"
 
-interface Props {}
-
-export const ChatBarSettings = ({}: Props) => {
+export const ChatBarSettings = () => {
   const {t} = useTranslation("common")
 
   const {isProtected, code, setCode} = useUnlock()

@@ -39,6 +39,7 @@ export class OpenAIAuthError extends OpenAIError {
 
 export class OpenAIRateLimited extends OpenAIError {
   retryAfterSeconds?: number
+
   constructor(message: string, retryAfterSeconds?: number) {
     super(message)
     this.retryAfterSeconds = retryAfterSeconds
@@ -48,6 +49,7 @@ export class OpenAIRateLimited extends OpenAIError {
 export class OpenAILimitExceeded extends OpenAIError {
   limit?: number
   requested?: number
+
   constructor(message: string, limit?: number, requested?: number) {
     super(message)
     this.limit = limit
@@ -55,7 +57,7 @@ export class OpenAILimitExceeded extends OpenAIError {
   }
 }
 
-function createOpenaiConfiguration(apiKey: string) {
+function createOpenAiConfiguration(apiKey: string) {
   if (OPENAI_API_TYPE === "azure") {
     let config = new Configuration({
       basePath: `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}`,
@@ -64,7 +66,7 @@ function createOpenaiConfiguration(apiKey: string) {
       }),
       baseOptions: {
         headers: {
-          "api-key": apiKey ? apiKey : process.env.OPENAI_API_KEY
+          "api-key": apiKey || process.env.OPENAI_API_KEY
         }
       }
     })
@@ -74,7 +76,7 @@ function createOpenaiConfiguration(apiKey: string) {
   } else {
     return new Configuration({
       basePath: `${OPENAI_API_HOST}/v1`,
-      apiKey: apiKey ? apiKey : process.env.OPENAI_API_KEY,
+      apiKey: apiKey || process.env.OPENAI_API_KEY,
       organization: OPENAI_ORGANIZATION
     })
   }
@@ -92,7 +94,7 @@ export const ChatCompletionStream = async (
   apiKey: string,
   messages: Message[]
 ) => {
-  const configuration = createOpenaiConfiguration(apiKey)
+  const configuration = createOpenAiConfiguration(apiKey)
   const openai = createOpenAiClient(configuration)
 
   if (messages.length === 0) {
@@ -100,6 +102,7 @@ export const ChatCompletionStream = async (
   }
 
   // Ask OpenAI for a streaming chat completion given the prompt
+  console.debug(`config: url:${configuration.basePath}, model:${modelId}`)
   const response = await openai.createChatCompletion({
     model: modelId,
     messages: [{role: "system", content: systemPrompt}, ...messages],

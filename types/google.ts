@@ -1,4 +1,4 @@
-import {ChatBody, Message} from "./chat"
+import {ChatBody} from "./chat"
 
 export interface GoogleBody extends ChatBody {
   googleAPIKey: string

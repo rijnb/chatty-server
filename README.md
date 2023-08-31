@@ -52,7 +52,7 @@ your prompts or returned answers for debugging purposes, but never more).
 When deploying `chatty-server`, make sure you set the following environment variables:
 
 | Environment Variable           |
-| ------------------------------ |
+|--------------------------------|
 | OPENAI_API_TYPE                |
 | OPENAI_API_HOST                |
 | OPENAI_VERSION                 |
@@ -102,7 +102,7 @@ You should be able to start chatting at `http://localhost:3000/chatty/1/chat`.
 When deploying the application, the following environment variables can be set:
 
 | Environment Variable         | Default value                  | Description                                                                                                                               |
-| ---------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+|------------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | OPENAI_API_KEY               |                                | The default API key used for authentication with OpenAI                                                                                   |
 | OPENAI_API_HOST              | `https://api.openai.com`       | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
 | OPENAI_API_TYPE              | `openai`                       | The API type, options are `openai` or `azure`                                                                                             |

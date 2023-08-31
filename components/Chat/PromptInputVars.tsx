@@ -12,7 +12,7 @@ interface Props {
 }
 
 const PROMPT_KEYWORD_DROP = "#DROP"
-const MAX_SIZE_FOR_SYNTAX_HIGHLIGHTING = 2500
+const MAX_SIZE_FOR_SYNTAX_HIGHLIGHTING = 10000
 
 const stripPromptKeywords = (promptVariable: string) => {
   return promptVariable.replace(PROMPT_KEYWORD_DROP, "").trim()
@@ -73,7 +73,6 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
   const handleSelectFiles = async (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const {numberOfFiles, content} = await readSelectedFiles(e)
-    console.debug("numberOfFiles", numberOfFiles, "content", content) //!!
     if (numberOfFiles > 0 && content.length > 0) {
       setNumberOfSelectedFiles(numberOfSelectedFiles + numberOfFiles)
     }
@@ -86,6 +85,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
     if (e.dataTransfer.files) {
       const fileInput = document.getElementById("file-input") as HTMLInputElement
       fileInput.files = e.dataTransfer.files
+      // noinspection ES6MissingAwait
       handleSelectFiles(index, {target: fileInput} as ChangeEvent<HTMLInputElement>)
     }
   }
