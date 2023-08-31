@@ -50,11 +50,11 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
 
   return tokenCount + maxTokens > tokenLimit ? (
     <div className="pointer-events-auto rounded-full bg-red-500 bg-opacity-40 px-2 py-1 text-xs text-neutral-400">
-      {tokenCount} / {tokenLimit} ({maxTokens}) {t("tokens")}
+      {tokenCount}/{tokenLimit} {t("tokens")}
     </div>
   ) : (
     <div className="pointer-events-auto rounded-full bg-neutral-300 bg-opacity-10 px-2 py-1 text-xs text-neutral-400">
-      {tokenCount} / {tokenLimit} ({maxTokens}) {t("tokens")}
+      {tokenCount}/{tokenLimit} {t("tokens")}
     </div>
   )
 }
