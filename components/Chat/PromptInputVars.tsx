@@ -73,7 +73,6 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
 
   const handleSelectFiles = async (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const {numberOfFiles, content} = await readSelectedFiles(e)
-    console.debug("numberOfFiles", numberOfFiles, "content", content) //!!
     if (numberOfFiles > 0 && content.length > 0) {
       setNumberOfSelectedFiles(numberOfSelectedFiles + numberOfFiles)
     }
