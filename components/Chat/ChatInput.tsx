@@ -60,23 +60,21 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const promptListRef = useRef<HTMLUListElement | null>(null)
 
   // Allow user to type individual characters to match prompts.
-  const regex = promptInputValue.split("").join("(.*)?")
-  const filteredPrompts = prompts.filter((prompt) => RegExp(regex.toLowerCase()).exec(prompt.name.toLowerCase()))
+  const regex = promptInputValue.split("").join("(.*)?").toLowerCase()
+  const filteredPrompts = prompts.filter((prompt) => RegExp(regex).exec(prompt.name.toLowerCase()))
 
   const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g // Match non-greedy, because there may be multiple variables in a prompt.
     const foundPromptVariables = []
     let match
-
     while ((match = regex.exec(content)) !== null) {
-      foundPromptVariables.push(match[1])
+      foundPromptVariables.push(match[1]) // match[0] is the full match, match[1] is the first group.
     }
-
     return foundPromptVariables
   }
 
   const updatePromptListVisibility = useCallback((text: string) => {
-    const match = RegExp(/^\/(.*)$/).exec(text)
+    const match = /^\/(.*)$/.exec(text)
     if (match) {
       setShowPromptList(true)
       setPromptInputValue(match[0].slice(1))
