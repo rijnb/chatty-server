@@ -137,7 +137,7 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
               <IconCaretRight size={18} />
             )}
 
-            <div className="relative max-h-8 flex-1 overflow-x-hidden text-ellipsis whitespace-nowrap break-all pr-12 text-left text-[12.5px] leading-3 text-gray-800 dark:text-white">
+            <div className="relative max-h-8 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all pr-12 text-left text-[12.5px] leading-3 text-gray-800 dark:text-white">
               {folder.name}
             </div>
           </button>
