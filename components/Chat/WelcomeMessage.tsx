@@ -7,7 +7,7 @@ export const WelcomeMessage = ({}: Props) => {
   const router = useRouter()
 
   return (
-    <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 md:space-y-10 md:pt-12">
+    <div className="mx-auto flex flex-col space-y-5 px-3 pt-5 md:space-y-10 md:pt-20">
       <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
         <div className="mx-auto flex flex-col justify-center space-y-4 sm:w-[600px]">
           <div className="text-center text-5xl font-extrabold text-gray-700 dark:text-gray-100">
@@ -19,9 +19,9 @@ export const WelcomeMessage = ({}: Props) => {
             <span className="text-indigo-700">Y</span>&nbsp;
           </div>
           <div className="text-center text-xl font-bold text-gray-800 dark:text-gray-400">
-            A better interface for Azure
+            A conversational interface for
             <p />
-            and OpenAI GPT-3/GPT-4 models
+            Azure and OpenAI GPT-3/GPT-4 models
           </div>
           <div className="text-center text-gray-700 dark:text-gray-400">
             <div>&nbsp;</div>
@@ -34,7 +34,7 @@ export const WelcomeMessage = ({}: Props) => {
             />
             <div>&nbsp;</div>
             <div className="font-light">You can start chatting in the box below.</div>
-            <div className="font-light">Click on (?) in the top menu for instructions and release notes.</div>
+            <div className="font-light">Click on [ ? ] in the top menu for instructions and release notes.</div>
           </div>
           <div className="text-center text-gray-600 dark:text-gray-400">- = o O o = -</div>
         </div>
