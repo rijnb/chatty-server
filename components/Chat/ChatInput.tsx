@@ -105,7 +105,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
     // Show an alert and bail out early if we're using too many tokens.
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
-    onSend(message, plugin)
+      onSend(message, plugin)
     setContent("")
     setPlugin(null)
 

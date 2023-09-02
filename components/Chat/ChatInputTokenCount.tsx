@@ -25,6 +25,10 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
   const [tokensInConversation, setTokensInConversation] = useState(0)
 
+  const prompt = selectedConversation?.prompt ?? ""
+  const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
+  const modelId = selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, [
@@ -46,10 +50,6 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     initToken()
   }, [])
 
-  const prompt = selectedConversation?.prompt ?? ""
-  const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
-  const modelId = selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
-
   useEffect(() => {
     if (encoder) {
       const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
@@ -62,7 +62,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   }
 
   const tokenCount = tokensInConversation + encoder.numberOfTokensInString(content ?? "")
-  const tokenPercentage = Math.min(100, Math.max(5, Math.floor(+(tokenCount / tokenLimit) * 100)))
+  const tokenPercentage = Math.min(100, Math.max(5, Math.floor((tokenCount / tokenLimit) * 100)))
   const backgroundColor = theme == "dark" ? "#404050" : "#f0f0f0"
   let textColor = theme == "dark" ? "text-neutral-300" : "text-neutral-800"
   let gradient
