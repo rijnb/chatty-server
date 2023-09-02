@@ -105,18 +105,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
     // Show an alert and bail out early if we're using too many tokens.
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
-    const systemPrompt: Message = {role: "system", content: selectedConversation.prompt}
-    const allMessages = [...selectedConversation.messages, systemPrompt, message]
-    const tokenCount = encoder.numberOfTokensInConversation(allMessages, selectedConversation.modelId)
-    const tokenLimit = models.find((model) => model.id === modelId)?.tokenLimit ?? 0
-    if (tokenCount >= tokenLimit) {
-      alert(`The input message (with the full conversation history) is too long...\
-It's using ${tokenCount} tokens in total while the limit is ${tokenLimit} tokens.\n\n\
-Please remove some messages from the conversation, or simply clear all previous messages in this conversation by clicking on the eraser icon next to the input box.`)
-
-      return
-    }
-
     onSend(message, plugin)
     setContent("")
     setPlugin(null)

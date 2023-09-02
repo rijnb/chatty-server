@@ -64,23 +64,29 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const tokenCount = tokensInConversation + encoder.numberOfTokensInString(content ?? "")
   const tokenPercentage = Math.min(100, Math.max(5, Math.floor(+(tokenCount / tokenLimit) * 100)))
   const backgroundColor = theme == "dark" ? "#404050" : "#f0f0f0"
-  const textColor = theme == "dark" ? "text-neutral-400" : "text-neutral-800"
+  let textColor = theme == "dark" ? "text-neutral-300" : "text-neutral-800"
   let gradient
-  if (tokenPercentage <= 60) {
+  if (tokenPercentage < 75) {
     gradient =
       theme == "dark"
         ? `linear-gradient(90deg, seagreen ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
         : `linear-gradient(90deg, palegreen ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
-  } else if (tokenPercentage <= 80) {
+  } else if (tokenPercentage < 90) {
     gradient =
       theme == "dark"
         ? `linear-gradient(90deg, sienna ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
-        : `linear-gradient(90deg, bisque ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
-  } else {
+        : `linear-gradient(90deg, orange ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
+  } else if (tokenPercentage < 100) {
     gradient =
       theme == "dark"
         ? `linear-gradient(90deg, firebrick ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
         : `linear-gradient(90deg, tomato ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
+  } else {
+    gradient =
+      theme == "dark"
+        ? `linear-gradient(90deg, red ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
+        : `linear-gradient(90deg, red ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
+    textColor = theme == "dark" ? "text-yellow-100" : "text-yellow-200"
   }
   return (
     <div
