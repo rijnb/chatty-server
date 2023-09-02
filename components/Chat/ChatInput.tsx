@@ -105,19 +105,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
     // Show an alert and bail out early if we're using too many tokens.
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
-    const systemPrompt: Message = {role: "system", content: selectedConversation.prompt}
-    const allMessages = [...selectedConversation.messages, systemPrompt, message]
-    const tokenCount = encoder.numberOfTokensInConversation(allMessages, selectedConversation.modelId)
-    const tokenLimit = models.find((model) => model.id === modelId)?.tokenLimit ?? 0
-    if (tokenCount >= tokenLimit) {
-      alert(`The input message (with the full conversation history) is too long...\
-It's using ${tokenCount} tokens in total while the limit is ${tokenLimit} tokens.\n\n\
-Please remove some messages from the conversation, or simply clear all previous messages in this conversation by clicking on the eraser icon next to the input box.`)
-
-      return
-    }
-
-    onSend(message, plugin)
+      onSend(message, plugin)
     setContent("")
     setPlugin(null)
 
@@ -222,18 +210,6 @@ Please remove some messages from the conversation, or simply clear all previous 
     }
   }
 
-  const handleClearConversationMessages = () => {
-    if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, [
-        {key: "name", value: NEW_CONVERSATION_TITLE},
-        {
-          key: "messages",
-          value: []
-        }
-      ])
-    }
-  }
-
   useEffect(() => {
     if (promptListRef.current) {
       promptListRef.current.scrollTop = activePromptIndex * 36
@@ -285,13 +261,7 @@ Please remove some messages from the conversation, or simply clear all previous 
 
         <div className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <button
-            className="absolute left-1 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={handleClearConversationMessages}
-          >
-            <IconEraser size={20} />
-          </button>
-          <button
-            className="absolute left-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={() => setShowPluginSelect(!showPluginSelect)}
           >
             {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
@@ -301,7 +271,7 @@ Please remove some messages from the conversation, or simply clear all previous 
               <PluginSelect plugin={plugin} onKeyDown={handlePlugInKeyDown()} onPluginChange={handlePlugInChange()} />
             </div>
           )}
-          <div className="pointer-events-none absolute bottom-full mx-auto mb-4 flex w-full justify-end">
+          <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">
             <ChatInputTokenCount
               content={content}
               tokenLimit={models.find((model) => model.id === modelId)?.tokenLimit}
@@ -310,7 +280,7 @@ Please remove some messages from the conversation, or simply clear all previous 
           <textarea
             ref={textareaRef}
             disabled={disabled}
-            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-16 pr-8 text-black dark:bg-transparent dark:text-white"
+            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-10 pr-8 text-black dark:bg-transparent dark:text-white"
             style={{
               resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
