@@ -30,7 +30,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const modelId = selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
 
   const handleClearConversationMessages = () => {
-    if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
+    if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, [
         {key: "name", value: NEW_CONVERSATION_TITLE},
         {
