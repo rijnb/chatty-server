@@ -1,3 +1,4 @@
+import {IconEraser} from "@tabler/icons-react"
 import {useTheme} from "next-themes"
 import {useEffect, useMemo, useState} from "react"
 import {useTranslation} from "react-i18next"
@@ -5,6 +6,7 @@ import {useTranslation} from "react-i18next"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
@@ -16,11 +18,24 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
-    state: {selectedConversation}
+    state: {selectedConversation},
+    handleUpdateConversation
   } = useHomeContext()
 
   const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
   const [tokensInConversation, setTokensInConversation] = useState(0)
+
+  const handleClearConversationMessages = () => {
+    if (confirm(t("Are you sure you want to the messages from this conversation?")) && selectedConversation) {
+      handleUpdateConversation(selectedConversation, [
+        {key: "name", value: NEW_CONVERSATION_TITLE},
+        {
+          key: "messages",
+          value: []
+        }
+      ])
+    }
+  }
 
   useEffect(() => {
     const initToken = async () => {
@@ -68,7 +83,16 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
         : `linear-gradient(90deg, tomato ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
   }
   return (
-    <div className={`${textColor} pointer-events-auto rounded-full px-2 py-1 text-xs`} style={{background: gradient}}>
+    <div
+      className={`${textColor} pointer-events-auto flex items-center rounded-full px-2 py-1 text-xs`}
+      style={{background: gradient}}
+    >
+      <button
+        className="mr-0.5 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+        onClick={handleClearConversationMessages}
+      >
+        <IconEraser size={16} />
+      </button>
       {tokenCount} / {tokenLimit} tokens
     </div>
   )
