@@ -18,7 +18,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
-    state: {selectedConversation},
+    state: {selectedConversation, messageIsStreaming},
     handleUpdateConversation
   } = useHomeContext()
 
@@ -51,7 +51,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   }, [])
 
   useEffect(() => {
-    if (encoder) {
+    if (encoder && !messageIsStreaming) {
       const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
       setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
     }
