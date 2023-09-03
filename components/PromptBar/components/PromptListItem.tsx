@@ -4,6 +4,7 @@ import {DragEvent, MouseEventHandler, useContext, useState} from "react"
 import PromptBarContext from "../PromptBar.context"
 import PromptEditModal from "./PromptEditModal"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {Prompt} from "@/types/prompt"
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 
 export const PromptListItem = ({prompt}: Props) => {
   const {dispatch: promptDispatch, handleUpdatePrompt, handleDeletePrompt} = useContext(PromptBarContext)
+  const {dispatch: homeDispatch} = useHomeContext()
 
   const [showEditPromptModal, setShowEditPromptModal] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -59,9 +61,9 @@ export const PromptListItem = ({prompt}: Props) => {
   return (
     <div className="relative flex items-center">
       <button
-        className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
+        className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
         draggable={prompt.factory ? "false" : "true"}
-        onClick={handleShowEditPromptModal}
+        onClick={() => homeDispatch({field: "triggerSelectedPrompt", value: prompt})}
         onDragStart={(e) => handleDragStart(e, prompt)}
       >
         {prompt.factory ? (

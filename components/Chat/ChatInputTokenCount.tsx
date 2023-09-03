@@ -55,6 +55,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
       setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encoder, messages, modelId, prompt])
 
   if (!encoder || !tokenLimit || !selectedConversation) {

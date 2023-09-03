@@ -106,7 +106,7 @@ describe("<Chat/>", () => {
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith(
-      "Invalid API Key. Please enter the correct Azure OpenAI key in left menu bar of Chatty.",
+      "Invalid API Key. Please enter the correct OpenAI key in left menu bar of Chatty.",
       {duration: TOAST_DURATION_MS}
     )
   })
