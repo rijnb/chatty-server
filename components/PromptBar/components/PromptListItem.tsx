@@ -1,4 +1,4 @@
-import {IconBuildingFactory2, IconCheck, IconTrash, IconUserCircle, IconX} from "@tabler/icons-react"
+import {IconBuildingFactory2, IconCheck, IconPencil, IconTrash, IconUserCircle, IconX} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useState} from "react"
 
 import PromptBarContext from "../PromptBar.context"
@@ -13,11 +13,11 @@ interface Props {
 export const PromptListItem = ({prompt}: Props) => {
   const {dispatch: promptDispatch, handleUpdatePrompt, handleDeletePrompt} = useContext(PromptBarContext)
 
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const [showEditPromptModal, setShowEditPromptModal] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleUpdate = (prompt: Prompt) => {
-    setShowModal(false)
+    setShowEditPromptModal(false)
     handleUpdatePrompt(prompt)
     promptDispatch({field: "searchTerm", value: ""})
   }
@@ -47,8 +47,13 @@ export const PromptListItem = ({prompt}: Props) => {
     }
   }
 
-  const handleCloseModal = () => {
-    return () => setShowModal(false)
+  const handleCloseEditPromptModal = () => {
+    return () => setShowEditPromptModal(false)
+  }
+
+  const handleShowEditPromptModal: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation()
+    setShowEditPromptModal(true)
   }
 
   return (
@@ -56,14 +61,8 @@ export const PromptListItem = ({prompt}: Props) => {
       <button
         className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
         draggable={prompt.factory ? "false" : "true"}
-        onClick={(e) => {
-          e.stopPropagation()
-          setShowModal(true)
-        }}
+        onClick={handleShowEditPromptModal}
         onDragStart={(e) => handleDragStart(e, prompt)}
-        onMouseLeave={() => {
-          setIsDeleting(false)
-        }}
       >
         {prompt.factory ? (
           <IconBuildingFactory2 size={18} className="text-gray-500 dark:text-neutral-300" />
@@ -87,15 +86,22 @@ export const PromptListItem = ({prompt}: Props) => {
         </div>
       )}
 
-      {!isDeleting && !prompt.factory && (
+      {!isDeleting && (
         <div className="absolute right-1 z-10 flex text-gray-600 dark:text-gray-300">
-          <SidebarActionButton handleClick={handleConfirmDelete}>
-            <IconTrash size={18} />
+          <SidebarActionButton handleClick={handleShowEditPromptModal}>
+            <IconPencil size={18} />
           </SidebarActionButton>
+          {!prompt.factory && (
+            <SidebarActionButton handleClick={handleConfirmDelete}>
+              <IconTrash size={18} />
+            </SidebarActionButton>
+          )}
         </div>
       )}
 
-      {showModal && <PromptEditModal prompt={prompt} onClose={handleCloseModal()} onUpdatePrompt={handleUpdate} />}
+      {showEditPromptModal && (
+        <PromptEditModal prompt={prompt} onClose={handleCloseEditPromptModal()} onUpdatePrompt={handleUpdate} />
+      )}
     </div>
   )
 }

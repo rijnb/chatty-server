@@ -68,7 +68,7 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
       </Button>
 
       {prompt.factory && (
-        <FormDisclaimer className="mt-2">
+        <FormDisclaimer className="mt-2 text-red-400">
           {t(
             "This is a factory prompt. A factory prompt cannot be edited or deleted. If you save it, a new user prompt will be created instead."
           )}

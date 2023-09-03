@@ -42,7 +42,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const [activePromptIndex, setActivePromptIndex] = useState(0)
   const [promptInputValue, setPromptInputValue] = useState("")
   const [variables, setPromptVariables] = useState<string[]>([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isInputVarsModalVisible, setIsInputVarsModalVisible] = useState(false)
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
@@ -105,7 +105,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
     // Show an alert and bail out early if we're using too many tokens.
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
-      onSend(message, plugin)
+    onSend(message, plugin)
     setContent("")
     setPlugin(null)
 
@@ -163,7 +163,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       setPromptVariables(parsedPromptVariables)
       setContent(selectedPrompt.content)
       if (parsedPromptVariables.length > 0) {
-        setIsModalVisible(true)
+        setIsInputVarsModalVisible(true)
       } else {
         updatePromptListVisibility(selectedPrompt.content)
       }
@@ -171,7 +171,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
-    setIsModalVisible(false)
+    setIsInputVarsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
@@ -183,7 +183,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handlePromptCancel = () => {
-    setIsModalVisible(false)
+    setIsInputVarsModalVisible(false)
     setContent("")
     if (textareaRef?.current) {
       textareaRef.current.focus()
@@ -324,7 +324,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               />
             </div>
           )}
-          {isModalVisible && selectedPrompt && (
+          {isInputVarsModalVisible && selectedPrompt && (
             <PromptInputVars
               prompt={selectedPrompt}
               promptVariables={variables}
