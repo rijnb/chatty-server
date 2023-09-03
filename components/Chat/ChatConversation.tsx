@@ -24,14 +24,17 @@ const ChatConversation = ({conversation, onSend}: Props) => {
   } = useHomeContext()
 
   const chatContainerRef = useRef<HTMLDivElement>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const {showScrollDownButton, handleScroll, jumpToBottom} = useScroll(chatContainerRef)
+  const {showScrollDownButton, handleScroll, jumpToBottom, autoscroll} = useScroll(chatContainerRef)
   const {isReleaseNotesDialogOpen, closeReleaseNotes, openReleaseNotes} = useReleaseNotes()
 
   useEffect(() => {
     jumpToBottom()
-  }, [jumpToBottom, conversation])
+  }, [jumpToBottom, conversation.id])
+
+  useEffect(() => {
+    autoscroll()
+  }, [autoscroll, conversation])
 
   const handleDeleteMessage = (messageIndex: number) => {
     if (!conversation) {
@@ -73,7 +76,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
           homeDispatch({field: "conversations", value: conversationHistory})
         }}
       />
-      <div className="h-[37px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
+      <div className="h-[37px] bg-white dark:bg-[#343541]" />
       {conversation?.messages.map((message, index) => (
         <MemoizedChatMessage
           key={index}
@@ -93,7 +96,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
           <ScrollDownButton container={chatContainerRef} />
         </div>
       )}
-      <div className="h-[162px] bg-white dark:bg-[#343541]" ref={messagesEndRef} />
+      <div className="h-[162px] bg-white dark:bg-[#343541]" />
       {isReleaseNotesDialogOpen && <ReleaseNotes close={closeReleaseNotes} />}
     </div>
   )
