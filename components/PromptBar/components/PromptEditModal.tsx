@@ -55,7 +55,7 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
       <FormLabel className="mt-2">{t("Prompt")}</FormLabel>
       <TextArea
         placeholder={t(
-          "Prompt content. Use {{}} to denote variables. For example: {{Translate this text}} {{Into this language}}"
+          "Use {{...}} to specify one or more prompt variables. For example:\n\n| Translate: {{Paste your text}} \n| Into this language: {{Specify target language}}\n\nThis will show 2 input boxes, one for the text and one for the target language. If you specify {{#DROP}} as the last parameter, a drop zone for files to be read is shown."
         )}
         value={content}
         onChange={(e) => setContent(e.target.value)}
@@ -68,7 +68,7 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
       </Button>
 
       {prompt.factory && (
-        <FormDisclaimer className="mt-2">
+        <FormDisclaimer className="mt-2 text-red-400">
           {t(
             "This is a factory prompt. A factory prompt cannot be edited or deleted. If you save it, a new user prompt will be created instead."
           )}

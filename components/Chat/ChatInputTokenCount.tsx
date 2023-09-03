@@ -55,6 +55,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
       setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encoder, messages, modelId, prompt])
 
   if (!encoder || !tokenLimit || !selectedConversation) {
@@ -82,10 +83,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
         ? `linear-gradient(90deg, firebrick ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
         : `linear-gradient(90deg, tomato ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
   } else {
-    gradient =
-      theme == "dark"
-        ? `linear-gradient(90deg, red ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
-        : `linear-gradient(90deg, red ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
+    gradient = `linear-gradient(90deg, red ${tokenPercentage}%, ${backgroundColor} ${tokenPercentage}%)`
     textColor = theme == "dark" ? "text-yellow-100" : "text-yellow-200"
   }
   return (
@@ -99,7 +97,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       >
         <IconEraser size={16} />
       </button>
-      {tokenCount} / {tokenLimit} tokens
+      {tokenCount} / {tokenLimit} tokens {tokenCount > tokenLimit && "(truncated)"}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import {IconBolt, IconBrandGoogle, IconEraser, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
+import {IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
@@ -13,7 +13,6 @@ import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
-import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
@@ -30,8 +29,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, selectedConversation, messageIsStreaming, prompts},
-    handleUpdateConversation
+    state: {models, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt},
+    dispatch: homeDispatch
   } = useHomeContext()
 
   const disabled = retryAfter !== null
@@ -42,7 +41,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const [activePromptIndex, setActivePromptIndex] = useState(0)
   const [promptInputValue, setPromptInputValue] = useState("")
   const [variables, setPromptVariables] = useState<string[]>([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isInputVarsModalVisible, setIsInputVarsModalVisible] = useState(false)
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
   const [showPluginSelect, setShowPluginSelect] = useState(false)
   const [plugin, setPlugin] = useState<Plugin | null>(null)
@@ -56,6 +55,15 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     // noinspection JSIgnoredPromiseFromCall
     initToken()
   }, [])
+
+  useEffect(() => {
+    if (triggerSelectedPrompt) {
+      setSelectedPrompt(triggerSelectedPrompt)
+      showInputVarsForPrompt(triggerSelectedPrompt)
+    }
+    homeDispatch({field: "triggerSelectedPrompt", value: undefined})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerSelectedPrompt])
 
   const promptListRef = useRef<HTMLUListElement | null>(null)
 
@@ -84,6 +92,17 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
   }, [])
 
+  const showInputVarsForPrompt = (selectedPrompt: Prompt) => {
+    const parsedPromptVariables = parsePromptVariables(selectedPrompt.content)
+    setPromptVariables(parsedPromptVariables)
+    setContent(selectedPrompt.content)
+    if (parsedPromptVariables.length > 0) {
+      setIsInputVarsModalVisible(true)
+    } else {
+      updatePromptListVisibility(selectedPrompt.content)
+    }
+  }
+
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     setContent(value)
@@ -105,7 +124,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
     // Show an alert and bail out early if we're using too many tokens.
     const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
-      onSend(message, plugin)
+    onSend(message, plugin)
     setContent("")
     setPlugin(null)
 
@@ -159,19 +178,12 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     setSelectedPrompt(selectedPrompt)
     setShowPromptList(false)
     if (selectedPrompt) {
-      const parsedPromptVariables = parsePromptVariables(selectedPrompt.content)
-      setPromptVariables(parsedPromptVariables)
-      setContent(selectedPrompt.content)
-      if (parsedPromptVariables.length > 0) {
-        setIsModalVisible(true)
-      } else {
-        updatePromptListVisibility(selectedPrompt.content)
-      }
+      showInputVarsForPrompt(selectedPrompt)
     }
   }
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
-    setIsModalVisible(false)
+    setIsInputVarsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
@@ -183,7 +195,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handlePromptCancel = () => {
-    setIsModalVisible(false)
+    setIsInputVarsModalVisible(false)
     setContent("")
     if (textareaRef?.current) {
       textareaRef.current.focus()
@@ -324,7 +336,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               />
             </div>
           )}
-          {isModalVisible && selectedPrompt && (
+          {isInputVarsModalVisible && selectedPrompt && (
             <PromptInputVars
               prompt={selectedPrompt}
               promptVariables={variables}
