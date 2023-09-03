@@ -43,12 +43,6 @@ jest.mock("@/components/UnlockCode", () => {
   }
 })
 
-const intersectionObserverMock = () => ({
-  observe: () => null,
-  unobserve: () => null
-})
-window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
-Element.prototype.scrollIntoView = jest.fn()
 Element.prototype.scrollTo = jest.fn()
 
 describe("<Chat/>", () => {
