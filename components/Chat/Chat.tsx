@@ -109,7 +109,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             const error = await response.json()
 
             if (error.errorType === "openai_auth_error") {
-              toast.error("Invalid API Key. Please enter the correct Azure OpenAI key in left menu bar of Chatty.", {
+              toast.error("Invalid API Key. Please enter the correct OpenAI key in left menu bar of Chatty.", {
                 duration: TOAST_DURATION_MS
               })
               return
@@ -345,8 +345,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
           <div className="h-full overflow-hidden">
             {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
             {!serverSideApiKeyIsSet && !apiKey && (
-              <div className="mb-2 text-center text-red-800 dark:text-red-400">
-                Please enter the correct Azure OpenAI key in left menu bar of Chatty.
+              <div className="mb-2 py-12 text-center text-red-800 dark:text-red-400">
+                Please enter the correct OpenAI key in left menu bar of Chatty.
               </div>
             )}
             {models.length === 0 && (
