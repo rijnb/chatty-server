@@ -17,7 +17,6 @@ import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
-import {throttle} from "@/utils/data/throttle"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -36,7 +35,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
   } = useHomeContext()
 
   const [currentMessage, setCurrentMessage] = useState<Message>()
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getEndpoint} = useApiService()
   const [waitTime, setWaitTime] = useState<number | null>(null)
@@ -45,7 +43,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
     interceptors: useUnlockCodeInterceptor()
   })
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSendMessage = useCallback(
@@ -112,7 +109,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             const error = await response.json()
 
             if (error.errorType === "openai_auth_error") {
-              toast.error("Invalid API Key. Please enter the correct Azure OpenAI key in left menu bar of Chatty.", {
+              toast.error("Invalid API Key. Please enter the correct OpenAI key in left menu bar of Chatty.", {
                 duration: TOAST_DURATION_MS
               })
               return
@@ -330,42 +327,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
     ]
   )
 
-  const scrollDown = () => {
-    if (autoScrollEnabled) {
-      messagesEndRef.current?.scrollIntoView(true)
-    }
-  }
-  const throttledScrollDown = throttle(scrollDown, 250)
-
-  useEffect(() => {
-    throttledScrollDown()
-    selectedConversation && setCurrentMessage(selectedConversation.messages[selectedConversation.messages.length - 2])
-  }, [selectedConversation, throttledScrollDown])
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setAutoScrollEnabled(entry.isIntersecting)
-        if (entry.isIntersecting) {
-          textareaRef.current?.focus()
-        }
-      },
-      {
-        root: null,
-        threshold: 0.5
-      }
-    )
-    const messagesEndElement = messagesEndRef.current
-    if (messagesEndElement) {
-      observer.observe(messagesEndElement)
-    }
-    return () => {
-      if (messagesEndElement) {
-        observer.unobserve(messagesEndElement)
-      }
-    }
-  }, [messagesEndRef])
-
   useEffect(() => {
     if (waitTime && waitTime > 0) {
       const timer = setTimeout(() => {
@@ -384,8 +345,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
           <div className="h-full overflow-hidden">
             {selectedConversation?.messages.length === 0 && <WelcomeMessage />}
             {!serverSideApiKeyIsSet && !apiKey && (
-              <div className="mb-2 text-center text-red-800 dark:text-red-400">
-                Please enter the correct Azure OpenAI key in left menu bar of Chatty.
+              <div className="mb-2 py-12 text-center text-red-800 dark:text-red-400">
+                Please enter the correct OpenAI key in left menu bar of Chatty.
               </div>
             )}
             {models.length === 0 && (

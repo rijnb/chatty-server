@@ -1,7 +1,10 @@
 import React, {useCallback, useState} from "react"
 
+import {throttle} from "@/utils/data/throttle"
+
 const useScroll = (container: React.RefObject<HTMLDivElement>) => {
   const [showScrollDownButton, setShowScrollDownButton] = useState<boolean>(false)
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true)
 
   const handleScroll = () => {
     if (container.current) {
@@ -9,8 +12,10 @@ const useScroll = (container: React.RefObject<HTMLDivElement>) => {
       const bottomTolerance = 30
 
       if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
+        setAutoScrollEnabled(false)
         setShowScrollDownButton(true)
       } else {
+        setAutoScrollEnabled(true)
         setShowScrollDownButton(false)
       }
     }
@@ -23,18 +28,19 @@ const useScroll = (container: React.RefObject<HTMLDivElement>) => {
     })
   }, [container])
 
-  const scrollToBottom = () => {
-    container.current?.scrollTo({
-      top: container.current.scrollHeight,
-      behavior: "smooth"
-    })
-  }
+  const autoscroll = throttle(() => {
+    if (!autoScrollEnabled) {
+      return
+    }
+
+    jumpToBottom()
+  }, 250)
 
   return {
     showScrollDownButton,
     handleScroll,
     jumpToBottom,
-    scrollToBottom
+    autoscroll
   }
 }
 

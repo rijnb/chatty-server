@@ -17,7 +17,6 @@ export interface HomeInitialState {
   selectedConversation: Conversation | undefined
   currentMessage: Message | undefined
   prompts: Prompt[]
-  triggerFactoryPrompts: boolean
   temperature: number
   showChatBar: boolean
   showPromptBar: boolean
@@ -27,6 +26,8 @@ export interface HomeInitialState {
   defaultModelId: OpenAIModelID | undefined
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
+  triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.
+  triggerFactoryPrompts: boolean // Used to trigger re-reading the factory prompts.
 }
 
 export const initialState: HomeInitialState = {
@@ -41,7 +42,6 @@ export const initialState: HomeInitialState = {
   selectedConversation: undefined,
   currentMessage: undefined,
   prompts: [],
-  triggerFactoryPrompts: true,
   temperature: 1,
   showPromptBar: true,
   showChatBar: true,
@@ -50,5 +50,7 @@ export const initialState: HomeInitialState = {
   searchTerm: "",
   defaultModelId: undefined,
   serverSideApiKeyIsSet: false,
-  serverSidePluginKeysSet: false
+  serverSidePluginKeysSet: false,
+  triggerSelectedPrompt: undefined,
+  triggerFactoryPrompts: true
 }
