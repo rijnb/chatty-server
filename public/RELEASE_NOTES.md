@@ -54,7 +54,7 @@ Just click on "New prompt" to create a new prompt. You can also import and expor
 prompts. Factory prompts are exported as well, but you cannot change and re-import
 them. They are automatically fetched from the server.
 
-If you want to change a `factory prompt`, just click on it and a prompt
+If you want to change a `factory prompt`, just click on the edit icon and a prompt
 edit dialog will be shown. Change anything and press "Save" and the prompt
 will be copied to your user prompts. You can now edit it as you like.
 
@@ -108,6 +108,17 @@ _Rijn Buve & Oleksii Kulyk_
 ---
 
 ## Release notes
+
+### 2023-09-03
+
+#### Features
+
+- Clicking on a prompt executes it, rather than edit. Separate edit button.
+- Token counting provides cleanup button and color coding.
+
+#### Bug fixes
+
+- UI bug fixes for prompt list handling.
 
 ### 2023-08-29
 
