@@ -66,10 +66,28 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }, [triggerSelectedPrompt])
 
   const promptListRef = useRef<HTMLUListElement | null>(null)
+  const lowerCaseInput = promptInputValue.toLowerCase()
+  const allFilteredPrompts = prompts.reduce((acc: Prompt[], prompt) => {
+    const lowerCasePromptName = prompt.name.toLowerCase()
 
-  // Allow user to type individual characters to match prompts.
-  const regex = promptInputValue.split("").join("(.*)?").toLowerCase()
-  const filteredPrompts = prompts.filter((prompt) => RegExp(regex).exec(prompt.name.toLowerCase()))
+    // Check if the string contains the input value (case-insensitive).
+    if (lowerCasePromptName.includes(lowerCaseInput)) {
+      acc.push(prompt)
+    } else {
+      // Check if the prompt name matches the start-of-word characters in promptInputValue.
+      const upperCaseInput = promptInputValue.toUpperCase()
+      const upperCasePromptNameChars = prompt.name
+        .split(/[^A-Za-z]/)
+        .filter((word) => word.length > 0)
+        .map((word) => word[0].toUpperCase())
+        .join("")
+      if (upperCaseInput && upperCasePromptNameChars.includes(upperCaseInput)) {
+        acc.push(prompt)
+      }
+    }
+    return acc
+  }, [])
+  const filteredPrompts = Array.from(new Set(allFilteredPrompts))
 
   const parsePromptVariables = (content: string) => {
     const regex = /{{(.*?)}}/g // Match non-greedy, because there may be multiple variables in a prompt.
@@ -303,7 +321,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               disabled
                 ? t("Please wait {{waitTime}} seconds", {waitTime: retryAfter})
                 : prompts.length > 0
-                ? t('Type a message or type "/" to select a prompt...')
+                ? t('Type a message or type "/" and some characters to search for a prompt...')
                 : t("Type a message...")
             }
             value={content}
