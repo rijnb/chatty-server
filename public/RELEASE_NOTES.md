@@ -36,12 +36,18 @@ perform a certain task. For example, you can tell me to summarize a long email
 thread efficiently. Or you can tell me to debug a piece of code.
 
 You activate a prompt by typing "/" in the input box. A list of prompts will
-appear. You can select a prompt by clicking on it, or using the up and
-down arrows and pressing Enter. If the prompt has parameters, you can
-enter those in a dialog that will appear.
+appear. You can select using the up and down arrows and pressing Enter. 
+If the prompt has parameters, you can enter those in a dialog that will appear.
+
+**Powertip**: you can quickly search for prompts by typing the first characters
+of words that appear in the name of the prompt. For example, type "mts" to
+quickly find an execute "Mail thread summary". 
 
 Most prompts require you to input some text, like copy-pasting a long email
 thread, or a piece of code.
+
+You can also select a prompt from the right side bar directly. Or edit it by
+clicking on the pencil icon.
 
 ### Factory prompts and user prompts
 
@@ -115,6 +121,7 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Clicking on a prompt executes it, rather than edit. Separate edit button.
 - Token counting provides cleanup button and color coding.
+- Improved handling of prompt search a la IntelliJ.
 
 #### Bug fixes
 
