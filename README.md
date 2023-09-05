@@ -33,7 +33,13 @@ Happy chatting!
 
 **Rijn Buve**
 
-![Chatty](./public/screenshots/screenshot_1.jpg)
+#### Chatty main screen example
+
+![Chatty - main screen](./public/screenshots/screenshot_1.jpg)
+
+#### Chatty prompt dialog example
+
+![Chatty - prompt dialog](./public/screenshots/screenshot_2.jpg)
 
 ## Is it safe to use?
 
