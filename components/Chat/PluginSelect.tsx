@@ -22,21 +22,19 @@ export const PluginSelect = ({plugin, onPluginChange, onKeyDown}: Props) => {
     if (e.key === "/" && e.metaKey) {
       e.preventDefault()
       if (selectElement) {
-        selectElement.selectedIndex = (selectElement.selectedIndex + 1) % optionCount
-        selectElement.dispatchEvent(new Event("change"))
-      }
-    } else if (e.key === "/" && e.shiftKey && e.metaKey) {
-      e.preventDefault()
-      if (selectElement) {
-        selectElement.selectedIndex = (selectElement.selectedIndex - 1 + optionCount) % optionCount
-        selectElement.dispatchEvent(new Event("change"))
+        if (e.shiftKey) {
+          selectElement.selectedIndex = (selectElement.selectedIndex - 1 + optionCount) % optionCount
+          selectElement.dispatchEvent(new Event("change"))
+        } else {
+          selectElement.selectedIndex = (selectElement.selectedIndex + 1) % optionCount
+          selectElement.dispatchEvent(new Event("change"))
+        }
       }
     } else if (isKeyboardEnter(e)) {
       e.preventDefault()
       if (selectElement) {
         selectElement.dispatchEvent(new Event("change"))
       }
-
       onPluginChange(PluginList.find((plugin) => plugin.name === selectElement?.selectedOptions[0].innerText) as Plugin)
     } else {
       onKeyDown(e)
