@@ -6,6 +6,10 @@ Whenever you start asking me questions in the input box below, I will try to ans
 The questions and answers are stored in a "conversation". I use this conversation as a context
 to provide you the next answer. It serves as my memory during the conversation.
 
+If you type a '/' as the first character of your input, I will show you a list of
+factory prompts you can use. If you want to enter a newline in the input, simply
+type Shift-Enter, or Alt-Enter.
+
 ### Using conversations (left menu bar)
 
 Conversations are stored in the left menu bar, and you can start a new conversation
@@ -122,6 +126,8 @@ _Rijn Buve & Oleksii Kulyk_
 - Clicking on a prompt executes it, rather than edit. Separate edit button.
 - Token counting provides cleanup button and color coding.
 - Improved handling of prompt search a la IntelliJ.
+- Added Alt-Enter as key.
+- Improved handling of newlines in input.  
 
 #### Bug fixes
 

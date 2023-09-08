@@ -1,5 +1,7 @@
 import React, {useEffect, useRef} from "react"
 
+import {isKeyboardEnter} from "@/utils/app/keyboard"
+
 export interface Props {
   className?: string
   onSubmit?: () => void
@@ -26,7 +28,7 @@ export const ModalDialog = ({className, children, onSubmit, onCancel, onClickAwa
     if (e.key === "Escape") {
       onCancel?.()
       onClose?.()
-    } else if (e.key === "Enter" && !e.shiftKey) {
+    } else if (isKeyboardEnter(e) && !(e.shiftKey || e.altKey)) {
       e.preventDefault()
       onSubmit?.()
     }
