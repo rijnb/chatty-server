@@ -459,9 +459,9 @@
     },
     {
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
-      "name": "Short summary",
+      "name": "Summary (and opinions)",
       "description": "Provide a text and I will summarize it for you.",
-      "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. Here's the text: \n\n{{Summarize this text}}",
+      "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. If different people contributed to the text, provide a table of contributors with their opinions at the. Here's the text: \n\n{{Summarize this text}}",
       "model": {
         "id": "gpt-4-32k",
         "name": "gpt-4-32k",
