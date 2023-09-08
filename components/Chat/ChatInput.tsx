@@ -187,7 +187,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       } else {
         setActivePromptIndex(0)
       }
-    } else if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
+    } else if (isKeyboardEnter(e) && !isTyping && !(e.shiftKey || e.altKey)) {
       e.preventDefault()
       handleSendMessage()
     } else if (e.key === "/" && e.metaKey) {
