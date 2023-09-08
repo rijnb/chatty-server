@@ -29,7 +29,7 @@ const ResponsiveTextArea = ({content, onChange, onSave}: Props) => {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (isKeyboardEnter(e) && !isTyping && !e.shiftKey) {
+    if (isKeyboardEnter(e) && !isTyping && !(e.shiftKey || e.altKey)) {
       e.preventDefault()
       onSave()
     }
