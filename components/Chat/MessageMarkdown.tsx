@@ -19,6 +19,27 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeMathjax]}
       components={{
+        // Reformat paragraphs to allow for line breaks, merge multiple line breaks into 1 paragraph.
+        p: ({node, children, ...props}) => {
+          if (children.length && typeof children[0] === "string") {
+            return (children[0] as string)
+              .split(/\n\n+/)
+              .filter((line) => line.length)
+              .map((line, i) => (
+                <p key={i}>
+                  {line
+                    .split(/\n/)
+                    .filter((line) => line.length)
+                    .map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
+                </p>
+              ))
+          }
+        },
         code({node, inline, className, children, ...props}) {
           if (children.length) {
             if (children[0] == "▍") {
