@@ -22,17 +22,17 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
         p: ({node, children, ...props}) => {
           if (children.length) {
             return children.map((child, i) => {
-              if (typeof child == "string") {
-                return (
-                  <span key={i}>
-                    {child.split("\n").map((line, i) => (
-                      <span key={i}>
+              if (typeof child === "string") {
+                return child.split("\n\n").map((paragraph, j) => (
+                  <p key={j}>
+                    {paragraph.split("\n").map((line, k) => (
+                      <React.Fragment key={k}>
                         {line}
                         <br />
-                      </span>
+                      </React.Fragment>
                     ))}
-                  </span>
-                )
+                  </p>
+                ))
               } else {
                 return child
               }
