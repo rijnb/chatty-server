@@ -19,6 +19,26 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeMathjax]}
       components={{
+        p: ({node, children, ...props}) => {
+          if (children.length) {
+            return children.map((child, i) => {
+              if (typeof child === "string") {
+                return child.split("\n\n").map((paragraph, j) => (
+                  <p key={j}>
+                    {paragraph.split("\n").map((line, k) => (
+                      <React.Fragment key={k}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </p>
+                ))
+              } else {
+                return child
+              }
+            })
+          }
+        },
         code({node, inline, className, children, ...props}) {
           if (children.length) {
             if (children[0] == "▍") {
