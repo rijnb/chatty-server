@@ -24,27 +24,18 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
             return children.map((child, i) => {
               if (typeof child == "string") {
                 return (
-                    <span>{child.split("\n").map((line, i) => <span>{line}<br/></span>)}</span>
+                  <span key={i}>
+                    {child.split("\n").map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
+                  </span>
                 )
               } else {
                 return child
               }
-              // return (children[0] as string)
-              //   .split(/\n\n+/)
-              //   .filter((line) => line.length)
-              //   .map((line, i) => (
-              //     <p key={i}>
-              //       {line
-              //         .split(/\n/)
-              //         .filter((line) => line.length)
-              //         .map((line, i) => (
-              //           <span key={i}>
-              //             {line}
-              //             <br />
-              //           </span>
-              //         ))}
-              //     </p>
-              //   ))
             })
           }
         },
