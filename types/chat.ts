@@ -7,6 +7,7 @@ export interface Message {
   content: string
 }
 
+// This type is used to send a request to the API.
 export interface ChatBody {
   apiKey: string
   messages: Message[]
@@ -16,6 +17,7 @@ export interface ChatBody {
   maxTokens: number
 }
 
+// This type is used to store a conversation in the store.
 export interface Conversation {
   id: string
   name: string

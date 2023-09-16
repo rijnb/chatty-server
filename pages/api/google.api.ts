@@ -5,6 +5,7 @@ import {NextApiRequest, NextApiResponse} from "next"
 
 import {Message} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
+import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
@@ -105,7 +106,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     let url = `${OPENAI_API_HOST}/v1/chat/completions?api-version=${OPENAI_API_VERSION}`
     if (OPENAI_API_TYPE === "azure") {
-      url = `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}/chat/completions?api-version=${OPENAI_API_VERSION}`
+      url = `${OPENAI_API_HOST}/openai/deployments/${getAzureDeploymentIdForModelId(
+        OPENAI_AZURE_DEPLOYMENT_ID,
+        modelId
+      )}/chat/completions?api-version=${OPENAI_API_VERSION}`
     }
     console.debug(`Google search, POST:${OPENAI_API_TYPE}`)
     const answerRes = await fetch(`${url}`, {

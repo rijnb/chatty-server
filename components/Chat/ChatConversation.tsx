@@ -13,7 +13,6 @@ import {updateConversationHistory} from "@/utils/app/conversations"
 
 interface Props {
   conversation: Conversation
-  //todo should discard messages here and not in Chat.tsx
   onSend: (message: Message, index: number) => void
 }
 
