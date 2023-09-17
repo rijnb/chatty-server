@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react"
 
 import ChatLoader from "@/components/Chat/ChatLoader"
 import ChatMenu from "@/components/Chat/ChatMenu"
-import MemoizedChatMessage from "@/components/Chat/MemoizedChatMessage"
+import ChatMessage from "@/components/Chat/ChatMessage"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import ScrollDownButton from "@/components/Chat/ScrollDownButton"
 import useScroll from "@/components/Hooks/useScroll"
@@ -85,7 +85,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
       />
       <div className="h-[37px] bg-white dark:bg-[#343541]" />
       {conversation?.messages.map((message, index) => (
-        <MemoizedChatMessage
+        <ChatMessage
           key={index}
           message={message}
           isComplete={index < (conversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
