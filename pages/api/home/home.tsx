@@ -192,7 +192,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       return {...acc, [curr.key]: curr.value}
     }, conversation)
 
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
     homeDispatch({field: "selectedConversation", value: updatedConversation})
     homeDispatch({field: "conversations", value: conversationHistory})
   }

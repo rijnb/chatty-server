@@ -44,21 +44,24 @@ const ChatConversation = ({conversation, onSend}: Props) => {
 
     if (messages[messageIndex].role === "assistant") {
       messages.splice(messageIndex, 1)
+    } else if (messageIndex < messages.length - 1 && messages[messageIndex + 1].role === "assistant") {
+      messages.splice(messageIndex, 2)
     } else {
-      if (messageIndex < messages.length - 1 && messages[messageIndex + 1].role === "assistant") {
-        messages.splice(messageIndex, 2)
-      } else {
-        messages.splice(messageIndex, 1)
-      }
+      messages.splice(messageIndex, 1)
     }
 
-    const updatedConversation = {
-      ...conversation,
-      messages
-    }
-
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    // Replace messages in conversation.
+    const updatedConversation = {...conversation, messages}
     homeDispatch({field: "selectedConversation", value: updatedConversation})
+
+    // Set the current message to the last 'user' message.
+    const currentMessage = messages.reduce((lastUserMessage, message) => {
+      return message.role === "user" ? message : lastUserMessage
+    })
+    homeDispatch({field: "currentMessage", value: currentMessage})
+
+    // Replace conversation in history.
+    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
     homeDispatch({field: "conversations", value: conversationHistory})
   }
 
@@ -70,7 +73,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
         container={chatContainerRef}
         onOpenReleaseNotes={openReleaseNotes}
         onUpdateConversation={(conversation) => {
-          const conversationHistory = updateConversationHistory(conversation, conversations)
+          const conversationHistory = updateConversationHistory(conversations, conversation)
           homeDispatch({field: "selectedConversation", value: conversation})
           homeDispatch({field: "conversations", value: conversationHistory})
         }}

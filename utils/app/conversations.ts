@@ -51,7 +51,7 @@ export const saveConversationsHistory = (conversations: Conversation[]) =>
 
 export const removeConversationsHistory = () => localStorage.removeItem(STORAGE_KEY_HISTORY)
 
-export const updateConversationHistory = (conversation: Conversation, conversationHistory: Conversation[]) => {
+export const updateConversationHistory = (conversationHistory: Conversation[], conversation: Conversation) => {
   const updatedConversationHistory = conversationHistory.map((conversationInHistory) =>
     conversationInHistory.id === conversation.id ? conversation : conversationInHistory
   )
