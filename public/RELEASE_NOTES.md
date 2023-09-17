@@ -119,6 +119,16 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-09-17
+
+#### Features
+
+- Added model selection support. You can now select the model you want to use for a conversation.
+
+#### Bug fixes
+
+- Fixed several regenerate, edit and delete messages bugs.
+
 ### 2023-09-03
 
 #### Features

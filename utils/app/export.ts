@@ -12,8 +12,7 @@ export const exportData = (prefix: string, type: FolderType) => {
   })
 
   let promptsToExport: PromptV5[] = getPrompts().map((prompt) => {
-    const {modelId, ...rest} = prompt
-    return {modelId: modelId, ...rest} as PromptV5
+    return prompt as PromptV5
   })
 
   let foldersToExport: FolderInterfaceV4[] = getFolders().filter(

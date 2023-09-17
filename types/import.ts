@@ -39,11 +39,11 @@ export interface ConversationV5 {
 }
 
 export interface PromptV5 {
+  // modelId was dropped (non-breaking change).
   id: string
   name: string
   description: string
   content: string
-  modelId: OpenAIModelID // Changed to model ID in V5.
   folderId: string | undefined
   factory: boolean | undefined
 }
@@ -51,7 +51,6 @@ export interface PromptV5 {
 /**
  * V4.
  */
-
 export interface ConversationV4 {
   id: string
   name: string

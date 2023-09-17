@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react"
 
 import ChatLoader from "@/components/Chat/ChatLoader"
 import ChatMenu from "@/components/Chat/ChatMenu"
-import MemoizedChatMessage from "@/components/Chat/MemoizedChatMessage"
+import ChatMessage from "@/components/Chat/ChatMessage"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import ScrollDownButton from "@/components/Chat/ScrollDownButton"
 import useScroll from "@/components/Hooks/useScroll"
@@ -13,7 +13,6 @@ import {updateConversationHistory} from "@/utils/app/conversations"
 
 interface Props {
   conversation: Conversation
-  //todo should discard messages here and not in Chat.tsx
   onSend: (message: Message, index: number) => void
 }
 
@@ -45,22 +44,30 @@ const ChatConversation = ({conversation, onSend}: Props) => {
 
     if (messages[messageIndex].role === "assistant") {
       messages.splice(messageIndex, 1)
+    } else if (messageIndex < messages.length - 1 && messages[messageIndex + 1].role === "assistant") {
+      messages.splice(messageIndex, 2)
     } else {
-      if (messageIndex < messages.length - 1 && messages[messageIndex + 1].role === "assistant") {
-        messages.splice(messageIndex, 2)
-      } else {
-        messages.splice(messageIndex, 1)
-      }
+      messages.splice(messageIndex, 1)
     }
 
-    const updatedConversation = {
-      ...conversation,
-      messages
-    }
-
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    // Replace messages in conversation.
+    const updatedConversation = {...conversation, messages}
     homeDispatch({field: "selectedConversation", value: updatedConversation})
+
+    // Set the current message to the last 'user' message.
+    const currentMessage = messages.reduce((lastUserMessage, message) => {
+      return message.role === "user" ? message : lastUserMessage
+    })
+    homeDispatch({field: "currentMessage", value: currentMessage})
+
+    // Replace conversation in history.
+    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
     homeDispatch({field: "conversations", value: conversationHistory})
+  }
+
+  const handleEditMessage = (editedMessage: Message, index: number) => {
+    // Discard edited message and the ones that come after then resend.
+    onSend(editedMessage, index)
   }
 
   return (
@@ -71,22 +78,19 @@ const ChatConversation = ({conversation, onSend}: Props) => {
         container={chatContainerRef}
         onOpenReleaseNotes={openReleaseNotes}
         onUpdateConversation={(conversation) => {
-          const conversationHistory = updateConversationHistory(conversation, conversations)
+          const conversationHistory = updateConversationHistory(conversations, conversation)
           homeDispatch({field: "selectedConversation", value: conversation})
           homeDispatch({field: "conversations", value: conversationHistory})
         }}
       />
       <div className="h-[37px] bg-white dark:bg-[#343541]" />
       {conversation?.messages.map((message, index) => (
-        <MemoizedChatMessage
+        <ChatMessage
           key={index}
           message={message}
           isComplete={index < (conversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
           onDelete={() => handleDeleteMessage(index)}
-          onEdit={(editedMessage) => {
-            // Discard edited message and the ones that come after then resend.
-            onSend(editedMessage, index)
-          }}
+          onEdit={(editedMessage) => handleEditMessage(editedMessage, index)}
         />
       ))}
       {loading && <ChatLoader />}

@@ -91,10 +91,7 @@ export const ChatBar = () => {
         defaultModelId || FALLBACK_OPENAI_MODEL_ID,
         OPENAI_DEFAULT_TEMPERATURE
       )
-      homeDispatch({
-        field: "selectedConversation",
-        value: newConversation
-      })
+      homeDispatch({field: "selectedConversation", value: newConversation})
     }
     homeDispatch({field: "conversations", value: []})
     homeDispatch({field: "folders", value: updatedFolders})

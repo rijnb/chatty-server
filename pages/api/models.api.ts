@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
           if (value === model.id) {
             return {
               id: model.id,
-              name: OpenAIModels[value].name + " (" + OPENAI_API_TYPE + ")",
+              name: OpenAIModels[value].name,
               tokenLimit: OpenAIModels[value].tokenLimit,
               maxLength: OpenAIModels[value].maxLength
             }

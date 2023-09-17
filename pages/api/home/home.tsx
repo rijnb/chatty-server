@@ -192,7 +192,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       return {...acc, [curr.key]: curr.value}
     }, conversation)
 
-    const conversationHistory = updateConversationHistory(updatedConversation, conversations)
+    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
     homeDispatch({field: "selectedConversation", value: updatedConversation})
     homeDispatch({field: "conversations", value: conversationHistory})
   }
@@ -325,8 +325,8 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
         const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
-        homeDispatch({field: "conversations", value: cleanedConversationHistory})
         homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+        homeDispatch({field: "conversations", value: cleanedConversationHistory})
       }
 
       let tokenCount = 0

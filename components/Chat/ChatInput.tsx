@@ -136,20 +136,11 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handleSendMessage = () => {
-    function removeSuperfluousWhitespace(content: string) {
-      // Remove trailing whitespace and consecutive newlines.
-      return content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")
-    }
-
-    if (messageIsStreaming) {
-      return
-    }
-    if (!content || !encoder || !selectedConversation || !models) {
+    if (messageIsStreaming || !content || !encoder || !selectedConversation || !models) {
       return
     }
 
-    // Show an alert and bail out early if we're using too many tokens.
-    const message: Message = {role: "user", content: removeSuperfluousWhitespace(content)}
+    const message: Message = {role: "user", content: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")}
     onSend(message, plugin)
     setContent("")
     setPlugin(null)

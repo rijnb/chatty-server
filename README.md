@@ -124,6 +124,13 @@ When deploying the application, the following environment variables can be set:
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 The same applies to the Google Search keys.
 
+Note: The value of `OPENAI_AZURE_DEPLOYMENT_ID` is used as-is, if it doesn't contain a dash (`-`). If it contains
+a dash, the value of the selected model is appended after the first dash, replacing the rest of the string. 
+
+For example: if `OPENAI_AZURE_DEPLOYMENT_ID` is `dep.gpt` and the selected model is `gpt-3.5-turbo`, the
+actual deployment ID used will be `dep.gpt`. But if the value was `dep-gpt-4-32k` the actual deployment ID
+used will be `dep-gpt-35-turbo`.
+
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
 
 ## Using the Google Search plugin
