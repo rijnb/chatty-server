@@ -236,10 +236,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
                 ...updatedConversation,
                 messages: updatedMessages
               }
-              homeDispatch({
-                field: "selectedConversation",
-                value: updatedConversation
-              })
+              homeDispatch({field: "selectedConversation", value: updatedConversation})
             } else {
               const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
                 if (index === updatedConversation.messages.length - 1) {
@@ -280,10 +277,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             ...updatedConversation,
             messages: updatedMessages
           }
-          homeDispatch({
-            field: "selectedConversation",
-            value: updatedConversation
-          })
+          homeDispatch({field: "selectedConversation", value: updatedConversation})
           saveSelectedConversation(updatedConversation)
           const updatedConversations: Conversation[] = conversations.map((conversation) => {
             if (conversation.id === selectedConversation.id) {

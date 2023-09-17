@@ -65,6 +65,11 @@ const ChatConversation = ({conversation, onSend}: Props) => {
     homeDispatch({field: "conversations", value: conversationHistory})
   }
 
+  const handleEditMessage = (editedMessage: Message, index: number) => {
+    // Discard edited message and the ones that come after then resend.
+    onSend(editedMessage, index)
+  }
+
   return (
     <div className="max-h-full overflow-x-hidden" ref={chatContainerRef} onScroll={handleScroll}>
       <ChatMenu
@@ -85,10 +90,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
           message={message}
           isComplete={index < (conversation?.messages.length ?? 0) - 1 || !messageIsStreaming}
           onDelete={() => handleDeleteMessage(index)}
-          onEdit={(editedMessage) => {
-            // Discard edited message and the ones that come after then resend.
-            onSend(editedMessage, index)
-          }}
+          onEdit={(editedMessage) => handleEditMessage(editedMessage, index)}
         />
       ))}
       {loading && <ChatLoader />}

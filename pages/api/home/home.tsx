@@ -325,8 +325,8 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
         const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
-        homeDispatch({field: "conversations", value: cleanedConversationHistory})
         homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+        homeDispatch({field: "conversations", value: cleanedConversationHistory})
       }
 
       let tokenCount = 0
