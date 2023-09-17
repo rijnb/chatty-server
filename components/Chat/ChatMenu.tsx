@@ -83,7 +83,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
           >
             {models.map((model) => (
               <option key={model.id} value={model.id}>
-                {model.id === FALLBACK_OPENAI_MODEL_ID ? `Default (${model.name})` : model.name}
+                {model.name}
               </option>
             ))}
           </Select>
