@@ -41,10 +41,7 @@ const PromptBar = () => {
   const handleCreatePrompt = () => {
     if (defaultModelId) {
       const nrFactoryPrompts = prompts.filter((p) => p.factory).length
-      const updatedPrompts = [
-        ...prompts,
-        createNewPrompt(`Prompt ${prompts.length - nrFactoryPrompts + 1}`, defaultModelId)
-      ]
+      const updatedPrompts = [...prompts, createNewPrompt(`Prompt ${prompts.length - nrFactoryPrompts + 1}`)]
       homeDispatch({field: "prompts", value: updatedPrompts})
       savePrompts(updatedPrompts)
     }

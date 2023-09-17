@@ -50,9 +50,9 @@ const readFileFormatV4 = (data: FileFormatV4): Data => {
 
 export const readData = (data: SupportedFileFormats): Data => {
   if (isFileFormatV5(data)) {
-    return readFileFormatV5(data as FileFormatV5)
+    return readFileFormatV5(data)
   } else if (isFileFormatV4(data)) {
-    return readFileFormatV4(data as FileFormatV4)
+    return readFileFormatV4(data)
   }
   throw new Error(`Unsupported data file format version: ${trimForPrivacy(JSON.stringify(data))}`)
 }
@@ -126,7 +126,6 @@ export const isValidJsonData = (jsonData: any): string[] => {
         (promptItem.name && typeof promptItem.name !== "string") ||
         (promptItem.description && typeof promptItem.description !== "string") ||
         (promptItem.content && typeof promptItem.content !== "string") ||
-        (promptItem.modelId && typeof promptItem.modelId !== "string") ||
         (version === 4 && promptItem.model && typeof promptItem.model !== "object") || // V4 format has model as an object, not a string.
         (version === 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5 format has model as a string.
         (promptItem.folderId && typeof promptItem.folderId !== "string") ||

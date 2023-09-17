@@ -75,7 +75,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
           <FormLabel htmlFor="model">Conversation model</FormLabel>
           <Select
             id="model"
-            disabled={true}
+            disabled={false}
             className="disabled:pointer-events-none disabled:text-gray-300"
             placeholder={t("Select a model")}
             value={modelId}

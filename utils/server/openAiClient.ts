@@ -10,6 +10,7 @@ import {
 } from "../app/const"
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
+import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
 export class OpenAIError extends Error {
   constructor(message: string) {
@@ -57,10 +58,13 @@ export class OpenAILimitExceeded extends OpenAIError {
   }
 }
 
-function createOpenAiConfiguration(apiKey: string) {
+function createOpenAiConfiguration(apiKey: string, modelId: OpenAIModelID) {
   if (OPENAI_API_TYPE === "azure") {
     let config = new Configuration({
-      basePath: `${OPENAI_API_HOST}/openai/deployments/${OPENAI_AZURE_DEPLOYMENT_ID}`,
+      basePath: `${OPENAI_API_HOST}/openai/deployments/${getAzureDeploymentIdForModelId(
+        OPENAI_AZURE_DEPLOYMENT_ID,
+        modelId
+      )}`,
       defaultQueryParams: new URLSearchParams({
         "api-version": OPENAI_API_VERSION
       }),
@@ -94,7 +98,7 @@ export const ChatCompletionStream = async (
   apiKey: string,
   messages: Message[]
 ) => {
-  const configuration = createOpenAiConfiguration(apiKey)
+  const configuration = createOpenAiConfiguration(apiKey, modelId)
   const openai = createOpenAiClient(configuration)
 
   if (messages.length === 0) {
