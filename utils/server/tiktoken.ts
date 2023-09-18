@@ -1,4 +1,4 @@
-import {Tiktoken} from "js-tiktoken/lite"
+import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
 
 import {Message} from "@/types/chat"
 import {OpenAIModelID} from "@/types/openai"
@@ -14,6 +14,11 @@ export class TiktokenEncoder {
   static async create(): Promise<TiktokenEncoder> {
     const cl100k_base = await import("js-tiktoken/ranks/cl100k_base")
     const encoding = new Tiktoken(cl100k_base.default)
+    return new TiktokenEncoder(encoding)
+  }
+
+  static wrap(ranks: TiktokenBPE): TiktokenEncoder {
+    const encoding = new Tiktoken(ranks)
     return new TiktokenEncoder(encoding)
   }
 
