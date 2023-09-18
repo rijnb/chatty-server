@@ -1,3 +1,5 @@
+import cl100k_base from "js-tiktoken/ranks/cl100k_base"
+
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModels} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
@@ -25,9 +27,10 @@ function errorResponse(body: any, status: number) {
   })
 }
 
+const encoder = TiktokenEncoder.wrap(cl100k_base)
+
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const encoder = await TiktokenEncoder.create()
     const {messages, apiKey, modelId, prompt, temperature, maxTokens} = (await req.json()) as ChatBody
     const {tokenLimit} = OpenAIModels[modelId]
 
