@@ -87,7 +87,6 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
               </option>
             ))}
           </Select>
-          <FormText>Coming soon: currently only the default model is supported...</FormText>
         </div>
 
         <div className="flex flex-col pt-2">
