@@ -366,7 +366,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center px-4 pb-6 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
+      <div className="flex items-center justify-center px-4 pb-1 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
         <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
@@ -378,7 +378,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           rel="noreferrer"
           className="underline"
         >
-          report a problem
+          report a problem (or request a feature)
         </a>
       </div>
     </div>
