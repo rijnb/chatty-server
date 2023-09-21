@@ -44,7 +44,7 @@ appear. You can select using the up and down arrows and pressing Enter.
 If the prompt has parameters, you can enter those in a dialog that will appear.
 
 **Powertip**: you can quickly search for prompts by typing the first characters
-of words that appear in the name of the prompt. For example, type "mts" to
+of words that appear in the name of the prompt. For example, type "/mts" to
 quickly find an execute "Mail thread summary". 
 
 Most prompts require you to input some text, like copy-pasting a long email

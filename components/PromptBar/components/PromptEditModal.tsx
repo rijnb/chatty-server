@@ -74,9 +74,6 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
           )}
         </FormDisclaimer>
       )}
-      <FormDisclaimer className="mt-2">
-        {t('To execute this prompt, type "/" in the input box as the first character.')}
-      </FormDisclaimer>
     </Dialog>
   )
 }
