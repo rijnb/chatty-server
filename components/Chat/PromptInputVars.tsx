@@ -15,7 +15,7 @@ const PROMPT_KEYWORD_DROP = "#DROP"
 const MAX_SIZE_FOR_SYNTAX_HIGHLIGHTING = 10000
 
 const stripPromptKeywords = (promptVariable: string) => {
-  return promptVariable.replace(PROMPT_KEYWORD_DROP, "").trim()
+  return promptVariable.replace(PROMPT_KEYWORD_DROP, "").trim().replace(/[.]+$/g, "")
 }
 
 type DroppedFile = {
