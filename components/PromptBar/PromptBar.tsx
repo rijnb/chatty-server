@@ -145,7 +145,7 @@ const PromptBar = () => {
       <Sidebar<Prompt>
         side={"right"}
         isOpen={showPromptBar}
-        addItemButtonTitle={t("New prompt")}
+        addItemButtonTitle={t("Prompt")}
         listItem={<PromptList prompts={filteredPrompts.filter((prompt) => !prompt.folderId)} />}
         folderListItem={<PromptFolderList />}
         items={filteredPrompts}
