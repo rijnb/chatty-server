@@ -1,6 +1,8 @@
+import React from "react"
+
 interface Props {
   text: string
-  icon: JSX.Element
+  icon: React.JSX.Element
   onClick: () => void
 }
 
