@@ -1,6 +1,8 @@
 import {
-  IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand,
-  IconLayoutSidebarRightCollapse, IconLayoutSidebarRightExpand
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconLayoutSidebarRightCollapse,
+  IconLayoutSidebarRightExpand
 } from "@tabler/icons-react"
 
 interface Props {
