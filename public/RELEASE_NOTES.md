@@ -119,6 +119,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-09-22
+
+#### Features
+
+- Added improved side bar handling.
+
 ### 2023-09-17
 
 #### Features
