@@ -1,32 +1,39 @@
-import {IconArrowBarLeft, IconArrowBarRight} from "@tabler/icons-react"
+import {
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconLayoutSidebarRightCollapse,
+  IconLayoutSidebarRightExpand
+} from "@tabler/icons-react"
 
 interface Props {
   onClick: any
+  isOpen: boolean
   side: "left" | "right"
 }
 
-export const CloseSidebarButton = ({onClick, side}: Props) => {
-  return (
-    <button
-      className={`absolute top-0.5 ${
-        side === "right" ? "right-[270px]" : "left-[270px]"
-      } z-50 h-8 w-8 text-neutral-700 hover:text-gray-400 dark:text-white dark:hover:text-gray-300`}
-      onClick={onClick}
-    >
-      {side === "right" ? <IconArrowBarRight /> : <IconArrowBarLeft />}
-    </button>
-  )
+export const OpenCloseSidebarButton = ({onClick, isOpen, side}: Props) => {
+  const withoutBorder = " flex flex-shrink-0 cursor-pointer items-center gap-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-200/10 dark:border-gray-600/20 dark:text-white dark:hover:bg-gray-700/10"
+  const withBorder = withoutBorder + " gap-3 rounded-md border border-gray-300 p-3"
+  const spaceLeft = "ml-2" + withBorder
+  const noSpaceLeft = "ml-0" + withBorder
+  return isOpen ?
+      side === "right" ? (
+          <button className={spaceLeft} onClick={onClick}>
+            <IconLayoutSidebarRightCollapse size={18}/>
+          </button>
+      ) : (
+          <button className={noSpaceLeft} onClick={onClick}>
+            <IconLayoutSidebarLeftCollapse size={18}/>
+          </button>
+      ) : side === "right" ? (
+          <button className={withoutBorder} onClick={onClick}>
+            <IconLayoutSidebarRightExpand size={18}/>
+          </button>
+      ) : (
+          <button className={withoutBorder} onClick={onClick}>
+            <IconLayoutSidebarLeftExpand size={18}/>
+          </button>
+      )
 }
 
-export const OpenSidebarButton = ({onClick, side}: Props) => {
-  return (
-    <button
-      className={`absolute top-0.5 ${
-        side === "right" ? "right-2" : "left-2"
-      } z-50 h-8 w-8 text-neutral-700 hover:text-gray-400 dark:text-white dark:hover:text-gray-300`}
-      onClick={onClick}
-    >
-      {side === "right" ? <IconArrowBarLeft /> : <IconArrowBarRight />}
-    </button>
-  )
-}
+export default OpenCloseSidebarButton
