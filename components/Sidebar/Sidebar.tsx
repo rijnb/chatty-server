@@ -1,4 +1,4 @@
-import {IconFolderPlus, IconMistOff, IconPlus} from "@tabler/icons-react"
+import {IconFolderPlus, IconMistOff, IconTextPlus} from "@tabler/icons-react"
 import {ReactNode} from "react"
 import {useTranslation} from "react-i18next"
 
@@ -74,7 +74,7 @@ const Sidebar = <T, >({
                   handleSearchTerm("")
                 }}
             >
-              <IconPlus size={16}/>
+              <IconTextPlus size={16}/>
               {addItemButtonTitle}
             </button>
 
