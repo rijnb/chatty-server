@@ -270,6 +270,7 @@ export const programmingLanguages: languageMap = {
   vhdl: ".vhdl",
   vim: ".vim",
   visualBasic: ".vb",
+  vtt: ".vtt",
   warpscript: ".warpscript",
   wasm: ".wasm",
   webIdl: ".web-idl",
