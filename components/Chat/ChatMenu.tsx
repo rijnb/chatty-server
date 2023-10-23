@@ -134,6 +134,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             <button
                 className="cursor-pointer px-2 hover:opacity-50 focus:outline-none "
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                title="Toggle dark/light theme"
             >
               {theme === "dark" ? <IconBulbFilled size={18}/> : <IconBulbOff size={18}/>}
             </button>
@@ -145,6 +146,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             <button
                 className="w-fit rounded-b-lg bg-neutral-100 px-4 text-neutral-500 hover:opacity-50 focus:outline-none dark:border-none dark:bg-[#444654] dark:text-neutral-200"
                 onClick={toggleMenu}
+                title="Show release notes"
             >
               {conversation.modelId}
             </button>
@@ -153,6 +155,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
                 className="cursor-pointer px-2 hover:opacity-50 focus:outline-none"
                 disabled={!conversation}
                 onClick={onSaveScreenshot}
+                title="Save screenshot"
             >
               <IconScreenshot size={18}/>
             </button>
@@ -161,6 +164,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
                 className="cursor-pointer px-2 hover:opacity-50 focus:outline-none"
                 disabled={!conversation}
                 onClick={onSaveMarkdown}
+                title="Save chat as markdown"
             >
               <IconMarkdown size={18}/>
             </button>
