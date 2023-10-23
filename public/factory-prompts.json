@@ -3,7 +3,14 @@
   "history": [],
   "prompts": [
     {
-      "modelId": "gpt-4-32k",
+      "id": "4345385c-010d-40d2-91e6-97296fb6827a",
+      "name": "Summarize Teams session",
+      "description": "Download a Teams transcript file (.vtt) and paste it here in my dialog and I will summarize it for you.",
+      "content": "Below is a full WebVTT transcript of a discussion. Provide a summary of topics in the discussion with the names of the people involved. Indicate clearly if there are any controversial points in the discussion and who holds which opinion. Provide a table of discussed actions and action holders.\n\n{{Drop your WebVTT transcript file (.vtt) here #DROP}}",
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
+    },
+    {
       "id": "84988981-33c1-46a9-8e65-adfa66cc2258",
       "name": "Analyze text file",
       "description": "Just drop your text file(s) here and we can chat about it. The text file can be anything. Excel exported as CSV, JSON, Markdown, whatever.",
@@ -12,7 +19,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
       "name": "Paste a code snippet",
       "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
@@ -21,7 +27,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a07c4d13-b7a8-416a-af30-da4c39401cf3",
       "name": "Drop some code files",
       "description": "Just drop your code files in chat so we can use it in our chat. The filenames are automatically used to differentiate between files.",
@@ -30,7 +35,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a61f9571-e997-4d43-9a49-216f0fe2e4a1",
       "name": "Brainstorm",
       "description": "Give me a subject and I'll brainstorm on it.",
@@ -39,7 +43,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "3499207b-570c-4602-810f-16806d0398d7",
       "name": "Synonyms",
       "description": "Provide a term and I will provide approx. 10 synonyms for you. I you want more synonyms, just type \"more\".",
@@ -48,7 +51,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "6be4c7a8-57d6-4d88-9b8e-bbdb5683d211",
       "name": "Teach me anything",
       "description": "I'll teach you about a subject of your choice. I'll ask you questions and provide examples of important concepts.",
@@ -57,7 +59,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "8a310e9f-db2e-4824-b812-a06104501e77",
       "name": "Time machine",
       "description": "Give me a date and a location and I will sketch you an image of what that location looked like at that date.",
@@ -66,7 +67,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "8db9d7fe-5dea-4a78-aade-0490e8cf33fc",
       "name": "Linux terminal",
       "description": "I will act as a Linux terminal for you and you can play around with commands. Of course, I'm not really a Linux machine, so there are limits to what I can do...",
@@ -84,7 +84,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "9265cd7e-acbb-4bac-a976-2238cedae27e",
       "name": "Plagiarism checker",
       "description": "I will check your text for plagiarisms and remove those from the text. ",
@@ -93,7 +92,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "fd7d5fca-20ae-43c9-aab5-190f5535e319",
       "name": "Prepare a debate",
       "description": "Give me a statement and I'll provide debating points and a debating strategy.",
@@ -102,7 +100,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "2bed77d8-64aa-4f64-bfe0-7b52783390eb",
       "name": "Debater coach",
       "description": "Provide a statement a I will coach you to successfully debate about this.",
@@ -111,7 +108,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "df8caf99-6861-4868-b425-042da9af2606",
       "name": "Statistician",
       "description": "Provide a statement and I will provide you with statistical facts.",
@@ -120,7 +116,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a9f1cd42-a70a-46db-b562-479ff5e05ecf",
       "name": "Tech reviewer",
       "description": "Give me a statement and I will react as a tech reviewer, providing you a tech review.",
@@ -129,7 +124,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "ebbecfc8-8dba-4f68-801d-47d8ea1fc2cb",
       "name": "IT architect",
       "description": "Give me some text on a system or problem and I will respond as an IT architect.",
@@ -138,7 +132,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "49904f7d-c9a5-4f07-884c-a0cde27017de",
       "name": "Fallacy finder",
       "description": "I will try to find fallacies, invalid arguments or logical errors in your text.",
@@ -147,7 +140,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "c6c4d1a7-9528-4bb1-a3d7-7dad074c5338",
       "name": "Scientific data visualizer",
       "description": "Provide me a fact and I will provide you with scientific data to visualise.",
@@ -156,7 +148,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "46317d1d-bc9d-47a6-bfed-aecd0559b7ea",
       "name": "Historian",
       "description": "Provide me a statement or fact and I will respond to you putting it in historical context.",
@@ -165,7 +156,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "cf187968-92c2-4811-b70f-e434002f5659",
       "name": "CEO",
       "description": "Ask me something, and I will respond as a CEO might do.",
@@ -174,7 +164,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "015c6f2e-546e-4ff2-9790-a2e3caaf29ed",
       "name": "Friend",
       "description": "Just chat with me and I'll be there for you...",
@@ -183,7 +172,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "38c62dd0-c8bd-4f44-8b0b-fb1435d7ca76",
       "name": "Proposal for problem",
       "description": "Provide me a problem and I will write a proposal in a specific structure. You can select from (at least) \"5/3/1\", \"Minto\", or \"Narrative Style\".",
@@ -192,7 +180,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "5b4ab133-067b-4fff-929f-fd8e5a2e385b",
       "name": "Review and suggest",
       "description": "Copy-paste your text and I will review it for consistency, cognitive bias, failure in critical thinking and more. And I will provide suggestions on how to improve it.",
@@ -201,7 +188,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "17e89cd7-bf15-4db6-a9db-f10c69911343",
       "name": "Prepare walkthrough",
       "description": "Copy-paste a document or deck you need to pre-read. I'll will summarize it, point out controversial points and include examples of questions you might want to ask during a review.",
@@ -210,7 +196,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "c675478f-084e-4bfc-b8ba-4218f7a63eeb",
       "name": "Emoticize",
       "description": "Mix silly emoticons in text to make it look childish.",
@@ -219,7 +204,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "002fb51f-5910-4087-999c-ea67cb0b1751",
       "name": "Demoticize",
       "description": "Remove emoticons and nonsense from text.",
@@ -228,7 +212,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "21e49a56-79ad-46d1-a18d-5f0994071687",
       "name": "Violin teacher",
       "description": "I'm your violin teacher to help you get better at playing violin. Ask me anything about playing violin.",
@@ -237,7 +220,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "55eaa79c-f18d-4182-be36-cb1e635e67ef",
       "name": "Correct English text",
       "description": "Corrects any English spelling and grammar mistakes in your text.",
@@ -246,7 +228,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "15a430ae-2ccb-4c9e-9f90-5e2be4747a1f",
       "name": "Change to friendly",
       "description": "I will change the tone of text to a friendly voice.",
@@ -255,7 +236,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "bed857e4-3bb8-4305-9e4e-097154024eea",
       "name": "Change to neutral",
       "description": "I will change the tone of the text to a neutral voice.",
@@ -264,7 +244,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "47a8150f-eb48-4f89-bad1-77ddfc314bd8",
       "name": "Change to professional",
       "description": "I will change the tone of the text to be professional sounding.",
@@ -273,7 +252,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a4b3bc11-9afe-45f1-b0ff-0d817b5f57bf",
       "name": "Extract bullet points",
       "description": "I will extract all bullet points from the text.",
@@ -282,7 +260,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "44d033d8-5ec0-4238-8e2c-c21a6d7ef062",
       "name": "Translate to English",
       "description": "I will translate your text from any language to English.",
@@ -291,7 +268,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "50c19265-dddc-45c9-be38-474e4fb89289",
       "name": "Mechanism check",
       "description": "Provide me a text and I will check if your text describes a proper \"mechanism\". A mechanism is a process that transforms controllable inputs into ongoing outputs to address a recurring business challenge.",
@@ -300,7 +276,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "ce6cfe07-8c2a-468d-a4ca-609af466ca9c",
       "name": "Rewrite for call to action",
       "description": "I will rewrite you text to include a call to action.",
@@ -309,7 +284,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "53baa80d-d3da-47e6-abac-4e62790d58f4",
       "name": "Chat about your text",
       "description": "Let's have a chat about the text you provide. Just copy-paste anything you want. I'll read it and we can start chatting.",
@@ -318,7 +292,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
       "name": "Summary (and opinions)",
       "description": "Provide a text and I will summarize it for you.",
@@ -327,7 +300,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "c957084f-f76b-4035-8591-1785139bba0b",
       "name": "List of actions",
       "description": "I will list all actions and action holders, sorted high to low priority.",
@@ -336,7 +308,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "33ba03cb-455d-437a-a593-02c76178442b",
       "name": "Translate to language",
       "description": "I will translate your text, in any language, to the specified language. First you specify the target language and then you just type your text in the original language.",
@@ -345,7 +316,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a6af31b8-474a-46e0-a165-04a97aadb416",
       "name": "React/Next.js",
       "description": "Start a chat about Next.js, React, TypeScript and WebStorm.",
@@ -354,7 +324,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "36ce5ae4-7ce2-4a7f-bb77-4db9d5d5a296",
       "name": "Java",
       "description": "Chat about Java and JetBrains IntelliJ.",
@@ -363,7 +332,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "bd6a8433-7613-4267-b2ea-b014812e2ce5",
       "name": "Android (Kotlin)",
       "description": "Chat about Android, Kotlin and Android Studio.",
@@ -372,7 +340,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "167abc79-457b-4ef4-beaf-7adbaba48249",
       "name": "C++",
       "description": "Chat about C++ and JetBrains CLion.",
@@ -381,7 +348,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "ec27c20d-c422-4499-84b4-3298dcf2f208",
       "name": "Android (Java)",
       "description": "Chat about Android, Java and Android Studio.",
@@ -390,7 +356,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "05b01f4f-6786-48a4-b59b-a72fe6e56df7",
       "name": "Javascript",
       "description": "Chat about Javascript and WebStorm",
@@ -399,7 +364,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "a9255ab1-9636-48e5-a72c-caf1cbe8c956",
       "name": "Swift (Xcode)",
       "description": "Chat about Xcode, Swift and MacOS.",
@@ -408,7 +372,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "5debb2de-feea-4ee1-90d2-685bca186de9",
       "name": "Git/Github",
       "description": "Let’s chat about Git and Github.",
@@ -417,7 +380,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "efcb0e4d-e798-47cd-9be2-664765767512",
       "name": "Code reviewer",
       "description": "Paste in your code and I'll review it. Looking for bad practices, unsafe stuff, improvements, etc.",
@@ -426,7 +388,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "ac36f188-b548-472d-ad69-3c3101da4b62",
       "name": "Commit message",
       "description": "Paste your code change, or describe it and I will propose a commit message for it.",
@@ -435,7 +396,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "7ff36461-03c1-40e5-94f4-a26b39f6b880",
       "name": "HTML to Markdown",
       "description": "Provide me HTML and I will try to produce Markdown of it.",
@@ -444,7 +404,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "c5b2483a-33a4-4cf7-816e-10c616987ab3",
       "name": "Markdown to HTML",
       "description": "Provide me Markdown and I will try to produce HTML of it.",
