@@ -197,30 +197,34 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     homeDispatch({field: "conversations", value: conversationHistory})
   }
 
+  const loadPromptsFromFile = (filename: string) => {
+    console.debug(`loadPromptsFromFile: ${filename}`)
+    fetch(filename)
+      .then((response) => response.text())
+      .then((text) => {
+        let factoryData = JSON.parse(text)
+        const validationErrors = isValidJsonData(factoryData)
+        if (validationErrors.length === 0) {
+          console.debug(`Importing prompts file: ${filename}`)
+          const {folders, prompts} = importData(factoryData, true)
+          homeDispatch({field: "folders", value: folders})
+          homeDispatch({field: "prompts", value: prompts})
+        } else {
+          console.error(`Invalid JSON file; file:${filename}, errors:\n${validationErrors.join("\n")}`)
+        }
+      })
+      .catch((error) => console.error(`Error fetching prompts file: ${error}`))
+  }
+
   // EFFECTS  --------------------------------------------
 
   // Read factory prompts file.
   useEffect(() => {
     console.debug(`useEffect: triggerFactoryPrompts:${triggerFactoryPrompts}`)
     if (triggerFactoryPrompts) {
-      const filename = `${router.basePath}/factory-prompts.json`
-      console.debug(`useEffect: fetch:${filename}`)
       homeDispatch({field: "triggerFactoryPrompts", value: false})
-      fetch(filename)
-        .then((response) => response.text())
-        .then((text) => {
-          let factoryData = JSON.parse(text)
-          const validationErrors = isValidJsonData(factoryData)
-          if (validationErrors.length === 0) {
-            console.debug(`Importing factory prompts file: ${filename}`)
-            const {folders, prompts} = importData(factoryData, true)
-            homeDispatch({field: "folders", value: folders})
-            homeDispatch({field: "prompts", value: prompts})
-          } else {
-            console.error(`Invalid JSON file; file:${filename}, errors:\n${validationErrors.join("\n")}`)
-          }
-        })
-        .catch((error) => console.error(`Error fetching factory prompts file: ${error}`))
+      loadPromptsFromFile(`${router.basePath}/factory-prompts.json`)
+      loadPromptsFromFile(`${router.basePath}/factory-prompts-local.json`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFactoryPrompts])
