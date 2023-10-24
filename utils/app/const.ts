@@ -4,7 +4,7 @@
  */
 export const OPENAI_DEFAULT_SYSTEM_PROMPT =
   process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ??
-  "You are Chatty, a large conversational model based on ChatGPT. Follow the user's instructions carefully. Respond using markdown. If you provide code examples, always include the language."
+  "You are Chatty, a large conversational model based on ChatGPT. Follow the user's instructions carefully. If you provide code examples in Markdown, always include the language."
 
 export const OPENAI_DEFAULT_TEMPERATURE = parseFloat(process.env.OPENAI_DEFAULT_TEMPERATURE ?? "0.8")
 export const OPENAI_API_TYPE = process.env.OPENAI_API_TYPE ?? "openai"
