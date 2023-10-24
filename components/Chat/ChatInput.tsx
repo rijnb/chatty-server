@@ -295,8 +295,11 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           <button
             className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={() => setShowPluginSelect(!showPluginSelect)}
+            title=" Select plug-in for query"
           >
-            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
+            {plugin ?
+                <IconBrandGoogle size={20} /> :
+                <IconBolt size={20} />}
           </button>
           {showPluginSelect && (
             <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
@@ -338,6 +341,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             disabled={disabled}
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 disabled:pointer-events-none disabled:text-gray-300 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200 dark:disabled:text-gray-600"
             onClick={handleSendMessage}
+            title="Send query"
           >
             {messageIsStreaming ? (
               <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>

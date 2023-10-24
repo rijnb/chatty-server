@@ -60,6 +60,7 @@ const Sidebar = <T, >({
                 <button
                     className="ml-0 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-gray-300 p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-200/10 dark:border-gray-600/20 dark:text-white dark:hover:bg-gray-700/10"
                     onClick={handleCreateFolder}
+                    title="Create folder"
                 >
                   <IconFolderPlus size={16}/>
                 </button>
@@ -82,6 +83,7 @@ const Sidebar = <T, >({
                 <button
                     className="ml-2 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-gray-300 p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-200/10 dark:border-gray-600/20 dark:text-white dark:hover:bg-gray-700/10"
                     onClick={handleCreateFolder}
+                    title="Create folder"
                 >
                   <IconFolderPlus size={16}/>
                 </button>

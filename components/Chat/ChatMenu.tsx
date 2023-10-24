@@ -139,14 +139,17 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
               {theme === "dark" ? <IconBulbFilled size={18}/> : <IconBulbOff size={18}/>}
             </button>
 
-            <button className="cursor-pointer px-2 hover:opacity-50 focus:outline-none" onClick={onOpenReleaseNotes}>
+            <button
+                className="cursor-pointer px-2 hover:opacity-50 focus:outline-none" onClick={onOpenReleaseNotes}
+                title="Show help and release notes"
+            >
               <IconHelp size={18}/>
             </button>
 
             <button
                 className="w-fit rounded-b-lg bg-neutral-100 px-4 text-neutral-500 hover:opacity-50 focus:outline-none dark:border-none dark:bg-[#444654] dark:text-neutral-200"
                 onClick={toggleMenu}
-                title="Show release notes"
+                title="Change model settings"
             >
               {conversation.modelId}
             </button>
@@ -155,7 +158,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
                 className="cursor-pointer px-2 hover:opacity-50 focus:outline-none"
                 disabled={!conversation}
                 onClick={onSaveScreenshot}
-                title="Save screenshot"
+                title="Save conversation as PNG image"
             >
               <IconScreenshot size={18}/>
             </button>
@@ -164,7 +167,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
                 className="cursor-pointer px-2 hover:opacity-50 focus:outline-none"
                 disabled={!conversation}
                 onClick={onSaveMarkdown}
-                title="Save chat as markdown"
+                title="Save conversation as Markdown"
             >
               <IconMarkdown size={18}/>
             </button>
