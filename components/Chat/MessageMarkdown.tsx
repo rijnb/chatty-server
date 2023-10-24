@@ -16,15 +16,31 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
   return (
     <MemoizedReactMarkdown
       className="prose flex-1 dark:prose-invert"
-      remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeMathjax]}
+      remarkPlugins={[
+        [remarkGfm, {}],
+        [
+          remarkMath,
+          {
+            inlineMathDouble: true /* enable \(...\) */,
+            displayMathDouble: true /* enable \[...\] */
+          }
+        ]
+      ]}
+      rehypePlugins={[
+        [
+          rehypeMathjax,
+          {
+            /* configuration options go here if needed */
+          }
+        ]
+      ]}
       components={{
         code({node, inline, className, children, ...props}) {
           if (children.length) {
             if (children[0] == "▍") {
               return <span className="mt-1 animate-pulse cursor-default">▍</span>
             }
-            children[0] = (children[0] as string).replace("`▍`", "▍")
+            children[0] = (children[0] as string).replace("▍", "▍")
           }
 
           const match = /language-(\w+)/.exec(className ?? "")
