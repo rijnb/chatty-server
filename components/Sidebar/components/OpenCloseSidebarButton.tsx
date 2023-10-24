@@ -18,19 +18,19 @@ export const OpenCloseSidebarButton = ({onClick, isOpen, side}: Props) => {
   const noSpaceLeft = "ml-0" + withBorder
   return isOpen ?
       side === "right" ? (
-          <button className={spaceLeft} onClick={onClick}>
+          <button className={spaceLeft} onClick={onClick} title="Collapse sidebar">
             <IconLayoutSidebarRightCollapse size={18}/>
           </button>
       ) : (
-          <button className={noSpaceLeft} onClick={onClick}>
+          <button className={noSpaceLeft} onClick={onClick} title="Collapse sidebar">
             <IconLayoutSidebarLeftCollapse size={18}/>
           </button>
       ) : side === "right" ? (
-          <button className={withoutBorder} onClick={onClick}>
+          <button className={withoutBorder} onClick={onClick} title="Expand sidebar">
             <IconLayoutSidebarRightExpand size={18}/>
           </button>
       ) : (
-          <button className={withoutBorder} onClick={onClick}>
+          <button className={withoutBorder} onClick={onClick} title="Expand sidebar">
             <IconLayoutSidebarLeftExpand size={18}/>
           </button>
       )
