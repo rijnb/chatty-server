@@ -1,5 +1,15 @@
 ## Quick start guide
 
+### What's new?
+
+* Added support for WebVTT files, so you can summarize the transcripts of Teams sessions. 
+  we've also implemented a standard prompt for this (in folder Productivity). Just drop the
+  downloaded transcript file into the prompt dialog.
+* Added support for locally deployed factory prompts, if you want you deployment to have 
+  prompts specific to your (e.g. company) deployment, next to the standard ones.
+
+(For the complete Release Notes, scroll down to the bottom of this page.) 
+
 ### Getting started
 
 Whenever you start asking me questions in the input box below, I will try to answer them.
