@@ -47,10 +47,10 @@ const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const defaultModelId =
-      (process.env.OPENAI_DEFAULT_MODEL &&
-          Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-          process.env.OPENAI_DEFAULT_MODEL) ||
-      FALLBACK_OPENAI_MODEL_ID
+    (process.env.OPENAI_DEFAULT_MODEL &&
+      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
+      process.env.OPENAI_DEFAULT_MODEL) ||
+    FALLBACK_OPENAI_MODEL_ID
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
@@ -82,17 +82,17 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   } = contextValue
 
   const {data: modelData, error} = useQuery(
-      ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
-      ({signal}) => {
-        if (!unlocked) {
-          return null
-        } else if (!apiKey && !serverSideApiKeyIsSet) {
-          return null
-        } else {
-          return getModels({apiKey: apiKey}, signal)
-        }
-      },
-      {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
+    ["GetModels", apiKey, serverSideApiKeyIsSet, unlocked],
+    ({signal}) => {
+      if (!unlocked) {
+        return null
+      } else if (!apiKey && !serverSideApiKeyIsSet) {
+        return null
+      } else {
+        return getModels({apiKey: apiKey}, signal)
+      }
+    },
+    {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
 
   const stopConversationRef = useRef<boolean>(false)
@@ -166,16 +166,16 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const handleNewConversation = () => {
     const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
     if (
-        lastConversation &&
-        lastConversation.name === t(NEW_CONVERSATION_TITLE) &&
-        lastConversation.messages.length === 0
+      lastConversation &&
+      lastConversation.name === t(NEW_CONVERSATION_TITLE) &&
+      lastConversation.messages.length === 0
     ) {
       homeDispatch({field: "selectedConversation", value: lastConversation})
     } else {
       const newConversation = createNewConversation(
-          t(NEW_CONVERSATION_TITLE),
-          lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
-          lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        t(NEW_CONVERSATION_TITLE),
+        lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
       )
       const updatedConversations = [...conversations, newConversation]
       homeDispatch({field: "selectedConversation", value: newConversation})
@@ -200,20 +200,20 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const loadPromptsFromFile = (filename: string) => {
     console.debug(`loadPromptsFromFile: ${filename}`)
     fetch(filename)
-    .then((response) => response.text())
-    .then((text) => {
-      let factoryData = JSON.parse(text)
-      const validationErrors = isValidJsonData(factoryData)
-      if (validationErrors.length === 0) {
-        console.debug(`Importing prompts file: ${filename}`)
-        const {folders, prompts} = importData(factoryData, true)
-        homeDispatch({field: "folders", value: folders})
-        homeDispatch({field: "prompts", value: prompts})
-      } else {
-        console.error(`Invalid JSON file; file:${filename}, errors:\n${validationErrors.join("\n")}`)
-      }
-    })
-    .catch((error) => console.error(`Error fetching prompts file: ${error}`))
+      .then((response) => response.text())
+      .then((text) => {
+        let factoryData = JSON.parse(text)
+        const validationErrors = isValidJsonData(factoryData)
+        if (validationErrors.length === 0) {
+          console.debug(`Importing prompts file: ${filename}`)
+          const {folders, prompts} = importData(factoryData, true)
+          homeDispatch({field: "folders", value: folders})
+          homeDispatch({field: "prompts", value: prompts})
+        } else {
+          console.error(`Invalid JSON file; file:${filename}, errors:\n${validationErrors.join("\n")}`)
+        }
+      })
+      .catch((error) => console.error(`Error fetching prompts file: ${error}`))
   }
 
   // EFFECTS  --------------------------------------------
@@ -248,15 +248,15 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
     serverSideApiKeyIsSet &&
-    homeDispatch({
-      field: "serverSideApiKeyIsSet",
-      value: serverSideApiKeyIsSet
-    })
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
     serverSidePluginKeysSet &&
-    homeDispatch({
-      field: "serverSidePluginKeysSet",
-      value: serverSidePluginKeysSet
-    })
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
   }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
 
   // Load settings from local storage.
@@ -265,21 +265,21 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     const apiKey = getApiKey()
 
     serverSideApiKeyIsSet &&
-    homeDispatch({
-      field: "serverSideApiKeyIsSet",
-      value: serverSideApiKeyIsSet
-    })
+      homeDispatch({
+        field: "serverSideApiKeyIsSet",
+        value: serverSideApiKeyIsSet
+      })
     serverSidePluginKeysSet &&
-    homeDispatch({
-      field: "serverSidePluginKeysSet",
-      value: serverSidePluginKeysSet
-    })
+      homeDispatch({
+        field: "serverSidePluginKeysSet",
+        value: serverSidePluginKeysSet
+      })
 
     defaultModelId &&
-    homeDispatch({
-      field: "defaultModelId",
-      value: defaultModelId
-    })
+      homeDispatch({
+        field: "defaultModelId",
+        value: defaultModelId
+      })
 
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
@@ -346,15 +346,15 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         const encoder = await TiktokenEncoder.create()
 
         tokenCount = encoder.numberOfTokensInConversation(
-            allMessages,
-            selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+          allMessages,
+          selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
         )
       }
 
       console.debug(`useEffect: tokenCount:${tokenCount}`)
       if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
         const lastConversation =
-            conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
+          conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
         if (lastConversation && lastConversation.messages.length === 0) {
           // If no conversation was selected, select the last conversation if it was empty.
           homeDispatch({field: "conversations", value: cleanedConversationHistory})
@@ -362,9 +362,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         } else {
           // Or create a new empty conversation.
           const newConversation = createNewConversation(
-              t(NEW_CONVERSATION_TITLE),
-              lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
-              lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+            t(NEW_CONVERSATION_TITLE),
+            lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
           )
           // Only add a new conversation to the history if there are existing conversations.
           if (cleanedConversationHistory.length > 0) {
@@ -383,41 +383,41 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // LAYOUT --------------------------------------------
 
   return (
-      <HomeContext.Provider
-          value={{
-            ...contextValue,
-            handleNewConversation,
-            handleCreateFolder,
-            handleDeleteFolder,
-            handleUpdateFolder,
-            handleSelectConversation,
-            handleUpdateConversation
-          }}
-      >
-        <Head>
-          <title>Chatty</title>
-          <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`}/>
-          <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`}/>
-          <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`}/>
-          <link rel="manifest" href={`${router.basePath}/site.webmanifest`} crossOrigin="use-credentials"/>
-          <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444"/>
-          <meta name="msapplication-TileColor" content="#da532c"/>
-          <meta name="theme-color" content="#ffffff"/>
-          <meta name="description" content="ChatGPT but better."/>
-          <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
-        </Head>
-        {selectedConversation && (
-            <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
-              <div className="flex h-full w-full overflow-y-hidden pt-0">
-                <ChatBar/>
-                <div className="flex flex-1">
-                  <Chat stopConversationRef={stopConversationRef}/>
-                </div>
-                <PromptBar/>
-              </div>
-            </main>
-        )}
-      </HomeContext.Provider>
+    <HomeContext.Provider
+      value={{
+        ...contextValue,
+        handleNewConversation,
+        handleCreateFolder,
+        handleDeleteFolder,
+        handleUpdateFolder,
+        handleSelectConversation,
+        handleUpdateConversation
+      }}
+    >
+      <Head>
+        <title>Chatty</title>
+        <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
+        <link rel="manifest" href={`${router.basePath}/site.webmanifest`} crossOrigin="use-credentials" />
+        <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="description" content="ChatGPT but better." />
+        <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
+      </Head>
+      {selectedConversation && (
+        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
+          <div className="flex h-full w-full overflow-y-hidden pt-0">
+            <ChatBar />
+            <div className="flex flex-1">
+              <Chat stopConversationRef={stopConversationRef} />
+            </div>
+            <PromptBar />
+          </div>
+        </main>
+      )}
+    </HomeContext.Provider>
   )
 }
 
