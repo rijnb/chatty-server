@@ -101,8 +101,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith(
@@ -123,8 +123,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith(
@@ -144,8 +144,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledTimes(1)
@@ -166,8 +166,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith("Some human readable description", {
@@ -186,8 +186,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith("Some human readable description", {
@@ -206,8 +206,8 @@ describe("<Chat/>", () => {
 
     render(<Chat stopConversationRef={stopConversationRef} />)
 
-    await userEvent.type(screen.getByRole("textbox"), "hello there")
-    await userEvent.click(screen.getByRole("button", {name: "Send message"}))
+    await userEvent.type(screen.getByTestId("chat-input"), "hello there")
+    await userEvent.click(screen.getByTestId("chat-send"))
 
     expect(toast.error).toHaveBeenCalledTimes(1)
     expect(toast.error).toHaveBeenCalledWith("Unexpected server error. Please try again a bit later.", {
