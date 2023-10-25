@@ -7,6 +7,10 @@
   downloaded transcript file into the prompt dialog.
 * Added support for locally deployed factory prompts, if you want you deployment to have 
   prompts specific to your (e.g. company) deployment, next to the standard ones.
+* Added support for LaTeX rendering of formulas.
+* Added ability to modify the system prompt (stored in model selection per conversation). 
+  The system prompt precedes all items in a conversation and allows you to change the 
+  behavior of the model during a conversation. 
 
 (For the complete Release Notes, scroll down to the bottom of this page.) 
 
@@ -128,6 +132,13 @@ _Rijn Buve & Oleksii Kulyk_
 ---
 
 ## Release notes
+
+### 2023-10-25
+
+#### Features
+
+- Added support for LaTeX formulas.
+- Added ability to modify system prompt in model settings.
 
 ### 2023-09-22
 
