@@ -297,9 +297,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onClick={() => setShowPluginSelect(!showPluginSelect)}
             title=" Select plug-in for query"
           >
-            {plugin ?
-                <IconBrandGoogle size={20} /> :
-                <IconBolt size={20} />}
+            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
           </button>
           {showPluginSelect && (
             <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
@@ -313,6 +311,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             />
           </div>
           <textarea
+            data-testid="chat-input"
             ref={textareaRef}
             disabled={disabled}
             className="m-0 w-full resize-none border-0 bg-transparent p-0 py-3 pl-10 pr-8 text-black dark:bg-transparent dark:text-white"
@@ -337,6 +336,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onKeyDown={handleKeyDown}
           />
           <button
+            data-testid="chat-send"
             aria-label="Send message"
             disabled={disabled}
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 disabled:pointer-events-none disabled:text-gray-300 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200 dark:disabled:text-gray-600"
