@@ -9,7 +9,7 @@ import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {Conversation} from "@/types/chat"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
-import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
   conversation: Conversation
@@ -31,6 +31,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
   const modelId = conversation.modelId ?? FALLBACK_OPENAI_MODEL_ID
   const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
+  const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
   const ref = useRef<HTMLDivElement>(null)
 
   const maxTokensForModel = (model: OpenAIModel) => {
@@ -64,6 +65,11 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   const handleMaxTokensChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     conversation.maxTokens = Number(event.target.value)
+    onUpdateConversation(conversation)
+  }
+
+  const handlePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    conversation.prompt = event.target.value
     onUpdateConversation(conversation)
   }
 
@@ -125,6 +131,18 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
                 onChange={handleMaxTokensChange}
             />
             <FormText className="text-center">{maxTokens}</FormText>
+          </div>
+
+          <div className="flex flex-col">
+            <FormLabel htmlFor="prompt">System prompt</FormLabel>
+            <FormText>Enter the system prompt. This prompt precedes the entire conversation and influences the behavior of the model.</FormText>
+            <textarea
+                id="prompt"
+                className="mt-2"
+                rows={6}
+                value={prompt}
+                onChange={handlePromptChange}
+            />
           </div>
         </div>
 

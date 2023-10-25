@@ -60,3 +60,7 @@ pre:has(div.codeblock) {
   background-color: #f0f0f0;
   color: #333;
 }
+
+.math-inline {
+  display: inline-block;
+}
