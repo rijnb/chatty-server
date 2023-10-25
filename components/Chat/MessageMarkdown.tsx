@@ -21,19 +21,12 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
         [
           remarkMath,
           {
-            inlineMathDouble: true /* enable \(...\) */,
-            displayMathDouble: true /* enable \[...\] */
+            inlineMath: [['$', '$']], /* enable $...$ */
+            displayMath: [['$$', '$$']] /* enable $$...$$ */
           }
         ]
       ]}
-      rehypePlugins={[
-        [
-          rehypeMathjax,
-          {
-            /* configuration options go here if needed */
-          }
-        ]
-      ]}
+      rehypePlugins={[[rehypeMathjax, {}]]}
       components={{
         code({node, inline, className, children, ...props}) {
           if (children.length) {
