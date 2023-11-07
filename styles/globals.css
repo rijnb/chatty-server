@@ -42,6 +42,23 @@ pre:has(div.codeblock) {
   padding: 0;
 }
 
+.markdown {
+  width: 100%;
+}
+
+.markdown > * {
+  /* Equivalent of max-w-prose from tailwindcss. */
+  max-width: 65ch;
+  justify-self: center;
+  /* Equivalent of mx-auto from tailwindcss. */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.markdown > pre {
+  max-width: 100%
+}
+
 .error-message {
   color: indianred;
 }
