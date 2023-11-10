@@ -133,8 +133,18 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-11-10
+
+- #### Features
+
+Changed default path to `/`.
+
+### 2023-10-25
+
 ### 2023-10-31
 
+#### Features
+- 
 - Updated dependencies to latest.
 - Changed default path to `/chatty`.
 

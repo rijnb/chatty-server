@@ -20,7 +20,7 @@ GPT-4. Just press Enter again to execute it.
 ## Using a browser or Chatty
 
 Chatty Server is a web-based which can be accessed by browser. It is deployed on
-a server with a basepath of `/chatty` (for the actual value, check [config.js](./config.js)).
+a server with a basepath of `/` (for the actual value, check [config.js](./config.js)).
 So, if you deploy it on `https://myserver.com`, you can access it at `https://myserver.com/chatty`.
 
 There a thin client for Mac called [Chatty](https://github.com/rijnb/ChattyUI) that you may want
@@ -101,7 +101,7 @@ npm run dev
 
 **5. Use It**
 
-You should be able to start chatting at `http://localhost:3000/chatty`.
+You should be able to start chatting at `http://localhost:3000/`.
 
 ## Configuration
 
