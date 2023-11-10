@@ -4,21 +4,10 @@ import React, {useEffect, useState} from "react"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {ModalDialog} from "@/components/ModalDialog"
 import {Button} from "@/components/Styled"
+import useMarkdownFile from "@/utils/app/markdown"
 
 export interface Props {
   close: () => void
-}
-
-const useMarkdownFile = (filename: string) => {
-  const [fileContent, setFileContent] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch(filename)
-      .then((response) => response.text())
-      .then((text) => setFileContent(text))
-      .catch((error) => console.error(`Error fetching markdown file, error:${error}`))
-  }, [filename])
-  return fileContent
 }
 
 export const ReleaseNotes = ({close}: Props) => {
