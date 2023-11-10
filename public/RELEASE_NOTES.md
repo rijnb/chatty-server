@@ -125,6 +125,32 @@ When Google is selected, the input you type will be sent to Google and the Googl
 search results will be interpreted and summarized by me, with references to the
 original pages Google came up with.
 
+## Branding your deployment with a local message or logo
+
+You can brand your deployment with a local message or logo. Just create a file
+called `welcome-message.md` in the `public` folder. This file will be shown as
+Markdown when you start Chatty. In the Markdown text you can include images, 
+like a company logo.
+
+For example, you can create a file `public/welcome-message.md` with the following
+content:
+
+```
+. . .
+
+![Your Company](./your-icon.png)
+
+**This instance of the ChatGPT is hosted exclusively for Your Company.**
+
+. . .
+
+Your queries are not shared outside Your Company and the conversations and prompts 
+are stored in your local browser only. You can start chatting in the box below. 
+Click on `(?)` in the top menu for instructions and release notes.
+
+. . .
+```
+
 _Happy chatting!_
 
 _Rijn Buve & Oleksii Kulyk_
@@ -137,7 +163,8 @@ _Rijn Buve & Oleksii Kulyk_
 
 - #### Features
 
-Changed default path to `/`.
+- Added ability to show a specific message for your deployment.
+- Changed default path to `/`.
 
 ### 2023-10-25
 
