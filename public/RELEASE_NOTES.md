@@ -151,6 +151,15 @@ Click on `(?)` in the top menu for instructions and release notes.
 . . .
 ```
 
+## Adding "local" prompts to your deployment
+
+You can add "local" prompts to your deployment, next to the default factory ones. 
+These are prompts that are specific to your deployment, e.g. for your company.
+
+You should store those prompts in the `public/factory-prompts-local.json` file.
+It will be picked up when the service is restarted. (You can even overwrite
+factory prompts in this file, if you use the same prompt ID.)
+
 _Happy chatting!_
 
 _Rijn Buve & Oleksii Kulyk_
