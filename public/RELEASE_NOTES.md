@@ -168,6 +168,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-11-20
+
+#### Bug fix
+
+- Remove old factory prompts and folders before importing new ones.
+
 ### 2023-11-10
 
 - #### Features
