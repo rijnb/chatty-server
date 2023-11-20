@@ -223,6 +223,13 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     console.debug(`useEffect: triggerFactoryPrompts:${triggerFactoryPrompts}`)
     if (triggerFactoryPrompts) {
       homeDispatch({field: "triggerFactoryPrompts", value: false})
+
+      // Remove factory prompts and folders.
+      const nonFactoryPrompts = getPrompts().filter((prompt) => !prompt.factory)
+      savePrompts(nonFactoryPrompts)
+      const nonFactoryFolders = getFolders().filter((folder) => !folder.factory)
+      saveFolders(nonFactoryFolders)
+
       loadPromptsFromFile(`${router.basePath}/factory-prompts.json`)
       loadPromptsFromFile(`${router.basePath}/factory-prompts-local.json`)
     }
