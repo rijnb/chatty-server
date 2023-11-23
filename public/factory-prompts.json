@@ -12,7 +12,7 @@
     },
     {
       "id": "84988981-33c1-46a9-8e65-adfa66cc2258",
-      "name": "Analyze text file",
+      "name": "Analyze file: CSV, JSON, etc.",
       "description": "Just drop your text file(s) here and we can chat about it. The text file can be anything. Excel exported as CSV, JSON, Markdown, whatever.",
       "content": "Consider the following text files and their contents. Just respond with “OK, ask me about your files.” if you get this. Nothing else, no explanations.\n\n{{Drop your text files here #DROP}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
@@ -20,7 +20,7 @@
     },
     {
       "id": "7a4e94b0-c0f0-4ec4-a046-1e6f4f443376",
-      "name": "Paste a code snippet",
+      "name": "Inspect a code snippet",
       "description": "Paste code snippets or complete files to this chat so we can use it in our chat. The filename is used to differentiate between files.",
       "content": "Consider the following code. Just respond with “OK, ask me about your code.” if you get this. Nothing else, no explanations.\n\n```\n{{Paste a code snippet or complete file}}\n```",
       "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
@@ -44,7 +44,7 @@
     },
     {
       "id": "3499207b-570c-4602-810f-16806d0398d7",
-      "name": "Synonyms",
+      "name": "Provide synonyms",
       "description": "Provide a term and I will provide approx. 10 synonyms for you. I you want more synonyms, just type \"more\".",
       "content": "I want you to act as a synonyms provider. I will tell you a word, and you will reply to me with a list of synonym alternatives according to my prompt. Provide a max of 10 synonyms per prompt. If I want more synonyms of the word provided, I will reply with “more”. You will only reply to the word list and nothing else. Words should exist. \nHere's the word: {{Provide a term to get synonyms for.}}",
       "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
@@ -77,7 +77,7 @@
     {
       "modelId": "gpt-4-32k",
       "id": "828d5c55-84bc-4484-bdd7-5fb53afe3cf2",
-      "name": "Mail thread summary",
+      "name": "Summarize mail thread",
       "description": "Copy-paste a complete a mail thread here and I will provide a summary, a time line, a list of actions and the opinions of people involved.",
       "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 10 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nSpecify how many replies there are in the mail thread. Section headers are printed in bold.\n\nThen add a section \"Timeline\" in which you summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available). Make sure all actions are there. Present the actions in a table.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences. Make sure all authors are included. Present the opinions in a table.\n\nFinally, create a table called “Controversial items” in which you list any controversial items that have been discussion and who has taken which standpoints in those discussions.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
@@ -173,15 +173,15 @@
     },
     {
       "id": "38c62dd0-c8bd-4f44-8b0b-fb1435d7ca76",
-      "name": "Proposal for problem",
+      "name": "Write a proposal",
       "description": "Provide me a problem and I will write a proposal in a specific structure. You can select from (at least) \"5/3/1\", \"Minto\", or \"Narrative Style\".",
       "content": "A key requirement of any business communication is that it should answer more questions than it raises. One way to help ensure your decision proposals meet that requirement is to give them a clear and intuitive structure.\n\nThe easiest way is to use one of the well-known structures described below. This page describe three different ways one could structure a decision or proposal document.\nNote that the structure alone is neither necessary nor sufficient: significantly more important is to write in a simple and clear style. Moments of crisis are when clarity is most beneficial, and so we should not compromise on taking the time to ensure clear communication, no matter what.\nFurthermore, clear writing is proof of thinking and scales the output of thinking to unlock coherence and parallelism at scale, which leads to increased impact.\n\nIt is a common misconception that people \"write to think.\" The most effective business writing comes from thinking, then writing. There are different ways to think, and different tools to support the thinking process. Writing is one of them, but it's important to recognize that if you write to think, you almost certainly will need to rewrite to be read.\n\nPyramid/Hypothesis Driven/Answer First/Minto\n\nThis document style is well known and has different names, but whatever the name, it has a 4-part structure: situation, complication, critical question, answer. It is an appropriate style when we are sure what the course of action should be. This certainty arises when it’s not a particularly hard decision; we only have one option; or we have performed significant analysis, are confident, and our proposal is evidence-backed. You can find various descriptions online and also a description from Charles Davies (former CTO, TomTom) here, and I highly recommend Barbara Minto’s The Pyramid Principle: an excellent book on clear communication.\n\nHere’s an elementary example:\n\nSituation: I’ve arrived at London Heathrow en route to Seattle and need to transfer to a different flight to get to a critical meeting tomorrow.\n\nComplication: My flight was 30 minutes late, and I missed my connection. The airline automatically rescheduled me to fly on the same flight tomorrow.\n\nCritical question: How can I get to Seattle in time?\nAnswer: Queue up at the ticket desk and demand they find a way to get me to Seattle.\n\nSupporting evidence: the meeting ends at 17:00, and the flight arrives at 19:00\nIt is not possible to reschedule the meeting. People have traveled.\nI’ve hired someone to watch the dog\nI’ve canceled other meetings tomorrow, so not going to Seattle will be wasteful.\nThey have helped me before and will probably help me again\nThe odds they get me there are higher because of my gold status\n\nReason 1: Arriving tomorrow evening is too late.\nReason 2: I invested time in the trip already and might as well get there.\nReason 3: I have gold member status on this airline\n\n5/3/1 format\n\nI tend to recommend people use what I call a “5/3/1” (or “5/3/1/–1/^Z”, pronounced \"five-three-one\") structure for decision documents. \n\nThis style is appropriate when there are several options, and the people proposing are unsure which is the right option and are requesting another (often more senior) leader to make a decision or are presenting options to a group. \n5-sentence description of the problem we are trying to solve \n3 1-sentence options identified to solve it \n1 preferred option of the three\n1 counterargument, or why what option could turn out to be wrong \n1 exit ramp if the counterargument is true\nHigh-level plan for the preferred option\n(Sentence counts are an aspiration, not a requirement.)\n\nI find 5/3/1’s more effective when there isn’t all that much analysis required. Forcing yourself to structure a topic using 5-3-1 will help you identify conclusions and solutions faster. Some people struggle with the –1 stage, but it’s a vital step to identify and mitigate against confirmation bias. \n\nHere’s a simple example:\n\n5: I’ve arrived at London Heathrow en route to Seattle. I need to transfer to a different flight for a critical meeting tomorrow. My flight was 30 minutes late, and I missed my connection. The airline automatically rescheduled me to fly on the same flight tomorrow. What should I do?\n\n3: Wait in the queue and beg them to reschedule me.\nTry to reschedule on my own and seek reimbursement.\nGive up, get on a flight, return home, and dial in.\n\n1: We prefer option 1: they should be able to get me to the meeting\n\n–1: It might take too long to wait in the queue, and I miss the opportunity to rebook myself.\n\n^Z: If that happens, I will get the next flight back to Berlin and dial in instead.\n\nNarrative Style\n\nIn the narrative style, often, you structure a 3-part story:\nThe current situation is as follows… (“the hero’s broken world”)\nWe should do this challenging thing (“the hero’s struggle”)\nIf we do that challenging thing, our world will look like this… (“the hero’s better world”).\n\nThere is a lot to read in the world on storytelling for business, and if you search for how Amazon 6-pagers are structured, you will see they generally are structured in this way (although not always described as such). This style is appropriate for more moon-shot proposals, where it is essential to go into considerable detail (6 pages worth) to describe the current situation, the recommendation, and the advantages.\n\nHere’s a simple example:\n\nBroken (current situation): We are en route Berlin -> London -> Seattle, but our flight out of Berlin was late, and we missed our connection by 10 minutes. After being denied entry to security because it was too close to take-off time, we find ourselves in a busy transfer area, with long queues everywhere we look. How can we get to Seattle?\n\nStruggle: We will enter the queue immediately and wait it out. No matter what it takes, this airline — of which we are long-term and loyal customers — will get us to Seattle no matter what. We will not take no for an answer.\n\nBetter: Even if we have to make three stops, even if we get no sleep, we will make it to Seattle because this airline has a duty of care, and we are prepared to do what it takes to get them to fix it.\n\nA narrative can be a risky style, but it can be highly effective. You can find a great example in Working Backwards by Bryar and Carr.\n\nCreate a {{Choose a structure like 5/3/1, Minto, Narrative Style}} formatted structure, with highlighted sections, for the problem in the following text: \n\n{{Type your problem here}}",
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
       "factory": true
     },
     {
       "id": "5b4ab133-067b-4fff-929f-fd8e5a2e385b",
-      "name": "Review and suggest",
+      "name": "Review my text",
       "description": "Copy-paste your text and I will review it for consistency, cognitive bias, failure in critical thinking and more. And I will provide suggestions on how to improve it.",
       "content": "Please review the text and provide a list of suggestions for improving the clarity. Please identify any evidence of cognitive bias, failures in critical thinking, missing MECE principle (Mutually Exclusive, Collectively Exhaustive) where it is appropriate, or any other important observations, such as contradictions, that may undermine the credibility of the text: \n\n{{Text to review carefully}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
@@ -197,17 +197,9 @@
     },
     {
       "id": "c675478f-084e-4bfc-b8ba-4218f7a63eeb",
-      "name": "Emoticize",
-      "description": "Mix silly emoticons in text to make it look childish.",
-      "content": "Respond with the same text, but mix emoticons in the text, like one per sentence, that reflect on what is being written. Start the text with \"Hi\" and a wavy hand emoticon.\n\n{{Text to mix emoticons in}}",
-      "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
-      "factory": true
-    },
-    {
-      "id": "002fb51f-5910-4087-999c-ea67cb0b1751",
-      "name": "Demoticize",
-      "description": "Remove emoticons and nonsense from text.",
-      "content": "Remove all emoticons from the text and remove lines with wavy hands. Here's the text: \n\n{{Text to remove emoticons from}}",
+      "name": "Emoticize/demoticize",
+      "description": "Mix silly emoticons in text to make it look childish. Or remove them instead...",
+      "content": "If the text below contains any emoticons, reply with the same text, but without the emoticons. If the text did not contain emoticons, then respond with the same text, but mix emoticons in the text, like one per sentence, that reflect on what is being written. Start the text with \"Hi\" and a wavy hand emoticon. Here’s the text to work on:\n\n{{Text to mix emoticons in}}",
       "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
       "factory": true
     },
@@ -223,7 +215,7 @@
       "id": "55eaa79c-f18d-4182-be36-cb1e635e67ef",
       "name": "Correct English text",
       "description": "Corrects any English spelling and grammar mistakes in your text.",
-      "content": "Correct any spelling or grammar errors that you find in the text you will be given. Only fix the spelling or grammar errors. Do not change the text style. If the text is already free of errors, simply return the original text. Your response should include only the corrected text and no additional information. Here's my text: \n\n{{Text to correct}}",
+      "content": "Correct any spelling or grammar errors that you find in the text you will be given. Only fix the spelling or grammar errors. Do not change the text style. If the text is already free of errors, simply return the original text. Your response should include only the corrected text and no additional information. Here's my text:\n\n{{Text to correct}}",
       "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
       "factory": true
     },
@@ -253,10 +245,10 @@
     },
     {
       "id": "a4b3bc11-9afe-45f1-b0ff-0d817b5f57bf",
-      "name": "Extract bullet points",
+      "name": "List all bullet points",
       "description": "I will extract all bullet points from the text.",
       "content": "I want you to extract the bullet points from the text you will be given. Your response should include only the bullet points and no additional information. Here's my text: \n\n{{Extract bullet points from this text}}",
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
     {
@@ -280,7 +272,7 @@
       "name": "Rewrite for call to action",
       "description": "I will rewrite you text to include a call to action.",
       "content": "Carefully rewrite the following text to be concise, professional but still informative. It starts with the main point and has a call to action. Here's the text: \n\n{{Rewrite this text for a call to action}}",
-      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "folderId": "Hi team, I just had a chat with Rogier, Mayank, and Nurit on how we should deal with the integration of NavSDK in AmiGO. \n\nCurrently, integrating a new release of NavSDK with the ELM MapVis data provider is estimated to take at least 2 weeks. (The Jul'23 milestone showed that this might even be optimistic.) Two weeks is too much effort for what should be straightforward integration. And it's caused by the fact that the AmiGO team encounters integration issues that should have been caught and fixed during the integration testing of NavSDK. But there is no proper integration testing of NavSDK.\n\nAnd the purpose of AmiGO is not to test the integration of components of NavSDK into a usable SDK. It is to test the integration of NavSDK with an app and find usability issues. The integration of NavSDK into an app should never fail because of bugs in NavSDK components.\n\nSo far, nothing new. Except the AmiGO team is now very reluctant to integrate any NavSDK changes at all (for ELM at least), as they fear it will hold them back from their other commitments. As a result, the integration cycle has stopped completely.\n\nThe end-goal fix for this is, obviously, that NavSDK should be properly integration-tested before being handed over to the AmiGO team. But we are not there yet. Until then, we need to find a working model to keep integrations going without disturbing the AmiGO team too much.\n\nMy proposal for the time being is the following: \n- The AmiGO team takes the new NavSDK release. \n- They attempt integration. This should take no more than a day or so.\n- If that fails due to NavSDK integration issues, they create a (critical or blocker) ticket and assign it to one single team in LP (this could be the team that currently integrates NavSDK).\n- From that moment on, the AmiGO team is no longer involved and the problem is back to where it belongs, in LP. Component teams pick up the ticket, fix it, and test it.\n- Repeat.\n\nWhat do we need for this?\n- To whom will those tickets be assigned? The NavSDK integration team?\n- What priority should these tickets have (they block the release of NavSDK)?\n- How do we proceed towards a more sustained way of integration testing in LP, rather than this temporary trial-and-error method?\n\nPlease respond in a thread.\n",
       "factory": true
     },
     {
@@ -288,20 +280,20 @@
       "name": "Chat about your text",
       "description": "Let's have a chat about the text you provide. Just copy-paste anything you want. I'll read it and we can start chatting.",
       "content": "Carefully read the following text and answer any following prompts in relation to this text. If you understand this, just reply \"I'm ready to answer your questions about this text.\"\nHere's the text: \n\n{{Enter text to be used as a starting point for further chatting}}",
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
     {
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
-      "name": "Summary (and opinions)",
+      "name": "Summarize (with opinions)",
       "description": "Provide a text and I will summarize it for you.",
       "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. If different people contributed to the text, provide a table of contributors with their opinions at the. Here's the text: \n\n{{Summarize this text}}",
-      "folderId": "3b0a147f-d34b-457c-b4e7-bbaf6e56d267",
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
     {
       "id": "c957084f-f76b-4035-8591-1785139bba0b",
-      "name": "List of actions",
+      "name": "List all actions in text",
       "description": "I will list all actions and action holders, sorted high to low priority.",
       "content": "Carefully inspect the text below and list all actions, sorted high priority to low priority. Put the actions holders in brackets. Here's the text:\n\n{{Text to extract actions from}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
