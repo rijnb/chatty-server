@@ -168,6 +168,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-11-23
+
+#### Features
+
+- Improved names and folders of factory prompts.
+- 
 ### 2023-11-20
 
 #### Bug fix
