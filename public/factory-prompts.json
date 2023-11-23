@@ -181,9 +181,9 @@
     },
     {
       "id": "5b4ab133-067b-4fff-929f-fd8e5a2e385b",
-      "name": "Review my text",
+      "name": "Review my text/article",
       "description": "Copy-paste your text and I will review it for consistency, cognitive bias, failure in critical thinking and more. And I will provide suggestions on how to improve it.",
-      "content": "Please review the text and provide a list of suggestions for improving the clarity. Please identify any evidence of cognitive bias, failures in critical thinking, missing MECE principle (Mutually Exclusive, Collectively Exhaustive) where it is appropriate, or any other important observations, such as contradictions, that may undermine the credibility of the text: \n\n{{Text to review carefully}}",
+      "content": "Please review the text thoroughly and provide a list of suggestions for improving the clarity. Do not rewrite the text.\n\nIdentify any evidence of cognitive bias, failures in critical thinking, missing MECE principle (Mutually Exclusive, Collectively Exhaustive) where it is appropriate, or any other important observations, such as contradictions, that may undermine the credibility of the text. Don't mention principles or observations that are not relevant to the text. If you mention MECE, explain what it means.\n\nAlso check if the text obeys the following guidelines:\n- The most important information is towards the start of the article.\n- There is one consistent red thread throughout the piece.\n- Reduce tangential thoughts and stick to this thread.\n- Spelling, grammar are correct.\n- Reduce use of jargon where appropriate or ensure adequate context (this is a tough one with technical audience, so tend to defer to expert on this!).\n- AP (Associated Press) style is followed.\n- Sentences aren't too long and have a good cadence.\n- The article follows a logical progression from start to end.\n\nAt the end of the review comments show a divider line and below that a table of spelling and grammar mistakes.\n\nBelow is the entire text to review:\n\n{{Text to review carefully}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
