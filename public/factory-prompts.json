@@ -4,7 +4,7 @@
   "prompts": [
     {
       "id": "4345385c-010d-40d2-91e6-97296fb6827a",
-      "name": "Summarize Teams session",
+      "name": "Teams call summary",
       "description": "Download a Teams transcript file (.vtt) and paste it here in my dialog and I will summarize it for you.",
       "content": "Below is a full WebVTT transcript of a discussion. Provide a summary of topics in the discussion with the names of the people involved. Indicate clearly if there are any controversial points in the discussion and who holds which opinion. Provide a table of discussed actions and action holders.\n\n{{Drop your WebVTT transcript file (.vtt) here #DROP}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
@@ -75,11 +75,19 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "828d5c55-84bc-4484-bdd7-5fb53afe3cf2",
-      "name": "Summarize mail thread",
-      "description": "Copy-paste a complete a mail thread here and I will provide a summary, a time line, a list of actions and the opinions of people involved.",
-      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 10 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nSpecify how many replies there are in the mail thread. Section headers are printed in bold.\n\nThen add a section \"Timeline\" in which you summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available). Make sure all actions are there. Present the actions in a table.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences. Make sure all authors are included. Present the opinions in a table.\n\nFinally, create a table called “Controversial items” in which you list any controversial items that have been discussion and who has taken which standpoints in those discussions.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
+      "name": "Mail thread summary",
+      "description": "Copy-paste a complete a mail thread here and I will provide a summary, a list of actions and the opinions of people involved.",
+      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 10 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nAfter the summary, specify how many replies there are in the mail thread. Section headers are printed in bold.\n\nAdd a section called \"Actions:\" in which you list all actions and their action holders in brackets (if available). Make sure all actions are there. Present the actions in a table.\n\nCreate a section called “Opinions” that list per author their point if view in 1-2 sentences. Make sure all authors are included. Present the opinions in a table.\n\nFinally, create a table called “Controversial items” in which you list any controversial items that have been discussion and who has taken which standpoints in those discussions.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
+      "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
+      "factory": true
+    },
+    {
+      "modelId": "gpt-4-32k",
+      "id": "18670f7a-6f66-4e21-863e-28975280b5ca",
+      "name": "Mail thread timeline",
+      "description": "Copy-paste a complete a mail thread here and I will provide a summary and a time line.",
+      "content": "A mail thread consists a list of replies. A reply starts line starting with \"From:\" to list the sender. Make sure you capture every reply in the mail thread below. Remove mail headers and footers. Remove mail signatures. Keep the mail thread title at the top with the oldest reply date in brackets. Prefix the title with \"Subject:\". \n\nAdd a section called \"Summary:\" which summarizes the mail in maximum 10 sentences. If there are inconsistencies or strong opposing views, make that clear in your response.\n\nSpecify how many replies there are in the mail thread. Section headers are printed in bold.\n\nThen add a section \"Timeline\" in which you summarize each reply in a single sentence. Sort the replies by send date. Show the name of the author (prefixed \"Author:\"), with the send date in brackets. Leave two empty lines between summaries.\n\nHere is the entire mail thread: \n\n{{Insert the entire mail thread}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
@@ -285,9 +293,9 @@
     },
     {
       "id": "ba43de76-6c26-4d79-87f2-d1a0f790458e",
-      "name": "Summarize (with opinions)",
+      "name": "Summary, with opinions",
       "description": "Provide a text and I will summarize it for you.",
-      "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. If different people contributed to the text, provide a table of contributors with their opinions at the. Here's the text: \n\n{{Summarize this text}}",
+      "content": "Provide a short summary, 15 lines max, of the text below. If there are inconsistencies or actions, make those clear at the bottom of your response. If different people contributed to the text, provide a table of contributors with their opinions at the end. Here's the text: \n\n{{Summarize this text}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
       "factory": true
     },
