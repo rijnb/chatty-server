@@ -4,7 +4,7 @@
   "prompts": [
     {
       "id": "4345385c-010d-40d2-91e6-97296fb6827a",
-      "name": "Summarize Teams session",
+      "name": "Teams call summary",
       "description": "Download a Teams transcript file (.vtt) and paste it here in my dialog and I will summarize it for you.",
       "content": "Below is a full WebVTT transcript of a discussion. Provide a summary of topics in the discussion with the names of the people involved. Indicate clearly if there are any controversial points in the discussion and who holds which opinion. Provide a table of discussed actions and action holders.\n\n{{Drop your WebVTT transcript file (.vtt) here #DROP}}",
       "folderId": "1a4b5bef-118b-4f65-9c66-835dfc618df6",
