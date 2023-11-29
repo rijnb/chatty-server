@@ -12,6 +12,7 @@ import useApiService from "@/services/useApiService"
 import {asMock} from "@/testutils"
 import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import useMarkdownFile from "@/utils/app/markdown"
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => {
@@ -25,6 +26,7 @@ jest.mock("react-i18next", () => ({
   }
 }))
 
+jest.mock("@/utils/app/markdown")
 jest.mock("@/services/useApiService")
 jest.mock("@/pages/api/home/home.context", () => {
   return {
@@ -32,9 +34,7 @@ jest.mock("@/pages/api/home/home.context", () => {
     useHomeContext: jest.fn()
   }
 })
-
 jest.mock("react-hot-toast")
-
 jest.mock("@/components/UnlockCode", () => {
   return {
     ...jest.requireActual("@/components/UnlockCode"),
@@ -92,6 +92,8 @@ describe("<Chat/>", () => {
       getModels: () => Promise.resolve([]),
       getEndpoint: () => "stub"
     })
+
+    asMock(useMarkdownFile).mockReturnValue(null)
   })
 
   const stopConversationRef: MutableRefObject<boolean> = {current: false}
