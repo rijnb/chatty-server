@@ -1,3 +1,4 @@
+import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
@@ -27,6 +28,7 @@ export const RESPONSE_TIMEOUT_MS = 20000
 
 const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
+  const appInsights = useAppInsightsContext()
   const {unlocked} = useUnlock()
 
   const {
@@ -105,6 +107,18 @@ const Chat = memo(({stopConversationRef}: Props) => {
         }
       }
       const controller = new AbortController()
+
+      appInsights.trackEvent({
+        name: "SendMessage",
+        properties: {
+          plugin: plugin ?? "chat",
+          modelId: chatBody.modelId,
+          messages: chatBody.messages.length,
+          temperature: chatBody.temperature,
+          maxTokens: chatBody.maxTokens,
+          tokenCount: updatedConversation.tokenCount
+        }
+      })
 
       // Execute the API call.
       try {

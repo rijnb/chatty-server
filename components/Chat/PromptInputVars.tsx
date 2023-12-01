@@ -1,3 +1,4 @@
+import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {ChangeEvent, DragEvent, useEffect, useRef, useState} from "react"
 
 import {Button, Dialog, FormHeader, FormLabel, FormText, TextArea} from "@/components/Styled"
@@ -24,6 +25,8 @@ type DroppedFile = {
 }
 
 export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: Props) => {
+  const appInsights = useAppInsightsContext()
+
   const [updatedPromptVariables, setUpdatedPromptVariables] = useState<{key: string; value: string}[]>(
     promptVariables
       .map((promptVariable) => ({key: promptVariable, value: ""}))
@@ -99,6 +102,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
   }
 
   const handleSubmit = () => {
+    appInsights.trackEvent({name: "PromptUsed", properties: {prompt: prompt.id, isFactory: prompt.factory}})
     onSubmit(updatedPromptVariables.map((variable) => (variable.value === "" ? " " : variable.value)))
   }
 
@@ -115,7 +119,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
         <FormText className="mt-2">{prompt.description}</FormText>
 
         {updatedPromptVariables.map((variable, index) => (
-          <>
+          <div key={index}>
             {
               // If this is the last variable, and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
               index === updatedPromptVariables.length - 1 && variable.key.endsWith(PROMPT_KEYWORD_DROP) ? (
@@ -153,7 +157,7 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
                 </>
               )
             }
-          </>
+          </div>
         ))}
 
         <Button className="mt-2" onClick={handleSubmit}>
