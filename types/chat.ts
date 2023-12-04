@@ -22,6 +22,7 @@ export interface Conversation {
   id: string
   name: string
   messages: Message[]
+  tokenCount: number
   modelId: OpenAIModelID
   prompt: string
   temperature: number
