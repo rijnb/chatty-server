@@ -12,6 +12,7 @@ export const createNewConversation = (name: string, modelId: OpenAIModelID, temp
     id: uuidv4(),
     name: name,
     messages: [],
+    tokenCount: 0,
     modelId: modelId,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,

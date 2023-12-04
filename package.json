@@ -18,6 +18,8 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-react-js": "^17.0.2",
+    "@microsoft/applicationinsights-web": "^3.0.5",
     "@tabler/icons-react": "^2.40.0",
     "ai": "^2.2.20",
     "html-to-image": "^1.11.11",
