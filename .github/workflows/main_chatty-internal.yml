@@ -25,6 +25,7 @@ jobs:
         env:
           BASE_PATH: ${{ vars.BASE_PATH }}
           NEXTJS_OUTPUT: standalone
+          NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING: ${{vars.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING}}
         run: |
           npm install
           npm run build
