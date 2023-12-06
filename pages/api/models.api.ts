@@ -44,8 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
             return {
               id: model.id,
               name: OpenAIModels[value].name,
-              tokenLimit: OpenAIModels[value].tokenLimit,
-              maxLength: OpenAIModels[value].maxLength
+              tokenLimit: OpenAIModels[value].tokenLimit
             }
           }
         }

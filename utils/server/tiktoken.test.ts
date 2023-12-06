@@ -60,7 +60,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(23)
+        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_35_TURBO)).toEqual(23)
       })
 
       it("should count tokens2", async () => {
@@ -76,7 +76,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_3_5_AZ)).toEqual(20)
+        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_35_TURBO)).toEqual(20)
       })
     })
   })

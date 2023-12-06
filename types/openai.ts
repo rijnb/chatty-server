@@ -1,48 +1,56 @@
-export enum OpenAIModelID {
-  GPT_3_5 = "gpt-3.5-turbo",
-  GPT_3_5_AZ = "gpt-35-turbo",
-  GPT_3_5_AZ_16K = "gpt-35-turbo-16k",
-  GPT_4 = "gpt-4",
-  GPT_4_32K = "gpt-4-32k"
-}
+/**
+ * This file contains additional information about supported models.
+ * Most importantly, it defines the maximum number of tokens.
+ *
+ * Note that this should match your deployment of OpenAI models.
+ * Currently, we cannot query the API for this information.
+ */
 
 export interface OpenAIModel {
   id: OpenAIModelID
   name: string
-  maxLength: number
   tokenLimit: number
 }
 
+export enum OpenAIModelID {
+  GPT_3_5_TURBO = "gpt-3.5-turbo",
+  GPT_35_TURBO = "gpt-35-turbo",
+  GPT_3_5_TURBO_16K = "gpt-3.5-turbo-16k",
+  GPT_35_TURBO_16K = "gpt-35-turbo-16k",
+  GPT_4 = "gpt-4",
+  GPT_4_32K = "gpt-4-32k"
+}
+
 export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
-  [OpenAIModelID.GPT_3_5]: {
-    id: OpenAIModelID.GPT_3_5,
-    name: OpenAIModelID.GPT_3_5,
-    maxLength: 12000,
-    tokenLimit: 4096
+  [OpenAIModelID.GPT_3_5_TURBO]: {
+    id: OpenAIModelID.GPT_3_5_TURBO,
+    name: OpenAIModelID.GPT_3_5_TURBO,
+    tokenLimit: 4 * 1024
   },
-  [OpenAIModelID.GPT_3_5_AZ]: {
-    id: OpenAIModelID.GPT_3_5_AZ,
-    name: OpenAIModelID.GPT_3_5_AZ,
-    maxLength: 12000,
-    tokenLimit: 4096
+  [OpenAIModelID.GPT_35_TURBO]: {
+    id: OpenAIModelID.GPT_35_TURBO,
+    name: OpenAIModelID.GPT_35_TURBO,
+    tokenLimit: 4 * 1024
   },
-  [OpenAIModelID.GPT_3_5_AZ_16K]: {
-    id: OpenAIModelID.GPT_3_5_AZ_16K,
-    name: OpenAIModelID.GPT_3_5_AZ_16K,
-    maxLength: 12000,
-    tokenLimit: 16384
+  [OpenAIModelID.GPT_3_5_TURBO_16K]: {
+    id: OpenAIModelID.GPT_3_5_TURBO_16K,
+    name: OpenAIModelID.GPT_3_5_TURBO_16K,
+    tokenLimit: 16 * 1024
+  },
+  [OpenAIModelID.GPT_35_TURBO_16K]: {
+    id: OpenAIModelID.GPT_35_TURBO_16K,
+    name: OpenAIModelID.GPT_35_TURBO_16K,
+    tokenLimit: 16 * 1024
   },
   [OpenAIModelID.GPT_4]: {
     id: OpenAIModelID.GPT_4,
     name: OpenAIModelID.GPT_4,
-    maxLength: 24000,
-    tokenLimit: 8192
+    tokenLimit: 128 * 1024
   },
   [OpenAIModelID.GPT_4_32K]: {
     id: OpenAIModelID.GPT_4_32K,
     name: OpenAIModelID.GPT_4_32K,
-    maxLength: 96000,
-    tokenLimit: 32768
+    tokenLimit: 32 * 1024
   }
 }
 

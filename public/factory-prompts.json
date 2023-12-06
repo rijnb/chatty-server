@@ -83,7 +83,6 @@
       "factory": true
     },
     {
-      "modelId": "gpt-4-32k",
       "id": "18670f7a-6f66-4e21-863e-28975280b5ca",
       "name": "Mail thread timeline",
       "description": "Copy-paste a complete a mail thread here and I will provide a summary and a time line.",
