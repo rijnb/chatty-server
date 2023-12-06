@@ -2,17 +2,7 @@
 
 ### What's new?
 
-* Added support for WebVTT files, so you can summarize the transcripts of Teams sessions. 
-  we've also implemented a standard prompt for this (in folder Productivity). Just drop the
-  downloaded transcript file into the prompt dialog.
-* Added support for locally deployed factory prompts, if you want you deployment to have 
-  prompts specific to your (e.g. company) deployment, next to the standard ones.
-* Added support for LaTeX rendering of formulas.
-* Added ability to modify the system prompt (stored in model selection per conversation). 
-  The system prompt precedes all items in a conversation and allows you to change the 
-  behavior of the model during a conversation. 
-
-(For the complete Release Notes, scroll down to the bottom of this page.) 
+For the Release Notes, please scroll down to the bottom of this page. 
 
 ### Getting started
 
@@ -167,6 +157,22 @@ _Rijn Buve & Oleksii Kulyk_
 ---
 
 ## Release notes
+
+### 2023-12-05
+
+#### Features
+
+- Fixed model names and max token counts.
+- Earlier additions:
+  - Added support for WebVTT files, so you can summarize the transcripts of Teams sessions.
+    we've also implemented a standard prompt for this (in folder Productivity). Just drop the
+    downloaded transcript file into the prompt dialog.
+  -Added support for locally deployed factory prompts, if you want you deployment to have
+    prompts specific to your (e.g. company) deployment, next to the standard ones.
+  -Added support for LaTeX rendering of formulas.
+  -Added ability to modify the system prompt (stored in model selection per conversation).
+    The system prompt precedes all items in a conversation and allows you to change the
+    behavior of the model during a conversation.
 
 ### 2023-11-23
 
