@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from "uuid"
 
 import {FolderInterface, FolderType} from "@/types/folder"
+import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
 
 export const STORAGE_KEY_FOLDERS = "folders"
 
@@ -9,7 +10,7 @@ export const createNewFolder = (name: string, type: FolderType): FolderInterface
 }
 
 export const getFolders = (): FolderInterface[] => {
-  const foldersAsString = localStorage.getItem(STORAGE_KEY_FOLDERS)
+  const foldersAsString = localStorageSafeGetItem(STORAGE_KEY_FOLDERS)
   try {
     return foldersAsString ? (JSON.parse(foldersAsString) as FolderInterface[]) : []
   } catch (error) {
@@ -19,7 +20,7 @@ export const getFolders = (): FolderInterface[] => {
 }
 
 export const saveFolders = (folders: FolderInterface[]) => {
-  localStorage.setItem(STORAGE_KEY_FOLDERS, JSON.stringify(folders))
+  localStorageSafeSetItem(STORAGE_KEY_FOLDERS, JSON.stringify(folders))
 }
 
-export const removeFolders = () => localStorage.removeItem(STORAGE_KEY_FOLDERS)
+export const removeFolders = () => localStorageSafeRemoveItem(STORAGE_KEY_FOLDERS)

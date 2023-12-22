@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from "uuid"
 
 import {Prompt} from "@/types/prompt"
+import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
 
 export const STORAGE_KEY_PROMPTS = "prompts"
 
@@ -16,11 +17,11 @@ export const createNewPrompt = (name: string): Prompt => {
 }
 
 export const savePrompts = (prompts: Prompt[]) => {
-  localStorage.setItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
+  localStorageSafeSetItem(STORAGE_KEY_PROMPTS, JSON.stringify(prompts))
 }
 
 export const getPrompts = (): Prompt[] => {
-  const promptsAsString = localStorage.getItem(STORAGE_KEY_PROMPTS)
+  const promptsAsString = localStorageSafeGetItem(STORAGE_KEY_PROMPTS)
   try {
     return promptsAsString ? (JSON.parse(promptsAsString) as Prompt[]) : []
   } catch (error) {
@@ -29,4 +30,4 @@ export const getPrompts = (): Prompt[] => {
   }
 }
 
-export const removePrompts = () => localStorage.removeItem(STORAGE_KEY_PROMPTS)
+export const removePrompts = () => localStorageSafeRemoveItem(STORAGE_KEY_PROMPTS)
