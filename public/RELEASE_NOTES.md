@@ -158,7 +158,14 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+
 ### 2023-12-05
+
+#### Bug fixes
+
+- Show error when local storage is full.
+
+### 2023-12-22
 
 #### Features
 
@@ -179,7 +186,7 @@ _Rijn Buve & Oleksii Kulyk_
 #### Features
 
 - Improved names and folders of factory prompts.
-- 
+
 ### 2023-11-20
 
 #### Bug fix
@@ -192,8 +199,6 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Added ability to show a specific message for your deployment.
 - Changed default path to `/`.
-
-### 2023-10-25
 
 ### 2023-10-31
 
