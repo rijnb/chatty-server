@@ -158,7 +158,13 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2023-12-22
+
 ### 2023-12-05
+
+#### Bug fixes
+
+- Show error when local storage is full.
 
 #### Features
 
