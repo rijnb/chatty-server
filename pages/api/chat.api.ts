@@ -1,4 +1,5 @@
 import cl100k_base from "js-tiktoken/ranks/cl100k_base"
+import {NextApiRequest, NextApiResponse} from "next"
 
 import {ChatBody, Message} from "@/types/chat"
 import {OpenAIModels, maxTokensForModel} from "@/types/openai"
@@ -10,28 +11,22 @@ import {
   OpenAIAuthError,
   OpenAIError,
   OpenAILimitExceeded,
-  OpenAIRateLimited
+  OpenAIRateLimited,
+  streamToResponse
 } from "@/utils/server/openAiClient"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/shared/tiktoken"
+import {LimitExceeded} from "@/utils/shared/types"
 
-export const config = {
-  runtime: "edge"
-}
-
-function errorResponse(body: any, status: number) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
+function errorResponse(res: NextApiResponse, body: any, status: number) {
+  return res.status(status).json(body)
 }
 
 const encoder = TiktokenEncoder.wrap(cl100k_base)
 
-const handler = async (req: Request): Promise<Response> => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const {messages, apiKey, modelId, prompt, temperature, maxTokens} = (await req.json()) as ChatBody
+    const {messages, apiKey, modelId, prompt, temperature, maxTokens, selectedTools, toolConfigurations} =
+      req.body as ChatBody
     const tokenLimit = maxTokensForModel(modelId)
 
     const maxTokensToUse = maxTokens || OPENAI_API_MAX_TOKENS
@@ -51,10 +46,23 @@ totalNumberOfMessages:${allMessages.length}, \
 temperature:${temperature}, \
 maxTokens:${maxTokens}}`)
 
-    return await ChatCompletionStream(modelId, promptToSend, temperatureToUse, maxTokensToUse, apiKey, messagesToSend)
+    return streamToResponse(
+      await ChatCompletionStream(
+        modelId,
+        promptToSend,
+        temperatureToUse,
+        maxTokensToUse,
+        apiKey,
+        selectedTools,
+        toolConfigurations,
+        messagesToSend
+      ),
+      res
+    )
   } catch (error) {
     if (error instanceof OpenAIRateLimited) {
       return errorResponse(
+        res,
         {
           errorType: "rate_limit",
           retryAfter: error.retryAfterSeconds
@@ -65,6 +73,7 @@ maxTokens:${maxTokens}}`)
 
     if (error instanceof OpenAIAuthError) {
       return errorResponse(
+        res,
         {
           errorType: "openai_auth_error"
         },
@@ -72,8 +81,9 @@ maxTokens:${maxTokens}}`)
       )
     }
 
-    if (error instanceof OpenAILimitExceeded) {
+    if (error instanceof OpenAILimitExceeded || error instanceof LimitExceeded) {
       return errorResponse(
+        res,
         {
           errorType: "context_length_exceeded",
           limit: error.limit,
@@ -85,6 +95,7 @@ maxTokens:${maxTokens}}`)
 
     if (error instanceof GenericOpenAIError) {
       return errorResponse(
+        res,
         {
           errorType: "generic_openai_error",
           message: error.message
@@ -95,6 +106,7 @@ maxTokens:${maxTokens}}`)
 
     if (error instanceof OpenAIError) {
       return errorResponse(
+        res,
         {
           errorType: "openai_error",
           message: error.message
@@ -106,6 +118,7 @@ maxTokens:${maxTokens}}`)
     console.error("Unexpected error", error)
     if (error instanceof Error) {
       return errorResponse(
+        res,
         {
           errorType: "unexpected_error",
           message: error.message
@@ -115,6 +128,7 @@ maxTokens:${maxTokens}}`)
     }
 
     return errorResponse(
+      res,
       {
         errorType: "unexpected_error",
         message: "Unknown error"

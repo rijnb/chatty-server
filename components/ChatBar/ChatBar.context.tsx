@@ -4,7 +4,6 @@ import {ChatBarInitialState} from "@/components/ChatBar/ChatBar.state"
 import {ActionType} from "@/hooks/useCreateReducer"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
-import {PluginID, PluginKey} from "@/types/plugin"
 
 export interface ChatBarContextProps {
   state: ChatBarInitialState
@@ -13,8 +12,8 @@ export interface ChatBarContextProps {
   handleClearConversations: () => void
   handleImportConversations: (data: SupportedFileFormats) => void
   handleExportConversations: () => void
-  handlePluginKeyChange: (pluginKey: PluginKey) => void
-  handleClearPluginKey: (pluginId: PluginID) => void
+  handleToolConfigurationChange: (toolId: string, configuration: any) => void
+  handleClearToolConfiguration: (toolId: string) => void
   handleApiKeyChange: (apiKey: string) => void
 }
 

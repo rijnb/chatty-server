@@ -1,5 +1,6 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
+import {ChatCompletionStreamingRunner} from "openai/lib/ChatCompletionStreamingRunner"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
@@ -14,7 +15,6 @@ import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
-import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 
@@ -31,22 +31,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const {unlocked} = useUnlock()
 
   const {
-    state: {
-      selectedConversation,
-      currentMessage,
-      conversations,
-      models,
-      apiKey,
-      pluginKeys,
-      serverSideApiKeyIsSet,
-      modelError,
-      defaultModelId
-    },
+    state: {selectedConversation, conversations, models, apiKey, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
     dispatch: homeDispatch
   } = useHomeContext()
 
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
-  const {getEndpoint} = useApiService()
+  const {getApiUrl} = useApiService()
   const [waitTime, setWaitTime] = useState<number | null>(null)
 
   const fetchService = useFetch({
@@ -56,7 +46,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSendMessage = useCallback(
-    async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
+    async (message: Message, deleteCount = 0) => {
       if (!selectedConversation) {
         return
       }
@@ -89,34 +79,25 @@ const Chat = memo(({stopConversationRef}: Props) => {
         apiKey: apiKey,
         prompt: updatedConversation.prompt,
         temperature: updatedConversation.temperature,
-        maxTokens: updatedConversation.maxTokens
+        maxTokens: updatedConversation.maxTokens,
+        selectedTools: selectedConversation.selectedTools,
+        toolConfigurations: Object.fromEntries(
+          Object.entries(toolConfigurations).filter(([id, config]) => selectedConversation.selectedTools.includes(id))
+        )
       }
-      const endpoint = getEndpoint(plugin)
-      let body
-      if (!plugin) {
-        body = chatBody
-      } else {
-        body = {
-          ...chatBody,
-          googleAPIKey: pluginKeys
-            .find((key) => key.pluginId === "google-search")
-            ?.requiredKeys.find((key) => key.key === "GOOGLE_API_KEY")?.value,
-          googleCSEId: pluginKeys
-            .find((key) => key.pluginId === "google-search")
-            ?.requiredKeys.find((key) => key.key === "GOOGLE_CSE_ID")?.value
-        }
-      }
+      const endpoint = getApiUrl("/api/chat")
+      const body = chatBody
       const controller = new AbortController()
 
       appInsights.trackEvent({
         name: "SendMessage",
         properties: {
-          plugin: plugin ?? "chat",
           modelId: chatBody.modelId,
           messages: chatBody.messages.length,
           temperature: chatBody.temperature,
           maxTokens: chatBody.maxTokens,
-          tokenCount: updatedConversation.tokenCount
+          tokenCount: updatedConversation.tokenCount,
+          selectedTools: chatBody.selectedTools.join(", ")
         }
       })
 
@@ -201,65 +182,80 @@ const Chat = memo(({stopConversationRef}: Props) => {
         }
 
         // Get response data (as JSON for plugin, as reader for OpenAI).
-        console.debug(`HTTP get data...`)
-        const data = plugin ? await response.json() : response.body?.getReader()
-        if (!data) {
+        if (!response.body) {
           console.debug(`HTTP get data: no data`)
           homeDispatch({field: "loading", value: false})
           homeDispatch({field: "messageIsStreaming", value: false})
           return
         }
-        if (!plugin) {
-          // Update name of conversation when first message is received and the name is still the default value.
-          if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
-            const {content} = message
-            const maxTitleLength = 30
-            const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
+
+        const stream = ChatCompletionStreamingRunner.fromReadableStream(response.body)
+
+        stream
+          .on("connect", () => console.debug("connect"))
+          .on("functionCall", (call) => console.debug(`functionCall: ${JSON.stringify(call)}`))
+          .on("message", (msg) => console.debug(`message: ${JSON.stringify(msg)}`))
+          .on("chatCompletion", (completion) => console.debug(`chatCompletion: ${JSON.stringify(completion)}`))
+          .on("finalContent", (contentSnapshot) => console.debug(`finalContent: ${JSON.stringify(contentSnapshot)}`))
+          .on("finalMessage", (message) => console.debug(`finalMessage: ${JSON.stringify(message)}`))
+          .on("finalChatCompletion", (completion) =>
+            console.debug(`finalChatCompletion: ${JSON.stringify(completion)}`)
+          )
+          .on("finalFunctionCall", (call) => console.debug(`finalFunctionCall: ${JSON.stringify(call)}`))
+          .on("functionCallResult", (result) => console.debug(`functionCallResult: ${JSON.stringify(result)}`))
+          .on("finalFunctionCallResult", (result) =>
+            console.debug(`finalFunctionCallResult: ${JSON.stringify(result)}`)
+          )
+          .on("error", (error) => console.error(`error: ${JSON.stringify(error)}`))
+          .on("abort", () => console.debug("abort"))
+          .on("end", () => console.debug("end"))
+          .on("totalUsage", (usage) => console.debug(`totalUsage: ${JSON.stringify(usage)}`))
+          .on("chunk", (chunk) => console.debug(`chunk: ${JSON.stringify(chunk)}`))
+          .on("content", (contentDelta, contentSnapshot) =>
+            console.debug(
+              `content: contentDelta: ${JSON.stringify(contentDelta)}, contentSnapshot: ${JSON.stringify(
+                contentSnapshot
+              )}`
+            )
+          )
+
+        // Update name of conversation when first message is received and the name is still the default value.
+        if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
+          const {content} = message
+          const maxTitleLength = 30
+          const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
+          updatedConversation = {
+            ...updatedConversation,
+            name: customName,
+            time: Date.now()
+          }
+        }
+
+        await stream
+          .on("connect", () => {
+            const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: ""}]
             updatedConversation = {
               ...updatedConversation,
-              name: customName,
-              time: Date.now()
+              messages: updatedMessages
             }
-          }
-          homeDispatch({field: "loading", value: false})
-          const decoder = new TextDecoder()
-          let done = false
-          let isFirst = true
-          let text = ""
-          while (!done) {
-            if (stopConversationRef.current) {
-              console.debug("Stopped conversation...")
-              controller.abort()
-              break
-            }
-            const chunkResponse = await Promise.race([
-              data.read(),
-              new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), RESPONSE_TIMEOUT_MS))
-            ])
-            const {value, done: doneReading} = chunkResponse
-            done = doneReading
-            const chunkValue = decoder.decode(value, {stream: true})
-            text += chunkValue
-            if (isFirst) {
-              isFirst = false
-              const updatedMessages: Message[] = [
-                ...updatedConversation.messages,
-                {role: "assistant", content: chunkValue}
-              ]
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages
-              }
-              homeDispatch({field: "selectedConversation", value: updatedConversation})
-            } else {
-              const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
+            homeDispatch({field: "selectedConversation", value: updatedConversation})
+            homeDispatch({field: "loading", value: false})
+          })
+          .on("message", (message) => {
+            if (message.role === "assistant" && message.tool_calls) {
+              const newToolCalls = message.tool_calls.map((toolCall) => ({
+                functionName: toolCall.function.name,
+                arguments: toolCall.function.arguments
+              }))
+
+              const updatedMessages: Message[] = updatedConversation.messages.map((m, index) => {
                 if (index === updatedConversation.messages.length - 1) {
                   return {
-                    ...message,
-                    content: text
+                    ...m,
+                    tool_calls: (m.tool_calls || []).concat(newToolCalls)
                   }
                 }
-                return message
+                return m
               })
               updatedConversation = {
                 ...updatedConversation,
@@ -270,43 +266,41 @@ const Chat = memo(({stopConversationRef}: Props) => {
                 value: updatedConversation
               })
             }
-          }
-          saveSelectedConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map((conversation) => {
-            if (conversation.id === selectedConversation.id) {
-              return updatedConversation
-            }
-            return conversation
           })
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation)
-          }
-          homeDispatch({field: "conversations", value: updatedConversations})
-          saveConversationsHistory(updatedConversations)
-          homeDispatch({field: "messageIsStreaming", value: false})
-        } else {
-          const {answer} = data
-          const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages
-          }
-          homeDispatch({field: "selectedConversation", value: updatedConversation})
-          saveSelectedConversation(updatedConversation)
-          const updatedConversations: Conversation[] = conversations.map((conversation) => {
-            if (conversation.id === selectedConversation.id) {
-              return updatedConversation
+          .on("content", (contentDelta) => {
+            const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
+              if (index === updatedConversation.messages.length - 1) {
+                return {
+                  ...message,
+                  content: message.content + contentDelta
+                }
+              }
+              return message
+            })
+            updatedConversation = {
+              ...updatedConversation,
+              messages: updatedMessages
             }
-            return conversation
+            homeDispatch({
+              field: "selectedConversation",
+              value: updatedConversation
+            })
           })
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation)
+          .done()
+
+        saveSelectedConversation(updatedConversation)
+        const updatedConversations: Conversation[] = conversations.map((conversation) => {
+          if (conversation.id === selectedConversation.id) {
+            return updatedConversation
           }
-          homeDispatch({field: "conversations", value: updatedConversations})
-          saveConversationsHistory(updatedConversations)
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
+          return conversation
+        })
+        if (updatedConversations.length === 0) {
+          updatedConversations.push(updatedConversation)
         }
+        homeDispatch({field: "conversations", value: updatedConversations})
+        saveConversationsHistory(updatedConversations)
+        homeDispatch({field: "messageIsStreaming", value: false})
       } catch (error) {
         const {status, statusText, content, message} = error as any
         console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
@@ -333,16 +327,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      apiKey,
-      conversations,
-      fetchService,
-      getEndpoint,
-      homeDispatch,
-      pluginKeys,
-      selectedConversation,
-      stopConversationRef
-    ]
+    [apiKey, conversations, fetchService, getApiUrl, homeDispatch, selectedConversation, stopConversationRef]
   )
 
   useEffect(() => {
@@ -393,34 +378,23 @@ const Chat = memo(({stopConversationRef}: Props) => {
               textareaRef={textareaRef}
               retryAfter={waitTime}
               modelId={selectedConversation ? selectedConversation.modelId : defaultModelId}
-              onSend={(message, plugin) => {
-                // setCurrentMessage(message)
-                homeDispatch({field: "currentMessage", value: currentMessage})
+              onSend={(message) => {
                 // noinspection JSIgnoredPromiseFromCall
-                handleSendMessage(message, 0, plugin)
+                handleSendMessage(message, 0)
               }}
               onRegenerate={() => {
-                // Select the last message if there is one.
-                let newCurrentMessage = currentMessage
-                if (!newCurrentMessage && selectedConversation?.messages.length) {
-                  newCurrentMessage = selectedConversation?.messages.reduce((lastUserMessage, message) => {
-                    return message.role === "user" ? message : lastUserMessage
-                  })
-                  homeDispatch({field: "currentMessage", value: newCurrentMessage})
+                if (!selectedConversation) {
+                  return
                 }
 
                 // Figure out how many messages to remove (last 'user' + optional 'assistant').
-                let deleteCount = 0
-                if (newCurrentMessage) {
-                  if (selectedConversation?.messages.length) {
-                    if (selectedConversation.messages[selectedConversation.messages.length - 1].role === "user") {
-                      deleteCount = 1
-                    } else {
-                      deleteCount = 2
-                    }
-                  }
+                const messageIdxToResend = selectedConversation.messages.findLastIndex((t) => t.role === "user")
+                if (messageIdxToResend !== -1) {
                   // noinspection JSIgnoredPromiseFromCall
-                  handleSendMessage(newCurrentMessage, deleteCount, null)
+                  handleSendMessage(
+                    selectedConversation.messages[messageIdxToResend],
+                    selectedConversation.messages.length - messageIdxToResend
+                  )
                 }
               }}
             />

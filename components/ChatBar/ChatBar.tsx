@@ -11,7 +11,6 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import HomeContext from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
-import {PluginID, PluginKey} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
@@ -23,15 +22,15 @@ import {
 import {exportData} from "@/utils/app/export"
 import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
-import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
+import {saveToolConfigurations} from "@/utils/app/tools"
 
 export const ChatBar = () => {
   const {t} = useTranslation("common")
   const chatBarContextValue = useCreateReducer<ChatBarInitialState>({initialState})
 
   const {
-    state: {conversations, selectedConversation, showChatBar, defaultModelId, folders, pluginKeys},
+    state: {conversations, selectedConversation, showChatBar, defaultModelId, folders, tools, toolConfigurations},
     dispatch: homeDispatch,
     handleCreateFolder,
     handleNewConversation,
@@ -51,33 +50,17 @@ export const ChatBar = () => {
     [homeDispatch]
   )
 
-  const handlePluginKeyChange = (pluginKey: PluginKey) => {
-    if (pluginKeys.some((key) => key.pluginId === pluginKey.pluginId)) {
-      const updatedPluginKeys = pluginKeys.map((key) => {
-        if (key.pluginId === pluginKey.pluginId) {
-          return pluginKey
-        }
-        return key
-      })
-
-      homeDispatch({field: "pluginKeys", value: updatedPluginKeys})
-      savePluginKeys(updatedPluginKeys)
-    } else {
-      homeDispatch({field: "pluginKeys", value: [...pluginKeys, pluginKey]})
-      savePluginKeys([...pluginKeys, pluginKey])
-    }
+  const handleToolConfigurationChange = (toolId: string, configuration: any) => {
+    const updatedToolConfigurations = {...toolConfigurations, [toolId]: configuration}
+    homeDispatch({field: "toolConfigurations", value: updatedToolConfigurations})
+    saveToolConfigurations(updatedToolConfigurations)
   }
 
-  const handleClearPluginKey = (pluginId: PluginID) => {
-    const updatedPluginKeys = pluginKeys.filter((key) => key.pluginId !== pluginId)
-
-    if (updatedPluginKeys.length === 0) {
-      homeDispatch({field: "pluginKeys", value: []})
-      removePluginKeys()
-    } else {
-      homeDispatch({field: "pluginKeys", value: updatedPluginKeys})
-      savePluginKeys(updatedPluginKeys)
-    }
+  const handleClearToolConfiguration = (toolId: string) => {
+    const updatedToolConfigurations = {...toolConfigurations}
+    delete updatedToolConfigurations[toolId]
+    homeDispatch({field: "toolConfigurations", value: updatedToolConfigurations})
+    saveToolConfigurations(updatedToolConfigurations)
   }
 
   const handleClearConversations = () => {
@@ -88,7 +71,8 @@ export const ChatBar = () => {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
         defaultModelId || OPENAI_DEFAULT_MODEL,
-        OPENAI_DEFAULT_TEMPERATURE
+        OPENAI_DEFAULT_TEMPERATURE,
+        tools.map((t) => t.id)
       )
       homeDispatch({field: "selectedConversation", value: newConversation})
     }
@@ -108,7 +92,8 @@ export const ChatBar = () => {
           : createNewConversation(
               t(NEW_CONVERSATION_TITLE),
               defaultModelId || OPENAI_DEFAULT_MODEL,
-              OPENAI_DEFAULT_TEMPERATURE
+              OPENAI_DEFAULT_TEMPERATURE,
+              tools.map((t) => t.id)
             )
     })
     homeDispatch({field: "folders", value: folders})
@@ -139,7 +124,8 @@ export const ChatBar = () => {
           value: createNewConversation(
             t(NEW_CONVERSATION_TITLE),
             defaultModelId || OPENAI_DEFAULT_MODEL,
-            OPENAI_DEFAULT_TEMPERATURE
+            OPENAI_DEFAULT_TEMPERATURE,
+            tools.map((t) => t.id)
           )
         })
     }
@@ -191,8 +177,8 @@ export const ChatBar = () => {
         handleClearConversations,
         handleImportConversations,
         handleExportConversations,
-        handlePluginKeyChange,
-        handleClearPluginKey,
+        handleToolConfigurationChange,
+        handleClearToolConfiguration,
         handleApiKeyChange
       }}
     >

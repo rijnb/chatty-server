@@ -37,14 +37,15 @@ import {
 } from "@/utils/app/conversations"
 import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
 import {importData, isValidJsonData} from "@/utils/app/import"
-import {getPluginKeys, removePluginKeys} from "@/utils/app/plugins"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import {Tool, getToolConfigurations} from "@/utils/app/tools"
+import {ToolsRegistry} from "@/utils/server/tools"
+import {TiktokenEncoder} from "@/utils/shared/tiktoken"
 
 interface Props {
   serverSideApiKeyIsSet: boolean
-  serverSidePluginKeysSet: boolean
+  tools: Tool[]
   defaultModelId: string
   reuseModel: boolean
 }
@@ -56,16 +57,20 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
     ? process.env.OPENAI_DEFAULT_MODEL
     : FALLBACK_OPENAI_MODEL
 
-  let serverSidePluginKeysSet = false
-  const googleApiKey = process.env.GOOGLE_API_KEY
-  const googleCSEId = process.env.GOOGLE_CSE_ID
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true
-  }
+  const tools: Tool[] = ToolsRegistry.map((tool) => ({
+    id: tool.id,
+    type: tool.type,
+    name: tool.name,
+    description: tool.description,
+    parameters: tool.parameters,
+    configuration_parameters: tool.configuration_parameters,
+    hasServerConfiguration: tool.hasConfiguration()
+  }))
+
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      serverSidePluginKeysSet: serverSidePluginKeysSet,
+      tools,
       defaultModelId: defaultModelId,
       reuseModel: OPENAI_REUSE_MODEL,
       ...(await serverSideTranslations(locale ?? "en", ["common"]))
@@ -73,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   }
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, reuseModel}: Props) => {
+const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props) => {
   const {t} = useTranslation("common")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -181,7 +186,8 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
         reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
-        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+        tools.map((t) => t.id)
       )
       const updatedConversations = [...conversations, newConversation]
       homeDispatch({field: "selectedConversation", value: newConversation})
@@ -274,7 +280,12 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
   // Server side props changed.
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
-  }, [apiKey, homeDispatch])
+    tools &&
+      homeDispatch({
+        field: "tools",
+        value: tools
+      })
+  }, [apiKey, tools, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
@@ -286,12 +297,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
       homeDispatch({
         field: "serverSideApiKeyIsSet",
         value: serverSideApiKeyIsSet
-      })
-    console.debug(`useEffect: serverSidePluginKeySet:${serverSidePluginKeysSet}`)
-    serverSidePluginKeysSet &&
-      homeDispatch({
-        field: "serverSidePluginKeysSet",
-        value: serverSidePluginKeysSet
       })
 
     console.debug(`useEffect: defaultModelId:${defaultModelId}`)
@@ -314,13 +319,9 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
       homeDispatch({field: "apiKey", value: apiKey})
     }
 
-    const pluginKeys = getPluginKeys()
-    if (serverSidePluginKeysSet) {
-      homeDispatch({field: "pluginKeys", value: []})
-      removePluginKeys()
-    } else if (pluginKeys) {
-      homeDispatch({field: "pluginKeys", value: pluginKeys})
-    }
+    const toolConfigurations = getToolConfigurations()
+    //todo clean up tool configurations?
+    homeDispatch({field: "toolConfigurations", value: toolConfigurations})
 
     if (window.innerWidth < 640) {
       homeDispatch({field: "showChatBar", value: false})
@@ -390,7 +391,8 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
           const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
             reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
-            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+            tools.map((t) => t.id)
           )
           // Only add a new conversation to the history if there are existing conversations.
           if (cleanedConversationHistory.length > 0) {
@@ -403,7 +405,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
     reselectPreviousConversation().catch((error) => console.error(`Error reselecting previous conversation: ${error}`))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, reuseModel, homeDispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, tools, reuseModel, homeDispatch])
 
   // LAYOUT --------------------------------------------
 

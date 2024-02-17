@@ -6,7 +6,7 @@ import {useTranslation} from "react-i18next"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/shared/tiktoken"
 
 interface Props {
   content: string | undefined

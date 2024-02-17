@@ -54,12 +54,6 @@ const ChatConversation = ({conversation, onSend}: Props) => {
     const updatedConversation = {...conversation, messages}
     homeDispatch({field: "selectedConversation", value: updatedConversation})
 
-    // Set the current message to the last 'user' message.
-    const currentMessage = messages.reduce((lastUserMessage, message) => {
-      return message.role === "user" ? message : lastUserMessage
-    })
-    homeDispatch({field: "currentMessage", value: currentMessage})
-
     // Replace conversation in history.
     const conversationHistory = updateConversationHistory(conversations, updatedConversation)
     homeDispatch({field: "conversations", value: conversationHistory})

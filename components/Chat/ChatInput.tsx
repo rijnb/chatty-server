@@ -1,23 +1,24 @@
-import {IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
+import {IconBolt, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
 import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
 
 import ChatInputTokenCount from "./ChatInputTokenCount"
-import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
+import ToolSelect from "./ToolSelect"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
-import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
+import {updateConversationHistory} from "@/utils/app/conversations"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import {ToolId} from "@/utils/server/tools"
+import {TiktokenEncoder} from "@/utils/shared/tiktoken"
 
 interface Props {
   modelId: string
-  onSend: (message: Message, plugin: Plugin | null) => void
+  onSend: (message: Message, selectedTools: ToolId[]) => void
   onRegenerate: () => void
   stopConversationRef: MutableRefObject<boolean>
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>
@@ -28,7 +29,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt},
+    state: {models, conversations, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt, tools},
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -42,8 +43,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const [variables, setPromptVariables] = useState<string[]>([])
   const [isInputVarsModalVisible, setIsInputVarsModalVisible] = useState(false)
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
-  const [showPluginSelect, setShowPluginSelect] = useState(false)
-  const [plugin, setPlugin] = useState<Plugin | null>(null)
+  const [showToolsSelect, setShowToolsSelect] = useState(false)
+  const [selectedTools, setSelectedTools] = useState<ToolId[]>([])
   const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
 
   useEffect(() => {
@@ -54,6 +55,10 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     // noinspection JSIgnoredPromiseFromCall
     initToken()
   }, [])
+
+  useEffect(() => {
+    setSelectedTools(selectedConversation?.selectedTools || [])
+  }, [selectedConversation])
 
   useEffect(() => {
     if (triggerSelectedPrompt) {
@@ -140,9 +145,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
 
     const message: Message = {role: "user", content: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")}
-    onSend(message, plugin)
+    onSend(message, selectedTools)
     setContent("")
-    setPlugin(null)
 
     if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
       textareaRef.current.blur()
@@ -182,7 +186,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       handleSendMessage()
     } else if (e.key === "/" && e.metaKey) {
       e.preventDefault()
-      setShowPluginSelect(!showPluginSelect)
+      setShowToolsSelect(!showToolsSelect)
     } else if (e.key === "Escape") {
       e.preventDefault()
       setContent("")
@@ -200,7 +204,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
 
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
     setIsInputVarsModalVisible(false)
-    const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
+    const newContent = content?.replace(/{{(.*?)}}/g, (_, promptVariable) => {
       const index = variables.indexOf(promptVariable)
       return updatedPromptVariables[index]
     })
@@ -218,22 +222,18 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
   }
 
-  const handlePlugInKeyDown = () => {
-    return (e: any) => {
-      if (e.key === "Escape") {
-        e.preventDefault()
-        setShowPluginSelect(false)
-        textareaRef.current?.focus()
-      }
-    }
-  }
+  const handleSelectedToolsChange = () => {
+    return (selectedTools: ToolId[]) => {
+      if (selectedConversation) {
+        setSelectedTools(selectedTools)
+        selectedConversation.selectedTools = selectedTools
 
-  const handlePlugInChange = () => {
-    return (plugin: Plugin) => {
-      setPlugin(plugin)
-      setShowPluginSelect(false)
-      if (textareaRef?.current) {
-        textareaRef.current.focus()
+        const conversationHistory = updateConversationHistory(conversations, selectedConversation)
+        homeDispatch({field: "selectedConversation", value: selectedConversation})
+        homeDispatch({field: "conversations", value: conversationHistory})
+        if (textareaRef?.current) {
+          textareaRef.current.focus()
+        }
       }
     }
   }
@@ -293,14 +293,19 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         <div className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <button
             className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={() => setShowPluginSelect(!showPluginSelect)}
-            title=" Select plug-in for query"
+            onClick={() => setShowToolsSelect(!showToolsSelect)}
+            title="Select tools to be used"
           >
-            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
+            <IconBolt size={20} />
           </button>
-          {showPluginSelect && (
-            <div className="absolute bottom-14 left-0 rounded bg-white dark:bg-[#343541]">
-              <PluginSelect plugin={plugin} onKeyDown={handlePlugInKeyDown()} onPluginChange={handlePlugInChange()} />
+          {showToolsSelect && (
+            <div className="absolute bottom-14 left-0 w-[512px] rounded bg-white dark:bg-[#343541]">
+              <ToolSelect
+                tools={tools}
+                selectedTools={selectedTools}
+                onSelectionChange={handleSelectedToolsChange()}
+                onClose={() => setShowToolsSelect(false)}
+              />
             </div>
           )}
           <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">

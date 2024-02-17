@@ -1,6 +1,6 @@
 import {Message} from "@/types/chat"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/shared/tiktoken"
 
 describe("Tiktoken", () => {
   describe("Encoder", () => {

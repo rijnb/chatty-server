@@ -3,7 +3,6 @@ import {useCallback} from "react"
 import {useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import useApiHelper from "@/hooks/useApiHelper"
 import {useFetch} from "@/hooks/useFetch"
-import {Plugin, PluginID} from "@/types/plugin"
 
 export interface GetModelsRequestProps {
   apiKey: string
@@ -25,20 +24,9 @@ const useApiService = () => {
     [fetchService, getApiUrl]
   )
 
-  const getEndpoint = useCallback(
-    (plugin: Plugin | null) => {
-      if (plugin && plugin.id === PluginID.GOOGLE_SEARCH) {
-        return getApiUrl("/api/google")
-      } else {
-        return getApiUrl("/api/chat")
-      }
-    },
-    [getApiUrl]
-  )
-
   return {
     getModels,
-    getEndpoint
+    getApiUrl
   }
 }
 

@@ -28,7 +28,15 @@ export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) 
 
   return (
     <div className="flex flex-row">
-      <MessageMarkdown message={message} isComplete={isComplete} />
+      <div>
+        {message.tool_calls?.map((toolCall, index) => (
+          <div key={index} className="text-xs text-gray-500 dark:text-gray-400">
+            Calling {toolCall.functionName} with {toolCall.arguments}
+          </div>
+        ))}
+
+        <MessageMarkdown message={message} isComplete={isComplete} />
+      </div>
 
       <div className="mx-0 flex flex-row items-start justify-start gap-1">
         {messagedCopied ? (

@@ -1,7 +1,7 @@
 import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
 
 import {Message} from "@/types/chat"
-import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
+import {LimitExceeded} from "@/utils/shared/types"
 
 export class TiktokenEncoder {
   private readonly encoding: Tiktoken
@@ -66,7 +66,7 @@ export class TiktokenEncoder {
     )
 
     if (requiredTokens > tokenLimit) {
-      throw new OpenAILimitExceeded("Not enough tokens to send a message.", tokenLimit, requiredTokens)
+      throw new LimitExceeded("Not enough tokens to send a message.", tokenLimit, requiredTokens)
     }
 
     return messagesToSend

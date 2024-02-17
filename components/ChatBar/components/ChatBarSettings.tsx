@@ -4,7 +4,7 @@ import React, {useContext} from "react"
 
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
 import ClearConversations from "@/components/ChatBar/components/ClearConversations"
-import PluginKeyList from "@/components/ChatBar/components/PluginKeyList"
+import {ToolConfiguration} from "@/components/ChatBar/components/Tools/ToolConfiguration"
 import ApiKey from "@/components/Settings/ApiKey"
 import ImportData from "@/components/Settings/ImportData"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
@@ -17,11 +17,17 @@ export const ChatBarSettings = () => {
   const {isProtected, code, setCode} = useUnlock()
 
   const {
-    state: {apiKey, serverSideApiKeyIsSet, serverSidePluginKeysSet, conversations}
+    state: {apiKey, serverSideApiKeyIsSet, tools, conversations}
   } = useContext(HomeContext)
 
-  const {handleClearConversations, handleImportConversations, handleExportConversations, handleApiKeyChange} =
-    useContext(ChatBarContext)
+  const {
+    handleClearConversations,
+    handleImportConversations,
+    handleExportConversations,
+    handleApiKeyChange,
+    handleToolConfigurationChange,
+    handleClearToolConfiguration
+  } = useContext(ChatBarContext)
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
@@ -36,7 +42,16 @@ export const ChatBarSettings = () => {
         />
       ) : null}
       {!serverSideApiKeyIsSet ? <ApiKey apiKey={apiKey} onApiKeyChange={handleApiKeyChange} /> : null}
-      {!serverSidePluginKeysSet ? <PluginKeyList /> : null}
+      {tools
+        .filter((t) => !t.hasServerConfiguration)
+        .map((t) => (
+          <ToolConfiguration
+            key={t.id}
+            tool={t}
+            onConfigurationChange={(c) => handleToolConfigurationChange(t.id, c)}
+            onClearConfiguration={() => handleClearToolConfiguration(t.id)}
+          />
+        ))}
       {isProtected ? <UnlockCodeEditor unlockCode={code} onUnlockCodeChange={setCode} /> : null}
     </div>
   )

@@ -1,21 +1,21 @@
-import {Conversation, Message} from "@/types/chat"
+import {Conversation} from "@/types/chat"
 import {ErrorMessage} from "@/types/error"
 import {FolderInterface} from "@/types/folder"
 import {FALLBACK_OPENAI_MODEL, OpenAIModel} from "@/types/openai"
-import {PluginKey} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
+import {Tool, ToolConfigurations} from "@/utils/app/tools"
 
 export interface HomeInitialState {
   apiKey: string
-  pluginKeys: PluginKey[]
   loading: boolean
   messageIsStreaming: boolean
   modelError: ErrorMessage | null
   models: OpenAIModel[]
+  tools: Tool[]
+  toolConfigurations: ToolConfigurations
   folders: FolderInterface[]
   conversations: Conversation[]
   selectedConversation: Conversation | undefined
-  currentMessage: Message | undefined
   prompts: Prompt[]
   temperature: number
   showChatBar: boolean
@@ -25,7 +25,6 @@ export interface HomeInitialState {
   searchTerm: string
   defaultModelId: string
   serverSideApiKeyIsSet: boolean
-  serverSidePluginKeysSet: boolean
   triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.
   triggerFactoryPrompts: boolean // Used to trigger re-reading the factory prompts.
   reuseModel: boolean
@@ -34,14 +33,14 @@ export interface HomeInitialState {
 export const initialState: HomeInitialState = {
   apiKey: "",
   loading: false,
-  pluginKeys: [],
   messageIsStreaming: false,
   modelError: null,
   models: [],
+  tools: [],
+  toolConfigurations: {},
   folders: [],
   conversations: [],
   selectedConversation: undefined,
-  currentMessage: undefined,
   prompts: [],
   temperature: 1,
   showPromptBar: true,
@@ -51,7 +50,6 @@ export const initialState: HomeInitialState = {
   searchTerm: "",
   defaultModelId: FALLBACK_OPENAI_MODEL,
   serverSideApiKeyIsSet: false,
-  serverSidePluginKeysSet: false,
   triggerSelectedPrompt: undefined,
   triggerFactoryPrompts: true,
   reuseModel: false

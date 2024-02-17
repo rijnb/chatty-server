@@ -3,11 +3,17 @@ import {v4 as uuidv4} from "uuid"
 import {Conversation} from "@/types/chat"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
+import {ToolId} from "@/utils/server/tools"
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
 
-export const createNewConversation = (name: string, modelId: string, temperature: number): Conversation => {
+export const createNewConversation = (
+  name: string,
+  modelId: string,
+  temperature: number,
+  selectedTools: ToolId[]
+): Conversation => {
   return {
     id: uuidv4(),
     name: name,
@@ -17,6 +23,7 @@ export const createNewConversation = (name: string, modelId: string, temperature
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
     maxTokens: OPENAI_API_MAX_TOKENS,
+    selectedTools: selectedTools,
     folderId: undefined,
     time: new Date().getTime()
   }

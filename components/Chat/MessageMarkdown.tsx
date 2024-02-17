@@ -21,8 +21,8 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
         [
           remarkMath,
           {
-            inlineMath: [['$', '$']], /* enable $...$ */
-            displayMath: [['$$', '$$']] /* enable $$...$$ */
+            inlineMath: [["$", "$"]] /* enable $...$ */,
+            displayMath: [["$$", "$$"]] /* enable $$...$$ */
           }
         ]
       ]}
