@@ -46,19 +46,18 @@ totalNumberOfMessages:${allMessages.length}, \
 temperature:${temperature}, \
 maxTokens:${maxTokens}}`)
 
-    return streamToResponse(
-      await ChatCompletionStream(
-        modelId,
-        promptToSend,
-        temperatureToUse,
-        maxTokensToUse,
-        apiKey,
-        selectedTools,
-        toolConfigurations,
-        messagesToSend
-      ),
-      res
+    const stream = await ChatCompletionStream(
+      modelId,
+      promptToSend,
+      temperatureToUse,
+      maxTokensToUse,
+      apiKey,
+      selectedTools,
+      toolConfigurations,
+      messagesToSend
     )
+
+    stream.pipe(res)
   } catch (error) {
     if (error instanceof OpenAIRateLimited) {
       return errorResponse(

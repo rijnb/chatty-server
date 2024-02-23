@@ -1,11 +1,14 @@
 import {NextApiResponse} from "next"
+import {Readable} from "node:stream"
 import OpenAI from "openai"
+import {ChatCompletionStreamingRunner} from "openai/lib/ChatCompletionStreamingRunner"
 import {RunnableToolFunctionWithParse} from "openai/lib/RunnableFunction"
 
 import {OPENAI_API_HOST, OPENAI_API_KEY, OPENAI_AZURE_DEPLOYMENT_ID} from "../app/const"
 import {Message} from "@/types/chat"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {ToolId, ToolsRegistry} from "@/utils/server/tools"
+import {EventParameters, EventType} from "@/utils/shared/types"
 
 export class OpenAIError extends Error {
   constructor(message: string) {
@@ -135,7 +138,9 @@ export const ChatCompletionStream = async (
 
   console.info("stream.toReadableStream()")
 
-  return stream.toReadableStream()
+  return wrapToReadableStream(stream)
+
+  // return stream.toReadableStream()
 
   // const decoder = new TextDecoder()
   //
@@ -176,6 +181,30 @@ export const ChatCompletionStream = async (
   // const stream = OpenAIStream(response)
   // // Respond with the stream
   // return new StreamingTextResponse(stream)
+}
+
+function wrapToReadableStream(stream: ChatCompletionStreamingRunner) {
+  const readableStream = new Readable({
+    objectMode: true,
+    read() {} // no-op
+  })
+
+  function emit<E extends EventType>(event: E, ...data: EventParameters<E>) {
+    readableStream.push(JSON.stringify({event, data}) + "\n")
+
+    if (event === "end") {
+      readableStream.push(null)
+    }
+  }
+
+  stream
+    .on("connect", () => emit("connect"))
+    .on("content", (contentDelta, contentSnapshot) => emit("content", {delta: contentDelta, snapshot: contentSnapshot}))
+    .on("error", (error) => emit("error", error))
+    .on("end", () => emit("end"))
+    .on("functionCall", (call) => emit("toolCall", call.name, call.arguments))
+
+  return readableStream
 }
 
 export function streamToResponse(stream: ReadableStream, response: NextApiResponse) {

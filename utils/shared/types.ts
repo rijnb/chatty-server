@@ -9,3 +9,15 @@ export class LimitExceeded extends Error {
     this.requested = requested
   }
 }
+
+export type StreamEvents = {
+  connect: () => void
+  content: (content: {delta: string; snapshot: string}) => void
+  toolCall: (name: string, toolArguments: string) => void
+  error: (error: Error) => void
+  end: () => void
+}
+
+export type EventType = keyof StreamEvents
+export type ListenerForEvent<E extends EventType> = StreamEvents[E]
+export type EventParameters<E extends EventType> = Parameters<ListenerForEvent<E>>

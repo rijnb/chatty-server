@@ -1,6 +1,5 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
-import {ChatCompletionStreamingRunner} from "openai/lib/ChatCompletionStreamingRunner"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
@@ -13,6 +12,7 @@ import WelcomeMessage from "@/components/Chat/WelcomeMessage"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
+import {StreamEventClient} from "@/services/chatClient"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
@@ -27,8 +27,8 @@ export const RESPONSE_TIMEOUT_MS = 20000
 
 const Chat = memo(({stopConversationRef}: Props) => {
   const {t} = useTranslation("common")
-  const appInsights = useAppInsightsContext()
   const {unlocked} = useUnlock()
+  const appInsights = useAppInsightsContext()
 
   const {
     state: {selectedConversation, conversations, models, apiKey, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
@@ -181,43 +181,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
           return
         }
 
-        // Get response data (as JSON for plugin, as reader for OpenAI).
         if (!response.body) {
           console.debug(`HTTP get data: no data`)
           homeDispatch({field: "loading", value: false})
           homeDispatch({field: "messageIsStreaming", value: false})
           return
         }
-
-        const stream = ChatCompletionStreamingRunner.fromReadableStream(response.body)
-
-        stream
-          .on("connect", () => console.debug("connect"))
-          .on("functionCall", (call) => console.debug(`functionCall: ${JSON.stringify(call)}`))
-          .on("message", (msg) => console.debug(`message: ${JSON.stringify(msg)}`))
-          .on("chatCompletion", (completion) => console.debug(`chatCompletion: ${JSON.stringify(completion)}`))
-          .on("finalContent", (contentSnapshot) => console.debug(`finalContent: ${JSON.stringify(contentSnapshot)}`))
-          .on("finalMessage", (message) => console.debug(`finalMessage: ${JSON.stringify(message)}`))
-          .on("finalChatCompletion", (completion) =>
-            console.debug(`finalChatCompletion: ${JSON.stringify(completion)}`)
-          )
-          .on("finalFunctionCall", (call) => console.debug(`finalFunctionCall: ${JSON.stringify(call)}`))
-          .on("functionCallResult", (result) => console.debug(`functionCallResult: ${JSON.stringify(result)}`))
-          .on("finalFunctionCallResult", (result) =>
-            console.debug(`finalFunctionCallResult: ${JSON.stringify(result)}`)
-          )
-          .on("error", (error) => console.error(`error: ${JSON.stringify(error)}`))
-          .on("abort", () => console.debug("abort"))
-          .on("end", () => console.debug("end"))
-          .on("totalUsage", (usage) => console.debug(`totalUsage: ${JSON.stringify(usage)}`))
-          .on("chunk", (chunk) => console.debug(`chunk: ${JSON.stringify(chunk)}`))
-          .on("content", (contentDelta, contentSnapshot) =>
-            console.debug(
-              `content: contentDelta: ${JSON.stringify(contentDelta)}, contentSnapshot: ${JSON.stringify(
-                contentSnapshot
-              )}`
-            )
-          )
 
         // Update name of conversation when first message is received and the name is still the default value.
         if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
@@ -231,8 +200,9 @@ const Chat = memo(({stopConversationRef}: Props) => {
           }
         }
 
-        await stream
+        await StreamEventClient.fromReadableStream(response.body.getReader())
           .on("connect", () => {
+            console.log("connect")
             const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: ""}]
             updatedConversation = {
               ...updatedConversation,
@@ -241,38 +211,33 @@ const Chat = memo(({stopConversationRef}: Props) => {
             homeDispatch({field: "selectedConversation", value: updatedConversation})
             homeDispatch({field: "loading", value: false})
           })
-          .on("message", (message) => {
-            if (message.role === "assistant" && message.tool_calls) {
-              const newToolCalls = message.tool_calls.map((toolCall) => ({
-                functionName: toolCall.function.name,
-                arguments: toolCall.function.arguments
-              }))
-
-              const updatedMessages: Message[] = updatedConversation.messages.map((m, index) => {
-                if (index === updatedConversation.messages.length - 1) {
-                  return {
-                    ...m,
-                    tool_calls: (m.tool_calls || []).concat(newToolCalls)
-                  }
+          .on("toolCall", (name, toolArguments) => {
+            console.log("toolCall")
+            const updatedMessages: Message[] = updatedConversation.messages.map((m, index) => {
+              if (index === updatedConversation.messages.length - 1) {
+                return {
+                  ...m,
+                  tool_calls: (m.tool_calls || []).concat({functionName: name, arguments: toolArguments})
                 }
-                return m
-              })
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages
               }
-              homeDispatch({
-                field: "selectedConversation",
-                value: updatedConversation
-              })
+              return m
+            })
+            updatedConversation = {
+              ...updatedConversation,
+              messages: updatedMessages
             }
+            homeDispatch({
+              field: "selectedConversation",
+              value: updatedConversation
+            })
           })
-          .on("content", (contentDelta) => {
+          .on("content", ({delta}) => {
+            console.log("content", delta)
             const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
               if (index === updatedConversation.messages.length - 1) {
                 return {
                   ...message,
-                  content: message.content + contentDelta
+                  content: message.content + delta
                 }
               }
               return message
@@ -285,6 +250,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
               field: "selectedConversation",
               value: updatedConversation
             })
+          })
+          .on("error", (error) => {
+            console.error(`error: ${JSON.stringify(error)}`)
+          })
+          .on("end", () => {
+            console.log("end")
           })
           .done()
 
