@@ -9,6 +9,9 @@ type Dalle3ImageGeneratorConfiguration = {
 
 type Dalle3ImageGeneratorArgs = {
   prompt: string
+  size?: "1024x1024" | "1792x1024" | "1024x1792"
+  quality?: "standard" | "hd"
+  style?: "vivid" | "natural"
 }
 
 const dalle3ImageGenerator: BackendTool<Dalle3ImageGeneratorConfiguration, Dalle3ImageGeneratorArgs> = {
@@ -22,7 +25,24 @@ const dalle3ImageGenerator: BackendTool<Dalle3ImageGeneratorConfiguration, Dalle
     properties: {
       prompt: {
         type: "string",
-        description: "The prompt for the image"
+        description: "A text description of the desired image. The maximum length is 4000 characters."
+      },
+      size: {
+        type: "string",
+        enum: ["1024x1024", "1792x1024", "1024x1792"],
+        description: "The size of the generated images"
+      },
+      quality: {
+        type: "string",
+        enum: ["standard", "hd"],
+        description:
+          "The quality of the image that will be generated. `hd` creates images with finer details and greater consistency across the image."
+      },
+      style: {
+        type: "string",
+        enum: ["vivid", "natural"],
+        description:
+          "The style of the generated images. Vivid creates images that are hyper-realistic and dramatic. Natural creates images that are more natural and less hyper-realistic."
       }
     },
     required: ["prompt"]
@@ -45,8 +65,8 @@ const dalle3ImageGenerator: BackendTool<Dalle3ImageGeneratorConfiguration, Dalle
   })
 }
 
-async function runDalle3({apiKey}: Dalle3ImageGeneratorConfiguration, {prompt}: Dalle3ImageGeneratorArgs) {
-  console.info("Dalle3ImageGenerator", prompt)
+async function runDalle3({apiKey}: Dalle3ImageGeneratorConfiguration, args: Dalle3ImageGeneratorArgs) {
+  console.info("Dalle3ImageGenerator", args)
   const openai = new OpenAI({
     baseURL: `${OPENAI_API_HOST}/openai/deployments/dep-dall-e-3`,
     defaultQuery: {"api-version": "2024-02-15-preview"},
@@ -54,7 +74,7 @@ async function runDalle3({apiKey}: Dalle3ImageGeneratorConfiguration, {prompt}: 
   })
 
   const image = await openai.images.generate({
-    prompt,
+    ...args,
     response_format: "url"
   })
 
