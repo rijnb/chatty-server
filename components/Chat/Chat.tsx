@@ -1,5 +1,6 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
+import {OpenAIError} from "openai/error"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
@@ -17,6 +18,7 @@ import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
+import {OpenAIAuthError, OpenAILimitExceeded, OpenAIRateLimited} from "@/utils/server/errors"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -44,6 +46,39 @@ const Chat = memo(({stopConversationRef}: Props) => {
   })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const handleError = (error: OpenAIError) => {
+    if (error instanceof OpenAIRateLimited) {
+      const waitSecs = Math.max(Math.min(error.retryAfterSeconds || 30, 60), 1)
+      setWaitTime(waitSecs)
+      setTimeout(() => setWaitTime(null), waitSecs * 1000)
+      toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {
+        duration: TOAST_DURATION_MS
+      })
+      return
+    }
+
+    if (error instanceof OpenAIAuthError) {
+      toast.error("Invalid API Key. Please enter the correct OpenAI key in left menu bar of Chatty.", {
+        duration: TOAST_DURATION_MS
+      })
+      return
+    }
+
+    if (error instanceof OpenAILimitExceeded) {
+      toast.error(
+        `The conversation has become too long. Please reduce the number of messages to shorten it. It's using ${error.requested} tokens, where the limit is ${error.limit} tokens.`,
+        {
+          duration: TOAST_DURATION_MS
+        }
+      )
+      return
+    }
+
+    toast.error(error.message, {
+      duration: TOAST_DURATION_MS
+    })
+  }
 
   const handleSendMessage = useCallback(
     async (message: Message, deleteCount = 0) => {
@@ -115,47 +150,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
           const error = await response.json()
 
-          if (error.errorType === "openai_auth_error") {
-            toast.error("Invalid API Key. Please enter the correct OpenAI key in left menu bar of Chatty.", {
-              duration: TOAST_DURATION_MS
-            })
-            return
-          }
-
-          if (error.errorType === "context_length_exceeded") {
-            toast.error(
-              `The conversation has become too long. Please reduce the number of messages to shorten it. It's using ${error.requested} tokens, where the limit is ${error.limit} tokens.`,
-              {
-                duration: TOAST_DURATION_MS
-              }
-            )
-            return
-          }
-
-          if (error.errorType === "rate_limit") {
-            const waitSecs = Math.max(Math.min(error.retryAfter, 60), 1)
-            setWaitTime(waitSecs)
-            setTimeout(() => setWaitTime(null), waitSecs * 1000)
-            toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {
-              duration: TOAST_DURATION_MS
-            })
-            return
-          }
-
-          if (error.errorType === "generic_openai_error") {
-            toast.error(error.message, {
-              duration: TOAST_DURATION_MS
-            })
-            return
-          }
-
-          if (error.errorType === "openai_error") {
-            toast.error(error.message, {
-              duration: TOAST_DURATION_MS
-            })
-            return
-          }
-
           if (error.errorType === "unexpected_error") {
             toast.error("Unexpected server error. Please try again a bit later.", {
               duration: TOAST_DURATION_MS
@@ -202,7 +196,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
         await StreamEventClient.fromReadableStream(response.body.getReader())
           .on("connect", () => {
-            console.log("connect")
             const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: ""}]
             updatedConversation = {
               ...updatedConversation,
@@ -212,7 +205,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
             homeDispatch({field: "loading", value: false})
           })
           .on("toolCall", (name, toolArguments) => {
-            console.log("toolCall")
             const updatedMessages: Message[] = updatedConversation.messages.map((m, index) => {
               if (index === updatedConversation.messages.length - 1) {
                 return {
@@ -232,7 +224,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
             })
           })
           .on("content", ({delta}) => {
-            console.log("content", delta)
             const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
               if (index === updatedConversation.messages.length - 1) {
                 return {
@@ -252,26 +243,24 @@ const Chat = memo(({stopConversationRef}: Props) => {
             })
           })
           .on("error", (error) => {
-            console.error(`error: ${JSON.stringify(error)}`)
+            handleError(error)
           })
           .on("end", () => {
-            console.log("end")
+            saveSelectedConversation(updatedConversation)
+            const updatedConversations: Conversation[] = conversations.map((conversation) => {
+              if (conversation.id === selectedConversation.id) {
+                return updatedConversation
+              }
+              return conversation
+            })
+            if (updatedConversations.length === 0) {
+              updatedConversations.push(updatedConversation)
+            }
+            homeDispatch({field: "conversations", value: updatedConversations})
+            saveConversationsHistory(updatedConversations)
+            homeDispatch({field: "messageIsStreaming", value: false})
           })
           .done()
-
-        saveSelectedConversation(updatedConversation)
-        const updatedConversations: Conversation[] = conversations.map((conversation) => {
-          if (conversation.id === selectedConversation.id) {
-            return updatedConversation
-          }
-          return conversation
-        })
-        if (updatedConversations.length === 0) {
-          updatedConversations.push(updatedConversation)
-        }
-        homeDispatch({field: "conversations", value: updatedConversations})
-        saveConversationsHistory(updatedConversations)
-        homeDispatch({field: "messageIsStreaming", value: false})
       } catch (error) {
         const {status, statusText, content, message} = error as any
         console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)

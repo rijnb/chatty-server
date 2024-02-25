@@ -1,3 +1,4 @@
+import {reconstructError} from "@/utils/server/errors"
 import {EventParameters, EventType, ListenerForEvent, StreamEvents} from "@/utils/shared/types"
 
 export class StreamEventClient {
@@ -6,18 +7,23 @@ export class StreamEventClient {
   private listeners: {[E in EventType]?: ListenerForEvent<E>[]} = {}
 
   resolveEndPromise: () => void = () => {}
-  rejectEndPromise: (error: Error) => void = () => {}
 
   private constructor() {
-    this.endPromise = new Promise<void>((resolve, reject) => {
+    this.endPromise = new Promise<void>((resolve) => {
       this.resolveEndPromise = resolve
-      this.rejectEndPromise = reject
+    })
+
+    this.endPromise.catch(() => {
+      console.info("endPromise caught")
     })
   }
 
   static fromReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>) {
     const client = new StreamEventClient()
-    client.listen(reader).catch((error) => client.emit("error", error))
+    client.listen(reader).catch((error) => {
+      console.error("listen: error", error)
+      client.emit("error", error)
+    })
     return client
   }
 
@@ -26,6 +32,10 @@ export class StreamEventClient {
 
     for await (const line of iterator) {
       const message = JSON.parse(line)
+      if (message.event === "error") {
+        this.emit(message.event, reconstructError(message.data[0]))
+        return
+      }
       this.emit(message.event, ...message.data)
     }
   }
@@ -57,6 +67,7 @@ export class StreamEventClient {
   }
 
   private emit<E extends EventType>(event: E, ...args: EventParameters<E>) {
+    console.info("emit", event, args)
     this.listeners[event]?.forEach((listener: any) => listener(...args))
 
     if (event === "end") {
@@ -64,7 +75,7 @@ export class StreamEventClient {
     }
 
     if (event === "error") {
-      this.rejectEndPromise(args as unknown as Error) //todo is it right?
+      this.emit("end")
     }
   }
 

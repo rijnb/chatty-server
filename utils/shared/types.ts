@@ -1,3 +1,5 @@
+import {StreamingError} from "@/utils/server/errors"
+
 export class LimitExceeded extends Error {
   limit?: number
   requested?: number
@@ -14,7 +16,7 @@ export type StreamEvents = {
   connect: () => void
   content: (content: {delta: string; snapshot: string}) => void
   toolCall: (name: string, toolArguments: string) => void
-  error: (error: Error) => void
+  error: (error: StreamingError) => void
   end: () => void
 }
 

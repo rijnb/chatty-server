@@ -17,8 +17,8 @@ export interface ChatBody {
   prompt: string
   temperature: number
   maxTokens: number
-  selectedTools: ToolId[]
-  toolConfigurations: ToolConfigurations
+  selectedTools?: ToolId[]
+  toolConfigurations?: ToolConfigurations
 }
 
 // This type is used to store a conversation in the store.

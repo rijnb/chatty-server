@@ -1,19 +1,14 @@
+import {NextApiRequest, NextApiResponse} from "next"
+
 import chatHandler from "@/pages/api/chat.api"
 import {asMock} from "@/testutils"
 import {ChatBody} from "@/types/chat"
-import {
-  ChatCompletionStream,
-  GenericOpenAIError,
-  OpenAIAuthError,
-  OpenAIError,
-  OpenAILimitExceeded,
-  OpenAIRateLimited
-} from "@/utils/server/openAiClient"
+import {chatCompletionStream} from "@/utils/server/openAiClient"
 
 jest.mock("@/utils/server/openAiClient", () => {
   return {
     ...jest.requireActual("@/utils/server/openAiClient"),
-    ChatCompletionStream: jest.fn()
+    chatCompletionStream: jest.fn()
   }
 })
 
@@ -21,19 +16,24 @@ jest.spyOn(global.console, "error").mockImplementation()
 
 describe("Chat Error Handling", () => {
   const createRequest = (chatBody?: ChatBody) =>
-    new Request("http://localhost/api/chat", {
+    ({
+      url: "http://localhost/api/chat",
       method: "POST",
-      body: JSON.stringify(
+      body:
         chatBody ??
-          ({
-            modelId: "gpt-4-32k",
-            messages: [{role: "user", content: "ping"}],
-            apiKey: "",
-            prompt: "You are a helpful assistant",
-            temperature: 0.8
-          } as ChatBody)
-      )
-    })
+        ({
+          modelId: "gpt-4-32k",
+          messages: [{role: "user", content: "ping"}],
+          apiKey: "",
+          prompt: "You are a helpful assistant",
+          temperature: 0.8
+        } as ChatBody)
+    }) as NextApiRequest
+
+  const mockedResBody = jest.fn()
+  const mockedRes: jest.Mocked<NextApiResponse> = {
+    status: jest.fn().mockReturnValue({json: mockedResBody})
+  } as unknown as jest.Mocked<NextApiResponse>
 
   describe("Happy Cases", () => {
     it("should send ChatCompletion request", async () => {
@@ -45,15 +45,18 @@ describe("Chat Error Handling", () => {
           prompt: "You are a helpful assistant",
           temperature: 1.2,
           maxTokens: 32
-        })
+        }),
+        mockedRes
       )
 
-      expect(ChatCompletionStream).toHaveBeenCalledWith(
+      expect(chatCompletionStream).toHaveBeenCalledWith(
         "gpt-4-32k",
         "You are a helpful assistant",
         1.2,
         32,
         "somekey",
+        [],
+        [],
         [{role: "user", content: "ping"}]
       )
     })
@@ -65,7 +68,7 @@ describe("Chat Error Handling", () => {
     }
 
     it("should handle exceeding token limit", async () => {
-      asMock(ChatCompletionStream).mockImplementation(
+      asMock(chatCompletionStream).mockImplementation(
         streamError(
           new OpenAILimitExceeded(
             "This model's maximum context length is 16384 tokens. However, you requested 50189 tokens (189 in the messages, 50000 in the completion). Please reduce the length of the messages or completion.",
@@ -87,7 +90,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle invalid key error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(
+      asMock(chatCompletionStream).mockImplementation(
         streamError(
           new OpenAIAuthError(
             "Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription."
@@ -105,7 +108,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle missing key error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(
+      asMock(chatCompletionStream).mockImplementation(
         streamError(
           new OpenAIAuthError(
             "Access denied due to missing subscription key. Make sure to include subscription key when making requests to an API."
@@ -123,7 +126,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle rate limit error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(
+      asMock(chatCompletionStream).mockImplementation(
         streamError(
           new OpenAIRateLimited(
             "Requests to the Creates a completion for the chat message Operation under Azure OpenAI API version 2023-05-15 have exceeded token rate limit of your current OpenAI S0 pricing tier. Please retry after 26 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.",
@@ -143,7 +146,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle generic openai error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(
+      asMock(chatCompletionStream).mockImplementation(
         streamError(
           new GenericOpenAIError(
             "Some human readable description",
@@ -165,7 +168,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle openai error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(streamError(new OpenAIError("Some human readable description")))
+      asMock(chatCompletionStream).mockImplementation(streamError(new OpenAIError("Some human readable description")))
 
       const response = await chatHandler(createRequest())
 
@@ -179,7 +182,7 @@ describe("Chat Error Handling", () => {
 
     it("should handle unknown error", async () => {
       const typeError = new TypeError("Some type error")
-      asMock(ChatCompletionStream).mockImplementation(streamError(typeError))
+      asMock(chatCompletionStream).mockImplementation(streamError(typeError))
 
       const response = await chatHandler(createRequest())
 
@@ -194,7 +197,7 @@ describe("Chat Error Handling", () => {
     })
 
     it("should handle not an error", async () => {
-      asMock(ChatCompletionStream).mockImplementation(streamError(42))
+      asMock(chatCompletionStream).mockImplementation(streamError(42))
 
       const response = await chatHandler(createRequest())
 
