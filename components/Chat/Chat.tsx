@@ -12,6 +12,7 @@ import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import WelcomeMessage from "@/components/Chat/WelcomeMessage"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
+import useWaitTime from "@/hooks/useWaitTime"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {StreamEventClient} from "@/services/chatClient"
 import useApiService from "@/services/useApiService"
@@ -39,7 +40,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getApiUrl} = useApiService()
-  const [waitTime, setWaitTime] = useState<number | null>(null)
+  const {waitTime, setWaitTime} = useWaitTime()
 
   const fetchService = useFetch({
     interceptors: useUnlockCodeInterceptor()
@@ -51,7 +52,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
     if (error instanceof OpenAIRateLimited) {
       const waitSecs = Math.max(Math.min(error.retryAfterSeconds || 30, 60), 1)
       setWaitTime(waitSecs)
-      setTimeout(() => setWaitTime(null), waitSecs * 1000)
       toast.error(`Too many requests. Please wait ${waitSecs} seconds before trying again.`, {
         duration: TOAST_DURATION_MS
       })
@@ -289,15 +289,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [apiKey, conversations, fetchService, getApiUrl, homeDispatch, selectedConversation, stopConversationRef]
   )
-
-  useEffect(() => {
-    if (waitTime && waitTime > 0) {
-      const timer = setTimeout(() => {
-        setWaitTime(waitTime - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [waitTime])
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">
