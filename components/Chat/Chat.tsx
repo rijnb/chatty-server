@@ -1,7 +1,7 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
 import {OpenAIError} from "openai/error"
-import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
+import React, {MutableRefObject, memo, useCallback, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
 import Spinner from "../Spinner"
@@ -10,6 +10,7 @@ import {ErrorMessageDiv} from "./ErrorMessageDiv"
 import ChatConversation from "@/components/Chat/ChatConversation"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import WelcomeMessage from "@/components/Chat/WelcomeMessage"
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import useWaitTime from "@/hooks/useWaitTime"
@@ -18,7 +19,6 @@ import {StreamEventClient} from "@/services/chatClient"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
-import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 import {OpenAIAuthError, OpenAILimitExceeded, OpenAIRateLimited} from "@/utils/server/errors"
 
 interface Props {
@@ -34,9 +34,11 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const appInsights = useAppInsightsContext()
 
   const {
-    state: {selectedConversation, conversations, models, apiKey, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
+    state: {models, apiKey, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
     dispatch: homeDispatch
   } = useHomeContext()
+
+  const {selectedConversation, conversations, updateConversation} = useConversationsOperations()
 
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
   const {getApiUrl} = useApiService()
@@ -103,7 +105,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           messages: [...selectedConversation.messages, message]
         }
       }
-      homeDispatch({field: "selectedConversation", value: updatedConversation})
+      updateConversation(updatedConversation)
       homeDispatch({field: "loading", value: true})
       homeDispatch({field: "messageIsStreaming", value: true})
 
@@ -201,7 +203,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               ...updatedConversation,
               messages: updatedMessages
             }
-            homeDispatch({field: "selectedConversation", value: updatedConversation})
+            updateConversation(updatedConversation)
             homeDispatch({field: "loading", value: false})
           })
           .on("toolCall", (name, toolArguments) => {
@@ -218,10 +220,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               ...updatedConversation,
               messages: updatedMessages
             }
-            homeDispatch({
-              field: "selectedConversation",
-              value: updatedConversation
-            })
+            updateConversation(updatedConversation)
           })
           .on("content", ({delta}) => {
             const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
@@ -237,27 +236,13 @@ const Chat = memo(({stopConversationRef}: Props) => {
               ...updatedConversation,
               messages: updatedMessages
             }
-            homeDispatch({
-              field: "selectedConversation",
-              value: updatedConversation
-            })
+            updateConversation(updatedConversation)
           })
           .on("error", (error) => {
             handleError(error)
           })
           .on("end", () => {
-            saveSelectedConversation(updatedConversation)
-            const updatedConversations: Conversation[] = conversations.map((conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return updatedConversation
-              }
-              return conversation
-            })
-            if (updatedConversations.length === 0) {
-              updatedConversations.push(updatedConversation)
-            }
-            homeDispatch({field: "conversations", value: updatedConversations})
-            saveConversationsHistory(updatedConversations)
+            updateConversation(updatedConversation)
             homeDispatch({field: "messageIsStreaming", value: false})
           })
           .done()

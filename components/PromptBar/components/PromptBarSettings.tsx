@@ -6,7 +6,7 @@ import ClearPrompts from "./ClearPrompts"
 import PromptBarContext from "@/components/PromptBar/PromptBar.context"
 import ImportData from "@/components/Settings/ImportData"
 import SidebarButton from "@/components/Sidebar/SidebarButton"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 
 interface Props {}
 
@@ -14,7 +14,7 @@ export const PromptBarSettings = ({}: Props) => {
   const {t} = useTranslation("common")
   const {
     state: {prompts}
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const {handleClearPrompts, handleImportPrompts, handleExportPrompts} = useContext(PromptBarContext)
 

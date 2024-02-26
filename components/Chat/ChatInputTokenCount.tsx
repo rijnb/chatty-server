@@ -3,6 +3,7 @@ import {useTheme} from "next-themes"
 import {useEffect, useMemo, useState} from "react"
 import {useTranslation} from "react-i18next"
 
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
@@ -17,9 +18,10 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
-    state: {selectedConversation, messageIsStreaming},
-    handleUpdateConversation
+    state: {messageIsStreaming}
   } = useHomeContext()
+
+  const {selectedConversation, updateConversation} = useConversationsOperations()
 
   const [encoder, setEncoder] = useState<TiktokenEncoder | null>(null)
   const [tokensInConversation, setTokensInConversation] = useState(0)
@@ -30,13 +32,14 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
 
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
-      handleUpdateConversation(selectedConversation, [
+      updateConversation(
+        selectedConversation,
         {key: "name", value: NEW_CONVERSATION_TITLE},
         {
           key: "messages",
           value: []
         }
-      ])
+      )
     }
   }
 
@@ -55,7 +58,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
 
       if (selectedConversation && tokenCount != selectedConversation.tokenCount) {
-        handleUpdateConversation(selectedConversation, [{key: "tokenCount", value: tokenCount}])
+        updateConversation(selectedConversation, {key: "tokenCount", value: tokenCount})
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

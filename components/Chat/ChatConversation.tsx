@@ -5,11 +5,11 @@ import ChatMenu from "@/components/Chat/ChatMenu"
 import ChatMessage from "@/components/Chat/ChatMessage"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import ScrollDownButton from "@/components/Chat/ScrollDownButton"
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import useScroll from "@/components/Hooks/useScroll"
 import useReleaseNotes from "@/hooks/useReleaseNotes"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation, Message} from "@/types/chat"
-import {updateConversationHistory} from "@/utils/app/conversations"
 
 interface Props {
   conversation: Conversation
@@ -18,9 +18,11 @@ interface Props {
 
 const ChatConversation = ({conversation, onSend}: Props) => {
   const {
-    state: {conversations, models, loading, messageIsStreaming},
+    state: {models, loading, messageIsStreaming},
     dispatch: homeDispatch
   } = useHomeContext()
+
+  const {updateConversation} = useConversationsOperations()
 
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
@@ -52,11 +54,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
 
     // Replace messages in conversation.
     const updatedConversation = {...conversation, messages}
-    homeDispatch({field: "selectedConversation", value: updatedConversation})
-
-    // Replace conversation in history.
-    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
-    homeDispatch({field: "conversations", value: conversationHistory})
+    updateConversation(updatedConversation)
   }
 
   const handleEditMessage = (editedMessage: Message, index: number) => {
@@ -71,11 +69,7 @@ const ChatConversation = ({conversation, onSend}: Props) => {
         models={models}
         container={chatContainerRef}
         onOpenReleaseNotes={openReleaseNotes}
-        onUpdateConversation={(conversation) => {
-          const conversationHistory = updateConversationHistory(conversations, conversation)
-          homeDispatch({field: "selectedConversation", value: conversation})
-          homeDispatch({field: "conversations", value: conversationHistory})
-        }}
+        onUpdateConversation={updateConversation}
       />
       <div className="h-[37px] bg-white dark:bg-[#343541]" />
       {conversation?.messages.map((message, index) => (

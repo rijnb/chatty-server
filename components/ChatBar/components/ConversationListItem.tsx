@@ -1,9 +1,9 @@
 import {IconCheck, IconMessage, IconPencil, IconTrash, IconX} from "@tabler/icons-react"
-import {DragEvent, KeyboardEvent, MouseEventHandler, useContext, useEffect, useState} from "react"
+import {DragEvent, KeyboardEvent, MouseEventHandler, useEffect, useState} from "react"
 
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import HomeContext from "@/pages/api/home/home.context"
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 
@@ -14,12 +14,10 @@ interface Props {
 
 export const ConversationListItem = ({conversation, isSelected}: Props) => {
   const {
-    state: {messageIsStreaming},
-    handleSelectConversation,
-    handleUpdateConversation
-  } = useContext(HomeContext)
+    state: {messageIsStreaming}
+  } = useHomeContext()
 
-  const {handleDeleteConversation} = useContext(ChatBarContext)
+  const {updateConversation, selectConversation, deleteConversation} = useConversationsOperations()
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
@@ -40,7 +38,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
 
   const handleRename = (conversation: Conversation) => {
     if (renameValue.trim().length > 0) {
-      handleUpdateConversation(conversation, [{key: "name", value: renameValue}])
+      updateConversation(conversation, {key: "name", value: renameValue})
       setRenameValue("")
       setIsRenaming(false)
     }
@@ -49,7 +47,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
   const handleConfirm: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
     if (isDeleting) {
-      handleDeleteConversation(conversation)
+      deleteConversation(conversation)
     } else if (isRenaming) {
       handleRename(conversation)
     }
@@ -100,7 +98,7 @@ export const ConversationListItem = ({conversation, isSelected}: Props) => {
           className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-[#343541]/90 ${
             messageIsStreaming ? "disabled:cursor-not-allowed" : ""
           } ${isSelected ? "bg-gray-300 dark:bg-[#343541]/90" : ""}`}
-          onClick={() => handleSelectConversation(conversation)}
+          onClick={() => selectConversation(conversation)}
           disabled={messageIsStreaming}
           draggable="true"
           onDragStart={(e) => handleDragStart(e, conversation)}

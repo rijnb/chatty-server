@@ -16,10 +16,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import useErrorService from "@/services/errorService"
 import useApiService from "@/services/useApiService"
 import {Conversation, Message} from "@/types/chat"
-import {KeyValuePair} from "@/types/data"
-import {FolderType} from "@/types/folder"
 import {FALLBACK_OPENAI_MODEL, OpenAIModels} from "@/types/openai"
-import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
 import {
   NEW_CONVERSATION_TITLE,
@@ -27,15 +24,8 @@ import {
   OPENAI_DEFAULT_TEMPERATURE,
   OPENAI_REUSE_MODEL
 } from "@/utils/app/const"
-import {
-  createNewConversation,
-  getConversationsHistory,
-  getSelectedConversation,
-  saveConversationsHistory,
-  saveSelectedConversation,
-  updateConversationHistory
-} from "@/utils/app/conversations"
-import {createNewFolder, getFolders, saveFolders} from "@/utils/app/folders"
+import {createNewConversation, getConversationsHistory, getSelectedConversation} from "@/utils/app/conversations"
+import {getFolders, saveFolders} from "@/utils/app/folders"
 import {importData, isValidJsonData} from "@/utils/app/import"
 import {getPrompts, savePrompts} from "@/utils/app/prompts"
 import {getApiKey, getShowChatBar, getShowPromptBar, removeApiKey} from "@/utils/app/settings"
@@ -87,7 +77,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, models, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey, models, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
@@ -106,108 +96,6 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
   )
 
   const stopConversationRef = useRef<boolean>(false)
-
-  // FOLDER OPERATIONS  --------------------------------------------
-
-  const handleCreateFolder = (name: string, type: FolderType) => {
-    const updatedFolders = [...folders, createNewFolder(name, type)]
-
-    homeDispatch({field: "folders", value: updatedFolders})
-    saveFolders(updatedFolders)
-  }
-
-  const handleDeleteFolder = (folderId: string) => {
-    const updatedFolders = folders.filter((f) => f.id !== folderId)
-    homeDispatch({field: "folders", value: updatedFolders})
-    saveFolders(updatedFolders)
-
-    const updatedConversations: Conversation[] = conversations.map((conversation) => {
-      if (conversation.folderId === folderId) {
-        return {
-          ...conversation,
-          folderId: undefined
-        }
-      }
-      return conversation
-    })
-
-    homeDispatch({field: "conversations", value: updatedConversations})
-    saveConversationsHistory(updatedConversations)
-
-    const updatedPrompts: Prompt[] = prompts.map((prompt) => {
-      if (prompt.folderId === folderId) {
-        return {
-          ...prompt,
-          folderId: undefined
-        }
-      }
-      return prompt
-    })
-
-    homeDispatch({field: "prompts", value: updatedPrompts})
-    savePrompts(updatedPrompts)
-  }
-
-  const handleUpdateFolder = (folderId: string, name: string) => {
-    const updatedFolders = folders.map((folder) => {
-      if (folder.id === folderId) {
-        return {
-          ...folder,
-          name
-        }
-      }
-      return folder
-    })
-
-    homeDispatch({field: "folders", value: updatedFolders})
-    saveFolders(updatedFolders)
-  }
-
-  // CONVERSATION OPERATIONS  --------------------------------------------
-
-  const handleSelectConversation = (conversation: Conversation) => {
-    homeDispatch({
-      field: "selectedConversation",
-      value: conversation
-    })
-    saveSelectedConversation(conversation)
-  }
-
-  const handleNewConversation = () => {
-    const lastConversation = conversations.length > 0 ? conversations[conversations.length - 1] : undefined
-    if (
-      lastConversation &&
-      lastConversation.name === t(NEW_CONVERSATION_TITLE) &&
-      lastConversation.messages.length === 0
-    ) {
-      homeDispatch({field: "selectedConversation", value: lastConversation})
-    } else {
-      console.debug(`handleNewConversation: reuseModel:${reuseModel}, model:${defaultModelId}`)
-      const newConversation = createNewConversation(
-        t(NEW_CONVERSATION_TITLE),
-        reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
-        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
-        tools.map((t) => t.id)
-      )
-      const updatedConversations = [...conversations, newConversation]
-      homeDispatch({field: "selectedConversation", value: newConversation})
-      homeDispatch({field: "conversations", value: updatedConversations})
-      saveSelectedConversation(newConversation)
-      saveConversationsHistory(updatedConversations)
-    }
-
-    homeDispatch({field: "loading", value: false})
-  }
-
-  const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair[]) => {
-    const updatedConversation = data.reduce((acc, curr) => {
-      return {...acc, [curr.key]: curr.value}
-    }, conversation)
-
-    const conversationHistory = updateConversationHistory(conversations, updatedConversation)
-    homeDispatch({field: "selectedConversation", value: updatedConversation})
-    homeDispatch({field: "conversations", value: conversationHistory})
-  }
 
   const loadPromptsFromFile = (filename: string) => {
     console.debug(`loadPromptsFromFile: ${filename}`)
@@ -412,13 +300,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
   return (
     <HomeContext.Provider
       value={{
-        ...contextValue,
-        handleNewConversation,
-        handleCreateFolder,
-        handleDeleteFolder,
-        handleUpdateFolder,
-        handleSelectConversation,
-        handleUpdateConversation
+        ...contextValue
       }}
     >
       <Head>

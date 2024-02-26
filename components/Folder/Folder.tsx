@@ -8,10 +8,10 @@ import {
   IconTrash,
   IconX
 } from "@tabler/icons-react"
-import {KeyboardEvent, ReactElement, useContext, useEffect, useState} from "react"
+import {KeyboardEvent, ReactElement, useEffect, useState} from "react"
 
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import HomeContext from "@/pages/api/home/home.context"
+import useFolderOperations from "@/components/Folder/useFoldersOperations"
 import {FolderInterface} from "@/types/folder"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 
@@ -24,7 +24,7 @@ interface Props {
 }
 
 const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Props) => {
-  const {handleDeleteFolder, handleUpdateFolder} = useContext(HomeContext)
+  const {deleteFolder, updateFolder} = useFolderOperations()
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
@@ -39,7 +39,7 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
   }
 
   const handleRename = () => {
-    handleUpdateFolder(folder.id, renameValue)
+    updateFolder(folder.id, renameValue)
     setRenameValue("")
     setIsRenaming(false)
   }
@@ -150,7 +150,7 @@ const Folder = ({folder, searchTerm, allowDrop, handleDrop, folderComponent}: Pr
                 e.stopPropagation()
 
                 if (isDeleting) {
-                  handleDeleteFolder(folder.id)
+                  deleteFolder(folder.id)
                 } else if (isRenaming) {
                   handleRename()
                 }

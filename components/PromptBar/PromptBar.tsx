@@ -1,4 +1,4 @@
-import {useContext, useEffect} from "react"
+import {useEffect} from "react"
 import {useTranslation} from "react-i18next"
 import {v4 as uuidv4} from "uuid"
 
@@ -8,8 +8,9 @@ import {PromptBarInitialState, initialState} from "./PromptBar.state"
 import PromptBarSettings from "./components/PromptBarSettings"
 import PromptFolderList from "./components/PromptFolderList"
 import PromptList from "./components/PromptList"
+import useFoldersOperations from "@/components/Folder/useFoldersOperations"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
-import HomeContext from "@/pages/api/home/home.context"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {SupportedFileFormats} from "@/types/import"
 import {Prompt} from "@/types/prompt"
 import {exportData} from "@/utils/app/export"
@@ -23,10 +24,11 @@ const PromptBar = () => {
   const promptBarContextValue = useCreateReducer<PromptBarInitialState>({initialState})
 
   const {
-    state: {prompts, defaultModelId, showPromptBar, folders},
-    dispatch: homeDispatch,
-    handleCreateFolder
-  } = useContext(HomeContext)
+    state: {prompts, defaultModelId, showPromptBar},
+    dispatch: homeDispatch
+  } = useHomeContext()
+
+  const {folders, createFolder} = useFoldersOperations()
 
   const {
     state: {searchTerm, filteredPrompts},
@@ -153,7 +155,7 @@ const PromptBar = () => {
         handleSearchTerm={(searchTerm: string) => promptDispatch({field: "searchTerm", value: searchTerm})}
         toggleOpen={handleTogglePromptBar}
         handleCreateItem={handleCreatePrompt}
-        handleCreateFolder={() => handleCreateFolder(t("New folder"), "prompt")}
+        handleCreateFolder={() => createFolder(t("New folder"), "prompt")}
         handleDrop={handleDrop}
         footerComponent={<PromptBarSettings />}
       />

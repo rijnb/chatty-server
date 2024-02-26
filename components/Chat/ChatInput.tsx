@@ -8,10 +8,10 @@ import ChatInputTokenCount from "./ChatInputTokenCount"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import ToolSelect from "./ToolSelect"
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
 import {Prompt} from "@/types/prompt"
-import {updateConversationHistory} from "@/utils/app/conversations"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {ToolId} from "@/utils/server/tools"
 import {TiktokenEncoder} from "@/utils/shared/tiktoken"
@@ -29,9 +29,11 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, conversations, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt, tools},
+    state: {models, messageIsStreaming, prompts, triggerSelectedPrompt, tools},
     dispatch: homeDispatch
   } = useHomeContext()
+
+  const {selectedConversation, updateConversation} = useConversationsOperations()
 
   const disabled = retryAfter !== null
 
@@ -228,9 +230,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         setSelectedTools(selectedTools)
         selectedConversation.selectedTools = selectedTools
 
-        const conversationHistory = updateConversationHistory(conversations, selectedConversation)
-        homeDispatch({field: "selectedConversation", value: selectedConversation})
-        homeDispatch({field: "conversations", value: conversationHistory})
+        updateConversation(selectedConversation)
         if (textareaRef?.current) {
           textareaRef.current.focus()
         }

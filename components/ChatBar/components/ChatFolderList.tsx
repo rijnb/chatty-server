@@ -1,8 +1,7 @@
-import {useContext} from "react"
-
 import ConversationListItem from "./ConversationListItem"
+import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import Folder from "@/components/Folder"
-import HomeContext from "@/pages/api/home/home.context"
+import useFoldersOperations from "@/components/Folder/useFoldersOperations"
 import {FolderInterface} from "@/types/folder"
 
 interface Props {
@@ -10,17 +9,15 @@ interface Props {
 }
 
 export const ChatFolderList = ({searchTerm}: Props) => {
-  const {
-    state: {folders, conversations, selectedConversation},
-    handleUpdateConversation
-  } = useContext(HomeContext)
+  const {selectedConversation, conversations, updateConversation} = useConversationsOperations()
+  const {folders} = useFoldersOperations()
 
   const handleDrop = (e: any, folder: FolderInterface) => {
     if (e.dataTransfer) {
       const data = e.dataTransfer.getData("conversation")
       if (data) {
         const conversation = JSON.parse(data)
-        handleUpdateConversation(conversation, [{key: "folderId", value: folder.id}])
+        updateConversation(conversation, {key: "folderId", value: folder.id})
       }
     }
   }

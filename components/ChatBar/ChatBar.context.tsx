@@ -2,16 +2,10 @@ import {Dispatch, createContext} from "react"
 
 import {ChatBarInitialState} from "@/components/ChatBar/ChatBar.state"
 import {ActionType} from "@/hooks/useCreateReducer"
-import {Conversation} from "@/types/chat"
-import {SupportedFileFormats} from "@/types/import"
 
 export interface ChatBarContextProps {
   state: ChatBarInitialState
   dispatch: Dispatch<ActionType<ChatBarInitialState>>
-  handleDeleteConversation: (conversation: Conversation) => void
-  handleClearConversations: () => void
-  handleImportConversations: (data: SupportedFileFormats) => void
-  handleExportConversations: () => void
   handleToolConfigurationChange: (toolId: string, configuration: any) => void
   handleClearToolConfiguration: (toolId: string) => void
   handleApiKeyChange: (apiKey: string) => void

@@ -2,16 +2,14 @@ import {useContext} from "react"
 
 import PromptBarContext from "../PromptBar.context"
 import Folder from "@/components/Folder"
+import useFoldersOperations from "@/components/Folder/useFoldersOperations"
 import PromptListItem from "@/components/PromptBar/components/PromptListItem"
-import HomeContext from "@/pages/api/home/home.context"
 import {FolderInterface} from "@/types/folder"
 
 interface Props {}
 
 export const PromptFolderList = ({}: Props) => {
-  const {
-    state: {folders}
-  } = useContext(HomeContext)
+  const {folders} = useFoldersOperations()
 
   const {
     state: {searchTerm, filteredPrompts},

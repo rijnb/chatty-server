@@ -63,6 +63,11 @@ export const updateConversationHistory = (conversationHistory: Conversation[], c
   const updatedConversationHistory = conversationHistory.map((conversationInHistory) =>
     conversationInHistory.id === conversation.id ? conversation : conversationInHistory
   )
+
+  if (updatedConversationHistory.length === 0) {
+    updatedConversationHistory.push(conversation)
+  }
+
   saveSelectedConversation(conversation)
   saveConversationsHistory(updatedConversationHistory)
   return updatedConversationHistory
