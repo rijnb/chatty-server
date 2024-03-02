@@ -72,6 +72,7 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
       if (!conversation.messages) {
         conversation.messages = []
       }
+      acc.push(conversation)
     } catch (error) {
       console.warn(`Error: Error while cleaning conversations history. Removing culprit:`, error)
     }
