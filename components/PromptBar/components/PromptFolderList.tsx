@@ -1,6 +1,7 @@
 import {useContext} from "react"
 
 import PromptBarContext from "../PromptBar.context"
+import usePromptsOperations from "../usePromptsOperations"
 import Folder from "@/components/Folder"
 import useFoldersOperations from "@/components/Folder/useFoldersOperations"
 import PromptListItem from "@/components/PromptBar/components/PromptListItem"
@@ -10,10 +11,10 @@ interface Props {}
 
 export const PromptFolderList = ({}: Props) => {
   const {folders} = useFoldersOperations()
+  const {updatePrompt} = usePromptsOperations()
 
   const {
-    state: {searchTerm, filteredPrompts},
-    handleUpdatePrompt
+    state: {searchTerm, filteredPrompts}
   } = useContext(PromptBarContext)
 
   const handleDrop = (e: any, folder: FolderInterface) => {
@@ -21,7 +22,7 @@ export const PromptFolderList = ({}: Props) => {
       const data = e.dataTransfer.getData("prompt")
       if (data) {
         const prompt = JSON.parse(data)
-        handleUpdatePrompt({...prompt, folderId: folder.id})
+        updatePrompt({...prompt, folderId: folder.id})
       }
     }
   }

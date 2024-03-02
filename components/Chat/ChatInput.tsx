@@ -9,6 +9,7 @@ import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import ToolSelect from "./ToolSelect"
 import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
+import usePromptsOperations from "@/components/PromptBar/usePromptsOperations"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
 import {Prompt} from "@/types/prompt"
@@ -29,9 +30,10 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, messageIsStreaming, prompts, triggerSelectedPrompt, tools},
-    dispatch: homeDispatch
+    state: {models, messageIsStreaming, tools}
   } = useHomeContext()
+
+  const {prompts, triggerSelectedPrompt, selectPrompt} = usePromptsOperations()
 
   const {selectedConversation, updateConversation} = useConversationsOperations()
 
@@ -67,7 +69,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       setSelectedPrompt(triggerSelectedPrompt)
       showInputVarsForPrompt(triggerSelectedPrompt)
     }
-    homeDispatch({field: "triggerSelectedPrompt", value: undefined})
+    selectPrompt(undefined)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerSelectedPrompt])
 

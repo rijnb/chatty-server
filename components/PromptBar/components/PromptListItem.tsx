@@ -4,7 +4,7 @@ import {DragEvent, MouseEventHandler, useContext, useState} from "react"
 import PromptBarContext from "../PromptBar.context"
 import PromptEditModal from "./PromptEditModal"
 import SidebarActionButton from "@/components/Buttons/SidebarActionButton"
-import {useHomeContext} from "@/pages/api/home/home.context"
+import usePromptsOperations from "@/components/PromptBar/usePromptsOperations"
 import {Prompt} from "@/types/prompt"
 
 interface Props {
@@ -12,22 +12,22 @@ interface Props {
 }
 
 export const PromptListItem = ({prompt}: Props) => {
-  const {dispatch: promptDispatch, handleUpdatePrompt, handleDeletePrompt} = useContext(PromptBarContext)
-  const {dispatch: homeDispatch} = useHomeContext()
+  const {dispatch: promptDispatch} = useContext(PromptBarContext)
+  const {selectPrompt, updatePrompt, deletePrompt} = usePromptsOperations()
 
   const [showEditPromptModal, setShowEditPromptModal] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleUpdate = (prompt: Prompt) => {
     setShowEditPromptModal(false)
-    handleUpdatePrompt(prompt)
+    updatePrompt(prompt)
     promptDispatch({field: "searchTerm", value: ""})
   }
 
   const handleDelete: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
     if (isDeleting) {
-      handleDeletePrompt(prompt)
+      deletePrompt(prompt)
       promptDispatch({field: "searchTerm", value: ""})
     }
     setIsDeleting(false)
@@ -63,7 +63,7 @@ export const PromptListItem = ({prompt}: Props) => {
       <button
         className="flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm text-gray-800 transition-colors duration-200 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
         draggable={prompt.factory ? "false" : "true"}
-        onClick={() => homeDispatch({field: "triggerSelectedPrompt", value: prompt})}
+        onClick={() => selectPrompt(prompt)}
         onDragStart={(e) => handleDragStart(e, prompt)}
       >
         {prompt.factory ? (

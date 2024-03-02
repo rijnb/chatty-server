@@ -77,7 +77,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, models, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey,models, selectedConversation, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
