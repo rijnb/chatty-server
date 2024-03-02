@@ -11,9 +11,8 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import HomeContext from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
-import {OPENAI_DEFAULT_MODEL} from "@/types/openai"
 import {PluginID, PluginKey} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   removeConversationsHistory,

@@ -1,6 +1,6 @@
 import fetchMock from "jest-fetch-mock"
 
-import {OPENAI_DEFAULT_MODEL} from "@/types/openai"
+import {OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
