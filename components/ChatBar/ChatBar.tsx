@@ -11,7 +11,7 @@ import {useCreateReducer} from "@/hooks/useCreateReducer"
 import HomeContext from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {OPENAI_DEFAULT_MODEL} from "@/types/openai"
 import {PluginID, PluginKey} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
@@ -88,7 +88,7 @@ export const ChatBar = () => {
     if (defaultModelId) {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        defaultModelId || FALLBACK_OPENAI_MODEL_ID,
+        defaultModelId || OPENAI_DEFAULT_MODEL,
         OPENAI_DEFAULT_TEMPERATURE
       )
       homeDispatch({field: "selectedConversation", value: newConversation})
@@ -108,7 +108,7 @@ export const ChatBar = () => {
           ? history[history.length - 1]
           : createNewConversation(
               t(NEW_CONVERSATION_TITLE),
-              defaultModelId || FALLBACK_OPENAI_MODEL_ID,
+              defaultModelId || OPENAI_DEFAULT_MODEL,
               OPENAI_DEFAULT_TEMPERATURE
             )
     })
@@ -139,7 +139,7 @@ export const ChatBar = () => {
           field: "selectedConversation",
           value: createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            defaultModelId || FALLBACK_OPENAI_MODEL_ID,
+            defaultModelId || OPENAI_DEFAULT_MODEL,
             OPENAI_DEFAULT_TEMPERATURE
           )
         })

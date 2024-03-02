@@ -14,9 +14,8 @@ import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 
 interface Props {
@@ -392,7 +391,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
               retryAfter={waitTime}
-              modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
+              modelId={selectedConversation ? selectedConversation.modelId : OPENAI_DEFAULT_MODEL}
               onSend={(message, plugin) => {
                 // setCurrentMessage(message)
                 homeDispatch({field: "currentMessage", value: currentMessage})

@@ -1,13 +1,13 @@
 import * as Process from "process"
 
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
+import {OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID} from "@/types/openai"
+import {OpenAIModel} from "@/types/openai"
 
 export const cleanSelectedConversation = (
   conversation: Conversation,
   models: OpenAIModel[],
-  defaultModelId: OpenAIModelID
+  defaultModelId: string
 ) => {
   let updatedConversation = conversation
   if (conversation.modelId && !models.find((model) => model.id === conversation.modelId)) {
@@ -58,7 +58,7 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
   return history.reduce((acc: Conversation[], conversation) => {
     try {
       if (!conversation.modelId) {
-        conversation.modelId = FALLBACK_OPENAI_MODEL_ID
+        conversation.modelId = OPENAI_DEFAULT_MODEL
       }
       if (!conversation.prompt) {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT

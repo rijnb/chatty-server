@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next"
 
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {OPENAI_DEFAULT_MODEL} from "@/types/openai"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
@@ -27,7 +27,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
 
   const prompt = selectedConversation?.prompt ?? ""
   const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
-  const modelId = selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+  const modelId = selectedConversation?.modelId ?? OPENAI_DEFAULT_MODEL
 
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {

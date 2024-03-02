@@ -1,7 +1,7 @@
 import {Conversation, Message} from "@/types/chat"
 import {ErrorMessage} from "@/types/error"
 import {FolderInterface} from "@/types/folder"
-import {OpenAIModel, OpenAIModelID} from "@/types/openai"
+import {OpenAIModel} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 
@@ -23,7 +23,7 @@ export interface HomeInitialState {
   currentFolder: FolderInterface | undefined
   messageError: boolean
   searchTerm: string
-  defaultModelId: OpenAIModelID | undefined
+  defaultModelId: string | undefined
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
   triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.

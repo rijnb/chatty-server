@@ -1,14 +1,13 @@
 import {v4 as uuidv4} from "uuid"
 
 import {Conversation} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
 
-export const createNewConversation = (name: string, modelId: OpenAIModelID, temperature: number): Conversation => {
+export const createNewConversation = (name: string, modelId: string, temperature: number): Conversation => {
   return {
     id: uuidv4(),
     name: name,

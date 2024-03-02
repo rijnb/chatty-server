@@ -10,14 +10,13 @@ import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
-  modelId: OpenAIModelID
+  modelId: string
   onSend: (message: Message, plugin: Plugin | null) => void
   onRegenerate: () => void
   stopConversationRef: MutableRefObject<boolean>

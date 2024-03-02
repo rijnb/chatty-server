@@ -10,8 +10,8 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {HomeContextProps, useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {asMock} from "@/testutils"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {OpenAIModels} from "@/types/openai"
+import {OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import useMarkdownFile from "@/utils/app/markdown"
 
 jest.mock("react-i18next", () => ({
@@ -71,13 +71,13 @@ describe("<Chat/>", () => {
           id: uuidv4(),
           name: "Test Conversation",
           messages: [],
-          modelId: FALLBACK_OPENAI_MODEL_ID,
+          modelId: OPENAI_DEFAULT_MODEL,
           prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
           temperature: OPENAI_DEFAULT_TEMPERATURE
         },
         conversations: [],
         prompts: [],
-        models: [OpenAIModels[FALLBACK_OPENAI_MODEL_ID]],
+        models: [OpenAIModels[OPENAI_DEFAULT_MODEL]],
         apiKey: "",
         pluginKeys: [],
         serverSideApiKeyIsSet: true,

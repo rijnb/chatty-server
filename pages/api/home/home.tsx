@@ -18,10 +18,9 @@ import useApiService from "@/services/useApiService"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModelID} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -40,17 +39,13 @@ import {TiktokenEncoder} from "@/utils/server/tiktoken"
 interface Props {
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
-  defaultModelId: OpenAIModelID
+  defaultModelId: string
 }
 
 const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
-  const defaultModelId =
-    (process.env.OPENAI_DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-      process.env.OPENAI_DEFAULT_MODEL) ||
-    FALLBACK_OPENAI_MODEL_ID
+  const defaultModelId = (process.env.OPENAI_DEFAULT_MODEL && process.env.OPENAI_DEFAULT_MODEL) || OPENAI_DEFAULT_MODEL
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
@@ -174,7 +169,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     } else {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+        lastConversation?.modelId ?? defaultModelId ?? OPENAI_DEFAULT_MODEL,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
       )
       const updatedConversations = [...conversations, newConversation]
@@ -373,7 +368,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
         tokenCount = encoder.numberOfTokensInConversation(
           allMessages,
-          selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
+          selectedConversation?.modelId ?? OPENAI_DEFAULT_MODEL
         )
       }
 
@@ -389,7 +384,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           // Or create a new empty conversation.
           const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+            lastConversation?.modelId ?? defaultModelId ?? OPENAI_DEFAULT_MODEL,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
           )
           // Only add a new conversation to the history if there are existing conversations.

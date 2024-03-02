@@ -1,7 +1,6 @@
 import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
 
 import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 
 export class TiktokenEncoder {
@@ -26,7 +25,7 @@ export class TiktokenEncoder {
    * Returns the number of tokens in a conversation.
    * Simplified version from [OpenAI's cookbook](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb)
    */
-  numberOfTokensInConversation(messages: Message[], modelId: OpenAIModelID): number {
+  numberOfTokensInConversation(messages: Message[], modelId: string): number {
     const isModelGpt3 = modelId.startsWith("gpt-3")
     const fixedTokensPerMessage = isModelGpt3
       ? 4 // every message follows <|im_start|>{role}\n{content}<|end|>\n - 4 tokens
@@ -55,7 +54,7 @@ export class TiktokenEncoder {
     maxReplyTokens: number,
     prompt: string,
     messages: Message[],
-    modelId: OpenAIModelID
+    modelId: string
   ): Message[] {
     const [messagesToSend, requiredTokens] = this.reduceMessagesToSend(
       tokenLimit,
@@ -80,7 +79,7 @@ export class TiktokenEncoder {
     maxReplyTokens: number,
     prompt: string,
     messages: Message[],
-    modelId: OpenAIModelID
+    modelId: string
   ): [Message[], number] {
     const systemPrompt: Message = {role: "assistant", content: prompt}
     const messagesToSend: Message[] = messages.slice()
