@@ -159,6 +159,13 @@ _Rijn Buve & Oleksii Kulyk_
 ## Release notes
 
 
+### 2024-03-02
+
+#### Bug fixes
+
+- When switching between OpenAI and Azure, the `modelId` in the select conversation could be
+  non-existent, leading the web page to fail at load time.
+
 ### 2023-12-05
 
 #### Bug fixes

@@ -77,7 +77,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey, models, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
@@ -251,6 +251,25 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, homeDispatch])
 
+  // If models changed, make sure the selected conversation has an existing model ID.
+  useEffect(() => {
+    console.debug(`useEffect: models: "${models.map((m) => m.id).join(",")}"`)
+    if (models?.length > 0) {
+      const selectedConversation = getSelectedConversation()
+      if (selectedConversation) {
+        const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation, models, defaultModelId)
+        console.debug(
+          `useEffect: found modelId: "${selectedConversation.modelId}", now using: "${
+            cleanedSelectedConversation.modelId
+          }" from: "${models.map((m) => m.id).join(",")}"`
+        )
+        homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+      } else {
+        console.debug(`useEffect: no selected conversation`)
+      }
+    }
+  }, [models, defaultModelId, homeDispatch])
+
   // Server side props changed.
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
@@ -335,7 +354,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     const reselectPreviousConversation = async () => {
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
-        const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
+        const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation, models, defaultModelId)
         homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
         homeDispatch({field: "conversations", value: cleanedConversationHistory})
       }

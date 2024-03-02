@@ -1,13 +1,25 @@
+import * as Process from "process"
+
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID} from "@/types/openai"
 
-export const cleanSelectedConversation = (conversation: Conversation) => {
+export const cleanSelectedConversation = (
+  conversation: Conversation,
+  models: OpenAIModel[],
+  defaultModelId: OpenAIModelID
+) => {
   let updatedConversation = conversation
+  if (conversation.modelId && !models.find((model) => model.id === conversation.modelId)) {
+    updatedConversation = {
+      ...conversation,
+      modelId: defaultModelId
+    }
+  }
   if (!updatedConversation.modelId) {
     updatedConversation = {
       ...updatedConversation,
-      modelId: updatedConversation.modelId || FALLBACK_OPENAI_MODEL_ID
+      modelId: updatedConversation.modelId || defaultModelId
     }
   }
   if (!updatedConversation.prompt) {
@@ -25,13 +37,13 @@ export const cleanSelectedConversation = (conversation: Conversation) => {
   if (!updatedConversation.folderId) {
     updatedConversation = {
       ...updatedConversation,
-      folderId: updatedConversation.folderId || undefined
+      folderId: updatedConversation.folderId ?? undefined
     }
   }
   if (!updatedConversation.messages) {
     updatedConversation = {
       ...updatedConversation,
-      messages: updatedConversation.messages || []
+      messages: updatedConversation.messages ?? []
     }
   }
   return updatedConversation
@@ -61,7 +73,6 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
         conversation.messages = []
       }
       acc.push(conversation)
-      return acc
     } catch (error) {
       console.warn(`Error: Error while cleaning conversations history. Removing culprit:`, error)
     }
