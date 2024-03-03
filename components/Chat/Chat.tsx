@@ -184,7 +184,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           let errorText = await response.text()
           console.debug(`HTTP error, text:${errorText}`)
           console.debug(
-            `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText: ${errorText}`
+            `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText:${errorText}`
           )
           // Fall back to statusText if errorText is empty.
           if (errorText.length == 0) {
