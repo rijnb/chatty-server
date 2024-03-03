@@ -259,7 +259,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
 
   // If models changed, make sure the selected conversation has an existing model ID.
   useEffect(() => {
-    console.debug(`useEffect: models: "${models.map((m) => m.id).join(",")}"`)
+    console.debug(`useEffect: models:"${models.map((m) => m.id).join(";")}"`)
     if (models?.length > 0) {
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
