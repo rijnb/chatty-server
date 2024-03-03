@@ -177,7 +177,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
     ) {
       homeDispatch({field: "selectedConversation", value: lastConversation})
     } else {
-      console.debug(`handleNewConversation: reuseModel:${reuseModel}, model:${defaultModelId}`) //!! TODO: remove
+      console.debug(`handleNewConversation: reuseModel:${reuseModel}, model:${defaultModelId}`)
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
         reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
