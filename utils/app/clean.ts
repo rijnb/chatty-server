@@ -19,19 +19,19 @@ export const cleanSelectedConversation = (
   if (!updatedConversation.modelId) {
     updatedConversation = {
       ...updatedConversation,
-      modelId: updatedConversation.modelId || defaultModelId
+      modelId: updatedConversation.modelId ?? defaultModelId
     }
   }
   if (!updatedConversation.prompt) {
     updatedConversation = {
       ...updatedConversation,
-      prompt: updatedConversation.prompt || OPENAI_DEFAULT_SYSTEM_PROMPT
+      prompt: updatedConversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
     }
   }
   if (updatedConversation.temperature === undefined || updatedConversation.temperature === null) {
     updatedConversation = {
       ...updatedConversation,
-      temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE
+      temperature: updatedConversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
     }
   }
   if (!updatedConversation.folderId) {

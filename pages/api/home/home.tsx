@@ -274,17 +274,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
   // Server side props changed.
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
-    serverSideApiKeyIsSet &&
-      homeDispatch({
-        field: "serverSideApiKeyIsSet",
-        value: serverSideApiKeyIsSet
-      })
-    serverSidePluginKeysSet &&
-      homeDispatch({
-        field: "serverSidePluginKeysSet",
-        value: serverSidePluginKeysSet
-      })
-  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [apiKey, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
@@ -306,6 +296,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
       homeDispatch({
         field: "defaultModelId",
         value: defaultModelId
+      })
+    reuseModel &&
+      homeDispatch({
+        field: "reuseModel",
+        value: reuseModel
       })
 
     if (serverSideApiKeyIsSet) {
@@ -401,10 +396,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
         }
       }
     }
-
     reselectPreviousConversation().catch((error) => console.error(`Error reselecting previous conversation: ${error}`))
-    console.debug(`useEffect: reuseModel:${reuseModel}`)
-    homeDispatch({field: "reuseModel", value: reuseModel})
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, reuseModel, homeDispatch])
