@@ -18,9 +18,15 @@ import useApiService from "@/services/useApiService"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
+import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {
+  NEW_CONVERSATION_TITLE,
+  OPENAI_DEFAULT_MODEL,
+  OPENAI_DEFAULT_TEMPERATURE,
+  OPENAI_REUSE_MODEL
+} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -40,12 +46,15 @@ interface Props {
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
   defaultModelId: string
+  reuseModel: boolean
 }
 
 const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
-  const defaultModelId = (process.env.OPENAI_DEFAULT_MODEL && process.env.OPENAI_DEFAULT_MODEL) || OPENAI_DEFAULT_MODEL
+  const defaultModelId =
+    (process.env.OPENAI_DEFAULT_MODEL && OpenAIModels.hasOwnProperty(process.env.OPENAI_DEFAULT_MODEL)) ||
+    FALLBACK_OPENAI_MODEL_ID
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
@@ -56,14 +65,15 @@ export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   return {
     props: {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      defaultModelId,
-      serverSidePluginKeysSet,
+      serverSidePluginKeysSet: serverSidePluginKeysSet,
+      defaultModelId: defaultModelId,
+      reuseModel: OPENAI_REUSE_MODEL,
       ...(await serverSideTranslations(locale ?? "en", ["common"]))
     }
   }
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
+const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, reuseModel}: Props) => {
   const {t} = useTranslation("common")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -167,9 +177,10 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     ) {
       homeDispatch({field: "selectedConversation", value: lastConversation})
     } else {
+      console.debug(`handleNewConversation: reuseModel:${reuseModel}, model:${defaultModelId}`)
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        lastConversation?.modelId ?? defaultModelId ?? OPENAI_DEFAULT_MODEL,
+        reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
       )
       const updatedConversations = [...conversations, newConversation]
@@ -253,11 +264,6 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
         const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation, models, defaultModelId)
-        console.debug(
-          `useEffect: found modelId: "${selectedConversation.modelId}", now using: "${
-            cleanedSelectedConversation.modelId
-          }" from: "${models.map((m) => m.id).join(",")}"`
-        )
         homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
       } else {
         console.debug(`useEffect: no selected conversation`)
@@ -384,7 +390,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           // Or create a new empty conversation.
           const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            lastConversation?.modelId ?? defaultModelId ?? OPENAI_DEFAULT_MODEL,
+            OPENAI_REUSE_MODEL ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
           )
           // Only add a new conversation to the history if there are existing conversations.
@@ -397,9 +403,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     }
 
     reselectPreviousConversation().catch((error) => console.error(`Error reselecting previous conversation: ${error}`))
+    console.debug(`useEffect: reuseModel:${reuseModel}`)
+    homeDispatch({field: "reuseModel", value: reuseModel})
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, reuseModel, homeDispatch])
 
   // LAYOUT --------------------------------------------
 

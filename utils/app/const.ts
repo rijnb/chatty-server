@@ -16,6 +16,7 @@ export const OPENAI_API_MAX_TOKENS = parseInt(process.env.OPENAI_MAX_TOKENS ?? "
 export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION ?? ""
 export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID ?? ""
 export const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL ?? FALLBACK_OPENAI_MODEL_ID
+export const OPENAI_REUSE_MODEL = parseInt(process.env.OPENAI_REUSE_MODEL ?? "0") != 0
 
 // Other constants.
 export const NEW_CONVERSATION_TITLE = "New conversation"

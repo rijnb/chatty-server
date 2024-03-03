@@ -25,4 +25,4 @@ export const maxTokensForModel = (modelId: string) => {
   return OpenAIModels[modelId]?.tokenLimit ?? 0
 }
 
-export const FALLBACK_OPENAI_MODEL_ID = "gpt-35-turbo"
+export const FALLBACK_OPENAI_MODEL_ID = "gpt-35-turbo-16k"
