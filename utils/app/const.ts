@@ -1,4 +1,4 @@
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
 
 /**
  * The default system prompt is sent for every conversation. It sets the context for the conversation.
@@ -15,7 +15,7 @@ export const OPENAI_API_VERSION = process.env.OPENAI_API_VERSION ?? "2023-03-15-
 export const OPENAI_API_MAX_TOKENS = parseInt(process.env.OPENAI_MAX_TOKENS ?? "1000")
 export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION ?? ""
 export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID ?? ""
-export const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL ?? FALLBACK_OPENAI_MODEL_ID
+export const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL ?? FALLBACK_OPENAI_MODEL
 export const OPENAI_REUSE_MODEL = parseInt(process.env.OPENAI_REUSE_MODEL ?? "0") != 0
 
 // Other constants.

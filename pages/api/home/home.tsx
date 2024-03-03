@@ -18,7 +18,7 @@ import useApiService from "@/services/useApiService"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModels} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
 import {
@@ -52,9 +52,9 @@ interface Props {
 const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
-  const defaultModelId =
-    (process.env.OPENAI_DEFAULT_MODEL && OpenAIModels.hasOwnProperty(process.env.OPENAI_DEFAULT_MODEL)) ||
-    FALLBACK_OPENAI_MODEL_ID
+  const defaultModelId = OpenAIModels.hasOwnProperty(process.env.OPENAI_DEFAULT_MODEL || "")
+    ? process.env.OPENAI_DEFAULT_MODEL
+    : FALLBACK_OPENAI_MODEL
 
   let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
@@ -281,22 +281,26 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
     console.debug("useEffect: server-side props changed")
     const apiKey = getApiKey()
 
+    console.debug(`useEffect: serverSideApiKeyIsSet:${serverSideApiKeyIsSet}`)
     serverSideApiKeyIsSet &&
       homeDispatch({
         field: "serverSideApiKeyIsSet",
         value: serverSideApiKeyIsSet
       })
+    console.debug(`useEffect: serverSidePluginKeySet:${serverSidePluginKeysSet}`)
     serverSidePluginKeysSet &&
       homeDispatch({
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
 
+    console.debug(`useEffect: defaultModelId:${defaultModelId}`)
     defaultModelId &&
       homeDispatch({
         field: "defaultModelId",
         value: defaultModelId
       })
+    console.debug(`useEffect: reuseModel:${reuseModel}`)
     reuseModel &&
       homeDispatch({
         field: "reuseModel",

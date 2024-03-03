@@ -1,7 +1,7 @@
 import {Conversation, Message} from "@/types/chat"
 import {ErrorMessage} from "@/types/error"
 import {FolderInterface} from "@/types/folder"
-import {OpenAIModel} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL, OpenAIModel} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 
@@ -23,7 +23,7 @@ export interface HomeInitialState {
   currentFolder: FolderInterface | undefined
   messageError: boolean
   searchTerm: string
-  defaultModelId: string | undefined
+  defaultModelId: string
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
   triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.
@@ -49,7 +49,7 @@ export const initialState: HomeInitialState = {
   currentFolder: undefined,
   messageError: false,
   searchTerm: "",
-  defaultModelId: undefined,
+  defaultModelId: FALLBACK_OPENAI_MODEL,
   serverSideApiKeyIsSet: false,
   serverSidePluginKeysSet: false,
   triggerSelectedPrompt: undefined,

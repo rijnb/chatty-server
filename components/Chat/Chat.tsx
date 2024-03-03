@@ -39,7 +39,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
       apiKey,
       pluginKeys,
       serverSideApiKeyIsSet,
-      modelError
+      modelError,
+      defaultModelId
     },
     dispatch: homeDispatch
   } = useHomeContext()
@@ -391,7 +392,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
               retryAfter={waitTime}
-              modelId={selectedConversation ? selectedConversation.modelId : OPENAI_DEFAULT_MODEL}
+              modelId={selectedConversation ? selectedConversation.modelId : defaultModelId}
               onSend={(message, plugin) => {
                 // setCurrentMessage(message)
                 homeDispatch({field: "currentMessage", value: currentMessage})
