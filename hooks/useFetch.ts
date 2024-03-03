@@ -76,9 +76,8 @@ async function safeFetch(url: string, callOptions: RequestInit): Promise<Respons
   try {
     return await fetch(url, callOptions)
   } catch (error: any) {
-    if (error.name === "AbortError") {
-      console.error("Request was cancelled", error)
-      throw new Error("Request was cancelled")
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error
     }
     console.error("Unexpected error", error)
     throw new Error(`Request failed with error ${error}`)

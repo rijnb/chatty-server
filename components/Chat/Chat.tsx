@@ -1,7 +1,7 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
 import {OpenAIError} from "openai/error"
-import React, {MutableRefObject, memo, useCallback, useRef, useState} from "react"
+import React, {memo, useCallback, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
 import Spinner from "../Spinner"
@@ -12,6 +12,7 @@ import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import WelcomeMessage from "@/components/Chat/WelcomeMessage"
 import useConversationsOperations from "@/components/Conversation/useConversationsOperations"
 import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
+import useAbort from "@/hooks/useAbort"
 import {useFetch} from "@/hooks/useFetch"
 import useWaitTime from "@/hooks/useWaitTime"
 import {useHomeContext} from "@/pages/api/home/home.context"
@@ -21,17 +22,17 @@ import {ChatBody, Conversation, Message} from "@/types/chat"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
 import {OpenAIAuthError, OpenAILimitExceeded, OpenAIRateLimited} from "@/utils/server/errors"
 
-interface Props {
-  stopConversationRef: MutableRefObject<boolean>
-}
+interface Props {}
 
 export const TOAST_DURATION_MS = 8000
 export const RESPONSE_TIMEOUT_MS = 20000
 
-const Chat = memo(({stopConversationRef}: Props) => {
+const Chat = memo(({}: Props) => {
   const {t} = useTranslation("common")
   const {unlocked} = useUnlock()
   const appInsights = useAppInsightsContext()
+
+  const {signal, abort, resetAbort} = useAbort()
 
   const {
     state: {models, apiKey, tools, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
@@ -124,7 +125,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
       }
       const endpoint = getApiUrl("/api/chat")
       const body = chatBody
-      const controller = new AbortController()
 
       appInsights.trackEvent({
         name: "SendMessage",
@@ -144,7 +144,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
         const response = await fetchService.post<Response>(endpoint, {
           body,
           returnRawResponse: true,
-          signal: controller.signal
+          signal
         })
         if (!response.ok) {
           homeDispatch({field: "loading", value: false})
@@ -196,7 +196,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           }
         }
 
-        await StreamEventClient.fromReadableStream(response.body.getReader())
+        await StreamEventClient.fromReadableStream(response.body.getReader(), signal)
           .on("connect", () => {
             const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: ""}]
             updatedConversation = {
@@ -244,6 +244,22 @@ const Chat = memo(({stopConversationRef}: Props) => {
           .on("error", (error) => {
             handleError(error)
           })
+          .on("abort", () => {
+            const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
+              if (index === updatedConversation.messages.length - 1) {
+                return {
+                  ...message,
+                  content: message.content + "... (aborted)"
+                }
+              }
+              return message
+            })
+            updatedConversation = {
+              ...updatedConversation,
+              messages: updatedMessages
+            }
+            updateConversation(updatedConversation)
+          })
           .on("end", () => {
             updateConversation(updatedConversation)
             homeDispatch({field: "loading", value: false})
@@ -251,6 +267,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
           })
           .done()
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          homeDispatch({field: "loading", value: false})
+          homeDispatch({field: "messageIsStreaming", value: false})
+          return
+        }
+
         const {status, statusText, content, message} = error as any
         console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
         if (status === 401) {
@@ -276,7 +298,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [apiKey, conversations, fetchService, getApiUrl, homeDispatch, selectedConversation, stopConversationRef]
+    [apiKey, conversations, fetchService, getApiUrl, homeDispatch, selectedConversation, resetAbort, signal]
   )
 
   return (
@@ -314,7 +336,10 @@ const Chat = memo(({stopConversationRef}: Props) => {
 
           {(serverSideApiKeyIsSet || apiKey) && unlocked && models.length > 0 && (
             <ChatInput
-              stopConversationRef={stopConversationRef}
+              onAbort={() => {
+                abort()
+                resetAbort()
+              }}
               textareaRef={textareaRef}
               retryAfter={waitTime}
               modelId={selectedConversation ? selectedConversation.modelId : defaultModelId}

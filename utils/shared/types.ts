@@ -17,6 +17,7 @@ export type StreamEvents = {
   content: (content: {delta: string; snapshot: string}) => void
   toolCall: (name: string, toolArguments: string) => void
   error: (error: StreamingError) => void
+  abort: () => void
   end: () => void
 }
 

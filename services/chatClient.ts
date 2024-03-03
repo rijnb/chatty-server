@@ -18,25 +18,36 @@ export class StreamEventClient {
     })
   }
 
-  static fromReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>) {
+  static fromReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>, signal: AbortSignal) {
     const client = new StreamEventClient()
-    client.listen(reader).catch((error) => {
-      console.error("listen: error", error)
+    client.listen(reader, signal).catch((error) => {
       client.emit("error", error)
     })
     return client
   }
 
-  private async listen(reader: ReadableStreamDefaultReader<Uint8Array>) {
+  private async listen(reader: ReadableStreamDefaultReader<Uint8Array>, signal: AbortSignal) {
     const iterator = this.createMessageIterator(reader)
 
-    for await (const line of iterator) {
-      const message = JSON.parse(line)
-      if (message.event === "error") {
-        this.emit(message.event, reconstructError(message.data[0]))
+    try {
+      for await (const line of iterator) {
+        if (signal.aborted) {
+          this.emit("abort")
+          return
+        }
+        const message = JSON.parse(line)
+        if (message.event === "error") {
+          this.emit(message.event, reconstructError(message.data[0]))
+          return
+        }
+        this.emit(message.event, ...message.data)
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        this.emit("abort")
         return
       }
-      this.emit(message.event, ...message.data)
+      throw error
     }
   }
 
@@ -67,14 +78,13 @@ export class StreamEventClient {
   }
 
   private emit<E extends EventType>(event: E, ...args: EventParameters<E>) {
-    console.info("emit", event, args)
     this.listeners[event]?.forEach((listener: any) => listener(...args))
 
     if (event === "end") {
       this.resolveEndPromise()
     }
 
-    if (event === "error") {
+    if (event === "abort" || event === "error") {
       this.emit("end")
     }
   }

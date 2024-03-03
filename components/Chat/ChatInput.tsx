@@ -21,12 +21,12 @@ interface Props {
   modelId: string
   onSend: (message: Message, selectedTools: ToolId[]) => void
   onRegenerate: () => void
-  stopConversationRef: MutableRefObject<boolean>
+  onAbort: () => void
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>
   retryAfter: number | null
 }
 
-export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef, retryAfter}: Props) => {
+export const ChatInput = ({modelId, onSend, onRegenerate, onAbort, textareaRef, retryAfter}: Props) => {
   const {t} = useTranslation("common")
   const router = useRouter()
   const {
@@ -158,10 +158,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handleStopOngoingConversation = () => {
-    stopConversationRef.current = true
-    setTimeout(() => {
-      stopConversationRef.current = false
-    }, 3000)
+    onAbort()
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {

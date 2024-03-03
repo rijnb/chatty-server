@@ -3,7 +3,7 @@ import {useTranslation} from "next-i18next"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations"
 import Head from "next/head"
 import {useRouter} from "next/router"
-import {useEffect, useRef} from "react"
+import {useEffect} from "react"
 import {useQuery} from "react-query"
 
 import HomeContext from "./home.context"
@@ -94,8 +94,6 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
     },
     {enabled: true, refetchOnMount: false, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000}
   )
-
-  const stopConversationRef = useRef<boolean>(false)
 
   const loadPromptsFromFile = (filename: string) => {
     console.debug(`loadPromptsFromFile: ${filename}`)
@@ -320,7 +318,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
           <div className="flex h-full w-full overflow-y-hidden pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <Chat stopConversationRef={stopConversationRef} />
+              <Chat />
             </div>
             <PromptBar />
           </div>
