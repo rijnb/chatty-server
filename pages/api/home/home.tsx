@@ -385,7 +385,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
           // Or create a new empty conversation.
           const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            OPENAI_REUSE_MODEL ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
+            reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
           )
           // Only add a new conversation to the history if there are existing conversations.
