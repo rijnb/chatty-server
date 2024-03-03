@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "title": "Google Search Parameters",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "The search query"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["query"]
+}

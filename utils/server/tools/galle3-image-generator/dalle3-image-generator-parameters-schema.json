@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "title": "Dalle-3 Image Generator Parameters",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "description": "A text description of the desired image. The maximum length is 4000 characters."
+    },
+    "size": {
+      "type": "string",
+      "enum": ["1024x1024", "1792x1024", "1024x1792"],
+      "description": "The size of the generated images"
+    },
+    "quality": {
+      "type": "string",
+      "enum": ["standard", "hd"],
+      "description":
+      "The quality of the image that will be generated. `hd` creates images with finer details and greater consistency across the image."
+    },
+    "style": {
+      "type": "string",
+      "enum": ["vivid", "natural"],
+      "description":
+      "The style of the generated images. Vivid creates images that are hyper-realistic and dramatic. Natural creates images that are more natural and less hyper-realistic."
+    }
+  },
+  "additionalProperties": false,
+  "required": ["prompt"]
+}

@@ -1,8 +1,7 @@
 import {JSONSchema} from "openai/src/lib/jsonschema"
 
-import dalle3ImageGenerator from "@/utils/server/tools/dalle3ImageGenerator"
-import googleSearch from "@/utils/server/tools/google"
-import {tomtomSearch} from "@/utils/server/tools/tomtom"
+import dalle3ImageGenerator from "@/utils/server/tools/galle3-image-generator"
+import googleSearch from "@/utils/server/tools/google-search"
 
 export interface ToolDescription {
   id: string
@@ -19,5 +18,5 @@ export interface BackendTool<C, A> extends ToolDescription {
   getConfiguration: () => C
 }
 
-export const ToolsRegistry = [googleSearch, dalle3ImageGenerator, tomtomSearch]
+export const ToolsRegistry = [googleSearch, dalle3ImageGenerator]
 export type ToolId = (typeof ToolsRegistry)[number]["id"]

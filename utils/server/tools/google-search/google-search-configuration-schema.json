@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "title": "Google Search Configuration",
+  "properties": {
+    "apiKey": {
+      "type": "string",
+      "description": "The Google API key"
+    },
+    "cseId": {
+      "type": "string",
+      "description": "The Google Custom Search Engine ID"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["apiKey", "cseId"]
+}

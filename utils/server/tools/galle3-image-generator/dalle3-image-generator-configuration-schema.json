@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "title": "Dalle-3 Image Generator Configuration",
+  "properties": {
+    "apiKey": {
+      "type": "string",
+      "description": "The OpenAI API key"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["apiKey"]
+}

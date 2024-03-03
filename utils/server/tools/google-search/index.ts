@@ -2,17 +2,12 @@ import {Readability} from "@mozilla/readability"
 import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 
+import {GoogleSearchConfiguration} from "./gen/google-search-configuration-schema"
+import {GoogleSearchParameters} from "./gen/google-search-parameters-schema"
+import GoogleSearchConfigurationJsonSchema from "./google-search-configuration-schema.json"
+import GoogleSearchParametersJsonSchema from "./google-search-parameters-schema.json"
 import {trimForPrivacy} from "@/utils/app/privacy"
-import {BackendTool} from "@/utils/server/tools/index"
-
-type GoogleSearchConfiguration = {
-  apiKey: string
-  cseId: string
-}
-
-type GoogleSearchArgs = {
-  query: string
-}
+import {BackendTool} from "@/utils/server/tools"
 
 interface GoogleSource {
   title: string
@@ -23,35 +18,13 @@ interface GoogleSource {
   text: string
 }
 
-const googleSearch: BackendTool<GoogleSearchConfiguration, GoogleSearchArgs> = {
+const googleSearch: BackendTool<GoogleSearchConfiguration, GoogleSearchParameters> = {
   id: "googleSearch",
   type: "function",
   name: "Google Search",
   description: "Search the web with Google",
-  parameters: {
-    type: "object",
-    properties: {
-      query: {
-        type: "string",
-        description: "The search query"
-      }
-    },
-    required: ["query"]
-  },
-  configuration_parameters: {
-    type: "object",
-    properties: {
-      apiKey: {
-        type: "string",
-        description: "The Google API key"
-      },
-      cseId: {
-        type: "string",
-        description: "The Google Custom Search Engine ID"
-      }
-    },
-    required: ["apiKey", "cseId"]
-  },
+  parameters: GoogleSearchParametersJsonSchema,
+  configuration_parameters: GoogleSearchConfigurationJsonSchema,
 
   execute: runGoogleSearch,
 
@@ -62,7 +35,7 @@ const googleSearch: BackendTool<GoogleSearchConfiguration, GoogleSearchArgs> = {
   })
 }
 
-async function runGoogleSearch({apiKey, cseId}: GoogleSearchConfiguration, {query}: GoogleSearchArgs) {
+async function runGoogleSearch({apiKey, cseId}: GoogleSearchConfiguration, {query}: GoogleSearchParameters) {
   console.debug(`Google search, query:${trimForPrivacy(query)}`)
   const googleRes = await fetch(
     `https://customsearch.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cseId}&q=${query}&num=5`
