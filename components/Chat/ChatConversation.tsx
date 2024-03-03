@@ -18,8 +18,7 @@ interface Props {
 
 const ChatConversation = ({conversation, onSend}: Props) => {
   const {
-    state: {models, loading, messageIsStreaming},
-    dispatch: homeDispatch
+    state: {models, loading, messageIsStreaming}
   } = useHomeContext()
 
   const {updateConversation} = useConversationsOperations()

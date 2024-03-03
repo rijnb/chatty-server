@@ -77,7 +77,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey,models, selectedConversation, triggerFactoryPrompts},
+    state: {apiKey, models, selectedConversation, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
@@ -280,7 +280,7 @@ const Home = ({serverSideApiKeyIsSet, tools, defaultModelId, reuseModel}: Props)
             t(NEW_CONVERSATION_TITLE),
             reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
-            tools.map((t) => t.id)
+            lastConversation?.selectedTools ?? []
           )
           // Only add a new conversation to the history if there are existing conversations.
           if (cleanedConversationHistory.length > 0) {

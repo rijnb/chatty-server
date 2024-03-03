@@ -34,7 +34,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
   const appInsights = useAppInsightsContext()
 
   const {
-    state: {models, apiKey, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
+    state: {models, apiKey, tools, toolConfigurations, serverSideApiKeyIsSet, modelError, defaultModelId},
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -119,7 +119,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
         maxTokens: updatedConversation.maxTokens,
         selectedTools: selectedConversation.selectedTools,
         toolConfigurations: Object.fromEntries(
-          Object.entries(toolConfigurations).filter(([id, config]) => selectedConversation.selectedTools.includes(id))
+          Object.entries(toolConfigurations).filter(([id]) => selectedConversation.selectedTools.includes(id))
         )
       }
       const endpoint = getApiUrl("/api/chat")
@@ -134,7 +134,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           temperature: chatBody.temperature,
           maxTokens: chatBody.maxTokens,
           tokenCount: updatedConversation.tokenCount,
-          selectedTools: chatBody.selectedTools.join(", ")
+          selectedTools: chatBody.selectedTools?.join(", ") ?? ""
         }
       })
 
@@ -209,9 +209,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
           .on("toolCall", (name, toolArguments) => {
             const updatedMessages: Message[] = updatedConversation.messages.map((m, index) => {
               if (index === updatedConversation.messages.length - 1) {
+                const functionName = tools.find((tool) => tool.id === name)?.name ?? name
+                const args = JSON.parse(toolArguments)
+
                 return {
                   ...m,
-                  tool_calls: (m.tool_calls || []).concat({functionName: name, arguments: toolArguments})
+                  tool_calls: (m.tool_calls || []).concat({functionName, arguments: args})
                 }
               }
               return m
@@ -243,6 +246,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           })
           .on("end", () => {
             updateConversation(updatedConversation)
+            homeDispatch({field: "loading", value: false})
             homeDispatch({field: "messageIsStreaming", value: false})
           })
           .done()

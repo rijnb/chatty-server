@@ -21,7 +21,7 @@ const useConversationsOperations = () => {
   const {t} = useTranslation("common")
 
   const {
-    state: {selectedConversation, conversations, defaultModelId, reuseModel, tools, folders},
+    state: {selectedConversation, conversations, defaultModelId, reuseModel, folders},
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -39,7 +39,7 @@ const useConversationsOperations = () => {
         t(NEW_CONVERSATION_TITLE),
         reuseModel ? lastConversation?.modelId ?? defaultModelId : defaultModelId,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
-        tools.map((t) => t.id)
+        lastConversation?.selectedTools ?? []
       )
       const updatedConversations = [...conversations, newConversation]
       homeDispatch({field: "selectedConversation", value: newConversation})
@@ -89,7 +89,7 @@ const useConversationsOperations = () => {
             t(NEW_CONVERSATION_TITLE),
             defaultModelId || OPENAI_DEFAULT_MODEL,
             OPENAI_DEFAULT_TEMPERATURE,
-            tools.map((t) => t.id)
+            []
           )
         })
     }
@@ -104,7 +104,7 @@ const useConversationsOperations = () => {
         t(NEW_CONVERSATION_TITLE),
         defaultModelId || OPENAI_DEFAULT_MODEL,
         OPENAI_DEFAULT_TEMPERATURE,
-        tools.map((t) => t.id)
+        []
       )
       selectConversation(newConversation)
     }
@@ -125,7 +125,7 @@ const useConversationsOperations = () => {
               t(NEW_CONVERSATION_TITLE),
               defaultModelId || OPENAI_DEFAULT_MODEL,
               OPENAI_DEFAULT_TEMPERATURE,
-              tools.map((t) => t.id)
+              []
             )
     })
     homeDispatch({field: "folders", value: folders})

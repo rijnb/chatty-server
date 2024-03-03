@@ -31,7 +31,12 @@ export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) 
       <div>
         {message.tool_calls?.map((toolCall, index) => (
           <div key={index} className="text-xs text-gray-500 dark:text-gray-400">
-            Calling {toolCall.functionName} with {toolCall.arguments}
+            <div>Calling {toolCall.functionName} with</div>
+            {Object.entries(toolCall.arguments).map(([key, value], argIndex) => (
+              <div key={argIndex}>
+                {key}: {value as string}
+              </div>
+            ))}
           </div>
         ))}
 
