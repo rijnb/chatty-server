@@ -26,7 +26,7 @@ export class TiktokenEncoder {
    * Simplified version from [OpenAI's cookbook](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb)
    */
   numberOfTokensInConversation(messages: Message[], modelId: string): number {
-    const isModelGpt3 = modelId.startsWith("gpt-3")
+    const isModelGpt3 = modelId.startsWith("gpt-3") || modelId.includes("-gpt-3")
     const fixedTokensPerMessage = isModelGpt3
       ? 4 // every message follows <|im_start|>{role}\n{content}<|end|>\n - 4 tokens
       : 3 // every message follows <|im_start|>{role}<|im_sep|>{content}<|im_end|> - 3 tokens
