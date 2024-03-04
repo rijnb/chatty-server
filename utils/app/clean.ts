@@ -1,6 +1,6 @@
 import * as Process from "process"
 
-import {OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 
@@ -49,7 +49,7 @@ export const cleanSelectedConversation = (
   return updatedConversation
 }
 
-export const cleanConversationHistory = (history: Conversation[]): Conversation[] => {
+export const cleanConversationHistory = (history: Conversation[], defaultModelId: string): Conversation[] => {
   if (!Array.isArray(history)) {
     console.warn("Error: History is not an array. Returning an empty array.")
     return []
@@ -58,7 +58,7 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
   return history.reduce((acc: Conversation[], conversation) => {
     try {
       if (!conversation.modelId) {
-        conversation.modelId = OPENAI_DEFAULT_MODEL
+        conversation.modelId = defaultModelId
       }
       if (!conversation.prompt) {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT

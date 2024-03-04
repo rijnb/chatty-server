@@ -15,7 +15,7 @@ import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
 import {Plugin} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
 
 interface Props {

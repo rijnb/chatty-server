@@ -21,12 +21,7 @@ import {FolderType} from "@/types/folder"
 import {FALLBACK_OPENAI_MODEL, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {
-  NEW_CONVERSATION_TITLE,
-  OPENAI_DEFAULT_MODEL,
-  OPENAI_DEFAULT_TEMPERATURE,
-  OPENAI_REUSE_MODEL
-} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE, OPENAI_REUSE_MODEL} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -348,7 +343,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
     }
 
     const conversationsHistory: Conversation[] = getConversationsHistory()
-    const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
+    const cleanedConversationHistory = cleanConversationHistory(conversationsHistory, defaultModelId)
 
     // Re-select the previous conversation. But only if it wasn't too long (to avoid using lost of tokens).
     const reselectPreviousConversation = async () => {
@@ -371,10 +366,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId, r
 
         const encoder = await TiktokenEncoder.create()
 
-        tokenCount = encoder.numberOfTokensInConversation(
-          allMessages,
-          selectedConversation?.modelId ?? OPENAI_DEFAULT_MODEL
-        )
+        tokenCount = encoder.numberOfTokensInConversation(allMessages, selectedConversation?.modelId ?? defaultModelId)
       }
 
       console.debug(`useEffect: tokenCount:${tokenCount}`)
