@@ -9,7 +9,7 @@ import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
-import {OpenAIModel, OpenAIModels, maxTokensForModel} from "@/types/openai"
+import {OpenAIModel, maxTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
@@ -24,7 +24,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const {t} = useTranslation("common")
 
   const {
-    state: {defaultModelId}
+    state: {defaultModelId, allowModelSelection}
   } = useHomeContext()
   const {theme, setTheme} = useTheme()
   const {onSaveScreenshot} = useScreenshot(container)
@@ -83,10 +83,12 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
     >
       <div className="w-full">
         <div className="flex flex-col">
-          <FormLabel htmlFor="model">Conversation model</FormLabel>
+          <FormLabel htmlFor="model">
+            {allowModelSelection ? t("Conversation model") : t("Conversation model (disabled)")}
+          </FormLabel>
           <Select
             id="model"
-            disabled={false}
+            disabled={!allowModelSelection}
             className="disabled:pointer-events-none disabled:text-gray-300"
             placeholder={t("Select a model")}
             value={modelId}

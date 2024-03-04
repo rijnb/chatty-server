@@ -101,7 +101,8 @@ describe("<Chat/>", () => {
         serverSidePluginKeysSet: false,
         triggerSelectedPrompt: undefined,
         triggerFactoryPrompts: true,
-        reuseModel: false
+        reuseModel: true,
+        allowModelSelection: true
       },
       handleUpdateConversation: () => {},
       dispatch: () => {}
