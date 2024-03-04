@@ -7,10 +7,11 @@ import {OpenAIModel} from "@/types/openai"
 export const cleanSelectedConversation = (
   conversation: Conversation,
   models: OpenAIModel[],
-  defaultModelId: string
+  defaultModelId: string,
+  allowModelSelection: boolean
 ) => {
   let updatedConversation = conversation
-  if (conversation.modelId && !models.find((model) => model.id === conversation.modelId)) {
+  if (!allowModelSelection || (conversation.modelId && !models.find((model) => model.id === conversation.modelId))) {
     updatedConversation = {
       ...conversation,
       modelId: defaultModelId

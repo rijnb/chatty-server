@@ -32,8 +32,12 @@ export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID
 // The default model to use if the user's model is not supported.
 export const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL ?? FALLBACK_OPENAI_MODEL
 
-// Whether to reuse the model for new conversations or not; true or false.
-export const OPENAI_REUSE_MODEL = process.env.OPENAI_REUSE_MODEL == "true"
+// Whether to reuse the model for new conversations; true or false.
+export const OPENAI_REUSE_MODEL = (process.env.OPENAI_REUSE_MODEL && process.env.OPENAI_REUSE_MODEL == "true") ?? false
+
+// Whether to allow selecting another model; true or false.
+export const OPENAI_ALLOW_MODEL_SELECTION =
+  (process.env.OPENAI_ALLOW_MODEL_SELECTION && process.env.OPENAI_ALLOW_MODEL_SELECTION == "true") ?? false
 
 // Other constants.
 export const NEW_CONVERSATION_TITLE = "New conversation"

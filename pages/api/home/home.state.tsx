@@ -29,6 +29,7 @@ export interface HomeInitialState {
   triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.
   triggerFactoryPrompts: boolean // Used to trigger re-reading the factory prompts.
   reuseModel: boolean
+  allowModelSelection: boolean
 }
 
 export const initialState: HomeInitialState = {
@@ -54,5 +55,6 @@ export const initialState: HomeInitialState = {
   serverSidePluginKeysSet: false,
   triggerSelectedPrompt: undefined,
   triggerFactoryPrompts: true,
-  reuseModel: false
+  reuseModel: true,
+  allowModelSelection: true
 }
