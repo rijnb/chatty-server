@@ -7,8 +7,8 @@
  */
 
 export interface OpenAIModel {
-  id: string
-  tokenLimit: number
+  id: string // The model identifier.
+  tokenLimit: number // The maximum number of tokens for this model; if 0, the model is not supported.
 }
 
 export const OpenAIModels: Record<string, OpenAIModel> = {
