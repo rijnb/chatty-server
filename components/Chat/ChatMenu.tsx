@@ -7,14 +7,10 @@ import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {OpenAIModel, OpenAIModels, maxTokensForModel} from "@/types/openai"
-import {
-  OPENAI_API_MAX_TOKENS,
-  OPENAI_DEFAULT_MODEL,
-  OPENAI_DEFAULT_SYSTEM_PROMPT,
-  OPENAI_DEFAULT_TEMPERATURE
-} from "@/utils/app/const"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
   conversation: Conversation
@@ -27,6 +23,9 @@ interface Props {
 const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpenReleaseNotes}: Props) => {
   const {t} = useTranslation("common")
 
+  const {
+    state: {defaultModelId}
+  } = useHomeContext()
   const {theme, setTheme} = useTheme()
   const {onSaveScreenshot} = useScreenshot(container)
   const {onSaveMarkdown} = useSaveMarkdown(conversation)
@@ -34,7 +33,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
-  const modelId = conversation.modelId ?? OPENAI_DEFAULT_MODEL
+  const modelId = conversation.modelId ?? defaultModelId
   const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
   const ref = useRef<HTMLDivElement>(null)

@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next"
 
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_MODEL} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
@@ -17,7 +17,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
-    state: {selectedConversation, messageIsStreaming},
+    state: {selectedConversation, messageIsStreaming, defaultModelId},
     handleUpdateConversation
   } = useHomeContext()
 
@@ -26,7 +26,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
 
   const prompt = selectedConversation?.prompt ?? ""
   const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
-  const modelId = selectedConversation?.modelId ?? OPENAI_DEFAULT_MODEL
+  const modelId = selectedConversation?.modelId ?? defaultModelId
 
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
