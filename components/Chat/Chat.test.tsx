@@ -1,3 +1,4 @@
+import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {render, screen} from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import fetchMock from "jest-fetch-mock"
@@ -10,8 +11,8 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {HomeContextProps, useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {asMock} from "@/testutils"
-import {OpenAIModels} from "@/types/openai"
-import {OPENAI_DEFAULT_MODEL, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {FALLBACK_OPENAI_MODEL, OpenAIModels} from "@/types/openai"
+import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import useMarkdownFile from "@/utils/app/markdown"
 
 jest.mock("react-i18next", () => ({
@@ -67,22 +68,40 @@ describe("<Chat/>", () => {
 
     asMock(useHomeContext).mockReturnValue({
       state: {
+        apiKey: "",
+        pluginKeys: [],
+        loading: false,
+        messageIsStreaming: false,
+        modelError: null,
+        models: [OpenAIModels[FALLBACK_OPENAI_MODEL]],
+        folders: [],
+        conversations: [],
         selectedConversation: {
           id: uuidv4(),
           name: "Test Conversation",
           messages: [],
-          modelId: OPENAI_DEFAULT_MODEL,
+          tokenCount: 1,
+          modelId: FALLBACK_OPENAI_MODEL,
           prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-          temperature: OPENAI_DEFAULT_TEMPERATURE
+          temperature: OPENAI_DEFAULT_TEMPERATURE,
+          maxTokens: 1000,
+          folderId: undefined,
+          time: 1
         },
-        conversations: [],
+        currentMessage: undefined,
         prompts: [],
-        models: [OpenAIModels[OPENAI_DEFAULT_MODEL]],
-        apiKey: "",
-        pluginKeys: [],
+        temperature: OPENAI_DEFAULT_TEMPERATURE,
+        showChatBar: true,
+        showPromptBar: true,
+        currentFolder: undefined,
+        messageError: false,
+        searchTerm: "",
+        defaultModelId: FALLBACK_OPENAI_MODEL,
         serverSideApiKeyIsSet: true,
-        modelError: null,
-        loading: false
+        serverSidePluginKeysSet: false,
+        triggerSelectedPrompt: undefined,
+        triggerFactoryPrompts: true,
+        reuseModel: false
       },
       handleUpdateConversation: () => {},
       dispatch: () => {}

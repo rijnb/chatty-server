@@ -33,8 +33,8 @@ export interface HomeInitialState {
 
 export const initialState: HomeInitialState = {
   apiKey: "",
-  loading: false,
   pluginKeys: [],
+  loading: false,
   messageIsStreaming: false,
   modelError: null,
   models: [],
