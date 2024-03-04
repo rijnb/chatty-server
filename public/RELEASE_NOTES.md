@@ -164,6 +164,8 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Added environment variable "OPENAI_REUSE_MODEL" to reuse the model when starting a new conversation, or fall back to
   the default model. Values: true (reuse model for new conversation, or false (fall back to default model).
+- Added environment variable "OPENAI_ALLOW_MODEL_SELECTION" to allow model selection in the conversation. Values: true
+  (allow model selection), or false (do not allow model selection).
 
 #### Bug fixes
 

@@ -84,8 +84,6 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
       <div className="w-full">
         <div className="flex flex-col">
           <FormLabel htmlFor="model">
-            {/*TODO REMOVE: defaultModeId is correct value from env.var but allowModelSelection is not - why? */}
-            allowModelSelection: {allowModelSelection ? "T" : "F"} - defaultModelId : {defaultModelId} -
             {allowModelSelection ? t("Conversation model") : t("Conversation model (disabled)")}
           </FormLabel>
           <Select

@@ -320,17 +320,15 @@ const Home = ({
         value: defaultModelId
       })
     console.debug(`useEffect: reuseModel:${reuseModel}`)
-    reuseModel &&
-      homeDispatch({
-        field: "reuseModel",
-        value: reuseModel
-      })
+    homeDispatch({
+      field: "reuseModel",
+      value: reuseModel
+    })
     console.debug(`useEffect: allowModelSelection:${allowModelSelection}`)
-    allowModelSelection &&
-      homeDispatch({
-        field: "allowModelSelection",
-        value: allowModelSelection
-      })
+    homeDispatch({
+      field: "allowModelSelection",
+      value: allowModelSelection
+    })
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
       removeApiKey()
