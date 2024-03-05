@@ -1,5 +1,3 @@
-import {OpenAIModelID} from "@/types/openai"
-
 /**
  * Do not change this file format, unless there is an upgrade path defined from earlier formats.
  */
@@ -31,7 +29,7 @@ export interface ConversationV5 {
   id: string
   name: string
   messages: MessageV4[]
-  modelId: OpenAIModelID // Changed to model ID in V5.
+  modelId: string // Changed to string in V5.
   prompt: string
   temperature: number
   folderId: string | undefined

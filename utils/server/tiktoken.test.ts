@@ -1,5 +1,4 @@
 import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
@@ -25,7 +24,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_4_32K)).toEqual(21)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-4-32k")).toEqual(21)
       })
 
       it("should count tokens2", async () => {
@@ -41,7 +40,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_4_32K)).toEqual(18)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-4-32k")).toEqual(18)
       })
     })
 
@@ -60,7 +59,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_35_TURBO)).toEqual(23)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-35-turbo")).toEqual(23)
       })
 
       it("should count tokens2", async () => {
@@ -76,7 +75,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(encoder.numberOfTokensInConversation(messages, OpenAIModelID.GPT_35_TURBO)).toEqual(20)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-35-turbo")).toEqual(20)
       })
     })
   })
@@ -109,15 +108,13 @@ describe("Tiktoken", () => {
     it("should retain messages if fit into the limit", async () => {
       const encoder = await TiktokenEncoder.create()
 
-      expect(encoder.prepareMessagesToSend(4000, 1000, prompt, messages, OpenAIModelID.GPT_4_32K)).toEqual(messages)
+      expect(encoder.prepareMessagesToSend(4000, 1000, prompt, messages, "gpt-4-32k")).toEqual(messages)
     })
 
     it("should allow single message", async () => {
       const encoder = await TiktokenEncoder.create()
 
-      expect(encoder.prepareMessagesToSend(4000, 1000, prompt, [messages[1]], OpenAIModelID.GPT_4_32K)).toEqual([
-        messages[1]
-      ])
+      expect(encoder.prepareMessagesToSend(4000, 1000, prompt, [messages[1]], "gpt-4-32k")).toEqual([messages[1]])
     })
 
     const testCases = [
@@ -140,19 +137,19 @@ describe("Tiktoken", () => {
       it(`should drop messages starting from 2nd until fit the limit: tokenLimit=${tokenLimit}, maxReplyTokens=${maxReplyTokens}`, async () => {
         const encoder = await TiktokenEncoder.create()
 
-        expect(
-          encoder.prepareMessagesToSend(tokenLimit, maxReplyTokens, prompt, messages, OpenAIModelID.GPT_4_32K)
-        ).toEqual(expectedMessages)
+        expect(encoder.prepareMessagesToSend(tokenLimit, maxReplyTokens, prompt, messages, "gpt-4-32k")).toEqual(
+          expectedMessages
+        )
       })
     })
 
     it("should throw if no messages fit (for completeness)", async () => {
       const encoder = await TiktokenEncoder.create()
 
-      expect(() => encoder.prepareMessagesToSend(200, 180, prompt, messages, OpenAIModelID.GPT_4_32K)).toThrow(
+      expect(() => encoder.prepareMessagesToSend(200, 180, prompt, messages, "gpt-4-32k")).toThrow(
         new OpenAILimitExceeded("Not enough tokens to send a message.", 200, 222)
       )
-      expect(() => encoder.prepareMessagesToSend(200, 180, prompt, messages, OpenAIModelID.GPT_4_32K)).toThrowExactly(
+      expect(() => encoder.prepareMessagesToSend(200, 180, prompt, messages, "gpt-4-32k")).toThrowExactly(
         new OpenAILimitExceeded("Not enough tokens to send a message.", 200, 222)
       )
     })

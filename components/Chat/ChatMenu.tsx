@@ -7,8 +7,9 @@ import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
+import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModel, OpenAIModelID, OpenAIModels} from "@/types/openai"
+import {OpenAIModel, maxTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
@@ -22,6 +23,9 @@ interface Props {
 const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpenReleaseNotes}: Props) => {
   const {t} = useTranslation("common")
 
+  const {
+    state: {defaultModelId, allowModelSelection}
+  } = useHomeContext()
   const {theme, setTheme} = useTheme()
   const {onSaveScreenshot} = useScreenshot(container)
   const {onSaveMarkdown} = useSaveMarkdown(conversation)
@@ -29,14 +33,10 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
-  const modelId = conversation.modelId ?? FALLBACK_OPENAI_MODEL_ID
+  const modelId = conversation.modelId ?? defaultModelId
   const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
   const ref = useRef<HTMLDivElement>(null)
-
-  const maxTokensForModel = (model: OpenAIModel) => {
-    return Math.min(4000, Math.max(100, model.tokenLimit - (model.tokenLimit % 1000) - 1000))
-  }
 
   useClickAway(ref, isMenuOpen, () => {
     setIsMenuOpen(false)
@@ -58,8 +58,8 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   }
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    conversation.modelId = e.target.value as OpenAIModelID
-    conversation.maxTokens = Math.min(conversation.maxTokens, maxTokensForModel(OpenAIModels[conversation.modelId]))
+    conversation.modelId = e.target.value
+    conversation.maxTokens = Math.min(conversation.maxTokens, maxTokensForModel(conversation.modelId))
     onUpdateConversation(conversation)
   }
 
@@ -83,10 +83,12 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
     >
       <div className="w-full">
         <div className="flex flex-col">
-          <FormLabel htmlFor="model">Conversation model</FormLabel>
+          <FormLabel htmlFor="model">
+            {allowModelSelection ? t("Conversation model") : t("Conversation model (disabled)")}
+          </FormLabel>
           <Select
             id="model"
-            disabled={false}
+            disabled={!allowModelSelection}
             className="disabled:pointer-events-none disabled:text-gray-300"
             placeholder={t("Select a model")}
             value={modelId}
@@ -94,7 +96,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
           >
             {models.map((model) => (
               <option key={model.id} value={model.id}>
-                {model.name}
+                {model.id}
               </option>
             ))}
           </Select>
@@ -134,7 +136,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             id="maxTokens"
             className="mt-2"
             min="100"
-            max={maxTokensForModel(OpenAIModels[modelId])}
+            max={maxTokensForModel(modelId)}
             step="100"
             value={maxTokens}
             onChange={handleMaxTokensChange}

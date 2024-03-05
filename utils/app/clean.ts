@@ -1,43 +1,56 @@
+import * as Process from "process"
+
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
+import {OpenAIModel} from "@/types/openai"
 
-export const cleanSelectedConversation = (conversation: Conversation) => {
+export const cleanSelectedConversation = (
+  conversation: Conversation,
+  models: OpenAIModel[],
+  defaultModelId: string,
+  allowModelSelection: boolean
+) => {
   let updatedConversation = conversation
+  if (!allowModelSelection || (conversation.modelId && !models.find((model) => model.id === conversation.modelId))) {
+    updatedConversation = {
+      ...conversation,
+      modelId: defaultModelId
+    }
+  }
   if (!updatedConversation.modelId) {
     updatedConversation = {
       ...updatedConversation,
-      modelId: updatedConversation.modelId || FALLBACK_OPENAI_MODEL_ID
+      modelId: updatedConversation.modelId ?? defaultModelId
     }
   }
   if (!updatedConversation.prompt) {
     updatedConversation = {
       ...updatedConversation,
-      prompt: updatedConversation.prompt || OPENAI_DEFAULT_SYSTEM_PROMPT
+      prompt: updatedConversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
     }
   }
   if (updatedConversation.temperature === undefined || updatedConversation.temperature === null) {
     updatedConversation = {
       ...updatedConversation,
-      temperature: updatedConversation.temperature || OPENAI_DEFAULT_TEMPERATURE
+      temperature: updatedConversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
     }
   }
   if (!updatedConversation.folderId) {
     updatedConversation = {
       ...updatedConversation,
-      folderId: updatedConversation.folderId || undefined
+      folderId: updatedConversation.folderId ?? undefined
     }
   }
   if (!updatedConversation.messages) {
     updatedConversation = {
       ...updatedConversation,
-      messages: updatedConversation.messages || []
+      messages: updatedConversation.messages ?? []
     }
   }
   return updatedConversation
 }
 
-export const cleanConversationHistory = (history: Conversation[]): Conversation[] => {
+export const cleanConversationHistory = (history: Conversation[], defaultModelId: string): Conversation[] => {
   if (!Array.isArray(history)) {
     console.warn("Error: History is not an array. Returning an empty array.")
     return []
@@ -46,7 +59,7 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
   return history.reduce((acc: Conversation[], conversation) => {
     try {
       if (!conversation.modelId) {
-        conversation.modelId = FALLBACK_OPENAI_MODEL_ID
+        conversation.modelId = defaultModelId
       }
       if (!conversation.prompt) {
         conversation.prompt = OPENAI_DEFAULT_SYSTEM_PROMPT
@@ -61,7 +74,6 @@ export const cleanConversationHistory = (history: Conversation[]): Conversation[
         conversation.messages = []
       }
       acc.push(conversation)
-      return acc
     } catch (error) {
       console.warn(`Error: Error while cleaning conversations history. Removing culprit:`, error)
     }

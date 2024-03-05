@@ -18,10 +18,15 @@ import useApiService from "@/services/useApiService"
 import {Conversation, Message} from "@/types/chat"
 import {KeyValuePair} from "@/types/data"
 import {FolderType} from "@/types/folder"
-import {FALLBACK_OPENAI_MODEL_ID, OpenAIModelID} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL, OpenAIModels} from "@/types/openai"
 import {Prompt} from "@/types/prompt"
 import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/clean"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {
+  NEW_CONVERSATION_TITLE,
+  OPENAI_ALLOW_MODEL_SELECTION,
+  OPENAI_DEFAULT_TEMPERATURE,
+  OPENAI_REUSE_MODEL
+} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -40,35 +45,45 @@ import {TiktokenEncoder} from "@/utils/server/tiktoken"
 interface Props {
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
-  defaultModelId: OpenAIModelID
+  defaultModelId: string
+  reuseModel: boolean
+  allowModelSelection: boolean
 }
 
 const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
-  const defaultModelId =
-    (process.env.OPENAI_DEFAULT_MODEL &&
-      Object.values(OpenAIModelID).includes(process.env.OPENAI_DEFAULT_MODEL as OpenAIModelID) &&
-      process.env.OPENAI_DEFAULT_MODEL) ||
-    FALLBACK_OPENAI_MODEL_ID
-
-  let serverSidePluginKeysSet = false
   const googleApiKey = process.env.GOOGLE_API_KEY
   const googleCSEId = process.env.GOOGLE_CSE_ID
-  if (googleApiKey && googleCSEId) {
-    serverSidePluginKeysSet = true
-  }
+  const serverSideApiKeyIsSet = !!process.env.OPENAI_API_KEY
+  const serverSidePluginKeysSet = !!(googleApiKey && googleCSEId)
+  const defaultModelId = OpenAIModels.hasOwnProperty(process.env.OPENAI_DEFAULT_MODEL || "")
+    ? process.env.OPENAI_DEFAULT_MODEL
+    : FALLBACK_OPENAI_MODEL
+  const reuseModel = OPENAI_REUSE_MODEL
+  const allowModelSelection = OPENAI_ALLOW_MODEL_SELECTION
+  console.log(
+    `getServerSideProps: defaultModelId:${defaultModelId}, reuseModel:${reuseModel}, allowModelSelection:${allowModelSelection}`
+  )
   return {
     props: {
-      serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
-      defaultModelId,
-      serverSidePluginKeysSet,
+      serverSideApiKeyIsSet: serverSideApiKeyIsSet,
+      serverSidePluginKeysSet: serverSidePluginKeysSet,
+      defaultModelId: defaultModelId,
+      reuseModel: reuseModel,
+      allowModelSelection: allowModelSelection,
       ...(await serverSideTranslations(locale ?? "en", ["common"]))
     }
   }
 }
 
-const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: Props) => {
+const Home = ({
+  serverSideApiKeyIsSet,
+  serverSidePluginKeysSet,
+  defaultModelId,
+  reuseModel,
+  allowModelSelection
+}: Props) => {
   const {t} = useTranslation("common")
   const {getModels} = useApiService()
   const {getModelsError} = useErrorService()
@@ -77,7 +92,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   const {unlocked} = useUnlock()
 
   const {
-    state: {apiKey, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
+    state: {apiKey, models, folders, conversations, selectedConversation, prompts, triggerFactoryPrompts},
     dispatch: homeDispatch
   } = contextValue
 
@@ -156,11 +171,12 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
   // CONVERSATION OPERATIONS  --------------------------------------------
 
   const handleSelectConversation = (conversation: Conversation) => {
+    const newConversation = cleanSelectedConversation(conversation, models, defaultModelId, allowModelSelection)
     homeDispatch({
       field: "selectedConversation",
-      value: conversation
+      value: newConversation
     })
-    saveSelectedConversation(conversation)
+    saveSelectedConversation(newConversation)
   }
 
   const handleNewConversation = () => {
@@ -172,9 +188,14 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     ) {
       homeDispatch({field: "selectedConversation", value: lastConversation})
     } else {
+      console.debug(`handleNewConversation: reuseModel:${reuseModel}, model:${defaultModelId}`)
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
-        lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+        allowModelSelection
+          ? reuseModel
+            ? lastConversation?.modelId ?? defaultModelId
+            : defaultModelId
+          : defaultModelId,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
       )
       const updatedConversations = [...conversations, newConversation]
@@ -251,43 +272,63 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, homeDispatch])
 
+  // If models changed, make sure the selected conversation has an existing model ID.
+  useEffect(() => {
+    console.debug(`useEffect: models:"${models.map((m) => m.id).join(";")}"`)
+    if (models?.length > 0) {
+      const selectedConversation = getSelectedConversation()
+      if (selectedConversation) {
+        const cleanedSelectedConversation = cleanSelectedConversation(
+          selectedConversation,
+          models,
+          defaultModelId,
+          allowModelSelection
+        )
+        homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
+      } else {
+        console.debug(`useEffect: no selected conversation`)
+      }
+    }
+  }, [models, defaultModelId, homeDispatch])
+
   // Server side props changed.
   useEffect(() => {
     apiKey && homeDispatch({field: "apiKey", value: apiKey})
-    serverSideApiKeyIsSet &&
-      homeDispatch({
-        field: "serverSideApiKeyIsSet",
-        value: serverSideApiKeyIsSet
-      })
-    serverSidePluginKeysSet &&
-      homeDispatch({
-        field: "serverSidePluginKeysSet",
-        value: serverSidePluginKeysSet
-      })
-  }, [apiKey, defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [apiKey, homeDispatch])
 
   // Load settings from local storage.
   useEffect(() => {
     console.debug("useEffect: server-side props changed")
     const apiKey = getApiKey()
 
+    console.debug(`useEffect: serverSideApiKeyIsSet:${serverSideApiKeyIsSet}`)
     serverSideApiKeyIsSet &&
       homeDispatch({
         field: "serverSideApiKeyIsSet",
         value: serverSideApiKeyIsSet
       })
+    console.debug(`useEffect: serverSidePluginKeySet:${serverSidePluginKeysSet}`)
     serverSidePluginKeysSet &&
       homeDispatch({
         field: "serverSidePluginKeysSet",
         value: serverSidePluginKeysSet
       })
-
+    console.debug(`useEffect: defaultModelId:${defaultModelId}`)
     defaultModelId &&
       homeDispatch({
         field: "defaultModelId",
         value: defaultModelId
       })
-
+    console.debug(`useEffect: reuseModel:${reuseModel}`)
+    homeDispatch({
+      field: "reuseModel",
+      value: reuseModel
+    })
+    console.debug(`useEffect: allowModelSelection:${allowModelSelection}`)
+    homeDispatch({
+      field: "allowModelSelection",
+      value: allowModelSelection
+    })
     if (serverSideApiKeyIsSet) {
       homeDispatch({field: "apiKey", value: ""})
       removeApiKey()
@@ -329,13 +370,18 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
     }
 
     const conversationsHistory: Conversation[] = getConversationsHistory()
-    const cleanedConversationHistory = cleanConversationHistory(conversationsHistory)
+    const cleanedConversationHistory = cleanConversationHistory(conversationsHistory, defaultModelId)
 
     // Re-select the previous conversation. But only if it wasn't too long (to avoid using lost of tokens).
     const reselectPreviousConversation = async () => {
       const selectedConversation = getSelectedConversation()
       if (selectedConversation) {
-        const cleanedSelectedConversation = cleanSelectedConversation(selectedConversation)
+        const cleanedSelectedConversation = cleanSelectedConversation(
+          selectedConversation,
+          models,
+          defaultModelId,
+          allowModelSelection
+        )
         homeDispatch({field: "selectedConversation", value: cleanedSelectedConversation})
         homeDispatch({field: "conversations", value: cleanedConversationHistory})
       }
@@ -352,10 +398,7 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
 
         const encoder = await TiktokenEncoder.create()
 
-        tokenCount = encoder.numberOfTokensInConversation(
-          allMessages,
-          selectedConversation?.modelId ?? FALLBACK_OPENAI_MODEL_ID
-        )
+        tokenCount = encoder.numberOfTokensInConversation(allMessages, selectedConversation?.modelId ?? defaultModelId)
       }
 
       console.debug(`useEffect: tokenCount:${tokenCount}`)
@@ -370,7 +413,11 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
           // Or create a new empty conversation.
           const newConversation = createNewConversation(
             t(NEW_CONVERSATION_TITLE),
-            lastConversation?.modelId ?? defaultModelId ?? FALLBACK_OPENAI_MODEL_ID,
+            allowModelSelection
+              ? reuseModel
+                ? lastConversation?.modelId ?? defaultModelId
+                : defaultModelId
+              : defaultModelId,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
           )
           // Only add a new conversation to the history if there are existing conversations.
@@ -381,11 +428,10 @@ const Home = ({serverSideApiKeyIsSet, serverSidePluginKeysSet, defaultModelId}: 
         }
       }
     }
-
     reselectPreviousConversation().catch((error) => console.error(`Error reselecting previous conversation: ${error}`))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, homeDispatch])
+  }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet, reuseModel, allowModelSelection, homeDispatch])
 
   // LAYOUT --------------------------------------------
 

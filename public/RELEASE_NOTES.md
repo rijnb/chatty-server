@@ -2,7 +2,7 @@
 
 ### What's new?
 
-For the Release Notes, please scroll down to the bottom of this page. 
+For the Release Notes, please scroll down to the bottom of this page.
 
 ### Getting started
 
@@ -44,12 +44,12 @@ perform a certain task. For example, you can tell me to summarize a long email
 thread efficiently. Or you can tell me to debug a piece of code.
 
 You activate a prompt by typing "/" in the input box. A list of prompts will
-appear. You can select using the up and down arrows and pressing Enter. 
+appear. You can select using the up and down arrows and pressing Enter.
 If the prompt has parameters, you can enter those in a dialog that will appear.
 
 **Powertip**: you can quickly search for prompts by typing the first characters
 of words that appear in the name of the prompt. For example, type "/mts" to
-quickly find an execute "Mail thread summary". 
+quickly find an execute "Mail thread summary".
 
 Most prompts require you to input some text, like copy-pasting a long email
 thread, or a piece of code.
@@ -119,7 +119,7 @@ original pages Google came up with.
 
 You can brand your deployment with a local message or logo. Just create a file
 called `welcome-message.md` in the `public` folder. This file will be shown as
-Markdown when you start Chatty. In the Markdown text you can include images, 
+Markdown when you start Chatty. In the Markdown text you can include images,
 like a company logo.
 
 For example, you can create a file `public/welcome-message.md` with the following
@@ -143,7 +143,7 @@ Click on `(?)` in the top menu for instructions and release notes.
 
 ## Adding "local" prompts to your deployment
 
-You can add "local" prompts to your deployment, next to the default factory ones. 
+You can add "local" prompts to your deployment, next to the default factory ones.
 These are prompts that are specific to your deployment, e.g. for your company.
 
 You should store those prompts in the `public/factory-prompts-local.json` file.
@@ -158,6 +158,19 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-03-02
+
+#### Features
+
+- Added environment variable "OPENAI_REUSE_MODEL" to reuse the model when starting a new conversation, or fall back to
+  the default model. Values: true (reuse model for new conversation, or false (fall back to default model).
+- Added environment variable "OPENAI_ALLOW_MODEL_SELECTION" to allow model selection in the conversation. Values: true
+  (allow model selection), or false (do not allow model selection).
+
+#### Bug fixes
+
+- When switching between OpenAI and Azure, the `modelId` in the select conversation could be
+  non-existent, leading the web page to fail at load time.
 
 ### 2023-12-05
 
@@ -171,15 +184,15 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Fixed model names and max token counts.
 - Earlier additions:
-  - Added support for WebVTT files, so you can summarize the transcripts of Teams sessions.
-    we've also implemented a standard prompt for this (in folder Productivity). Just drop the
-    downloaded transcript file into the prompt dialog.
-  -Added support for locally deployed factory prompts, if you want you deployment to have
-    prompts specific to your (e.g. company) deployment, next to the standard ones.
-  -Added support for LaTeX rendering of formulas.
-  -Added ability to modify the system prompt (stored in model selection per conversation).
-    The system prompt precedes all items in a conversation and allows you to change the
-    behavior of the model during a conversation.
+    - Added support for WebVTT files, so you can summarize the transcripts of Teams sessions.
+      we've also implemented a standard prompt for this (in folder Productivity). Just drop the
+      downloaded transcript file into the prompt dialog.
+      -Added support for locally deployed factory prompts, if you want you deployment to have
+      prompts specific to your (e.g. company) deployment, next to the standard ones.
+      -Added support for LaTeX rendering of formulas.
+      -Added ability to modify the system prompt (stored in model selection per conversation).
+      The system prompt precedes all items in a conversation and allows you to change the
+      behavior of the model during a conversation.
 
 ### 2023-11-23
 
@@ -204,6 +217,7 @@ _Rijn Buve & Oleksii Kulyk_
 
 #### Features
 - 
+
 - Updated dependencies to latest.
 - Changed default path to `/chatty`.
 
@@ -238,7 +252,7 @@ _Rijn Buve & Oleksii Kulyk_
 - Token counting provides cleanup button and color coding.
 - Improved handling of prompt search a la IntelliJ.
 - Added Alt-Enter as key.
-- Improved handling of newlines in input.  
+- Improved handling of newlines in input.
 
 #### Bug fixes
 
@@ -286,7 +300,8 @@ _Rijn Buve & Oleksii Kulyk_
 #### Features
 
 - Improved handling of window resizes and width of conversation column.
-- The previous conversation is now automatically selected when you start Chatty unless it's larger than a threshold (to avoid consuming too many tokens by accident).
+- The previous conversation is now automatically selected when you start Chatty unless it's larger than a threshold (to
+  avoid consuming too many tokens by accident).
 
 #### Bug fixes
 

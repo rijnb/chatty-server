@@ -1,5 +1,3 @@
-import {OpenAIModelID} from "./openai"
-
 export type Role = "system" | "assistant" | "user"
 
 export interface Message {
@@ -11,7 +9,7 @@ export interface Message {
 export interface ChatBody {
   apiKey: string
   messages: Message[]
-  modelId: OpenAIModelID
+  modelId: string
   prompt: string
   temperature: number
   maxTokens: number
@@ -23,7 +21,7 @@ export interface Conversation {
   name: string
   messages: Message[]
   tokenCount: number
-  modelId: OpenAIModelID
+  modelId: string
   prompt: string
   temperature: number
   maxTokens: number

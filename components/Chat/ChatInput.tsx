@@ -10,14 +10,13 @@ import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Message} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
-  modelId: OpenAIModelID
+  modelId: string
   onSend: (message: Message, plugin: Plugin | null) => void
   onRegenerate: () => void
   stopConversationRef: MutableRefObject<boolean>
@@ -307,7 +306,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">
             <ChatInputTokenCount
               content={content}
-              tokenLimit={models.find((model) => model.id === modelId)?.tokenLimit}
+              tokenLimit={models.find((model) => model.id === modelId)?.tokenLimit ?? 4096}
             />
           </div>
           <textarea

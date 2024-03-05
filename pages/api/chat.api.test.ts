@@ -1,7 +1,6 @@
 import chatHandler from "@/pages/api/chat.api"
 import {asMock} from "@/testutils"
 import {ChatBody} from "@/types/chat"
-import {OpenAIModelID} from "@/types/openai"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
@@ -27,7 +26,7 @@ describe("Chat Error Handling", () => {
       body: JSON.stringify(
         chatBody ??
           ({
-            modelId: OpenAIModelID.GPT_4_32K,
+            modelId: "gpt-4-32k",
             messages: [{role: "user", content: "ping"}],
             apiKey: "",
             prompt: "You are a helpful assistant",
@@ -40,7 +39,7 @@ describe("Chat Error Handling", () => {
     it("should send ChatCompletion request", async () => {
       await chatHandler(
         createRequest({
-          modelId: OpenAIModelID.GPT_4_32K,
+          modelId: "gpt-4-32k",
           messages: [{role: "user", content: "ping"}],
           apiKey: "somekey",
           prompt: "You are a helpful assistant",

@@ -1,7 +1,7 @@
 import {Conversation, Message} from "@/types/chat"
 import {ErrorMessage} from "@/types/error"
 import {FolderInterface} from "@/types/folder"
-import {OpenAIModel, OpenAIModelID} from "@/types/openai"
+import {FALLBACK_OPENAI_MODEL, OpenAIModel} from "@/types/openai"
 import {PluginKey} from "@/types/plugin"
 import {Prompt} from "@/types/prompt"
 
@@ -23,17 +23,19 @@ export interface HomeInitialState {
   currentFolder: FolderInterface | undefined
   messageError: boolean
   searchTerm: string
-  defaultModelId: OpenAIModelID | undefined
+  defaultModelId: string
   serverSideApiKeyIsSet: boolean
   serverSidePluginKeysSet: boolean
   triggerSelectedPrompt: Prompt | undefined // Used to pop-up the prompt execution modal.
   triggerFactoryPrompts: boolean // Used to trigger re-reading the factory prompts.
+  reuseModel: boolean
+  allowModelSelection: boolean
 }
 
 export const initialState: HomeInitialState = {
   apiKey: "",
-  loading: false,
   pluginKeys: [],
+  loading: false,
   messageIsStreaming: false,
   modelError: null,
   models: [],
@@ -48,9 +50,11 @@ export const initialState: HomeInitialState = {
   currentFolder: undefined,
   messageError: false,
   searchTerm: "",
-  defaultModelId: undefined,
+  defaultModelId: FALLBACK_OPENAI_MODEL,
   serverSideApiKeyIsSet: false,
   serverSidePluginKeysSet: false,
   triggerSelectedPrompt: undefined,
-  triggerFactoryPrompts: true
+  triggerFactoryPrompts: true,
+  reuseModel: true,
+  allowModelSelection: true
 }

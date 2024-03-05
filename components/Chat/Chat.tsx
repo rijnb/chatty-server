@@ -14,7 +14,6 @@ import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
 import {ChatBody, Conversation, Message} from "@/types/chat"
-import {FALLBACK_OPENAI_MODEL_ID} from "@/types/openai"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -40,7 +39,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
       apiKey,
       pluginKeys,
       serverSideApiKeyIsSet,
-      modelError
+      modelError,
+      defaultModelId
     },
     dispatch: homeDispatch
   } = useHomeContext()
@@ -185,7 +185,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           let errorText = await response.text()
           console.debug(`HTTP error, text:${errorText}`)
           console.debug(
-            `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText: ${errorText}`
+            `HTTP response, status:${response.status}, statusText:${response.statusText}, errorText:${errorText}`
           )
           // Fall back to statusText if errorText is empty.
           if (errorText.length == 0) {
@@ -392,7 +392,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               stopConversationRef={stopConversationRef}
               textareaRef={textareaRef}
               retryAfter={waitTime}
-              modelId={selectedConversation ? selectedConversation.modelId : FALLBACK_OPENAI_MODEL_ID}
+              modelId={selectedConversation ? selectedConversation.modelId : defaultModelId}
               onSend={(message, plugin) => {
                 // setCurrentMessage(message)
                 homeDispatch({field: "currentMessage", value: currentMessage})
