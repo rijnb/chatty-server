@@ -32,10 +32,8 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, [
         {key: "name", value: NEW_CONVERSATION_TITLE},
-        {
-          key: "messages",
-          value: []
-        }
+        {key: "messages", value: []},
+        {key: "modelId", value: defaultModelId}
       ])
     }
   }
