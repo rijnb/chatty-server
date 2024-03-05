@@ -166,6 +166,11 @@ _Rijn Buve & Oleksii Kulyk_
   the default model. Values: true (reuse model for new conversation, or false (fall back to default model).
 - Added environment variable "OPENAI_ALLOW_MODEL_SELECTION" to allow model selection in the conversation. Values: true
   (allow model selection), or false (do not allow model selection).
+- Changed semantics of `OPENAI_AZURE_DEPLOYMENT_ID`: it can now be a list of IDs, separated by ";".
+  The first item specifies a prefix to be used for all models, except for the exceptions in the list
+  which are listed after that.
+  For example if `OPENAI_AZURE_DEPLOYMENT_ID` is set to `dep-;PTU-gpt-35-turbo`, then the "dep-" prefix is used for all
+  models, except "gpt-35-turbo", because for that the ID would be used "PTU-gpt-35-turbo" instead.
 
 #### Bug fixes
 
