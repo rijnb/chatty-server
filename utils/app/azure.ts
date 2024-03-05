@@ -2,10 +2,13 @@
 
 export const getAzureDeploymentIdForModelId = (deploymentId: string, modelId: string) => {
   // Replace part of '-' with correct model.
-  if (deploymentId.includes("-")) {
-    const prefix = deploymentId.split("-")[0]
-    return prefix + "-" + modelId
+  const ids = deploymentId.split(";")
+  const found = ids.filter((id) => id.endsWith(modelId))
+  if (found.length > 0) {
+    return found[0]
+  } else if (ids[0].includes("-")) {
+    return deploymentId.split("-")[0] + "-" + modelId
   } else {
-    return deploymentId
+    return ids[0]
   }
 }
