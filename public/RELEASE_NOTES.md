@@ -158,7 +158,7 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
-### 2024-03-02
+### 2024-03-06
 
 #### Features
 
@@ -169,13 +169,14 @@ _Rijn Buve & Oleksii Kulyk_
 - Changed semantics of `OPENAI_AZURE_DEPLOYMENT_ID`: it can now be a list of IDs, separated by ";".
   The first item specifies a prefix to be used for all models, except for the exceptions in the list
   which are listed after that.
-  For example if `OPENAI_AZURE_DEPLOYMENT_ID` is set to `dep-;PTU-gpt-35-turbo`, then the "dep-" prefix is used for all
-  models, except "gpt-35-turbo", because for that the ID would be used "PTU-gpt-35-turbo" instead.
+  For example if `OPENAI_AZURE_DEPLOYMENT_ID` is set to `dep-;PTU-gpt-35-turbo`, then the `dep-` prefix is used for all
+  models, except `gpt-35-turbo`, because for that the ID would be used `PTU-gpt-35-turbo` instead.
 
 #### Bug fixes
 
 - When switching between OpenAI and Azure, the `modelId` in the select conversation could be
   non-existent, leading the web page to fail at load time.
+- Starting a new conversation or clearing an existing one now adhere to the `OPENAI_REUSE_MODEL` setting.
 
 ### 2023-12-05
 
