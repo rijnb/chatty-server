@@ -17,7 +17,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
-    state: {selectedConversation, messageIsStreaming, defaultModelId},
+    state: {selectedConversation, messageIsStreaming, defaultModelId, reuseModel},
     handleUpdateConversation
   } = useHomeContext()
 
@@ -33,7 +33,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       handleUpdateConversation(selectedConversation, [
         {key: "name", value: NEW_CONVERSATION_TITLE},
         {key: "messages", value: []},
-        {key: "modelId", value: defaultModelId}
+        {key: "modelId", value: reuseModel ? selectedConversation.modelId : defaultModelId}
       ])
     }
   }
