@@ -177,6 +177,7 @@ _Rijn Buve & Oleksii Kulyk_
 - When switching between OpenAI and Azure, the `modelId` in the select conversation could be
   non-existent, leading the web page to fail at load time.
 - Starting a new conversation or clearing an existing one now adhere to the `OPENAI_REUSE_MODEL` setting.
+- Fixed 16K limit for `gpt-35-turbo` model.
 
 ### 2023-12-05
 
