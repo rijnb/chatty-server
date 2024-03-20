@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-03-20
+
+#### Bug fixes
+
+- Fixed and simplified the system prompt to render formulas correctly in `gpt-35-turbo`.
+
 ### 2024-03-06
 
 #### Features
