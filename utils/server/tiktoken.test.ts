@@ -81,7 +81,7 @@ describe("Tiktoken", () => {
   })
 
   describe("Prepare messages to send", () => {
-    const prompt = "You are ChatGPT, a large language model trained by OpenAI. Respond using markdown."
+    const prompt = "You are called Chatty. If you provide code examples in Markdown, include the language. Format formulas LaTeX style, preceded and followed by a line with just $$. Inline formulas must be placed in $...$. Never put LaTeX formulas in a code block."
 
     const messages: Message[] = [
       {

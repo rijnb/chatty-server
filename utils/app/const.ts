@@ -6,7 +6,7 @@ import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
  */
 export const OPENAI_DEFAULT_SYSTEM_PROMPT =
   process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ??
-  "You are Chatty, a large conversational model based on ChatGPT. Always follow the user's instructions carefully. If you provide code examples in Markdown, include the language. Provide formulas in LaTeX style. LaTeX formulas must be preceded and followed by a line with just $$. Inline formulas are placed in $...$). Do not put LaTeX formulas in a code block."
+  "You are called Chatty. If you provide code examples in Markdown, include the language. Format formulas LaTeX style, preceded and followed by a line with just $$. Inline formulas must be placed in $...$. Never put LaTeX formulas in a code block."
 
 // The default temperature is used to control the randomness of the model's responses; range "0.0" to "1.0" (as string).
 export const OPENAI_DEFAULT_TEMPERATURE = parseFloat(process.env.OPENAI_DEFAULT_TEMPERATURE ?? "0.8")
