@@ -15,7 +15,7 @@ interface Props {
 const MessageMarkdown = ({message, isComplete}: Props) => {
   return (
     <MemoizedReactMarkdown
-      className="prose flex-1 dark:prose-invert"
+      className="prose flex-1 dark:prose-invert markdown"
       remarkPlugins={[
         [remarkGfm, {}],
         [
