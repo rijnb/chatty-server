@@ -1,4 +1,4 @@
-import React, {ErrorInfo} from "react"
+import React from "react"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
@@ -14,11 +14,13 @@ interface Props {
 }
 
 const MessageMarkdown = ({message, isComplete}: Props) => {
+  // Remove non-ASCII characters from the message content to prevent crashes.
+  const cleanedMessageContent = message.content.replace(/[^\x00-\xFF]/g, "⍰")
   return (
     <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
-        //TODO This crashes on $<strange-character>$:
+        // This crashes on $<strange-character>$ (hence the cleanup above).
         remarkPlugins={[
           [remarkGfm, {}],
           [remarkMath, {inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]]}]
@@ -62,7 +64,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
           }
         }}
       >
-        {`${message.content}${!isComplete ? "`▍`" : ""}`}
+        {`${cleanedMessageContent}${!isComplete ? "`▍`" : ""}`}
       </MemoizedReactMarkdown>
     </ErrorHandlerClearHistory>
   )
