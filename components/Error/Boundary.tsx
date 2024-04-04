@@ -44,12 +44,15 @@ class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
+      setTimeout(function () {
+        window.location.reload()
+      }, 10000)
       return (
-        <h1>
-          Important: We encountered a serious technical problem. We needed to remove the current chat history for that.
-          Please refresh this page (perhaps several times)...
-        </h1>
+        <div>
+          <h1>ERROR:</h1>
+          <div>We encountered a serious technical problem, and we could not easily recover from it.</div>
+          <div>Refresh this page, or wait until Chatty reloads automatically in a couple of seconds.</div>
+        </div>
       )
     }
 
