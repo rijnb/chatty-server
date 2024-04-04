@@ -29,7 +29,6 @@ export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) 
   return (
     <div className="flex flex-row">
       <MessageMarkdown message={message} isComplete={isComplete} />
-
       <div className="mx-0 flex flex-row items-start justify-start gap-1">
         {messagedCopied ? (
           <IconCheck size={20} className="text-green-500 dark:text-green-400" />
