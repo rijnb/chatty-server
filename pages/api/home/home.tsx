@@ -10,7 +10,7 @@ import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 import Chat from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
-import ErrorBoundary from "@/components/Error/Boundary"
+import ErrorBoundary from "@/components/Error/ErrorBoundary"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
@@ -32,6 +32,7 @@ import {
   createNewConversation,
   getConversationsHistory,
   getSelectedConversation,
+  removeSelectedConversation,
   saveConversationsHistory,
   saveSelectedConversation,
   updateConversationHistory
@@ -437,43 +438,43 @@ const Home = ({
   // LAYOUT --------------------------------------------
 
   return (
-    <ErrorBoundary>
-      <HomeContext.Provider
-        value={{
-          ...contextValue,
-          handleNewConversation,
-          handleCreateFolder,
-          handleDeleteFolder,
-          handleUpdateFolder,
-          handleSelectConversation,
-          handleUpdateConversation
-        }}
-      >
-        <Head>
-          <title>Chatty</title>
-          <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
-          <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
-          <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
-          <link rel="manifest" href={`${router.basePath}/site.webmanifest`} crossOrigin="use-credentials" />
-          <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
-          <meta name="msapplication-TileColor" content="#da532c" />
-          <meta name="theme-color" content="#ffffff" />
-          <meta name="description" content="ChatGPT but better." />
-          <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
-        </Head>
-        {selectedConversation && (
-          <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
-            <div className="flex h-full w-full overflow-y-hidden pt-0">
-              <ChatBar />
-              <div className="flex flex-1">
+    <HomeContext.Provider
+      value={{
+        ...contextValue,
+        handleNewConversation,
+        handleCreateFolder,
+        handleDeleteFolder,
+        handleUpdateFolder,
+        handleSelectConversation,
+        handleUpdateConversation
+      }}
+    >
+      <Head>
+        <title>Chatty</title>
+        <link rel="apple-touch-icon" sizes="180x180" href={`${router.basePath}/apple-touch-icon.png`} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`${router.basePath}/favicon-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`${router.basePath}/favicon-16x16.png`} />
+        <link rel="manifest" href={`${router.basePath}/site.webmanifest`} crossOrigin="use-credentials" />
+        <link rel="mask-icon" href={`${router.basePath}/safari-pinned-tab.svg`} color="#884444" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="description" content="ChatGPT but better." />
+        <meta name="viewport" content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
+      </Head>
+      {selectedConversation && (
+        <main className={`flex h-screen w-screen flex-col text-sm text-black dark:text-white`}>
+          <div className="flex h-full w-full overflow-y-hidden pt-0">
+            <ChatBar />
+            <div className="flex flex-1">
+              <ErrorBoundary>
                 <Chat stopConversationRef={stopConversationRef} />
-              </div>
-              <PromptBar />
+              </ErrorBoundary>
             </div>
-          </main>
-        )}
-      </HomeContext.Provider>
-    </ErrorBoundary>
+            <PromptBar />
+          </div>
+        </main>
+      )}
+    </HomeContext.Provider>
   )
 }
 

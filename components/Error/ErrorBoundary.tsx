@@ -1,10 +1,6 @@
-import React, {Component, ErrorInfo, ReactNode} from "react"
+import React, {Component, ErrorInfo, ReactNode, useContext} from "react"
 
-import {
-  removeConversationsHistory,
-  removeSelectedConversation,
-  saveConversationsHistory
-} from "@/utils/app/conversations"
+import {removeConversationsHistory, removeSelectedConversation} from "@/utils/app/conversations"
 
 interface Props {
   children: ReactNode
@@ -46,7 +42,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       setTimeout(function () {
         window.location.reload()
-      }, 10000)
+      }, 5000)
       return (
         <div>
           <h1>ERROR:</h1>
