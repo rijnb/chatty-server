@@ -163,8 +163,8 @@ _Rijn Buve & Oleksii Kulyk_
 #### Bug fixes
 
 - Added a temporary fix to solve a crash when rendering weird characters in `$`'s. This leads to a crash
-  math rendering plugin and leaves Chatty unusable. Currently, the fix is to remove the history so the
-  comversation is not rerendered.
+  math rendering plugin and leaves Chatty unusable. Currently, the fix is to remove weird characters
+  from the output and worst-case the conversations themselves.
 
 ### 2024-03-20
 
