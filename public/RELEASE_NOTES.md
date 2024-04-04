@@ -158,6 +158,14 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-04-04
+
+#### Bug fixes
+
+- Added a temporary fix to solve a crash when rendering weird characters in `$`'s. This leads to a crash
+  math rendering plugin and leaves Chatty unusable. Currently, the fix is to remove the history so the
+  comversation is not rerendered.
+
 ### 2024-03-20
 
 #### Bug fixes
