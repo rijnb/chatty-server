@@ -11,7 +11,7 @@ interface State {
   error: Error | null
 }
 
-class ErrorBoundary extends Component<Props, State> {
+class ErrorHandlerClearHistory extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {hasError: false, error: null}
@@ -27,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
     console.log("getDerivedStateFromError: Error")
-    ErrorBoundary.cleanup()
+    ErrorHandlerClearHistory.cleanup()
     return {hasError: true, error}
   }
 
@@ -35,7 +35,7 @@ class ErrorBoundary extends Component<Props, State> {
     // You can also log the error to an error reporting service
     console.log("componentDidCatch: Uncaught exception")
     console.log({error, errorInfo})
-    ErrorBoundary.cleanup()
+    ErrorHandlerClearHistory.cleanup()
   }
 
   render() {
@@ -56,4 +56,4 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default ErrorBoundary
+export default ErrorHandlerClearHistory

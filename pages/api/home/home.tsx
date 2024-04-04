@@ -10,7 +10,7 @@ import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 import Chat from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
-import ErrorBoundary from "@/components/Error/ErrorBoundary"
+import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
@@ -466,9 +466,7 @@ const Home = ({
           <div className="flex h-full w-full overflow-y-hidden pt-0">
             <ChatBar />
             <div className="flex flex-1">
-              <ErrorBoundary>
-                <Chat stopConversationRef={stopConversationRef} />
-              </ErrorBoundary>
+              <Chat stopConversationRef={stopConversationRef} />
             </div>
             <PromptBar />
           </div>

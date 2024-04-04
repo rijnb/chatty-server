@@ -3,7 +3,7 @@ import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
-import ErrorBoundary from "@/components/Error/ErrorBoundary"
+import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {Message} from "@/types/chat"
@@ -15,7 +15,7 @@ interface Props {
 
 const MessageMarkdown = ({message, isComplete}: Props) => {
   return (
-    <ErrorBoundary>
+    <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
         //TODO This crashes on $<strange-character>$:
@@ -64,7 +64,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
       >
         {`${message.content}${!isComplete ? "`▍`" : ""}`}
       </MemoizedReactMarkdown>
-    </ErrorBoundary>
+    </ErrorHandlerClearHistory>
   )
 }
 
