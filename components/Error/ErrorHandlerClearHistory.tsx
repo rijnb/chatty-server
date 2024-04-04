@@ -27,7 +27,6 @@ class ErrorHandlerClearHistory extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
     console.log("getDerivedStateFromError: Error")
-    ErrorHandlerClearHistory.cleanup()
     return {hasError: true, error}
   }
 
