@@ -158,6 +158,14 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-04-07
+
+#### Bug fixes
+
+- Replaced the temporary fix with a slightly more sophisticated one. Now, only non-ASCII characters
+ are replaced withing math-string `$...$`, to avoid not being able to render other alphabets for
+  regular text.
+
 ### 2024-04-04
 
 #### Bug fixes
