@@ -13,14 +13,20 @@ interface Props {
   isComplete: boolean
 }
 
+// Function to replace non-ASCII characters within dollar signs. The math renderer sometimes
+// chokes on non-ASCII characters, so we replace them with a placeholder character.
+const replaceNonAsciiWithinDollars = (content: string) => {
+  return content.replace(/\$(.*?)\$/g, (match) => {
+    return match.replace(/[^\x00-\x7F]/g, "⍰")
+  })
+}
+
 const MessageMarkdown = ({message, isComplete}: Props) => {
-  // Remove non-ASCII characters from the message content to prevent crashes.
-  const cleanedMessageContent = message.content.replace(/[^\x00-\xFF]/g, "⍰")
+  const messageContent = replaceNonAsciiWithinDollars(message.content)
   return (
     <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
-        // This crashes on $<strange-character>$ (hence the cleanup above).
         remarkPlugins={[
           [remarkGfm, {}],
           [remarkMath, {inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]]}]
@@ -64,7 +70,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
           }
         }}
       >
-        {`${cleanedMessageContent}${!isComplete ? "`▍`" : ""}`}
+        {`${messageContent}${!isComplete ? "`▍`" : ""}`}
       </MemoizedReactMarkdown>
     </ErrorHandlerClearHistory>
   )
