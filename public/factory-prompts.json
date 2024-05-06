@@ -68,7 +68,7 @@
     },
     {
       "id": "8db9d7fe-5dea-4a78-aade-0490e8cf33fc",
-      "name": "Linux terminal",
+      "name": "Terminal",
       "description": "I will act as a Linux terminal for you and you can play around with commands. Of course, I'm not really a Linux machine, so there are limits to what I can do...",
       "content": "I want you to act as a Linux virtual machine, where I can type commands and you will provide the output as if it were running on a real Linux machine. Please only respond with the output of the command, without any additional explanations or commands. You can only execute commands when I provide them. Your output is in Markdown format and everything you produce is produced as a code block in Markdown. My first command is 'echo \"Chatty Linux booted...'",
       "folderId": "8fdf1709-b27d-4a05-9791-f7550c0fc63a",
@@ -415,6 +415,14 @@
       "name": "Markdown to HTML",
       "description": "Provide me Markdown and I will try to produce HTML of it.",
       "content": "Convert the following Markdown text to HTML as good as you can. Don't add explanation or warnings or so.\n{{Paste your Markdown here}}",
+      "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
+      "factory": true
+    },
+    {
+      "id": "722efca0-6b39-4ad6-b243-8acb16810eed",
+      "name": "Linux command prompt",
+      "description": "Provide a descriptive prompt and I will generate a Linux command for it. For example: “compress a mov to mp4”, or “create ssh tunnel through port 8081”.",
+      "content": "Provide a single Linux command (in a code block) for the following query:\n{{Prompt}}\n\nDo not provide any explanation or text, only the command.",
       "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
       "factory": true
     }
