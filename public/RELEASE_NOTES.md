@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-05-06
+
+#### Features
+
+Added Linux command prompt helper to print a Linux command and its output in a code block.
+
 ### 2024-04-07
 
 #### Bug fixes
