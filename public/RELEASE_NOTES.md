@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-06-07
+
+#### Features
+
+Added GPT-4o as an option (no visuals yet).
+
 ### 2024-05-06
 
 #### Features
