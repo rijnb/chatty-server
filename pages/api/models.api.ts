@@ -20,9 +20,9 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
       }),
       ...(OPENAI_API_TYPE === "openai" &&
-          OPENAI_ORGANIZATION && {
-            "OpenAI-Organization": OPENAI_ORGANIZATION
-          }),
+        OPENAI_ORGANIZATION && {
+          "OpenAI-Organization": OPENAI_ORGANIZATION
+        }),
       ...(OPENAI_API_TYPE === "azure" && {
         "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
       })
@@ -38,20 +38,20 @@ const handler = async (req: Request): Promise<Response> => {
 
     const json = await response.json()
     const models: OpenAIModel[] = json.data
-        .map((model: any) => {
-          return {
-            id: model.id,
-            tokenLimit: maxTokensForModel(model.id)
-          }
-        })
-        // Filter "falsy" items:
-        .filter(Boolean)
-        // Filter out unsupported models:
-        .filter((model: any) => model.tokenLimit > 0)
-        // Filter out duplicate models:
-        .filter((obj: any, index: any, self: any) => {
-          return index === self.findIndex((other: any) => other.id === obj.id)
-        })
+      .map((model: any) => {
+        return {
+          id: model.id,
+          tokenLimit: maxTokensForModel(model.id)
+        }
+      })
+      // Filter "falsy" items:
+      .filter(Boolean)
+      // Filter out unsupported models:
+      .filter((model: any) => model.tokenLimit > 0)
+      // Filter out duplicate models:
+      .filter((obj: any, index: any, self: any) => {
+        return index === self.findIndex((other: any) => other.id === obj.id)
+      })
 
     // Temporary solution to add hidden models for Azure.
     const hiddenModels = OpenAIModels["gpt-4o"] ? OpenAIModels["gpt-4o"] : []
