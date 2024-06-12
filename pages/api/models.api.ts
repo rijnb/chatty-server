@@ -52,7 +52,10 @@ const handler = async (req: Request): Promise<Response> => {
       .filter((obj: any, index: any, self: any) => {
         return index === self.findIndex((other: any) => other.id === obj.id)
       })
-    return new Response(JSON.stringify(models), {status: 200})
+
+    // Temporary solution to add hidden models for Azure.
+    const hiddenModels = OpenAIModels["gpt-4o"] ? OpenAIModels["gpt-4o"] : []
+    return new Response(JSON.stringify(models.concat(hiddenModels)), {status: 200})
   } catch (error) {
     console.error(`Error retrieving models, error:${error}`)
     return new Response("Error", {status: 500, statusText: error ? JSON.stringify(error) : ""})
