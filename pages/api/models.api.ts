@@ -53,9 +53,13 @@ const handler = async (req: Request): Promise<Response> => {
         return index === self.findIndex((other: any) => other.id === obj.id)
       })
 
-    // Temporary solution to add hidden models for Azure.
-    const hiddenModels = OpenAIModels["gpt-4o"] ? OpenAIModels["gpt-4o"] : []
-    return new Response(JSON.stringify(models.concat(hiddenModels)), {status: 200})
+    // Temporary solution to add and remove specific models for TomTom Azure deployment.
+    const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"]] : []
+    const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
+    return new Response(
+      JSON.stringify(models.filter((model) => !removeVisibleModels.includes(model.id)).concat(addHiddenModels)),
+      {status: 200}
+    )
   } catch (error) {
     console.error(`Error retrieving models, error:${error}`)
     return new Response("Error", {status: 500, statusText: error ? JSON.stringify(error) : ""})
