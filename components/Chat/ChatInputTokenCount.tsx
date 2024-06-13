@@ -1,23 +1,23 @@
-import {IconEraser} from "@tabler/icons-react"
-import {useTheme} from "next-themes"
-import {useEffect, useMemo, useState} from "react"
-import {useTranslation} from "react-i18next"
+import { IconEraser } from "@tabler/icons-react"
+import { useTheme } from "next-themes"
+import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 
-import {useHomeContext} from "@/pages/api/home/home.context"
-import {Message} from "@/types/chat"
-import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import { useHomeContext } from "@/pages/api/home/home.context"
+import { Message, MessageItem } from "@/types/chat"
+import { NEW_CONVERSATION_TITLE } from "@/utils/app/const"
+import { TiktokenEncoder } from "@/utils/server/tiktoken"
 
 interface Props {
   content: string | undefined
   tokenLimit: number | undefined
 }
 
-export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
-  const {t} = useTranslation("common")
-  const {theme} = useTheme()
+export const ChatInputTokenCount = ({ content, tokenLimit }: Props) => {
+  const { t } = useTranslation("common")
+  const { theme } = useTheme()
   const {
-    state: {selectedConversation, messageIsStreaming, defaultModelId, reuseModel},
+    state: { selectedConversation, messageIsStreaming, defaultModelId, reuseModel },
     handleUpdateConversation
   } = useHomeContext()
 
@@ -31,9 +31,9 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
       handleUpdateConversation(selectedConversation, [
-        {key: "name", value: NEW_CONVERSATION_TITLE},
-        {key: "messages", value: []},
-        {key: "modelId", value: reuseModel ? selectedConversation.modelId : defaultModelId}
+        { key: "name", value: NEW_CONVERSATION_TITLE },
+        { key: "messages", value: [] },
+        { key: "modelId", value: reuseModel ? selectedConversation.modelId : defaultModelId }
       ])
     }
   }
@@ -49,11 +49,11 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
 
   useEffect(() => {
     if (encoder && !messageIsStreaming) {
-      const allMessages: Message[] = [{role: "system", content: prompt}, ...messages, {role: "user", content: ""}]
+      const allMessages: Message[] = [{ role: "system", content: prompt }, ...messages, { role: "user", content: [{ type: "text", text: "" }] }]
       setTokensInConversation(encoder.numberOfTokensInConversation(allMessages, modelId))
 
       if (selectedConversation && tokenCount != selectedConversation.tokenCount) {
-        handleUpdateConversation(selectedConversation, [{key: "tokenCount", value: tokenCount}])
+        handleUpdateConversation(selectedConversation, [{ key: "tokenCount", value: tokenCount }])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +90,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
   return (
     <div
       className={`${textColor} pointer-events-auto flex items-center rounded-full px-2 py-1 text-xs`}
-      style={{background: gradient}}
+      style={{ background: gradient }}
     >
       <button
         className="mr-0.5 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"

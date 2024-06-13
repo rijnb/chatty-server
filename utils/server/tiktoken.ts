@@ -1,7 +1,7 @@
-import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
+import { Tiktoken, TiktokenBPE } from "js-tiktoken/lite"
 
-import {Message} from "@/types/chat"
-import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
+import { Message, getMessageString } from "@/types/chat"
+import { OpenAILimitExceeded } from "@/utils/server/openAiClient"
 
 export class TiktokenEncoder {
   private readonly encoding: Tiktoken
@@ -33,8 +33,9 @@ export class TiktokenEncoder {
     const fixedTokensPerReply = 3 // every reply is primed with <|im_start|>assistant<|im_sep|> - 3 tokens
 
     return messages
-      .map(({role, content}) => {
-        return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(content).length
+      .map(({ role, content }) => {
+        const text = getMessageString({ role, content })
+        return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(text).length
       })
       .reduce((acc, cur) => acc + cur, fixedTokensPerReply)
   }
@@ -81,7 +82,7 @@ export class TiktokenEncoder {
     messages: Message[],
     modelId: string
   ): [Message[], number] {
-    const systemPrompt: Message = {role: "assistant", content: prompt}
+    const systemPrompt: Message = { role: "assistant", content: [{ type: "text", text: prompt }] }
     const messagesToSend: Message[] = messages.slice()
     const requiredTokens = () => {
       return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + maxReplyTokens

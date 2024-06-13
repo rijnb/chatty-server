@@ -1,22 +1,22 @@
-import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
-import {useTranslation} from "next-i18next"
-import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
+import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js"
+import { useTranslation } from "next-i18next"
+import React, { MutableRefObject, memo, use, useCallback, useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 
 import Spinner from "../Spinner"
-import {ChatInput} from "./ChatInput"
-import {ErrorMessageDiv} from "./ErrorMessageDiv"
+import { ChatInput } from "./ChatInput"
+import { ErrorMessageDiv } from "./ErrorMessageDiv"
 import ChatConversation from "@/components/Chat/ChatConversation"
 import ReleaseNotes from "@/components/Chat/ReleaseNotes"
 import WelcomeMessage from "@/components/Chat/WelcomeMessage"
-import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
-import {useFetch} from "@/hooks/useFetch"
-import {useHomeContext} from "@/pages/api/home/home.context"
+import { useUnlock, useUnlockCodeInterceptor } from "@/components/UnlockCode"
+import { useFetch } from "@/hooks/useFetch"
+import { useHomeContext } from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
-import {ChatBody, Conversation, Message} from "@/types/chat"
-import {Plugin} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
-import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
+import { ChatBody, Conversation, Message, MessageItem, getMessageString } from "@/types/chat"
+import { Plugin } from "@/types/plugin"
+import { NEW_CONVERSATION_TITLE } from "@/utils/app/const"
+import { saveConversationsHistory, saveSelectedConversation } from "@/utils/app/conversations"
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -25,10 +25,10 @@ interface Props {
 export const TOAST_DURATION_MS = 8000
 export const RESPONSE_TIMEOUT_MS = 20000
 
-const Chat = memo(({stopConversationRef}: Props) => {
-  const {t} = useTranslation("common")
+const Chat = memo(({ stopConversationRef }: Props) => {
+  const { t } = useTranslation("common")
   const appInsights = useAppInsightsContext()
-  const {unlocked} = useUnlock()
+  const { unlocked } = useUnlock()
 
   const {
     state: {
@@ -46,7 +46,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
   } = useHomeContext()
 
   const [isReleaseNotesDialogOpen, setIsReleaseNotesDialogOpen] = useState<boolean>(false)
-  const {getEndpoint} = useApiService()
+  const { getEndpoint } = useApiService()
   const [waitTime, setWaitTime] = useState<number | null>(null)
 
   const fetchService = useFetch({
@@ -54,6 +54,9 @@ const Chat = memo(({stopConversationRef}: Props) => {
   })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const handleBrowseFile = useCallback(() => {
+  }, [])
 
   const handleSendMessage = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
@@ -78,9 +81,9 @@ const Chat = memo(({stopConversationRef}: Props) => {
           messages: [...selectedConversation.messages, message]
         }
       }
-      homeDispatch({field: "selectedConversation", value: updatedConversation})
-      homeDispatch({field: "loading", value: true})
-      homeDispatch({field: "messageIsStreaming", value: true})
+      homeDispatch({ field: "selectedConversation", value: updatedConversation })
+      homeDispatch({ field: "loading", value: true })
+      homeDispatch({ field: "messageIsStreaming", value: true })
 
       // Prepare the body for the API call.
       const chatBody: ChatBody = {
@@ -129,8 +132,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
           signal: controller.signal
         })
         if (!response.ok) {
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
+          homeDispatch({ field: "loading", value: false })
+          homeDispatch({ field: "messageIsStreaming", value: false })
 
           const error = await response.json()
 
@@ -196,7 +199,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             errorText =
               "The server may be too busy or down. Please try again a bit later. You can try resubmitting your previous message if you wish."
           }
-          toast.error(`Server returned error (${response.status})\n\n${errorText}`, {duration: TOAST_DURATION_MS})
+          toast.error(`Server returned error (${response.status})\n\n${errorText}`, { duration: TOAST_DURATION_MS })
           return
         }
 
@@ -205,23 +208,24 @@ const Chat = memo(({stopConversationRef}: Props) => {
         const data = plugin ? await response.json() : response.body?.getReader()
         if (!data) {
           console.debug(`HTTP get data: no data`)
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
+          homeDispatch({ field: "loading", value: false })
+          homeDispatch({ field: "messageIsStreaming", value: false })
           return
         }
         if (!plugin) {
           // Update name of conversation when first message is received and the name is still the default value.
           if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
-            const {content} = message
+            const { content } = message
             const maxTitleLength = 30
-            const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
+            const name = getMessageString(message)
+            const customName = name.length > maxTitleLength ? name.substring(0, maxTitleLength) + "..." : name
             updatedConversation = {
               ...updatedConversation,
               name: customName,
               time: Date.now()
             }
           }
-          homeDispatch({field: "loading", value: false})
+          homeDispatch({ field: "loading", value: false })
           const decoder = new TextDecoder()
           let done = false
           let isFirst = true
@@ -236,21 +240,23 @@ const Chat = memo(({stopConversationRef}: Props) => {
               data.read(),
               new Promise((_, reject) => setTimeout(() => reject(new Error("Request timeout")), RESPONSE_TIMEOUT_MS))
             ])
-            const {value, done: doneReading} = chunkResponse
+            const { value, done: doneReading } = chunkResponse
             done = doneReading
-            const chunkValue = decoder.decode(value, {stream: true})
+            const chunkValue = decoder.decode(value, { stream: true })
             text += chunkValue
             if (isFirst) {
               isFirst = false
               const updatedMessages: Message[] = [
                 ...updatedConversation.messages,
-                {role: "assistant", content: chunkValue}
+                {
+                  role: "assistant", content: chunkValue
+                }
               ]
               updatedConversation = {
                 ...updatedConversation,
                 messages: updatedMessages
               }
-              homeDispatch({field: "selectedConversation", value: updatedConversation})
+              homeDispatch({ field: "selectedConversation", value: updatedConversation })
             } else {
               const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
                 if (index === updatedConversation.messages.length - 1) {
@@ -281,17 +287,17 @@ const Chat = memo(({stopConversationRef}: Props) => {
           if (updatedConversations.length === 0) {
             updatedConversations.push(updatedConversation)
           }
-          homeDispatch({field: "conversations", value: updatedConversations})
+          homeDispatch({ field: "conversations", value: updatedConversations })
           saveConversationsHistory(updatedConversations)
-          homeDispatch({field: "messageIsStreaming", value: false})
+          homeDispatch({ field: "messageIsStreaming", value: false })
         } else {
-          const {answer} = data
-          const updatedMessages: Message[] = [...updatedConversation.messages, {role: "assistant", content: answer}]
+          const { answer } = data
+          const updatedMessages: Message[] = [...updatedConversation.messages, { role: "assistant", content: answer }]
           updatedConversation = {
             ...updatedConversation,
             messages: updatedMessages
           }
-          homeDispatch({field: "selectedConversation", value: updatedConversation})
+          homeDispatch({ field: "selectedConversation", value: updatedConversation })
           saveSelectedConversation(updatedConversation)
           const updatedConversations: Conversation[] = conversations.map((conversation) => {
             if (conversation.id === selectedConversation.id) {
@@ -302,33 +308,33 @@ const Chat = memo(({stopConversationRef}: Props) => {
           if (updatedConversations.length === 0) {
             updatedConversations.push(updatedConversation)
           }
-          homeDispatch({field: "conversations", value: updatedConversations})
+          homeDispatch({ field: "conversations", value: updatedConversations })
           saveConversationsHistory(updatedConversations)
-          homeDispatch({field: "loading", value: false})
-          homeDispatch({field: "messageIsStreaming", value: false})
+          homeDispatch({ field: "loading", value: false })
+          homeDispatch({ field: "messageIsStreaming", value: false })
         }
       } catch (error) {
-        const {status, statusText, content, message} = error as any
+        const { status, statusText, content, message } = error as any
         console.error(`HTTP error, status:${status}, statusText:${statusText}, content:${content}, message:${message}`)
         if (status === 401) {
           // Not authorized.
-          toast.error(`${content}`, {duration: TOAST_DURATION_MS})
+          toast.error(`${content}`, { duration: TOAST_DURATION_MS })
         } else if (error instanceof Error) {
           // Some other error, try to figure out what it is.
           if (error.message.includes("timeout")) {
-            toast.error(`${error.message}... The server may be busy. Try again later.`, {duration: TOAST_DURATION_MS})
+            toast.error(`${error.message}... The server may be busy. Try again later.`, { duration: TOAST_DURATION_MS })
           } else {
-            toast.error(`${error.message}`, {duration: TOAST_DURATION_MS})
+            toast.error(`${error.message}`, { duration: TOAST_DURATION_MS })
           }
         } else {
           // No clue. Try some properties and hope for the best.
           const show = message || statusText || (content ? content : "Try again later.")
           if (statusText && statusText !== "") {
-            toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
+            toast.error(`The server returned an error...\n\n${show}`, { duration: TOAST_DURATION_MS })
           }
         }
-        homeDispatch({field: "loading", value: false})
-        homeDispatch({field: "messageIsStreaming", value: false})
+        homeDispatch({ field: "loading", value: false })
+        homeDispatch({ field: "messageIsStreaming", value: false })
         return
       }
     },
@@ -395,7 +401,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               modelId={selectedConversation ? selectedConversation.modelId : defaultModelId}
               onSend={(message, plugin) => {
                 // setCurrentMessage(message)
-                homeDispatch({field: "currentMessage", value: currentMessage})
+                homeDispatch({ field: "currentMessage", value: currentMessage })
                 // noinspection JSIgnoredPromiseFromCall
                 handleSendMessage(message, 0, plugin)
               }}
@@ -406,7 +412,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
                   newCurrentMessage = selectedConversation?.messages.reduce((lastUserMessage, message) => {
                     return message.role === "user" ? message : lastUserMessage
                   })
-                  homeDispatch({field: "currentMessage", value: newCurrentMessage})
+                  homeDispatch({ field: "currentMessage", value: newCurrentMessage })
                 }
 
                 // Figure out how many messages to remove (last 'user' + optional 'assistant').

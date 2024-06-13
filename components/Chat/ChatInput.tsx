@@ -1,19 +1,19 @@
-import {IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
-import {useTranslation} from "next-i18next"
+import { IconBolt, IconBrandGoogle, IconPlayerStop, IconRepeat, IconSend, IconFile } from "@tabler/icons-react"
+import { useTranslation } from "next-i18next"
 import Image from "next/image"
-import {useRouter} from "next/router"
-import React, {KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState} from "react"
+import { useRouter } from "next/router"
+import React, { KeyboardEvent, MutableRefObject, useCallback, useEffect, useRef, useState } from "react"
 
 import ChatInputTokenCount from "./ChatInputTokenCount"
 import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
-import {useHomeContext} from "@/pages/api/home/home.context"
-import {Message} from "@/types/chat"
-import {Plugin} from "@/types/plugin"
-import {Prompt} from "@/types/prompt"
-import {isKeyboardEnter} from "@/utils/app/keyboard"
-import {TiktokenEncoder} from "@/utils/server/tiktoken"
+import { useHomeContext } from "@/pages/api/home/home.context"
+import { Message, MessageItem } from "@/types/chat"
+import { Plugin } from "@/types/plugin"
+import { Prompt } from "@/types/prompt"
+import { isKeyboardEnter } from "@/utils/app/keyboard"
+import { TiktokenEncoder } from "@/utils/server/tiktoken"
 
 interface Props {
   modelId: string
@@ -24,11 +24,11 @@ interface Props {
   retryAfter: number | null
 }
 
-export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, textareaRef, retryAfter}: Props) => {
-  const {t} = useTranslation("common")
+export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, textareaRef, retryAfter }: Props) => {
+  const { t } = useTranslation("common")
   const router = useRouter()
   const {
-    state: {models, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt},
+    state: { models, selectedConversation, messageIsStreaming, prompts, triggerSelectedPrompt },
     dispatch: homeDispatch
   } = useHomeContext()
 
@@ -60,7 +60,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       setSelectedPrompt(triggerSelectedPrompt)
       showInputVarsForPrompt(triggerSelectedPrompt)
     }
-    homeDispatch({field: "triggerSelectedPrompt", value: undefined})
+    homeDispatch({ field: "triggerSelectedPrompt", value: undefined })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerSelectedPrompt])
 
@@ -134,12 +134,80 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     updatePromptListVisibility(value)
   }
 
+  const addFileToPrompt = (file: File) => {
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Create an object URL for the file
+    const objectUrl = URL.createObjectURL(file);
+
+    // Set the object URL as the source of an image element to display a thumbnail
+    const img = document.createElement('img');
+    img.src = objectUrl;
+    img.width = 50;
+    img.height = 50;
+    var thumbnail_element = document.getElementById("thumbnail");
+    if (!thumbnail_element) {
+      return;
+    }
+    thumbnail_element.appendChild(img); // replace 'document.body' with the actual container for the thumbnail
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = "Delete";
+    deleteButton.onclick = () => {
+      thumbnail_element?.removeChild(img);
+      thumbnail_element?.removeChild(deleteButton);
+    }
+    thumbnail_element.appendChild(deleteButton)
+  }
+
+  const handleBrowseFile = () => {
+    if (messageIsStreaming || !encoder || !selectedConversation || !models) {
+      return;
+    }
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+
+    fileInput.onchange = () => {
+      if (fileInput.files === null) {
+        return;
+      }
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        addFileToPrompt(file)
+      }
+    };
+
+    fileInput.click();
+  };
+
   const handleSendMessage = () => {
     if (messageIsStreaming || !content || !encoder || !selectedConversation || !models) {
       return
     }
-
-    const message: Message = {role: "user", content: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")}
+    const messageContent: MessageItem[] = [{ type: "text", text: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") }]
+    if (modelId === "gpt-4o") {
+      var thumbnail_element = document.getElementById("thumbnail");
+      if (thumbnail_element && thumbnail_element.getElementsByTagName("img").length > 0) {
+        for (var i = 0; i < thumbnail_element.getElementsByTagName("img").length; i++) {
+          var img = thumbnail_element.getElementsByTagName("img")[i];
+          if (img) {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            var ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, img.width, img.height);
+              var dataURL = canvas.toDataURL("image/jpeg", 0.8);
+              messageContent.push({ type: "image_url", image_url: dataURL });
+            }
+          }
+        }
+      }
+    }
+    const message: Message = { role: "user", content: messageContent }
     onSend(message, plugin)
     setContent("")
     setPlugin(null)
@@ -238,6 +306,17 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
   }
 
+  const handleOnDrop = (event) => {
+    event.preventDefault();
+    const droppedFiles = event.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      const newFiles = Array.from(droppedFiles);
+      for (const file of newFiles) {
+        addFileToPrompt(file)
+      }
+    }
+  }
+
   useEffect(() => {
     if (promptListRef.current) {
       promptListRef.current.scrollTop = activePromptIndex * 36
@@ -268,12 +347,12 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   return (
     <div
       className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-2 dark:border-white/20 dark:via-[#343541] dark:to-[#343541]"
-      style={{width: "calc(100% - 10px)"}}
+      style={{ width: "calc(100% - 10px)" }}
     >
       <div className="stretch bottom-0 mx-auto mt-[52px] flex max-w-3xl flex-row gap-3 last:mb-6">
         {messageIsStreaming && (
           <button
-            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
+            className="absolute left-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
             onClick={handleStopOngoingConversation}
           >
             <IconPlayerStop size={16} /> {t("Stop generating")}
@@ -283,7 +362,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         {!messageIsStreaming && selectedConversation && selectedConversation.messages.length > 0 && (
           <button
             disabled={disabled}
-            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 disabled:pointer-events-none disabled:text-gray-300 dark:border-neutral-600 dark:bg-[#343541] dark:text-white dark:disabled:text-gray-600"
+            className="absolute left-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 disabled:pointer-events-none disabled:text-gray-300 dark:border-neutral-600 dark:bg-[#343541] dark:text-white dark:disabled:text-gray-600"
             onClick={onRegenerate}
           >
             <IconRepeat size={16} /> {t("Regenerate response")}
@@ -303,6 +382,20 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               <PluginSelect plugin={plugin} onKeyDown={handlePlugInKeyDown()} onPluginChange={handlePlugInChange()} />
             </div>
           )}
+          <button
+            data-testid="browse-file"
+            aria-label="Browse file"
+            disabled={disabled}
+            className="absolute left-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 disabled:pointer-events-none disabled:text-gray-300 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200 dark:disabled:text-gray-600"
+            onClick={handleBrowseFile}
+            title="Browse file"
+          >
+            {messageIsStreaming ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+            ) : (
+              <IconFile size={18} />
+            )}
+          </button>
           <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">
             <ChatInputTokenCount
               content={content}
@@ -322,10 +415,10 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             }}
             placeholder={
               disabled
-                ? t("Please wait {{waitTime}} seconds", {waitTime: retryAfter})
+                ? t("Please wait {{waitTime}} seconds", { waitTime: retryAfter })
                 : prompts.length > 0
-                ? t('Type a message or type "/" and some characters to search for a prompt...')
-                : t("Type a message...")
+                  ? t('Type a message or type "/" and some characters to search for a prompt...')
+                  : t("Type a message...")
             }
             value={content}
             rows={1}
@@ -333,7 +426,11 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onCompositionEnd={() => setIsTyping(false)}
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
+            onDrop={handleOnDrop}
           />
+          <div className="flex items-center justify-center" id="thumbnail">
+
+          </div>
           <button
             data-testid="chat-send"
             aria-label="Send message"

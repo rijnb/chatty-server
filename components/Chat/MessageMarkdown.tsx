@@ -6,34 +6,49 @@ import remarkMath from "remark-math"
 import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import {Message} from "@/types/chat"
+import { Message, MessageItem, getMessageString } from "@/types/chat"
 
 interface Props {
   message: Message
   isComplete: boolean
 }
 
-// Function to replace non-ASCII characters within dollar signs. The math renderer sometimes
-// chokes on non-ASCII characters, so we replace them with a placeholder character.
-const replaceNonAsciiWithinDollars = (content: string) => {
-  return content.replace(/\$(.*?)\$/g, (match) => {
+const replaceNonAsciiWithinDollarsInString = (str: string) => {
+  return str.replace(/\$(.*?)\$/g, (match) => {
     return match.replace(/[^\x00-\x7F]/g, "⍰")
   })
 }
 
-const MessageMarkdown = ({message, isComplete}: Props) => {
-  const messageContent = replaceNonAsciiWithinDollars(message.content)
+// Function to replace non-ASCII characters within dollar signs. The math renderer sometimes
+// chokes on non-ASCII characters, so we replace them with a placeholder character.
+const replaceNonAsciiWithinDollars = (content: MessageItem[] | string) => {
+  if (typeof content === "string") {
+    return replaceNonAsciiWithinDollarsInString(content)
+  }
+  return content.map((item) => {
+    if (item.type === "text" && item.text) {
+      return {
+        ...item,
+        text: replaceNonAsciiWithinDollarsInString(item.text)
+      }
+    }
+    return item
+  })
+}
+
+const MessageMarkdown = ({ message, isComplete }: Props) => {
+  const messageContent = replaceNonAsciiWithinDollars(getMessageString(message))
   return (
     <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
         remarkPlugins={[
           [remarkGfm, {}],
-          [remarkMath, {inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]]}]
+          [remarkMath, { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]] }]
         ]}
         rehypePlugins={[[rehypeMathjax, {}]]}
         components={{
-          code({node, inline, className, children, ...props}) {
+          code({ node, inline, className, children, ...props }) {
             if (children.length) {
               if (children[0] == "▍") {
                 return <span className="mt-1 animate-pulse cursor-default">▍</span>
@@ -55,17 +70,17 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
               </code>
             )
           },
-          table({children}) {
+          table({ children }) {
             return <table className="border-collapse border border-black px-3 py-1 dark:border-white">{children}</table>
           },
-          th({children}) {
+          th({ children }) {
             return (
               <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
                 {children}
               </th>
             )
           },
-          td({children}) {
+          td({ children }) {
             return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
           }
         }}
