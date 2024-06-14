@@ -1,4 +1,4 @@
-import {OpenAIModel, OpenAIModels, maxTokensForModel} from "@/types/openai"
+import {OpenAIModel, OpenAIModels, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
 export const config = {
@@ -41,15 +41,16 @@ const handler = async (req: Request): Promise<Response> => {
       .map((model: any) => {
         return {
           id: model.id,
-          tokenLimit: maxTokensForModel(model.id)
+          inputTokenLimit: maxInputTokensForModel(model.id),
+          outputTokenLimit: maxOutputTokensForModel(model.id)
         }
       })
       // Filter "falsy" items:
       .filter(Boolean)
       // Filter out unsupported models:
-      .filter((model: any) => model.tokenLimit > 0)
+      .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
       // Filter out duplicate models:
-      .filter((obj: any, index: any, self: any) => {
+      .filter((obj: OpenAIModel, index: any, self: OpenAIModel[]) => {
         return index === self.findIndex((other: any) => other.id === obj.id)
       })
     return new Response(JSON.stringify(models), {status: 200})

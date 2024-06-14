@@ -10,10 +10,10 @@ import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 interface Props {
   content: string | undefined
-  tokenLimit: number | undefined
+  inputTokenLimit: number | undefined
 }
 
-export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
+export const ChatInputTokenCount = ({content, inputTokenLimit}: Props) => {
   const {t} = useTranslation("common")
   const {theme} = useTheme()
   const {
@@ -59,12 +59,12 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encoder, messages, modelId, prompt])
 
-  if (!encoder || !tokenLimit || !selectedConversation) {
+  if (!encoder || !inputTokenLimit || !selectedConversation) {
     return null
   }
 
   const tokenCount = tokensInConversation + encoder.numberOfTokensInString(content ?? "")
-  const tokenPercentage = Math.min(100, Math.max(5, Math.floor((tokenCount / tokenLimit) * 100)))
+  const tokenPercentage = Math.min(100, Math.max(5, Math.floor((tokenCount / inputTokenLimit) * 100)))
   const backgroundColor = theme == "dark" ? "#404050" : "#f0f0f0"
   let textColor = theme == "dark" ? "text-neutral-300" : "text-neutral-800"
   let gradient
@@ -99,7 +99,7 @@ export const ChatInputTokenCount = ({content, tokenLimit}: Props) => {
       >
         <IconEraser size={16} />
       </button>
-      {tokenCount} / {tokenLimit} tokens {tokenCount > tokenLimit && "(truncated)"}
+      {tokenCount} / {inputTokenLimit} tokens {tokenCount > inputTokenLimit && "(truncated)"}
     </div>
   )
 }
