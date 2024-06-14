@@ -306,7 +306,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">
             <ChatInputTokenCount
               content={content}
-              tokenLimit={models.find((model) => model.id === modelId)?.tokenLimit ?? 4096}
+              inputTokenLimit={models.find((model) => model.id === modelId)?.inputTokenLimit ?? 4096}
             />
           </div>
           <textarea

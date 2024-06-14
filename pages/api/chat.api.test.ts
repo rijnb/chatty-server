@@ -44,7 +44,7 @@ describe("Chat Error Handling", () => {
           apiKey: "somekey",
           prompt: "You are a helpful assistant",
           temperature: 1.2,
-          maxTokens: 32
+          outputTokenLimit: 32
         })
       )
 
