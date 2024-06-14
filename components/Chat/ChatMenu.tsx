@@ -34,7 +34,8 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
   const modelId = conversation.modelId ?? defaultModelId
-  const maxOutputTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
+  const maxOutputTokens =
+    Math.min(conversation.maxTokens, maxOutputTokensForModel(conversation.modelId)) ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
   const ref = useRef<HTMLDivElement>(null)
 
