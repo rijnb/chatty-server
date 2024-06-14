@@ -55,7 +55,7 @@ modelId:'${modelId}', \
 messageLengthInChars:${message.content.length}, \
 totalNumberOfMessages:${allMessages.length}, \
 temperature:${temperature}, \
-maxTokens:${outputTokenLimit}}`)
+maxTokens:${maxReplyTokensToUse}}`)
 
     return await ChatCompletionStream(
       modelId,

@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from "uuid"
 
 import {Conversation} from "@/types/chat"
+import {maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
 
@@ -23,9 +24,10 @@ export const createNewConversation = (name: string, modelId: string, temperature
 }
 
 export const getSelectedConversation = (): Conversation | undefined => {
-  const conversation = localStorageSafeGetItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
+  const conversationString = localStorageSafeGetItem(LOCAL_STORAGE_SELECTED_CONVERSATION)
   try {
-    return conversation ? JSON.parse(conversation) : undefined
+    const conversation = conversationString ? JSON.parse(conversationString) : undefined
+    return conversation ? {...conversation, maxTokens: maxOutputTokensForModel(conversation.modelId)} : undefined
   } catch (error) {
     console.error(`Local storage error:${error}`)
     return undefined
