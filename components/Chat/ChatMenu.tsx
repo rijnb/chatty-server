@@ -9,7 +9,7 @@ import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
-import {OpenAIModel, maxTokensForModel} from "@/types/openai"
+import {OpenAIModel, maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
@@ -34,7 +34,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   const temperature = conversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
   const modelId = conversation.modelId ?? defaultModelId
-  const maxTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
+  const maxOutputTokens = conversation.maxTokens ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
   const ref = useRef<HTMLDivElement>(null)
 
@@ -59,7 +59,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     conversation.modelId = e.target.value
-    conversation.maxTokens = Math.min(conversation.maxTokens, maxTokensForModel(conversation.modelId))
+    conversation.maxTokens = Math.min(conversation.maxTokens, maxOutputTokensForModel(conversation.modelId))
     onUpdateConversation(conversation)
   }
 
@@ -136,12 +136,12 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             id="maxTokens"
             className="mt-2"
             min="100"
-            max={maxTokensForModel(modelId)}
+            max={maxOutputTokensForModel(modelId)}
             step="100"
-            value={maxTokens}
+            value={maxOutputTokens}
             onChange={handleMaxTokensChange}
           />
-          <FormText className="text-center">{maxTokens}</FormText>
+          <FormText className="text-center">{maxOutputTokens}</FormText>
         </div>
       </div>
 
