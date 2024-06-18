@@ -43,6 +43,11 @@ jest.mock("@/components/UnlockCode", () => {
     useUnlockCodeInterceptor: jest.fn()
   }
 })
+jest.mock("@microsoft/applicationinsights-react-js", () => ({
+  useAppInsightsContext: jest.fn(() => ({
+    trackEvent: jest.fn()
+  }))
+}))
 
 Element.prototype.scrollTo = jest.fn()
 
