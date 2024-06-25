@@ -142,23 +142,43 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
     // Create an object URL for the file
     const objectUrl = URL.createObjectURL(file);
 
-    // Set the object URL as the source of an image element to display a thumbnail
-    const img = document.createElement('img');
-    img.src = objectUrl;
-    img.width = 50;
-    img.height = 50;
     var thumbnail_element = document.getElementById("thumbnail");
     if (!thumbnail_element) {
       return;
     }
-    thumbnail_element.appendChild(img); // replace 'document.body' with the actual container for the thumbnail
+
+    // Create a container for each image and its delete button
+    const container = document.createElement('div');
+    container.style.position = 'relative';
+    container.style.display = 'inline-block'; // Allows multiple thumbnails side by side
+
+    // Create an image element
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.width = 50;
+    img.height = 50;
+
+    // Create a delete button with an icon
     const deleteButton = document.createElement('button');
-    deleteButton.innerHTML = "Delete";
+    deleteButton.innerHTML = "&#x274C;"; // Using a Unicode character for simplicity
+    deleteButton.style.position = 'absolute';
+    deleteButton.style.top = '0';
+    deleteButton.style.right = '0';
+    deleteButton.style.border = 'none';
+    deleteButton.style.background = 'transparent';
+    deleteButton.style.cursor = 'pointer';
+
+    // Append the image and delete button to the container
+    container.appendChild(img);
+    container.appendChild(deleteButton);
+
+    // Append the container to the thumbnail element
+    thumbnail_element.appendChild(container);
+
+    // Delete functionality
     deleteButton.onclick = () => {
-      thumbnail_element?.removeChild(img);
-      thumbnail_element?.removeChild(deleteButton);
-    }
-    thumbnail_element.appendChild(deleteButton)
+      thumbnail_element.removeChild(container);
+    };
   }
 
   const handleBrowseFile = () => {
