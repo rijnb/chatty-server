@@ -177,7 +177,9 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
 
     // Delete functionality
     deleteButton.onclick = () => {
-      thumbnail_element.removeChild(container);
+      if (thumbnail_element && container) {
+        thumbnail_element.removeChild(container);
+      }
     };
   }
 
@@ -330,13 +332,13 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
     }
   }
 
-  const handleOnDrop = (event) => {
+  const handleOnDrop = (event: React.DragEvent) => {
     event.preventDefault();
     const droppedFiles = event.dataTransfer.files;
     if (droppedFiles.length > 0) {
       const newFiles = Array.from(droppedFiles);
       for (const file of newFiles) {
-        addFileToPrompt(file)
+        addFileToPrompt(file as File);
       }
     }
   }
