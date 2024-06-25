@@ -415,7 +415,8 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
               resize: "none",
               bottom: `${textareaRef?.current?.scrollHeight}px`,
               maxHeight: "400px",
-              overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`
+              overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`,
+              paddingLeft: "60px" // Adjusted padding-left
             }}
             placeholder={
               disabled
