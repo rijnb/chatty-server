@@ -6,7 +6,7 @@ import remarkMath from "remark-math"
 import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import { Message, MessageItem, getMessageString } from "@/types/chat"
+import { Message, MessagePart, getMessageString } from "@/types/chat"
 
 interface Props {
   message: Message
@@ -21,7 +21,7 @@ const replaceNonAsciiWithinDollarsInString = (str: string) => {
 
 // Function to replace non-ASCII characters within dollar signs. The math renderer sometimes
 // chokes on non-ASCII characters, so we replace them with a placeholder character.
-const replaceNonAsciiWithinDollars = (content: MessageItem[] | string) => {
+const replaceNonAsciiWithinDollars = (content: MessagePart[] | string) => {
   if (typeof content === "string") {
     return replaceNonAsciiWithinDollarsInString(content)
   }

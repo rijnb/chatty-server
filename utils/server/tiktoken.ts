@@ -1,6 +1,6 @@
 import { Tiktoken, TiktokenBPE } from "js-tiktoken/lite"
 
-import { Message, getMessageString } from "@/types/chat"
+import { Message, getMessageString, createMessage } from "@/types/chat"
 import { OpenAILimitExceeded } from "@/utils/server/openAiClient"
 
 export class TiktokenEncoder {
@@ -34,7 +34,7 @@ export class TiktokenEncoder {
 
     return messages
       .map(({ role, content }) => {
-        const text = getMessageString({ role, content })
+        const text = getMessageString(createMessage(role, content))
         return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(text).length
       })
       .reduce((acc, cur) => acc + cur, fixedTokensPerReply)
@@ -82,7 +82,7 @@ export class TiktokenEncoder {
     messages: Message[],
     modelId: string
   ): [Message[], number] {
-    const systemPrompt: Message = { role: "assistant", content: [{ type: "text", text: prompt }] }
+    const systemPrompt: Message = { role: "assistant", content: prompt }
     const messagesToSend: Message[] = messages.slice()
     const requiredTokens = () => {
       return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + maxReplyTokens

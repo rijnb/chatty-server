@@ -9,7 +9,7 @@ import PluginSelect from "./PluginSelect"
 import PromptInputVars from "./PromptInputVars"
 import PromptPopupList from "./PromptPopupList"
 import { useHomeContext } from "@/pages/api/home/home.context"
-import { Message, MessageItem } from "@/types/chat"
+import { Message, MessagePart } from "@/types/chat"
 import { Plugin } from "@/types/plugin"
 import { Prompt } from "@/types/prompt"
 import { isKeyboardEnter } from "@/utils/app/keyboard"
@@ -187,7 +187,7 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
     if (messageIsStreaming || !content || !encoder || !selectedConversation || !models) {
       return
     }
-    const messageContent: MessageItem[] = [{ type: "text", text: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") }]
+    const messageContent: MessagePart[] = [{ type: "text", text: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") }]
     if (modelId === "gpt-4o") {
       var thumbnail_element = document.getElementById("thumbnail");
       if (thumbnail_element && thumbnail_element.getElementsByTagName("img").length > 0) {
@@ -201,7 +201,7 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
             if (ctx) {
               ctx.drawImage(img, 0, 0, img.width, img.height);
               var dataURL = canvas.toDataURL("image/jpeg", 0.8);
-              messageContent.push({ type: "image_url", image_url: dataURL });
+              messageContent.push({ type: "image_url", image_url: { url: dataURL } });
             }
           }
         }
