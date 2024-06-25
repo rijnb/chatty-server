@@ -207,6 +207,10 @@ export const ChatInput = ({ modelId, onSend, onRegenerate, stopConversationRef, 
         }
       }
     }
+    var thumbnail_element = document.getElementById("thumbnail");
+    if (thumbnail_element) {
+      thumbnail_element.innerHTML = "";
+    }
     const message: Message = { role: "user", content: messageContent }
     onSend(message, plugin)
     setContent("")

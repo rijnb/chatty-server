@@ -81,6 +81,32 @@ export const getMessageString = (message: Message): string => {
   }).join("")
 }
 
+export const getMessageStringForDisplay = (message: Message): string => {
+  if (typeof message.content === "string") {
+    return String(message.content)
+  }
+  const messageItems = message.content as MessagePart[]
+  return messageItems.map((item) => {
+    if (item.type === "text") {
+      return item.text
+    }
+    return ""
+  }).join("")
+}
+
+export const getMessageImageContent = (message: Message): string[] => {
+  const images: string[] = [];
+  if (typeof message.content !== "string") {
+    const messageItems = message.content as MessagePart[];
+    messageItems.forEach((item) => {
+      if (item.type === "image_url") {
+        images.push(item.image_url.url);
+      }
+    });
+  }
+  return images;
+};
+
 export const createMessage = (role: string, content: any): Message => {
   if (role === "user") {
     return { role, content: [{ type: "text", text: content }] }

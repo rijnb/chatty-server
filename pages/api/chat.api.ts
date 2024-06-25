@@ -48,11 +48,12 @@ const handler = async (req: Request): Promise<Response> => {
     // Log prompt statistics (not just debugging, also for checking use of service).
     const allMessages: Message[] = [{ role: "system", content: promptToSend }, ...(messagesToSend ?? [])]
     const message = allMessages[allMessages.length - 1]
+    const messageString = getMessageString(message)
     console.info(`sendRequest: {\
-        message:'${trimForPrivacy(getMessageString(message))}', \
+        message:'${trimForPrivacy(messageString)}', \
         totalNumberOfTokens:${encoder.numberOfTokensInConversation(allMessages, modelId)}, \
         modelId:'${modelId}', \
-        messageLengthInChars:${message.content.length}, \
+        messageLengthInChars:${messageString.length}, \
         totalNumberOfMessages:${allMessages.length}, \
         temperature:${temperature}, \
         maxTokens:${maxReplyTokensToUse}}`)

@@ -6,7 +6,7 @@ import remarkMath from "remark-math"
 import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import { Message, MessagePart, getMessageString } from "@/types/chat"
+import { Message, MessagePart, getMessageStringForDisplay, getMessageImageContent } from "@/types/chat"
 
 interface Props {
   message: Message
@@ -37,7 +37,12 @@ const replaceNonAsciiWithinDollars = (content: MessagePart[] | string) => {
 }
 
 const MessageMarkdown = ({ message, isComplete }: Props) => {
-  const messageContent = replaceNonAsciiWithinDollars(getMessageString(message))
+  const messageContent = replaceNonAsciiWithinDollars(getMessageStringForDisplay(message));
+  const imageContent = getMessageImageContent(message);
+
+  // Convert each image to a Markdown string
+  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\n");
+
   return (
     <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
@@ -82,13 +87,14 @@ const MessageMarkdown = ({ message, isComplete }: Props) => {
           },
           td({ children }) {
             return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
-          }
+          },
+          // No need to override img here since we're handling images as Markdown strings
         }}
       >
-        {`${messageContent}${!isComplete ? "`▍`" : ""}`}
+        {`${messageContent}${!isComplete ? "`▍`" : ""}\n${imagesMarkdown}`}
       </MemoizedReactMarkdown>
     </ErrorHandlerClearHistory>
   )
 }
 
-export default MessageMarkdown
+export default MessageMarkdown;
