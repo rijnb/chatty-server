@@ -101,7 +101,6 @@ export const ChatCompletionStream = async (
   }
 
   // Ask OpenAI for a streaming chat completion given the prompt
-  console.debug(`config: url:${configuration.baseURL}, model:${modelId}`)
   try {
     const response = await openai.chat.completions.create({
       model: modelId,
