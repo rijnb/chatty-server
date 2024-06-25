@@ -51,7 +51,7 @@ export interface ChatBody {
   modelId: string
   prompt: string
   temperature: number
-  maxTokens: number
+  outputTokenLimit: number
 }
 
 // This type is used to store a conversation in the store.

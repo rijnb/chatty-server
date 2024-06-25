@@ -92,7 +92,7 @@ const Chat = memo(({ stopConversationRef }: Props) => {
         apiKey: apiKey,
         prompt: updatedConversation.prompt,
         temperature: updatedConversation.temperature,
-        maxTokens: updatedConversation.maxTokens
+        outputTokenLimit: updatedConversation.maxTokens
       }
       const endpoint = getEndpoint(plugin)
       let body
@@ -118,7 +118,7 @@ const Chat = memo(({ stopConversationRef }: Props) => {
           modelId: chatBody.modelId,
           messages: chatBody.messages.length,
           temperature: chatBody.temperature,
-          maxTokens: chatBody.maxTokens,
+          maxTokens: chatBody.outputTokenLimit,
           tokenCount: updatedConversation.tokenCount
         }
       })

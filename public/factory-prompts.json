@@ -356,7 +356,7 @@
     },
     {
       "id": "05b01f4f-6786-48a4-b59b-a72fe6e56df7",
-      "name": "Javascript",
+      "name": "Javascript/JS",
       "description": "Chat about Javascript",
       "content": "You are an expert in writing dynamic client-server Javascript applications. The IDE of your choice is JetBrains IntelliJ. If I present code, you will carefully analyse the code and clearly explain potential risks and errors. You may also suggest improvements to my code.\n\nIf you got this, say “I’m ready for a chat about Javascript”.",
       "folderId": "652556cb-c731-4724-aee3-a022dfd2179c",

@@ -51,22 +51,22 @@ export class TiktokenEncoder {
    * If it's not possible, error is thrown.
    */
   prepareMessagesToSend(
-    tokenLimit: number,
-    maxReplyTokens: number,
+    inputTokenLimit: number,
+    outputTokenLimit: number,
     prompt: string,
     messages: Message[],
     modelId: string
   ): Message[] {
     const [messagesToSend, requiredTokens] = this.reduceMessagesToSend(
-      tokenLimit,
-      maxReplyTokens,
+      inputTokenLimit,
+      outputTokenLimit,
       prompt,
       messages,
       modelId
     )
 
-    if (requiredTokens > tokenLimit) {
-      throw new OpenAILimitExceeded("Not enough tokens to send a message.", tokenLimit, requiredTokens)
+    if (requiredTokens > inputTokenLimit) {
+      throw new OpenAILimitExceeded("Not enough tokens to send a message.", inputTokenLimit, requiredTokens)
     }
 
     return messagesToSend
@@ -76,8 +76,8 @@ export class TiktokenEncoder {
    * Reduces the number of messages to send in order to fit within the token limit.
    */
   private reduceMessagesToSend(
-    tokenLimit: number,
-    maxReplyTokens: number,
+    inputTokenLimit: number,
+    outputTokenLimit: number,
     prompt: string,
     messages: Message[],
     modelId: string
@@ -85,13 +85,17 @@ export class TiktokenEncoder {
     const systemPrompt: Message = { role: "assistant", content: prompt }
     const messagesToSend: Message[] = messages.slice()
     const requiredTokens = () => {
-      return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + maxReplyTokens
+      return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + outputTokenLimit
     }
 
-    while (messagesToSend.length > 1 && requiredTokens() > tokenLimit) {
+    console.log("requiredTokens", requiredTokens()) // !!TODO
+    console.log("inputTokenLimit", inputTokenLimit) // !!TODO
+    console.log("messagesToSend.length (before delete)", messagesToSend.length) // !!TODO
+    while (messagesToSend.length > 1 && requiredTokens() > inputTokenLimit) {
       messagesToSend.splice(1, 1)
     }
 
+    console.log("messagesToSend.length (after delete)", messagesToSend.length) // !!TODO
     return [messagesToSend, requiredTokens()]
   }
 }

@@ -158,6 +158,19 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-06-14
+
+#### Bug fixes
+
+Changed the way how input and output token limits are handled. They used to be the same number
+but can now differ.
+
+### 2024-06-07
+
+#### Features
+
+Added GPT-4o as an option (no visuals yet).
+
 ### 2024-05-06
 
 #### Features
