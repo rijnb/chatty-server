@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react"
+import React, { useEffect, useRef, useState } from "react"
 
-import {isKeyboardEnter} from "@/utils/app/keyboard"
+import { isKeyboardEnter } from "@/utils/app/keyboard"
 
 interface Props {
   content: string
@@ -8,7 +8,7 @@ interface Props {
   onSave: () => void
 }
 
-const ResponsiveTextArea = ({content, onChange, onSave}: Props) => {
+const ResponsiveTextArea = ({ content, onChange, onSave }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [isTyping, setIsTyping] = useState<boolean>(false)
 
