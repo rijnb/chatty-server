@@ -427,10 +427,10 @@
       "factory": true
     },
     {
-      "id": "2830976d-cdb9-49d9-8cfc-cbf5097ee8ad",
-      "name": "Convert to …?",
-      "description": "Drop 1 or more code files here and I will convert them to a lnaguage of choice. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
-      "content": "Consider the following code files and their contents. Rewrite the contents to {{Enter the target programming language (e.g. Lua, Haskell, Lisp, BASIC, 6502 ASM}}. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "id": "672e6c48-2975-4e76-8b10-d7188d68167a",
+      "name": "Convert to ...?",
+      "description": "Drop 1 or more code files here and I will convert them to a language of choice, like Lua, Haskell, Lisp, BASIC, or even 6502 ASM. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to {{Enter target programming language}}. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
       "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
       "factory": true
     },
@@ -475,7 +475,7 @@
       "factory": true
     },
     {
-      "id": "0607002d-7114-4734-9e6f-c5fd0c4a0558",
+      "id": "26070023-1112-4739-9e6f-c5fd0c3a0550",
       "name": "Convert to Bash",
       "description": "Drop 1 or more code files here and I will convert them to Bash. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
       "content": "Consider the following code files and their contents. Rewrite the contents to Bash. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
