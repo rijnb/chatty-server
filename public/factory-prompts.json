@@ -425,6 +425,62 @@
       "content": "Provide a single Linux command (in a code block) for the following query:\n{{Prompt}}\n\nDo not provide any explanation or text, only the command.",
       "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
       "factory": true
+    },
+    {
+      "id": "672e6c48-2975-4e76-8b10-d7188d68167a",
+      "name": "Convert to ...?",
+      "description": "Drop 1 or more code files here and I will convert them to a language of choice, like Lua, Haskell, Lisp, BASIC, or even 6502 ASM. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to {{Enter target programming language}}. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "0607002d-7114-4734-9e6f-c5fd0c4a0558",
+      "name": "Convert to TypeScript",
+      "description": "Drop 1 or more code files here and I will convert them to TypeScript. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to TypeScript. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "06b8fb03-8253-4eab-ba0c-77806e12f32f",
+      "name": "Convert to Kotlin",
+      "description": "Drop 1 or more code files here and I will convert them to Kotlin. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to Kotlin. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "6339c5dc-50c6-40f0-af95-a2d9865e9122",
+      "name": "Convert to Python",
+      "description": "Drop 1 or more code files here and I will convert them to Python. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to Python. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "d814b77e-0775-4fb3-97c7-7f32f3758a40",
+      "name": "Convert to Java",
+      "description": "Drop 1 or more code files here and I will convert them to Java. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to Java. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "1fe7a293-5196-4ca2-b670-a7aa5326a3df",
+      "name": "Convert to C++",
+      "description": "Drop 1 or more code files here and I will convert them to C++. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to C++. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
+    },
+    {
+      "id": "26070023-1112-4739-9e6f-c5fd0c3a0550",
+      "name": "Convert to Bash",
+      "description": "Drop 1 or more code files here and I will convert them to Bash. I will use the filenames, so you can easily copy-paste the contents. Note that I can only convert a limited amount of code at a time.",
+      "content": "Consider the following code files and their contents. Rewrite the contents to Bash. Use the same code formatting conventions as the original code. Provide only the code, no explanations.\n\n{{Drop your code files here #DROP}}",
+      "folderId": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "factory": true
     }
   ],
   "folders": [
@@ -461,6 +517,12 @@
     {
       "id": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
       "name": "Code development",
+      "type": "prompt",
+      "factory": true
+    },
+    {
+      "id": "7978f725-35c8-4fbf-a057-79064eb35cd1",
+      "name": "Code conversions",
       "type": "prompt",
       "factory": true
     }
