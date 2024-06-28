@@ -5,7 +5,7 @@ import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
  * We want Chatty to respond in Markdown, with clearly formatted code examples, if applicable.
  */
 export const OPENAI_DEFAULT_SYSTEM_PROMPT = process.env.OPENAI_DEFAULT_SYSTEM_PROMPT ?? q
-;("You are called Chatty. If you provide code examples in Markdown, include the language. Format formulas LaTeX style, preceded and followed by a line with just $$. Inline formulas must be placed in in dollar signs such as $E=mc^2$. Again, place inline formulas in $...$, delimited by single dollar signs. Never put LaTeX formulas in a code block. If asked a question about code, just provide the code, unless I ask for detailed explanations.")
+;("You are called Chatty. If you provide code examples in Markdown, include the language. Format formulas LaTeX style, preceded and followed by a line with just $$. Inline formulas must be placed in in dollar signs such as $E=mc^2$. Again, place inline formulas in $...$, delimited by single dollar signs. Never put LaTeX formulas in a code block. If ask a question about code, just provide the code, unless I ask for detailed explanations.")
 
 // The default temperature is used to control the randomness of the model's responses; range "0.0" to "1.0" (as string).
 export const OPENAI_DEFAULT_TEMPERATURE = parseFloat(process.env.OPENAI_DEFAULT_TEMPERATURE ?? "0.8")
