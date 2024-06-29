@@ -53,6 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
       .filter((obj: OpenAIModel, index: any, self: OpenAIModel[]) => {
         return index === self.findIndex((other: any) => other.id === obj.id)
       })
+    console.debug(`Found ${models.length} models: ${models.map((model) => model.id).join(", ")}`)
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
     console.error(`Error retrieving models, error:${error}`)
