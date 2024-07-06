@@ -1,13 +1,4 @@
-import {
-  IconBolt,
-  IconBrandGoogle,
-  IconCameraPlus,
-  IconFile,
-  IconFileTypeJpg,
-  IconPlayerStop,
-  IconRepeat,
-  IconSend
-} from "@tabler/icons-react"
+import {IconBolt, IconBrandGoogle, IconCameraPlus, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
@@ -144,9 +135,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const addFileToPrompt = (file: File) => {
-    const formData = new FormData()
-    formData.append("file", file)
-
     const thumbnails = document.getElementById("thumbnails")
     if (!thumbnails) {
       console.error("HTML element not found: thumbnails")
@@ -337,13 +325,11 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
   }
 
-  const handleOnDrop = (event: React.DragEvent) => {
-    event.preventDefault()
-    const droppedFiles = event.dataTransfer.files
-    if (droppedFiles.length > 0) {
-      const newFiles = Array.from(droppedFiles)
-      for (const file of newFiles) {
-        addFileToPrompt(file as File)
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+      for (const file of Array.from(e.dataTransfer.files)) {
+        addFileToPrompt(file)
       }
     }
   }
@@ -379,11 +365,12 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     <div
       className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-2 dark:border-white/20 dark:via-[#343541] dark:to-[#343541]"
       style={{width: "calc(100% - 10px)"}}
+      onDrop={handleDrop}
     >
       <div className="stretch bottom-0 mx-auto mt-[52px] flex max-w-3xl flex-row gap-3 last:mb-6">
         {messageIsStreaming && (
           <button
-            className="absolute left-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
+            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white"
             onClick={handleStopOngoingConversation}
           >
             <IconPlayerStop size={16} /> {t("Stop generating")}
@@ -458,7 +445,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onCompositionEnd={() => setIsTyping(false)}
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
-            onDrop={handleOnDrop}
           />
           <div className="flex items-center justify-center" id="thumbnails"></div>
           <button
