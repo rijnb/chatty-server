@@ -1,6 +1,6 @@
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
-import React, {MutableRefObject, memo, use, useCallback, useEffect, useRef, useState} from "react"
+import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
 import toast from "react-hot-toast"
 
 import Spinner from "../Spinner"
@@ -13,7 +13,7 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
-import {ChatBody, Conversation, Message, SystemMessage, UserMessage, getMessageString} from "@/types/chat"
+import {ChatBody, Conversation, Message, getMessageString} from "@/types/chat"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -247,10 +247,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
               isFirst = false
               const updatedMessages: Message[] = [
                 ...updatedConversation.messages,
-                {
-                  role: "assistant",
-                  content: chunkValue
-                }
+                {role: "assistant", content: chunkValue}
               ]
               updatedConversation = {
                 ...updatedConversation,

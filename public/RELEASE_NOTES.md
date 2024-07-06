@@ -162,7 +162,8 @@ _Rijn Buve & Oleksii Kulyk_
 
 #### Features
 
-- Added image recognition support.
+- Added image recognition support. You can now drop images into your
+  conversation, or select them from disk with image icon in the prompt bar. 
 
 ### 2024-06-14
 

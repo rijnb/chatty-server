@@ -1,4 +1,13 @@
-import {IconBolt, IconBrandGoogle, IconFile, IconPlayerStop, IconRepeat, IconSend} from "@tabler/icons-react"
+import {
+  IconBolt,
+  IconBrandGoogle,
+  IconCameraPlus,
+  IconFile,
+  IconFileTypeJpg,
+  IconPlayerStop,
+  IconRepeat,
+  IconSend
+} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import Image from "next/image"
 import {useRouter} from "next/router"
@@ -135,32 +144,29 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const addFileToPrompt = (file: File) => {
-    // Create a FormData object
     const formData = new FormData()
     formData.append("file", file)
 
-    // Create an object URL for the file
-    const objectUrl = URL.createObjectURL(file)
-
-    var thumbnail_element = document.getElementById("thumbnail")
-    if (!thumbnail_element) {
+    const thumbnails = document.getElementById("thumbnails")
+    if (!thumbnails) {
+      console.error("HTML element not found: thumbnails")
       return
     }
 
-    // Create a container for each image and its delete button
+    // Create a container for each image and its delete button.
     const container = document.createElement("div")
     container.style.position = "relative"
     container.style.display = "inline-block" // Allows multiple thumbnails side by side
 
-    // Create an image element
+    // Create an image element.
     const img = document.createElement("img")
     img.src = URL.createObjectURL(file)
-    img.width = 50
-    img.height = 50
+    img.width = 80
+    img.height = 80
 
-    // Create a delete button with an icon
+    // Create a delete button with an icon.
     const deleteButton = document.createElement("button")
-    deleteButton.innerHTML = "&#x274C;" // Using a Unicode character for simplicity
+    deleteButton.innerHTML = "&#x274C;" // Using a Unicode character for simplicity.
     deleteButton.style.position = "absolute"
     deleteButton.style.top = "0"
     deleteButton.style.right = "0"
@@ -168,17 +174,17 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     deleteButton.style.background = "transparent"
     deleteButton.style.cursor = "pointer"
 
-    // Append the image and delete button to the container
+    // Append the image and delete button to the container.
     container.appendChild(img)
     container.appendChild(deleteButton)
 
-    // Append the container to the thumbnail element
-    thumbnail_element.appendChild(container)
+    // Append the container to the thumbnail element.
+    thumbnails.appendChild(container)
 
-    // Delete functionality
+    // Delete functionality.
     deleteButton.onclick = () => {
-      if (thumbnail_element && container) {
-        thumbnail_element.removeChild(container)
+      if (thumbnails && container) {
+        thumbnails.removeChild(container)
       }
     }
   }
@@ -201,7 +207,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         addFileToPrompt(file)
       }
     }
-
     fileInput.click()
   }
 
@@ -211,27 +216,27 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
     const messageContent: MessagePart[] = [{type: "text", text: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")}]
     if (modelId === "gpt-4o") {
-      var thumbnail_element = document.getElementById("thumbnail")
-      if (thumbnail_element && thumbnail_element.getElementsByTagName("img").length > 0) {
-        for (var i = 0; i < thumbnail_element.getElementsByTagName("img").length; i++) {
-          var img = thumbnail_element.getElementsByTagName("img")[i]
+      const thumbnails = document.getElementById("thumbnails")
+      if (thumbnails && thumbnails.getElementsByTagName("img").length > 0) {
+        for (let i = 0; i < thumbnails.getElementsByTagName("img").length; i++) {
+          const img = thumbnails.getElementsByTagName("img")[i]
           if (img) {
-            var canvas = document.createElement("canvas")
+            const canvas = document.createElement("canvas")
             canvas.width = img.width
             canvas.height = img.height
-            var ctx = canvas.getContext("2d")
+            const ctx = canvas.getContext("2d")
             if (ctx) {
               ctx.drawImage(img, 0, 0, img.width, img.height)
-              var dataURL = canvas.toDataURL("image/jpeg", 0.8)
+              const dataURL = canvas.toDataURL("image/jpeg", 0.8)
               messageContent.push({type: "image_url", image_url: {url: dataURL}})
             }
           }
         }
       }
     }
-    var thumbnail_element = document.getElementById("thumbnail")
-    if (thumbnail_element) {
-      thumbnail_element.innerHTML = ""
+    const thumbnails = document.getElementById("thumbnails")
+    if (thumbnails) {
+      thumbnails.innerHTML = ""
     }
     const message: Message = {role: "user", content: messageContent}
     onSend(message, plugin)
@@ -388,7 +393,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         {!messageIsStreaming && selectedConversation && selectedConversation.messages.length > 0 && (
           <button
             disabled={disabled}
-            className="absolute left-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 disabled:pointer-events-none disabled:text-gray-300 dark:border-neutral-600 dark:bg-[#343541] dark:text-white dark:disabled:text-gray-600"
+            className="absolute left-0 right-0 top-0 mx-auto mb-0 mt-2 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 disabled:pointer-events-none disabled:text-gray-300 dark:border-neutral-600 dark:bg-[#343541] dark:text-white dark:disabled:text-gray-600"
             onClick={onRegenerate}
           >
             <IconRepeat size={16} /> {t("Regenerate response")}
@@ -419,7 +424,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             {messageIsStreaming ? (
               <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
             ) : (
-              <IconFile size={18} />
+              <IconCameraPlus size={18} />
             )}
           </button>
           <div className="pointer-events-none absolute bottom-full mx-auto mb-2 flex w-full justify-end">
@@ -438,7 +443,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               bottom: `${textareaRef?.current?.scrollHeight}px`,
               maxHeight: "400px",
               overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400 ? "auto" : "hidden"}`,
-              paddingLeft: "60px" // Adjusted padding-left
+              paddingLeft: "60px"
             }}
             placeholder={
               disabled
@@ -455,7 +460,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onKeyDown={handleKeyDown}
             onDrop={handleOnDrop}
           />
-          <div className="flex items-center justify-center" id="thumbnail"></div>
+          <div className="flex items-center justify-center" id="thumbnails"></div>
           <button
             data-testid="chat-send"
             aria-label="Send message"
