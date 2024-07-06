@@ -7,7 +7,7 @@ const useMarkdownFile = (filename: string) => {
     fetch(filename)
       .then((response) => (response.ok ? response.text() : ""))
       .then((text) => setFileContent(text))
-      .catch((error) => console.error(`Error fetching markdown file, error:${error}`))
+      .catch((error) => console.info(`Cannot read Markdown file: ${filename}, ${error}`))
   }, [filename])
   return fileContent
 }
