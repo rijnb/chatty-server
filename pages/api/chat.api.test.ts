@@ -1,6 +1,6 @@
 import chatHandler from "@/pages/api/chat.api"
-import { asMock } from "@/testutils"
-import { ChatBody } from "@/types/chat"
+import {asMock} from "@/testutils"
+import {ChatBody} from "@/types/chat"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
@@ -25,13 +25,13 @@ describe("Chat Error Handling", () => {
       method: "POST",
       body: JSON.stringify(
         chatBody ??
-        ({
-          modelId: "gpt-4-32k",
-          messages: [{ role: "user", content: [{ type: "text", text: "ping" }] }],
-          apiKey: "",
-          prompt: "You are a helpful assistant",
-          temperature: 0.8
-        } as ChatBody)
+          ({
+            modelId: "gpt-4-32k",
+            messages: [{role: "user", content: [{type: "text", text: "ping"}]}],
+            apiKey: "",
+            prompt: "You are a helpful assistant",
+            temperature: 0.8
+          } as ChatBody)
       )
     })
 
@@ -40,7 +40,7 @@ describe("Chat Error Handling", () => {
       await chatHandler(
         createRequest({
           modelId: "gpt-4-32k",
-          messages: [{ role: "user", content: [{ type: "text", text: "ping" }] }],
+          messages: [{role: "user", content: [{type: "text", text: "ping"}]}],
           apiKey: "somekey",
           prompt: "You are a helpful assistant",
           temperature: 1.2,
@@ -54,7 +54,7 @@ describe("Chat Error Handling", () => {
         1.2,
         32,
         "somekey",
-        [{ role: "user", content: [{ type: "text", text: "ping" }] }]
+        [{role: "user", content: [{type: "text", text: "ping"}]}]
       )
     })
   })

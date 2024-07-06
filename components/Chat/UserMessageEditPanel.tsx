@@ -1,9 +1,9 @@
-import { useTranslation } from "next-i18next"
-import React, { useState } from "react"
+import {useTranslation} from "next-i18next"
+import React, {useState} from "react"
 
 import ResponsiveTextArea from "@/components/Chat/ResponsiveTextArea"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import { Message, getMessageImageContent, getMessageStringForDisplay } from "@/types/chat"
+import {Message, getMessageImageContent, getMessageStringForDisplay} from "@/types/chat"
 
 interface EditPanelProps {
   message: Message
@@ -11,25 +11,22 @@ interface EditPanelProps {
   onFinishEditing: () => void
 }
 
-const EditPanel = ({ message, onSaveMessage, onFinishEditing }: EditPanelProps) => {
-  const { t } = useTranslation("common")
+const EditPanel = ({message, onSaveMessage, onFinishEditing}: EditPanelProps) => {
+  const {t} = useTranslation("common")
   const [content, setContent] = useState(message.content)
   const stringContent = getMessageStringForDisplay(message)
 
   const handleSaveMessage = () => {
-    onSaveMessage({ ...message, content })
+    onSaveMessage({...message, content})
     onFinishEditing()
   }
 
-  const imageContent = getMessageImageContent(message);
-  // Convert each image to a Markdown string
-  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\t");
+  const imageContent = getMessageImageContent(message)
+  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\t")
   return (
     <div className="flex w-full flex-col">
       <ResponsiveTextArea content={stringContent} onChange={setContent} onSave={handleSaveMessage} />
-      <MemoizedReactMarkdown>
-        {imagesMarkdown}
-      </MemoizedReactMarkdown>
+      <MemoizedReactMarkdown>{imagesMarkdown}</MemoizedReactMarkdown>
       <div className="mt-10 flex justify-center space-x-4">
         <button
           className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"

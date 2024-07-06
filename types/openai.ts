@@ -18,15 +18,15 @@ const K32 = 32 * 1024
 const K128 = 128 * 1024
 
 export const OpenAIModels: Record<string, OpenAIModel> = {
-  ["gpt-3.5-turbo"]: { id: "gpt-3.5-turbo", inputTokenLimit: K16, outputTokenLimit: K4 },
-  ["gpt-3.5-turbo-16k"]: { id: "gpt-3.5-turbo-16k", inputTokenLimit: K16, outputTokenLimit: K16 },
-  ["gpt-35-turbo"]: { id: "gpt-35-turbo", inputTokenLimit: K16, outputTokenLimit: K4 },
-  ["gpt-35-turbo-16k"]: { id: "gpt-35-turbo-16k", inputTokenLimit: K16, outputTokenLimit: K16 },
-  ["gpt-4"]: { id: "gpt-4", inputTokenLimit: K128, outputTokenLimit: K4 },
-  ["gpt-4-32k"]: { id: "gpt-4-32k", inputTokenLimit: K32, outputTokenLimit: K32 },
-  ["gpt-4-turbo-preview"]: { id: "gpt-4-turbo-preview", inputTokenLimit: K128, outputTokenLimit: K4 },
-  ["gpt-4-turbo"]: { id: "gpt-4-turbo", inputTokenLimit: K128, outputTokenLimit: K4 },
-  ["gpt-4o"]: { id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4 }
+  ["gpt-3.5-turbo"]: {id: "gpt-3.5-turbo", inputTokenLimit: K16, outputTokenLimit: K4},
+  ["gpt-3.5-turbo-16k"]: {id: "gpt-3.5-turbo-16k", inputTokenLimit: K16, outputTokenLimit: K16},
+  ["gpt-35-turbo"]: {id: "gpt-35-turbo", inputTokenLimit: K16, outputTokenLimit: K4},
+  ["gpt-35-turbo-16k"]: {id: "gpt-35-turbo-16k", inputTokenLimit: K16, outputTokenLimit: K16},
+  ["gpt-4"]: {id: "gpt-4", inputTokenLimit: K128, outputTokenLimit: K4},
+  ["gpt-4-32k"]: {id: "gpt-4-32k", inputTokenLimit: K32, outputTokenLimit: K32},
+  ["gpt-4-turbo-preview"]: {id: "gpt-4-turbo-preview", inputTokenLimit: K128, outputTokenLimit: K4},
+  ["gpt-4-turbo"]: {id: "gpt-4-turbo", inputTokenLimit: K128, outputTokenLimit: K4},
+  ["gpt-4o"]: {id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4}
 }
 
 export const maxInputTokensForModel = (modelId: string) => {

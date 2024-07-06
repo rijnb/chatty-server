@@ -1,6 +1,6 @@
-import { OpenAIStream, StreamingTextResponse } from "ai"
-import OpenAI from 'openai';
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import {OpenAIStream, StreamingTextResponse} from "ai"
+import OpenAI from "openai"
+import {ChatCompletionMessageParam} from "openai/resources/chat"
 
 import {
   OPENAI_API_HOST,
@@ -9,8 +9,8 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "../app/const"
-import { Message } from "@/types/chat"
-import { getAzureDeploymentIdForModelId } from "@/utils/app/azure"
+import {Message} from "@/types/chat"
+import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
 export class OpenAIError extends Error {
   constructor(message: string) {
@@ -66,7 +66,9 @@ function createOpenAiConfiguration(apiKey: string, modelId: string) {
         modelId
       )}`,
       apiKey: apiKey || process.env.OPENAI_API_KEY,
-      defaultQuery: { "api-version": process.env.OPENAI_API_VERSION },
+      defaultQuery: {
+        "api-version": process.env.OPENAI_API_VERSION
+      },
       defaultHeaders: {
         "api-key": apiKey || process.env.OPENAI_API_KEY
       }
@@ -104,7 +106,7 @@ export const ChatCompletionStream = async (
   try {
     const response = await openai.chat.completions.create({
       model: modelId,
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      messages: [{role: "system", content: systemPrompt}, ...messages],
       max_tokens: maxTokens,
       temperature: temperature,
       stream: true
@@ -114,9 +116,8 @@ export const ChatCompletionStream = async (
     const stream = OpenAIStream(response)
     // Respond with the stream
     return new StreamingTextResponse(stream)
-
   } catch (error) {
-    console.log(error);
+    console.log(error)
     if (error instanceof OpenAI.APIError) {
       if (error.status === 401) {
         throw new OpenAIAuthError(error.message)

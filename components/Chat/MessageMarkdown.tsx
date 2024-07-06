@@ -6,7 +6,7 @@ import remarkMath from "remark-math"
 import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import { Message, MessagePart, getMessageStringForDisplay, getMessageImageContent } from "@/types/chat"
+import {Message, MessagePart, getMessageImageContent, getMessageStringForDisplay} from "@/types/chat"
 
 interface Props {
   message: Message
@@ -24,36 +24,32 @@ const replaceNonAsciiWithinDollarsInString = (str: string) => {
 const replaceNonAsciiWithinDollars = (content: MessagePart[] | string) => {
   if (typeof content === "string") {
     return replaceNonAsciiWithinDollarsInString(content)
-  }
-  return content.map((item) => {
-    if (item.type === "text" && item.text) {
-      return {
-        ...item,
-        text: replaceNonAsciiWithinDollarsInString(item.text)
+  } else {
+    return content.map((item) => {
+      if (item.type === "text" && item.text) {
+        return {...item, text: replaceNonAsciiWithinDollarsInString(item.text)}
+      } else {
+        return item
       }
-    }
-    return item
-  })
+    })
+  }
 }
 
-const MessageMarkdown = ({ message, isComplete }: Props) => {
-  const messageContent = replaceNonAsciiWithinDollars(getMessageStringForDisplay(message));
-  const imageContent = getMessageImageContent(message);
-
-  // Convert each image to a Markdown string
-  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\n");
-
+const MessageMarkdown = ({message, isComplete}: Props) => {
+  const messageContent = replaceNonAsciiWithinDollars(getMessageStringForDisplay(message))
+  const imageContent = getMessageImageContent(message)
+  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\n")
   return (
     <ErrorHandlerClearHistory>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
         remarkPlugins={[
           [remarkGfm, {}],
-          [remarkMath, { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]] }]
+          [remarkMath, {inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]]}]
         ]}
         rehypePlugins={[[rehypeMathjax, {}]]}
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({node, inline, className, children, ...props}) {
             if (children.length) {
               if (children[0] == "▍") {
                 return <span className="mt-1 animate-pulse cursor-default">▍</span>
@@ -75,20 +71,19 @@ const MessageMarkdown = ({ message, isComplete }: Props) => {
               </code>
             )
           },
-          table({ children }) {
+          table({children}) {
             return <table className="border-collapse border border-black px-3 py-1 dark:border-white">{children}</table>
           },
-          th({ children }) {
+          th({children}) {
             return (
               <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
                 {children}
               </th>
             )
           },
-          td({ children }) {
+          td({children}) {
             return <td className="break-words border border-black px-3 py-1 dark:border-white">{children}</td>
-          },
-          // No need to override img here since we're handling images as Markdown strings
+          }
         }}
       >
         {`${messageContent}${!isComplete ? "`▍`" : ""}\n${imagesMarkdown}`}
@@ -97,4 +92,4 @@ const MessageMarkdown = ({ message, isComplete }: Props) => {
   )
 }
 
-export default MessageMarkdown;
+export default MessageMarkdown

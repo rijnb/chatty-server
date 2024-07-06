@@ -1,16 +1,16 @@
-import { IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconScreenshot } from "@tabler/icons-react"
-import { useTranslation } from "next-i18next"
-import { useTheme } from "next-themes"
-import React, { useRef, useState } from "react"
+import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconScreenshot} from "@tabler/icons-react"
+import {useTranslation} from "next-i18next"
+import {useTheme} from "next-themes"
+import React, {useRef, useState} from "react"
 
 import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
 import useScreenshot from "@/components/Hooks/useScreenshot"
-import { FormLabel, FormText, Range, Select } from "@/components/Styled"
-import { useHomeContext } from "@/pages/api/home/home.context"
-import { Conversation } from "@/types/chat"
-import { OpenAIModel, maxOutputTokensForModel } from "@/types/openai"
-import { OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE } from "@/utils/app/const"
+import {FormLabel, FormText, Range, Select} from "@/components/Styled"
+import {useHomeContext} from "@/pages/api/home/home.context"
+import {Conversation} from "@/types/chat"
+import {OpenAIModel, maxOutputTokensForModel} from "@/types/openai"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
   conversation: Conversation
@@ -20,15 +20,15 @@ interface Props {
   onUpdateConversation: (conversation: Conversation) => void
 }
 
-const ChatMenu = ({ conversation, container, models, onUpdateConversation, onOpenReleaseNotes }: Props) => {
-  const { t } = useTranslation("common")
+const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpenReleaseNotes}: Props) => {
+  const {t} = useTranslation("common")
 
   const {
-    state: { defaultModelId, allowModelSelection }
+    state: {defaultModelId, allowModelSelection}
   } = useHomeContext()
-  const { theme, setTheme } = useTheme()
-  const { onSaveScreenshot } = useScreenshot(container)
-  const { onSaveMarkdown } = useSaveMarkdown(conversation)
+  const {theme, setTheme} = useTheme()
+  const {onSaveScreenshot} = useScreenshot(container)
+  const {onSaveMarkdown} = useSaveMarkdown(conversation)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -77,8 +77,9 @@ const ChatMenu = ({ conversation, container, models, onUpdateConversation, onOpe
   return (
     <div
       ref={ref}
-      className={`fixed left-1/2 top-0 z-50 flex max-w-lg -translate-x-1/2 transform flex-col items-center justify-center rounded-b-lg border-x border-b border-gray-300 bg-gray-50 p-6 transition-all duration-500 ease-in-out dark:border-gray-700 dark:bg-[#343644] ${isMenuOpen ? "translate-y-0 shadow-xl " : "-translate-y-full shadow-none"
-        }`}
+      className={`fixed left-1/2 top-0 z-50 flex max-w-lg -translate-x-1/2 transform flex-col items-center justify-center rounded-b-lg border-x border-b border-gray-300 bg-gray-50 p-6 transition-all duration-500 ease-in-out dark:border-gray-700 dark:bg-[#343644] ${
+        isMenuOpen ? "translate-y-0 shadow-xl " : "-translate-y-full shadow-none"
+      }`}
       onKeyDown={handleKeyDown}
     >
       <div className="w-full">

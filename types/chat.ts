@@ -1,3 +1,7 @@
+/**
+ * Note that the names of properties in this file are
+ * dictated by the API interface of OpenAI.
+ */
 export type Role = "system" | "assistant" | "user"
 
 export interface MessagePartText {
@@ -7,7 +11,7 @@ export interface MessagePartText {
 
 export interface ImageUrl {
   url: string
-  detail?: 'auto' | 'low' | 'high';
+  detail?: "auto" | "low" | "high"
 }
 
 export interface MessagePartImage {
@@ -18,27 +22,27 @@ export interface MessagePartImage {
 export type MessagePart = MessagePartText | MessagePartImage
 
 export interface UserMessage {
-  role: 'user'
+  role: "user"
   content: string | MessagePart[]
   name?: string
 }
 
 export interface SystemMessage {
-  role: 'system'
+  role: "system"
   content: string
   name?: string
 }
 
 export interface AssistantMessage {
-  role: 'assistant';
-  content?: string | null;
-  name?: string;
+  role: "assistant"
+  content?: string | null
+  name?: string
 }
 
 export interface ToolMessage {
-  role: 'tool';
-  content: string;
-  tool_call_id: string;
+  role: "tool"
+  content: string
+  tool_call_id: string
   name?: string
 }
 
@@ -73,12 +77,15 @@ export const getMessageString = (message: Message): string => {
     return String(message.content)
   }
   const messageItems = message.content as MessagePart[]
-  return messageItems.map((item) => {
-    if (item.type === "text") {
-      return item.text
-    }
-    return item.image_url
-  }).join("")
+  return messageItems
+    .map((item) => {
+      if (item.type === "text") {
+        return item.text
+      } else if (item.type === "image_url") {
+        return item.image_url
+      }
+    })
+    .join("")
 }
 
 export const getMessageStringForDisplay = (message: Message): string => {
@@ -86,41 +93,39 @@ export const getMessageStringForDisplay = (message: Message): string => {
     return String(message.content)
   }
   const messageItems = message.content as MessagePart[]
-  return messageItems.map((item) => {
-    if (item.type === "text") {
-      return item.text
-    }
-    return ""
-  }).join("")
+  return messageItems
+    .map((item) => {
+      if (item.type === "text") {
+        return item.text
+      }
+      return ""
+    })
+    .join("")
 }
 
 export const getMessageImageContent = (message: Message): string[] => {
-  const images: string[] = [];
+  const images: string[] = []
   if (typeof message.content !== "string") {
-    const messageItems = message.content as MessagePart[];
+    const messageItems = message.content as MessagePart[]
     messageItems.forEach((item) => {
       if (item.type === "image_url") {
-        images.push(item.image_url.url);
+        images.push(item.image_url.url)
       }
-    });
+    })
   }
-  return images;
-};
+  return images
+}
 
 export const createMessage = (role: string, content: any): Message => {
   if (role === "user") {
-    return { role, content: [{ type: "text", text: content }] }
-  }
-  else if (role === "system") {
-    return { role, content }
-  }
-  else if (role === "assistant") {
-    return { role, content }
-  }
-  else if (role === "tool") {
-    return { role, content, tool_call_id: content }
-  }
-  else {
+    return {role, content: [{type: "text", text: content}]}
+  } else if (role === "system") {
+    return {role, content}
+  } else if (role === "assistant") {
+    return {role, content}
+  } else if (role === "tool") {
+    return {role, content, tool_call_id: content}
+  } else {
     throw new Error(`Invalid role ${role}`)
   }
 }

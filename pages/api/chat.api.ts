@@ -1,9 +1,9 @@
 import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
-import { ChatBody, Message, getMessageString } from "@/types/chat"
-import { OpenAIModels, maxInputTokensForModel } from "@/types/openai"
-import { OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE } from "@/utils/app/const"
-import { trimForPrivacy } from "@/utils/app/privacy"
+import {ChatBody, Message, getMessageString} from "@/types/chat"
+import {OpenAIModels, maxInputTokensForModel} from "@/types/openai"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {trimForPrivacy} from "@/utils/app/privacy"
 import {
   ChatCompletionStream,
   GenericOpenAIError,
@@ -12,7 +12,7 @@ import {
   OpenAILimitExceeded,
   OpenAIRateLimited
 } from "@/utils/server/openAiClient"
-import { TiktokenEncoder } from "@/utils/server/tiktoken"
+import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
 export const config = {
   runtime: "edge"
@@ -31,7 +31,7 @@ const encoder = TiktokenEncoder.wrap(cl100k_base)
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { messages, apiKey, modelId, prompt, temperature, outputTokenLimit } = (await req.json()) as ChatBody
+    const {messages, apiKey, modelId, prompt, temperature, outputTokenLimit} = (await req.json()) as ChatBody
     const inputTokenLimit = maxInputTokensForModel(modelId)
 
     const maxReplyTokensToUse = outputTokenLimit || OPENAI_API_MAX_TOKENS
@@ -46,7 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
     const temperatureToUse = temperature || OPENAI_DEFAULT_TEMPERATURE
 
     // Log prompt statistics (not just debugging, also for checking use of service).
-    const allMessages: Message[] = [{ role: "system", content: promptToSend }, ...(messagesToSend ?? [])]
+    const allMessages: Message[] = [{role: "system", content: promptToSend}, ...(messagesToSend ?? [])]
     const message = allMessages[allMessages.length - 1]
     const messageString = getMessageString(message)
     console.info(`sendRequest: {\

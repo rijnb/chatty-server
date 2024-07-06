@@ -1,11 +1,11 @@
-import { Readability } from "@mozilla/readability"
+import {Readability} from "@mozilla/readability"
 import endent from "endent"
-import jsdom, { JSDOM } from "jsdom"
-import { NextApiRequest, NextApiResponse } from "next"
+import jsdom, {JSDOM} from "jsdom"
+import {NextApiRequest, NextApiResponse} from "next"
 
-import { Message, getMessageString } from "@/types/chat"
-import { GoogleBody, GoogleSource } from "@/types/google"
-import { getAzureDeploymentIdForModelId } from "@/utils/app/azure"
+import {Message, getMessageString} from "@/types/chat"
+import {GoogleBody, GoogleSource} from "@/types/google"
+import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
   OPENAI_API_HOST,
   OPENAI_API_TYPE,
@@ -13,12 +13,12 @@ import {
   OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION
 } from "@/utils/app/const"
-import { trimForPrivacy } from "@/utils/app/privacy"
-import { cleanSourceText } from "@/utils/server/google"
+import {trimForPrivacy} from "@/utils/app/privacy"
+import {cleanSourceText} from "@/utils/server/google"
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { messages, apiKey, modelId, googleAPIKey, googleCSEId } = req.body as GoogleBody
+    const {messages, apiKey, modelId, googleAPIKey, googleCSEId} = req.body as GoogleBody
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
     }
@@ -27,7 +27,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.debug(`Google search, query:${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
-      `https://customsearch.googleapis.com/customsearch/v1?key=${googleAPIKey || process.env.GOOGLE_API_KEY}&cx=${googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+      `https://customsearch.googleapis.com/customsearch/v1?key=${googleAPIKey || process.env.GOOGLE_API_KEY}&cx=${
+        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
       }&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
@@ -54,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               console.error(`Google search, error:${error}`)
             }
           })
-          const dom = new JSDOM(html, { virtualConsole })
+          const dom = new JSDOM(html, {virtualConsole})
           const doc = dom.window.document
           const parsed = new Readability(doc).parse()
           if (parsed) {
@@ -101,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     Response:
     `
-    const answerMessage: Message = { role: "user", content: answerPrompt }
+    const answerMessage: Message = {role: "user", content: answerPrompt}
 
     let url = `${OPENAI_API_HOST}/v1/chat/completions?api-version=${OPENAI_API_VERSION}`
     if (OPENAI_API_TYPE === "azure") {
@@ -122,8 +123,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {
-          "OpenAI-Organization": OPENAI_ORGANIZATION
-        })
+            "OpenAI-Organization": OPENAI_ORGANIZATION
+          })
       },
       method: "POST",
       body: JSON.stringify({
@@ -134,13 +135,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         stream: false
       })
     })
-    const { choices } = await answerRes.json()
+    const {choices} = await answerRes.json()
     const answer = choices[0].message.content
     console.debug(`Google search, result:${trimForPrivacy(answer)}`)
-    res.status(200).json({ answer })
+    res.status(200).json({answer})
   } catch (error) {
     console.error(`Google search, error:${error}`)
-    res.status(500).json({ error: "Google search error" })
+    res.status(500).json({error: "Google search error"})
   }
 }
 
