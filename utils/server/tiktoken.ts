@@ -83,7 +83,28 @@ export class TiktokenEncoder {
     modelId: string
   ): [Message[], number] {
     const systemPrompt: Message = {role: "assistant", content: prompt}
-    const messagesToSend: Message[] = messages.slice()
+    let messagesToSend: Message[] = messages.slice()
+
+    // !!TODO: Check properly for model capabilities on imaging:
+    if (!modelId.includes("gpt-4o")) {
+      messagesToSend = messagesToSend.map((message) => {
+        if (message.role === "user" && typeof message.content !== "string") {
+          const texts = message.content
+            .map((item) => {
+              if (item.type === "text") {
+                return item.text
+              }
+              return "(Skipped image)"
+            })
+            .join("\n")
+
+          return {role: message.role, content: texts}
+        } else {
+          return message
+        }
+      })
+    }
+
     const requiredTokens = () => {
       return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + outputTokenLimit
     }

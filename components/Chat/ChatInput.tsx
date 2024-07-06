@@ -134,7 +134,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     updatePromptListVisibility(value)
   }
 
-  const addFileToPrompt = (file: File) => {
+  const addImageToPrompt = (file: File) => {
     const thumbnails = document.getElementById("thumbnails")
     if (!thumbnails) {
       console.error("HTML element not found: thumbnails")
@@ -185,14 +185,16 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     const fileInput = document.createElement("input")
     fileInput.type = "file"
     fileInput.accept = "image/*"
-
+    fileInput.multiple = true
     fileInput.onchange = () => {
       if (fileInput.files === null) {
         return
       }
       if (fileInput.files.length > 0) {
-        const file = fileInput.files[0]
-        addFileToPrompt(file)
+        for (let i = 0; i < fileInput.files.length; i++) {
+          const file = fileInput.files[i]
+          addImageToPrompt(file)
+        }
       }
     }
     fileInput.click()
@@ -329,7 +331,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     e.preventDefault()
     if (e.dataTransfer && e.dataTransfer.files.length > 0) {
       for (const file of Array.from(e.dataTransfer.files)) {
-        addFileToPrompt(file)
+        addImageToPrompt(file)
       }
     }
   }

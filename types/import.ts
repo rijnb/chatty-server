@@ -1,7 +1,16 @@
+import {MessagePart} from "@/types/chat"
+
 /**
  * Do not change this file format, unless there is an upgrade path defined from earlier formats.
  */
 export type SupportedFileFormats = FileFormatV5 | FileFormatV4
+
+export interface FileFormatV6 {
+  version: 6
+  history: ConversationV6[]
+  folders: FolderInterfaceV4[]
+  prompts: PromptV5[]
+}
 
 export interface FileFormatV5 {
   version: 5
@@ -21,6 +30,20 @@ export interface FileFormatV4 {
  * These types are used to import conversations from earlier versions of the app.
  * They are not used in the app itself.
  */
+
+/**
+ * V6.
+ */
+export interface ConversationV6 {
+  id: string
+  name: string
+  messages: MessageV5[]
+  modelId: string // Changed to string in V5.
+  prompt: string
+  temperature: number
+  folderId: string | undefined
+  time: number
+}
 
 /**
  * V5.
@@ -60,6 +83,50 @@ export interface ConversationV4 {
   time: number
 }
 
+export interface MessagePartTextV1 {
+  type: "text"
+  text: string
+}
+
+export interface ImageUrlV1 {
+  url: string
+  detail?: "auto" | "low" | "high"
+}
+
+export interface MessagePartImageV1 {
+  type: "image_url"
+  image_url: ImageUrlV1
+}
+
+export type MessagePartV1 = MessagePartTextV1 | MessagePartImageV1
+
+export interface UserMessageV1 {
+  role: "user"
+  content: string | MessagePart[]
+  name?: string
+}
+
+export interface SystemMessageV1 {
+  role: "system"
+  content: string
+  name?: string
+}
+
+export interface AssistantMessageV1 {
+  role: "assistant"
+  content?: string | null
+  name?: string
+}
+
+export interface ToolMessageV1 {
+  role: "tool"
+  content: string
+  tool_call_id: string
+  name?: string
+}
+
+export type MessageV5 = UserMessageV1 | SystemMessageV1 | AssistantMessageV1 | ToolMessageV1
+
 export interface MessageV4 {
   role: RoleV4
   content: string
@@ -73,6 +140,7 @@ export interface OpenAIModelV4 {
   maxLength: number
   tokenLimit: number
 }
+
 export interface FolderInterfaceV4 {
   id: string
   name: string
