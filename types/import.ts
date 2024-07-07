@@ -1,5 +1,3 @@
-import {MessagePart} from "@/types/chat"
-
 /**
  * Do not change this file format, unless there is an upgrade path defined from earlier formats.
  */
@@ -102,7 +100,7 @@ export type MessagePartV1 = MessagePartTextV1 | MessagePartImageV1
 
 export interface UserMessageV1 {
   role: "user"
-  content: string | MessagePart[]
+  content: string | MessagePartV1[]
   name?: string
 }
 

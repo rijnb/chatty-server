@@ -135,8 +135,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const addImageToPrompt = (file: File) => {
-    const thumbnails = document.getElementById("thumbnails")
-    if (!thumbnails) {
+    const images = document.getElementById("images")
+    if (!images) {
       console.error("HTML element not found: thumbnails")
       return
     }
@@ -149,8 +149,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     // Create an image element.
     const img = document.createElement("img")
     img.src = URL.createObjectURL(file)
-    img.width = 80
-    img.height = 80
 
     // Create a delete button with an icon.
     const deleteButton = document.createElement("button")
@@ -167,12 +165,12 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     container.appendChild(deleteButton)
 
     // Append the container to the thumbnail element.
-    thumbnails.appendChild(container)
+    images.appendChild(container)
 
     // Delete functionality.
     deleteButton.onclick = () => {
-      if (thumbnails && container) {
-        thumbnails.removeChild(container)
+      if (images && container) {
+        images.removeChild(container)
       }
     }
   }
@@ -201,15 +199,27 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handleSendMessage = () => {
-    if (messageIsStreaming || !content || !encoder || !selectedConversation || !models) {
+    const imagesElement = document.getElementById("images")
+    const images = imagesElement ? imagesElement.getElementsByTagName("img") : undefined
+    if (
+      messageIsStreaming ||
+      (!content && (!images || images.length === 0)) ||
+      !encoder ||
+      !selectedConversation ||
+      !models
+    ) {
       return
     }
-    const messageContent: MessagePart[] = [{type: "text", text: content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n")}]
+    const messageContent: MessagePart[] = [
+      {
+        type: "text",
+        text: content ? content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
+      }
+    ]
     if (modelId === "gpt-4o") {
-      const thumbnails = document.getElementById("thumbnails")
-      if (thumbnails && thumbnails.getElementsByTagName("img").length > 0) {
-        for (let i = 0; i < thumbnails.getElementsByTagName("img").length; i++) {
-          const img = thumbnails.getElementsByTagName("img")[i]
+      if (images && images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          const img = images[i]
           if (img) {
             const canvas = document.createElement("canvas")
             canvas.width = img.width
@@ -224,9 +234,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         }
       }
     }
-    const thumbnails = document.getElementById("thumbnails")
-    if (thumbnails) {
-      thumbnails.innerHTML = ""
+    if (imagesElement) {
+      imagesElement.innerHTML = ""
     }
     const message: Message = {role: "user", content: messageContent}
     onSend(message, plugin)
@@ -369,6 +378,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
       style={{width: "calc(100% - 10px)"}}
       onDrop={handleDrop}
     >
+      <div className="flex items-center justify-center" id="images"></div>
       <div className="stretch bottom-0 mx-auto mt-[52px] flex max-w-3xl flex-row gap-3 last:mb-6">
         {messageIsStreaming && (
           <button
@@ -448,7 +458,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
           />
-          <div className="flex items-center justify-center" id="thumbnails"></div>
           <button
             data-testid="chat-send"
             aria-label="Send message"

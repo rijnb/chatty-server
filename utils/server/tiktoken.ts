@@ -88,6 +88,8 @@ export class TiktokenEncoder {
     // !!TODO: Check properly for model capabilities on imaging:
     if (!modelId.includes("gpt-4o")) {
       messagesToSend = messagesToSend.map((message) => {
+
+        // Modify the message to only include text.
         if (message.role === "user" && typeof message.content !== "string") {
           const texts = message.content
             .map((item) => {

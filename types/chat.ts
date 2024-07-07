@@ -10,13 +10,13 @@ export interface MessagePartText {
 }
 
 export interface ImageUrl {
-  url: string
-  detail?: "auto" | "low" | "high"
+  url: string // Name of property dictated by OpenAI API.
+  detail?: "auto" | "low" | "high" // Values of property dictated by OpenAI API.
 }
 
 export interface MessagePartImage {
-  type: "image_url"
-  image_url: ImageUrl
+  type: "image_url" // Value of property dictated by OpenAI API.
+  image_url: ImageUrl // Name of property dictated by OpenAI API.
 }
 
 export type MessagePart = MessagePartText | MessagePartImage
