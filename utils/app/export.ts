@@ -1,5 +1,5 @@
 import {FolderType} from "@/types/folder"
-import {ConversationV5, ConversationV6, FileFormatV5, FolderInterfaceV4, PromptV5} from "@/types/import"
+import {ConversationV5, ConversationV6, FileFormatV5, FileFormatV6, FolderInterfaceV4, PromptV5} from '@/types/import'
 import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
@@ -22,8 +22,8 @@ export const exportData = (prefix: string, type: FolderType) => {
   /**
    * Create body of file.
    */
-  const data: FileFormatV5 = {
-    version: 5,
+  const data: FileFormatV6 = {
+    version: 6,
     history: type === "chat" ? conversationsToExport : [],
     prompts:
       type == "prompt"
@@ -37,7 +37,7 @@ export const exportData = (prefix: string, type: FolderType) => {
           })
         : [],
     folders: foldersToExport
-  } as FileFormatV5
+  } as FileFormatV6
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json"

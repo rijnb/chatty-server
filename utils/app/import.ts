@@ -1,16 +1,16 @@
-import {Conversation} from "@/types/chat"
-import {FolderInterface} from "@/types/folder"
-import {ConversationV4, FileFormatV4, FileFormatV5, FileFormatV6, PromptV4, SupportedFileFormats} from "@/types/import"
-import {Prompt} from "@/types/prompt"
+import {Conversation} from '@/types/chat'
+import {FolderInterface} from '@/types/folder'
+import {ConversationV4, FileFormatV4, FileFormatV5, FileFormatV6, PromptV4, SupportedFileFormats} from '@/types/import'
+import {Prompt} from '@/types/prompt'
 import {
   getConversationsHistory,
   removeSelectedConversation,
   saveConversationsHistory,
   saveSelectedConversation
-} from "@/utils/app/conversations"
-import {getFolders, saveFolders} from "@/utils/app/folders"
-import {trimForPrivacy} from "@/utils/app/privacy"
-import {getPrompts, savePrompts} from "@/utils/app/prompts"
+} from '@/utils/app/conversations'
+import {getFolders, saveFolders} from '@/utils/app/folders'
+import {trimForPrivacy} from '@/utils/app/privacy'
+import {getPrompts, savePrompts} from '@/utils/app/prompts'
 
 type Data = {
   history: Conversation[]
@@ -61,7 +61,9 @@ const readFileFormatV4 = (data: FileFormatV4): Data => {
 }
 
 export const readData = (data: SupportedFileFormats): Data => {
-  if (isFileFormatV5(data)) {
+  if (isFileFormatV6(data)) {
+    return readFileFormatV6(data)
+  } else if (isFileFormatV5(data)) {
     return readFileFormatV5(data)
   } else if (isFileFormatV4(data)) {
     return readFileFormatV4(data)
@@ -76,8 +78,8 @@ export const isValidJsonData = (jsonData: any): string[] => {
   const errors: string[] = []
 
   // Top-level.
-  if (!jsonData || typeof jsonData !== "object") {
-    errors.push("Incorrect top-level structure, expected top-level {object}")
+  if (!jsonData || typeof jsonData !== 'object') {
+    errors.push('Incorrect top-level structure, expected top-level {object}')
   }
   const {version, history, folders, prompts} = jsonData
 
@@ -85,7 +87,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (
     version === null ||
     version === undefined ||
-    typeof version !== "number" ||
+    typeof version !== 'number' ||
     ![4, 5].includes(version) ||
     (history && !Array.isArray(history)) ||
     (prompts && !Array.isArray(prompts)) ||
@@ -101,27 +103,27 @@ export const isValidJsonData = (jsonData: any): string[] => {
     for (const historyItem of history) {
       if (
         !historyItem.id ||
-        typeof historyItem.id !== "string" ||
-        (historyItem.name && typeof historyItem.name !== "string") ||
+        typeof historyItem.id !== 'string' ||
+        (historyItem.name && typeof historyItem.name !== 'string') ||
         (historyItem.messages && !Array.isArray(historyItem.messages)) ||
-        (version === 4 && historyItem.model && typeof historyItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version === 5 && historyItem.modelId && typeof historyItem.modelId !== "string") || // V5 format has model as a string.
-        (historyItem.prompt && typeof historyItem.prompt !== "string") ||
-        (historyItem.temperature && typeof historyItem.temperature !== "number") ||
-        (historyItem.folderId && typeof historyItem.folderId !== "string") ||
-        typeof historyItem.time !== "number"
+        (version === 4 && historyItem.model && typeof historyItem.model !== 'object') || // V4 format has model as an object, not a string.
+        (version === 5 && historyItem.modelId && typeof historyItem.modelId !== 'string') || // V5 format has model as a string.
+        (historyItem.prompt && typeof historyItem.prompt !== 'string') ||
+        (historyItem.temperature && typeof historyItem.temperature !== 'number') ||
+        (historyItem.folderId && typeof historyItem.folderId !== 'string') ||
+        typeof historyItem.time !== 'number'
       ) {
         errors.push(
           `Invalid history, expected {id, name, messages[], ${
-            version === 4 ? "model" : "modelId"
+            version === 4 ? 'model' : 'modelId'
           }, prompt, temperature, folderId, time}\nGot: ${JSON.stringify(historyItem)}`
         )
       }
       for (const message of historyItem.messages) {
         if (
-          (message.role && typeof message.role !== "string") ||
-          !["user", "assistant"].includes(message.role) ||
-          (message.content && typeof message.content !== "string")
+          (message.role && typeof message.role !== 'string') ||
+          !['user', 'assistant'].includes(message.role) ||
+          (message.content && typeof message.content !== 'string')
         ) {
           errors.push(`Invalid message in history; expected {role, content}\nGot: ${JSON.stringify(message)}`)
         }
@@ -134,18 +136,18 @@ export const isValidJsonData = (jsonData: any): string[] => {
     for (const promptItem of prompts) {
       if (
         !promptItem.id ||
-        typeof promptItem.id !== "string" ||
-        (promptItem.name && typeof promptItem.name !== "string") ||
-        (promptItem.description && typeof promptItem.description !== "string") ||
-        (promptItem.content && typeof promptItem.content !== "string") ||
-        (version === 4 && promptItem.model && typeof promptItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version === 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5 format has model as a string.
-        (promptItem.folderId && typeof promptItem.folderId !== "string") ||
-        (promptItem.factory && typeof promptItem.factory !== "boolean")
+        typeof promptItem.id !== 'string' ||
+        (promptItem.name && typeof promptItem.name !== 'string') ||
+        (promptItem.description && typeof promptItem.description !== 'string') ||
+        (promptItem.content && typeof promptItem.content !== 'string') ||
+        (version === 4 && promptItem.model && typeof promptItem.model !== 'object') || // V4 format has model as an object, not a string.
+        (version === 5 && promptItem.modelId && typeof promptItem.modelId !== 'string') || // V5 format has model as a string.
+        (promptItem.folderId && typeof promptItem.folderId !== 'string') ||
+        (promptItem.factory && typeof promptItem.factory !== 'boolean')
       ) {
         errors.push(
           `Invalid prompt; expected {id, name, description, content, ${
-            version === 4 ? "model" : "modelId"
+            version === 4 ? 'model' : 'modelId'
           }, folderId, factory}\nGot: ${JSON.stringify(promptItem)}`
         )
       }
@@ -156,12 +158,12 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (folders) {
     for (const folderItem of folders) {
       if (
-        (folderItem.id && typeof folderItem.id !== "string") ||
+        (folderItem.id && typeof folderItem.id !== 'string') ||
         !folderItem.name ||
-        typeof folderItem.name !== "string" ||
+        typeof folderItem.name !== 'string' ||
         !folderItem.type ||
-        typeof folderItem.type !== "string" ||
-        (folderItem.factory && typeof folderItem.factory !== "boolean")
+        typeof folderItem.type !== 'string' ||
+        (folderItem.factory && typeof folderItem.factory !== 'boolean')
       ) {
         errors.push(`Invalid folder; expected {id, name, type, factory}\nGot: ${JSON.stringify(folderItem)}`)
       }
@@ -185,9 +187,9 @@ export const importData = (data: SupportedFileFormats, readFactoryData: boolean 
   //                              only non-factory folders that have a non-factory folder id
   const newFactoryFolders = readFactoryData
     ? readFolders.map((folder) => {
-        folder.factory = true
-        return folder
-      })
+      folder.factory = true
+      return folder
+    })
     : []
   const newFactoryFolderIds = newFactoryFolders.map((folder) => folder.id)
   const existingUserFolders = getFolders().filter((folder) => !folder.factory)
@@ -213,9 +215,9 @@ export const importData = (data: SupportedFileFormats, readFactoryData: boolean 
   //                              only non-factory prompts that have a non-factory prompts id
   const newFactoryPrompts = readFactoryData
     ? readPrompts.map((prompt) => {
-        prompt.factory = true
-        return prompt
-      })
+      prompt.factory = true
+      return prompt
+    })
     : []
   const newFactoryPromptIds = newFactoryPrompts.map((prompt) => prompt.id)
   const existingUserPrompts = getPrompts().filter((prompt) => !prompt.factory)
