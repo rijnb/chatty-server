@@ -9,7 +9,14 @@ const useSaveMarkdown = (conversation: Conversation) => {
 
     let markdownContent = `# ${conversation.name}\n\n(${new Date(conversation.time).toLocaleString()})\n\n`
     for (const message of conversation.messages) {
-      markdownContent += `## ${message.role.charAt(0).toUpperCase() + message.role.slice(1)}\n\n${message.content}\n\n`
+      markdownContent += `## ${message.role.charAt(0).toUpperCase() + message.role.slice(1)}
+
+${
+  typeof message.content === "string"
+    ? message.content
+    : message.content?.map((item) => (item.type === "text" ? item.text : "(Skipped image)")).join("\n")
+}
+`
     }
 
     const url = URL.createObjectURL(new Blob([markdownContent]))

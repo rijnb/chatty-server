@@ -74,7 +74,7 @@ export interface Conversation {
 
 export const getMessageString = (message: Message): string => {
   if (typeof message.content === "string") {
-    return String(message.content)
+    return message.content
   }
   const messageItems = message.content as MessagePart[]
   return messageItems
@@ -82,10 +82,10 @@ export const getMessageString = (message: Message): string => {
       if (item.type === "text") {
         return item.text
       } else if (item.type === "image_url") {
-        return item.image_url
+        return item.image_url.url
       }
     })
-    .join("")
+    .join()
 }
 
 export const getMessageStringForDisplay = (message: Message): string => {
@@ -94,24 +94,22 @@ export const getMessageStringForDisplay = (message: Message): string => {
   }
   const messageItems = message.content as MessagePart[]
   return messageItems
+    .filter((item) => item.type === "text")
     .map((item) => {
-      if (item.type === "text") {
-        return item.text
-      }
-      return ""
+      return (item as MessagePartText).text
     })
-    .join("")
+    .join()
 }
 
 export const getMessageImageContent = (message: Message): string[] => {
   const images: string[] = []
   if (typeof message.content !== "string") {
     const messageItems = message.content as MessagePart[]
-    messageItems.forEach((item) => {
-      if (item.type === "image_url") {
-        images.push(item.image_url.url)
-      }
-    })
+    messageItems
+      .filter((item) => item.type === "image_url")
+      .forEach((item) => {
+        images.push((item as MessagePartImage).image_url.url)
+      })
   }
   return images
 }

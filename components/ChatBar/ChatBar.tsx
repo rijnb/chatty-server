@@ -9,7 +9,7 @@ import ChatFolderList from "./components/ChatFolderList"
 import ConversationList from "./components/ConversationList"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
 import HomeContext from "@/pages/api/home/home.context"
-import {Conversation} from "@/types/chat"
+import {Conversation, MessagePartText} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
 import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
 import {PluginID, PluginKey} from "@/types/plugin"
@@ -167,7 +167,22 @@ export const ChatBar = () => {
           const searchable =
             conversation.name.toLocaleLowerCase() +
             " " +
-            conversation.messages.map((message) => message.content).join(" ")
+            conversation.messages
+              .map((message) => {
+                if (message.content) {
+                  if (typeof message.content === "string") {
+                    return message.content
+                  } else {
+                    return message.content
+                      ?.filter((item) => item.type === "text")
+                      .map((item) => (item as MessagePartText).text)
+                      .join(" ")
+                  }
+                } else {
+                  return ""
+                }
+              })
+              .join(" ")
           return searchable.toLowerCase().includes(searchTerm.toLowerCase())
         })
       })

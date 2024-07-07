@@ -13,7 +13,7 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
-import {ChatBody, Conversation, Message, getMessageString} from "@/types/chat"
+import {ChatBody, Conversation, Message, getMessageString, getMessageStringForDisplay} from "@/types/chat"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -216,7 +216,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
             const {content} = message
             const maxTitleLength = 30
-            const name = getMessageString(message)
+            const name = getMessageStringForDisplay(message)
             const customName = name.length > maxTitleLength ? name.substring(0, maxTitleLength) + "..." : name
             updatedConversation = {
               ...updatedConversation,
@@ -257,10 +257,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             } else {
               const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
                 if (index === updatedConversation.messages.length - 1) {
-                  return {
-                    ...message,
-                    content: text
-                  }
+                  return {...message, content: text}
                 }
                 return message
               })

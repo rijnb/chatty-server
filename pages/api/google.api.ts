@@ -3,7 +3,7 @@ import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 import {NextApiRequest, NextApiResponse} from "next"
 
-import {Message, getMessageString} from "@/types/chat"
+import {Message, getMessageString, getMessageStringForDisplay} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
     }
-    const userMessage = getMessageString(messages[messages.length - 1]).trim()
+    const userMessage = getMessageStringForDisplay(messages[messages.length - 1]).trim()
     const query = encodeURIComponent(userMessage)
 
     console.debug(`Google search, query:${trimForPrivacy(userMessage)}`)
