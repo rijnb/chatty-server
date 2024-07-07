@@ -88,7 +88,6 @@ export class TiktokenEncoder {
     // !!TODO: Check properly for model capabilities on imaging:
     if (!modelId.includes("gpt-4o")) {
       messagesToSend = messagesToSend.map((message) => {
-
         // Modify the message to only include text.
         if (message.role === "user" && typeof message.content !== "string") {
           const texts = message.content
@@ -110,15 +109,9 @@ export class TiktokenEncoder {
     const requiredTokens = () => {
       return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + outputTokenLimit
     }
-
-    console.log("requiredTokens", requiredTokens()) // !!TODO
-    console.log("inputTokenLimit", inputTokenLimit) // !!TODO
-    console.log("messagesToSend.length (before delete)", messagesToSend.length) // !!TODO
     while (messagesToSend.length > 1 && requiredTokens() > inputTokenLimit) {
       messagesToSend.splice(1, 1)
     }
-
-    console.log("messagesToSend.length (after delete)", messagesToSend.length) // !!TODO
     return [messagesToSend, requiredTokens()]
   }
 }

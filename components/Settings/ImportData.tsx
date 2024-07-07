@@ -64,13 +64,10 @@ export const ImportData = ({id, text, onImport}: Props) => {
       />
       {errors.length > 0 && (
         <div className="error-messages">
-          {errors.map((error, index) => (
-            <p key={index} className="error-message">
-              {error}
-            </p>
-          ))}
+          <p className="error-message">Warning: {errors.length} errors found</p>
         </div>
       )}
+      {errors.map((error) => console.warn(`Error: ${error}`))}
     </>
   )
 }

@@ -1,7 +1,7 @@
 /**
  * Do not change this file format, unless there is an upgrade path defined from earlier formats.
  */
-export type SupportedFileFormats = FileFormatV5 | FileFormatV4
+export type SupportedFileFormats = FileFormatV6 | FileFormatV5 | FileFormatV4
 
 export interface FileFormatV6 {
   version: 6
