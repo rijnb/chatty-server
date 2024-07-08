@@ -1,6 +1,6 @@
 ----
 
-## Major Chatty update! 
+## Chatty is updated! 
 
 We've added support for image recognition! You can now add one or more images to your
 chat by clicking on the camera symbol in the input box. This is supported for `gpt-4o`
