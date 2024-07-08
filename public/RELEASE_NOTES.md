@@ -134,8 +134,8 @@ content:
 
 . . .
 
-Your queries are not shared outside Your Company and the conversations and prompts 
-are stored in your local browser only. You can start chatting in the box below. 
+Your queries are not shared outside Your Company and the conversations and prompts
+are stored in your local browser only. You can start chatting in the box below.
 Click on `(?)` in the top menu for instructions and release notes.
 
 . . .
@@ -158,24 +158,26 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
-### 2024-06-28
+### 2024-07-06
 
 #### Features
 
-- Improved system prompts for shorted code replies.
-- Added factory prompts for code conversions.
+- Added image recognition support. You can now drop images into your
+  conversation, or select them from disk with image icon in the prompt bar (note that only
+  the text entry box accepts the images).
 
 ### 2024-06-14
 
 #### Bug fixes
 
-- Changed the way how input and output token limits are handled. They used to be the same number but can now differ.
+- Changed the way how input and output token limits are handled. They used to be the same number
+  but can now differ.
 
 ### 2024-06-07
 
 #### Features
 
-- Added GPT-4o as an option (no visuals yet).
+Ad- ded GPT-4o as an option (no visuals yet).
 
 ### 2024-05-06
 
@@ -188,7 +190,7 @@ _Rijn Buve & Oleksii Kulyk_
 #### Bug fixes
 
 - Replaced the temporary fix with a slightly more sophisticated one. Now, only non-ASCII characters
- are replaced withing math-string `$...$`, to avoid not being able to render other alphabets for
+  are replaced withing math-string `$...$`, to avoid not being able to render other alphabets for
   regular text.
 
 ### 2024-04-04
@@ -238,15 +240,15 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Fixed model names and max token counts.
 - Earlier additions:
-    - Added support for WebVTT files, so you can summarize the transcripts of Teams sessions.
-      we've also implemented a standard prompt for this (in folder Productivity). Just drop the
-      downloaded transcript file into the prompt dialog.
-      -Added support for locally deployed factory prompts, if you want you deployment to have
-      prompts specific to your (e.g. company) deployment, next to the standard ones.
-      -Added support for LaTeX rendering of formulas.
-      -Added ability to modify the system prompt (stored in model selection per conversation).
-      The system prompt precedes all items in a conversation and allows you to change the
-      behavior of the model during a conversation.
+  - Added support for WebVTT files, so you can summarize the transcripts of Teams sessions.
+    we've also implemented a standard prompt for this (in folder Productivity). Just drop the
+    downloaded transcript file into the prompt dialog.
+    -Added support for locally deployed factory prompts, if you want you deployment to have
+    prompts specific to your (e.g. company) deployment, next to the standard ones.
+    -Added support for LaTeX rendering of formulas.
+    -Added ability to modify the system prompt (stored in model selection per conversation).
+    The system prompt precedes all items in a conversation and allows you to change the
+    behavior of the model during a conversation.
 
 ### 2023-11-23
 
@@ -270,7 +272,8 @@ _Rijn Buve & Oleksii Kulyk_
 ### 2023-10-31
 
 #### Features
-- 
+
+-
 
 - Updated dependencies to latest.
 - Changed default path to `/chatty`.

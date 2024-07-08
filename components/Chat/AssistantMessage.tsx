@@ -1,8 +1,26 @@
+/*
+ * Copyright (C) 2024, Rijn Buve.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ * of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import {IconCheck, IconCopy, IconTrash} from "@tabler/icons-react"
 import React, {useState} from "react"
 
 import MessageMarkdown from "@/components/Chat/MessageMarkdown"
-import {Message} from "@/types/chat"
+import {Message, getMessageAsString} from "@/types/chat"
 
 interface Props {
   message: Message
@@ -11,14 +29,15 @@ interface Props {
 }
 
 export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) => {
-  const [messagedCopied, setMessageCopied] = useState(false)
+  const [messageCopied, setMessageCopied] = useState(false)
 
   const handleCopyOnClick = () => {
     if (!navigator.clipboard) {
       return
     }
 
-    navigator.clipboard.writeText(message.content).then(() => {
+    // !! TODO: Check if this is OK
+    navigator.clipboard.writeText(getMessageAsString(message)).then(() => {
       setMessageCopied(true)
       setTimeout(() => {
         setMessageCopied(false)
@@ -30,7 +49,7 @@ export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) 
     <div className="flex flex-row">
       <MessageMarkdown message={message} isComplete={isComplete} />
       <div className="mx-0 flex flex-row items-start justify-start gap-1">
-        {messagedCopied ? (
+        {messageCopied ? (
           <IconCheck size={20} className="text-green-500 dark:text-green-400" />
         ) : (
           <button

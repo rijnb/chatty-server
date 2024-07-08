@@ -1,6 +1,24 @@
+/*
+ * Copyright (C) 2024, Rijn Buve.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ * of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
 
-import {Message} from "@/types/chat"
+import {Message, createMessage, getMessageAsString} from "@/types/chat"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 
 export class TiktokenEncoder {
@@ -34,7 +52,8 @@ export class TiktokenEncoder {
 
     return messages
       .map(({role, content}) => {
-        return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(content).length
+        const text = getMessageAsString(createMessage(role, content))
+        return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(text).length
       })
       .reduce((acc, cur) => acc + cur, fixedTokensPerReply)
   }
@@ -82,19 +101,35 @@ export class TiktokenEncoder {
     modelId: string
   ): [Message[], number] {
     const systemPrompt: Message = {role: "assistant", content: prompt}
-    const messagesToSend: Message[] = messages.slice()
+    let messagesToSend: Message[] = messages.slice()
+
+    // !!TODO [tech-debt]: Check properly for model capabilities on imaging:
+    if (!modelId.includes("gpt-4o")) {
+      messagesToSend = messagesToSend.map((message) => {
+        // Modify the message to only include text.
+        if (message.role === "user" && typeof message.content !== "string") {
+          const texts = message.content
+            .map((item) => {
+              if (item.type === "text") {
+                return item.text
+              }
+              return "(Skipped image)"
+            })
+            .join("\n")
+
+          return {role: message.role, content: texts}
+        } else {
+          return message
+        }
+      })
+    }
+
     const requiredTokens = () => {
       return this.numberOfTokensInConversation([systemPrompt, ...messagesToSend], modelId) + outputTokenLimit
     }
-
-    console.log("requiredTokens", requiredTokens()) // !!TODO
-    console.log("inputTokenLimit", inputTokenLimit) // !!TODO
-    console.log("messagesToSend.length (before delete)", messagesToSend.length) // !!TODO
     while (messagesToSend.length > 1 && requiredTokens() > inputTokenLimit) {
       messagesToSend.splice(1, 1)
     }
-
-    console.log("messagesToSend.length (after delete)", messagesToSend.length) // !!TODO
     return [messagesToSend, requiredTokens()]
   }
 }

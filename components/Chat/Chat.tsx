@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2024, Rijn Buve.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ * of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {useTranslation} from "next-i18next"
 import React, {MutableRefObject, memo, useCallback, useEffect, useRef, useState} from "react"
@@ -13,7 +31,7 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
-import {ChatBody, Conversation, Message} from "@/types/chat"
+import {ChatBody, Conversation, Message, getMessageAsStringOnlyText} from "@/types/chat"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -212,9 +230,9 @@ const Chat = memo(({stopConversationRef}: Props) => {
         if (!plugin) {
           // Update name of conversation when first message is received and the name is still the default value.
           if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
-            const {content} = message
             const maxTitleLength = 30
-            const customName = content.length > maxTitleLength ? content.substring(0, maxTitleLength) + "..." : content
+            const name = getMessageAsStringOnlyText(message)
+            const customName = name.length > maxTitleLength ? name.substring(0, maxTitleLength) + "..." : name
             updatedConversation = {
               ...updatedConversation,
               name: customName,
@@ -254,10 +272,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
             } else {
               const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
                 if (index === updatedConversation.messages.length - 1) {
-                  return {
-                    ...message,
-                    content: text
-                  }
+                  return {...message, content: text}
                 }
                 return message
               })
@@ -322,7 +337,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
-          const show = message || statusText || (content ? content : "Try again later.")
+          const show = message || statusText || content || "Try again later."
           if (statusText && statusText !== "") {
             toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
           }
@@ -403,9 +418,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
                 // Select the last message if there is one.
                 let newCurrentMessage = currentMessage
                 if (!newCurrentMessage && selectedConversation?.messages.length) {
-                  newCurrentMessage = selectedConversation?.messages.reduce((lastUserMessage, message) => {
-                    return message.role === "user" ? message : lastUserMessage
-                  })
+                  newCurrentMessage =
+                    selectedConversation?.messages.length > 0
+                      ? selectedConversation.messages.reduce((lastUserMessage, message) => {
+                          return message.role === "user" ? message : lastUserMessage
+                        })
+                      : undefined
                   homeDispatch({field: "currentMessage", value: newCurrentMessage})
                 }
 

@@ -1,6 +1,24 @@
+/*
+ * Copyright (C) 2024, Rijn Buve.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ * of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import {Conversation} from "@/types/chat"
 import {FolderInterface} from "@/types/folder"
-import {ConversationV4, FileFormatV4, FileFormatV5, PromptV4, SupportedFileFormats} from "@/types/import"
+import {ConversationV4, FileFormatV4, FileFormatV5, FileFormatV6, PromptV4, SupportedFileFormats} from "@/types/import"
 import {Prompt} from "@/types/prompt"
 import {
   getConversationsHistory,
@@ -16,6 +34,18 @@ type Data = {
   history: Conversation[]
   prompts: Prompt[]
   folders: FolderInterface[]
+}
+
+export function isFileFormatV6(obj: any): obj is FileFormatV6 {
+  return obj.version === 6
+}
+
+const readFileFormatV6 = (data: FileFormatV6): Data => {
+  return {
+    history: data.history as Conversation[],
+    prompts: data.prompts as Prompt[],
+    folders: data.folders as FolderInterface[]
+  }
 }
 
 export function isFileFormatV5(obj: any): obj is FileFormatV5 {
@@ -49,7 +79,9 @@ const readFileFormatV4 = (data: FileFormatV4): Data => {
 }
 
 export const readData = (data: SupportedFileFormats): Data => {
-  if (isFileFormatV5(data)) {
+  if (isFileFormatV6(data)) {
+    return readFileFormatV6(data)
+  } else if (isFileFormatV5(data)) {
     return readFileFormatV5(data)
   } else if (isFileFormatV4(data)) {
     return readFileFormatV4(data)
@@ -74,7 +106,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
     version === null ||
     version === undefined ||
     typeof version !== "number" ||
-    ![4, 5].includes(version) ||
+    ![4, 5, 6].includes(version) ||
     (history && !Array.isArray(history)) ||
     (prompts && !Array.isArray(prompts)) ||
     (folders && !Array.isArray(folders))
@@ -93,7 +125,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
         (historyItem.name && typeof historyItem.name !== "string") ||
         (historyItem.messages && !Array.isArray(historyItem.messages)) ||
         (version === 4 && historyItem.model && typeof historyItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version === 5 && historyItem.modelId && typeof historyItem.modelId !== "string") || // V5 format has model as a string.
+        (version >= 5 && historyItem.modelId && typeof historyItem.modelId !== "string") || // V5+ format has model as a string.
         (historyItem.prompt && typeof historyItem.prompt !== "string") ||
         (historyItem.temperature && typeof historyItem.temperature !== "number") ||
         (historyItem.folderId && typeof historyItem.folderId !== "string") ||
@@ -109,7 +141,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
         if (
           (message.role && typeof message.role !== "string") ||
           !["user", "assistant"].includes(message.role) ||
-          (message.content && typeof message.content !== "string")
+          (message.content && !(typeof message.content === "string" || typeof message.content === "object"))
         ) {
           errors.push(`Invalid message in history; expected {role, content}\nGot: ${JSON.stringify(message)}`)
         }
@@ -127,7 +159,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
         (promptItem.description && typeof promptItem.description !== "string") ||
         (promptItem.content && typeof promptItem.content !== "string") ||
         (version === 4 && promptItem.model && typeof promptItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version === 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5 format has model as a string.
+        (version >= 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5+ format has model as a string.
         (promptItem.folderId && typeof promptItem.folderId !== "string") ||
         (promptItem.factory && typeof promptItem.factory !== "boolean")
       ) {
