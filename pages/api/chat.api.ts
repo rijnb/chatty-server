@@ -1,7 +1,7 @@
 import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
-import {ChatBody, Message, getMessageString} from "@/types/chat"
-import {OpenAIModels, maxInputTokensForModel} from "@/types/openai"
+import {ChatBody, Message, getMessageAsString} from "@/types/chat"
+import {maxInputTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {
@@ -14,10 +14,6 @@ import {
 } from "@/utils/server/openAiClient"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"
 
-export const config = {
-  runtime: "edge"
-}
-
 function errorResponse(body: any, status: number) {
   return new Response(JSON.stringify(body), {
     status,
@@ -25,6 +21,10 @@ function errorResponse(body: any, status: number) {
       "Content-Type": "application/json"
     }
   })
+}
+
+export const config = {
+  runtime: "edge"
 }
 
 const encoder = TiktokenEncoder.wrap(cl100k_base)
@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Log prompt statistics (not just debugging, also for checking use of service).
     const allMessages: Message[] = [{role: "system", content: promptToSend}, ...(messagesToSend ?? [])]
     const message = allMessages[allMessages.length - 1]
-    const messageString = getMessageString(message)
+    const messageString = getMessageAsString(message)
     console.info(`sendRequest: {\
         message:'${trimForPrivacy(messageString)}', \
         totalNumberOfTokens:${encoder.numberOfTokensInConversation(allMessages, modelId)}, \

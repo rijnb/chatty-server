@@ -1,5 +1,3 @@
-import * as Process from "process"
-
 import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"

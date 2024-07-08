@@ -43,12 +43,6 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
     setIsMenuOpen(false)
   })
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Escape") {
-      setIsMenuOpen(false)
-    }
-  }
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
@@ -74,6 +68,12 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
     onUpdateConversation(conversation)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      setIsMenuOpen(false)
+    }
+  }
+
   return (
     <div
       ref={ref}
@@ -91,7 +91,6 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             id="model"
             disabled={!allowModelSelection}
             className="disabled:pointer-events-none disabled:text-gray-300"
-            placeholder={t("Select a model")}
             value={modelId}
             onChange={handleModelChange}
           >

@@ -1,8 +1,8 @@
-interface languageMap {
+interface LanguageMap {
   [key: string]: string
 }
 
-export const programmingLanguages: languageMap = {
+export const programmingLanguages: LanguageMap = {
   abap: ".abap",
   abnf: ".abnf",
   actionscript: ".actionscript",

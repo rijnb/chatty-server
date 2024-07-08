@@ -10,7 +10,6 @@ import HomeContext from "./home.context"
 import {HomeInitialState, initialState} from "./home.state"
 import Chat from "@/components/Chat/Chat"
 import {ChatBar} from "@/components/ChatBar/ChatBar"
-import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import PromptBar from "@/components/PromptBar"
 import {useUnlock} from "@/components/UnlockCode"
 import {useCreateReducer} from "@/hooks/useCreateReducer"
@@ -32,7 +31,6 @@ import {
   createNewConversation,
   getConversationsHistory,
   getSelectedConversation,
-  removeSelectedConversation,
   saveConversationsHistory,
   saveSelectedConversation,
   updateConversationHistory
@@ -291,7 +289,7 @@ const Home = ({
         console.debug(`useEffect: no selected conversation`)
       }
     }
-  }, [models, defaultModelId, homeDispatch])
+  }, [allowModelSelection, models, defaultModelId, homeDispatch])
 
   // Server side props changed.
   useEffect(() => {

@@ -1,4 +1,3 @@
-import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {render, screen} from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import fetchMock from "jest-fetch-mock"

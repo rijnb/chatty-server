@@ -113,58 +113,56 @@ export const PromptInputVars = ({prompt, promptVariables, onSubmit, onCancel}: P
   }, [])
 
   return (
-    <>
-      <Dialog onSubmit={handleSubmit} onClose={onCancel}>
-        <FormHeader>{prompt.name}</FormHeader>
-        <FormText className="mt-2">{prompt.description}</FormText>
+    <Dialog onSubmit={handleSubmit} onClose={onCancel}>
+      <FormHeader>{prompt.name}</FormHeader>
+      <FormText className="mt-2">{prompt.description}</FormText>
 
-        {updatedPromptVariables.map((variable, index) => (
-          <div key={index}>
-            {
-              // If this is the last variable, and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
-              index === updatedPromptVariables.length - 1 && variable.key.endsWith(PROMPT_KEYWORD_DROP) ? (
-                <>
-                  <label
-                    htmlFor="file-input"
-                    className="mt-2 flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border border-neutral-500 text-neutral-900 hover:bg-gray-300 dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100 dark:hover:bg-gray-700"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => handleDropFiles(index, e)}
-                  >
-                    Drop files here (or click to select)
-                    {numberOfSelectedFiles > 0 ? `: uploaded ${numberOfSelectedFiles} files` : ""}
-                  </label>
-                  <input
-                    type="file"
-                    id="file-input"
-                    className="hidden"
-                    multiple
-                    onChange={(e) => handleSelectFiles(index, e)}
-                  />
-                </>
-              ) : (
-                <>
-                  <FormLabel htmlFor={`input-${index}`} className="mt-2">
-                    {stripPromptKeywords(variable.key)}:
-                  </FormLabel>
-                  <TextArea
-                    id={`input-${index}`}
-                    ref={index === 0 ? nameInputRef : undefined}
-                    placeholder={`${variable.key}...`}
-                    value={variable.value}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    rows={5}
-                  />
-                </>
-              )
-            }
-          </div>
-        ))}
+      {updatedPromptVariables.map((variable, index) => (
+        <div key={index}>
+          {
+            // If this is the last variable, and it ends with PROMPT_KEYWORD_DROP, then it is a file drop zone.
+            index === updatedPromptVariables.length - 1 && variable.key.endsWith(PROMPT_KEYWORD_DROP) ? (
+              <>
+                <label
+                  htmlFor="file-input"
+                  className="mt-2 flex h-32 w-full cursor-pointer items-center justify-center rounded-lg border border-neutral-500 text-neutral-900 hover:bg-gray-300 dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100 dark:hover:bg-gray-700"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDropFiles(index, e)}
+                >
+                  Drop files here (or click to select)
+                  {numberOfSelectedFiles > 0 ? `: uploaded ${numberOfSelectedFiles} files` : ""}
+                </label>
+                <input
+                  type="file"
+                  id="file-input"
+                  className="hidden"
+                  multiple
+                  onChange={(e) => handleSelectFiles(index, e)}
+                />
+              </>
+            ) : (
+              <>
+                <FormLabel htmlFor={`input-${index}`} className="mt-2">
+                  {stripPromptKeywords(variable.key)}:
+                </FormLabel>
+                <TextArea
+                  id={`input-${index}`}
+                  ref={index === 0 ? nameInputRef : undefined}
+                  placeholder={`${variable.key}...`}
+                  value={variable.value}
+                  onChange={(e) => handleChange(index, e.target.value)}
+                  rows={5}
+                />
+              </>
+            )
+          }
+        </div>
+      ))}
 
-        <Button className="mt-2" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </Dialog>
-    </>
+      <Button className="mt-2" onClick={handleSubmit}>
+        Submit
+      </Button>
+    </Dialog>
   )
 }
 

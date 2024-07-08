@@ -13,7 +13,7 @@ import {useUnlock, useUnlockCodeInterceptor} from "@/components/UnlockCode"
 import {useFetch} from "@/hooks/useFetch"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import useApiService from "@/services/useApiService"
-import {ChatBody, Conversation, Message, getMessageString, getMessageStringForDisplay} from "@/types/chat"
+import {ChatBody, Conversation, Message, getMessageAsStringOnlyText} from "@/types/chat"
 import {Plugin} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE} from "@/utils/app/const"
 import {saveConversationsHistory, saveSelectedConversation} from "@/utils/app/conversations"
@@ -54,8 +54,6 @@ const Chat = memo(({stopConversationRef}: Props) => {
   })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const handleBrowseFile = useCallback(() => {}, [])
 
   const handleSendMessage = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
@@ -214,9 +212,8 @@ const Chat = memo(({stopConversationRef}: Props) => {
         if (!plugin) {
           // Update name of conversation when first message is received and the name is still the default value.
           if (updatedConversation.messages.length === 1 && updatedConversation.name === t(NEW_CONVERSATION_TITLE)) {
-            const {content} = message
             const maxTitleLength = 30
-            const name = getMessageStringForDisplay(message)
+            const name = getMessageAsStringOnlyText(message)
             const customName = name.length > maxTitleLength ? name.substring(0, maxTitleLength) + "..." : name
             updatedConversation = {
               ...updatedConversation,
@@ -322,7 +319,7 @@ const Chat = memo(({stopConversationRef}: Props) => {
           }
         } else {
           // No clue. Try some properties and hope for the best.
-          const show = message || statusText || (content ? content : "Try again later.")
+          const show = message || statusText || content || "Try again later."
           if (statusText && statusText !== "") {
             toast.error(`The server returned an error...\n\n${show}`, {duration: TOAST_DURATION_MS})
           }
@@ -403,9 +400,12 @@ const Chat = memo(({stopConversationRef}: Props) => {
                 // Select the last message if there is one.
                 let newCurrentMessage = currentMessage
                 if (!newCurrentMessage && selectedConversation?.messages.length) {
-                  newCurrentMessage = selectedConversation?.messages.reduce((lastUserMessage, message) => {
-                    return message.role === "user" ? message : lastUserMessage
-                  })
+                  newCurrentMessage =
+                    selectedConversation?.messages.length > 0
+                      ? selectedConversation.messages.reduce((lastUserMessage, message) => {
+                          return message.role === "user" ? message : lastUserMessage
+                        })
+                      : undefined
                   homeDispatch({field: "currentMessage", value: newCurrentMessage})
                 }
 

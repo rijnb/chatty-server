@@ -39,7 +39,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const [showPromptList, setShowPromptList] = useState(false)
   const [activePromptIndex, setActivePromptIndex] = useState(0)
   const [promptInputValue, setPromptInputValue] = useState("")
-  const [variables, setPromptVariables] = useState<string[]>([])
+  const [promptVariables, setPromptVariables] = useState<string[]>([])
   const [isInputVarsModalVisible, setIsInputVarsModalVisible] = useState(false)
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
   const [showPluginSelect, setShowPluginSelect] = useState(false)
@@ -88,7 +88,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         .split("")
         .map((char) => `${escapeRegExChar(char)}.*?`)
         .join("")
-      if (upperCasePromptNameChars.match(upperCaseInputRegex)) {
+      if (RegExp(upperCaseInputRegex).exec(upperCasePromptNameChars)) {
         acc.push(prompt)
       }
     }
@@ -189,8 +189,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         return
       }
       if (fileInput.files.length > 0) {
-        for (let i = 0; i < fileInput.files.length; i++) {
-          const file = fileInput.files[i]
+        for (const file of fileInput.files) {
           addImageToPrompt(file)
         }
       }
@@ -218,18 +217,15 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     ]
     if (modelId === "gpt-4o") {
       if (images && images.length > 0) {
-        for (let i = 0; i < images.length; i++) {
-          const img = images[i]
-          if (img) {
-            const canvas = document.createElement("canvas")
-            canvas.width = img.width
-            canvas.height = img.height
-            const ctx = canvas.getContext("2d")
-            if (ctx) {
-              ctx.drawImage(img, 0, 0, img.width, img.height)
-              const dataURL = canvas.toDataURL("image/jpeg", 0.8)
-              messageContent.push({type: "image_url", image_url: {url: dataURL}})
-            }
+        for (const img of images) {
+          const canvas = document.createElement("canvas")
+          canvas.width = img.width
+          canvas.height = img.height
+          const ctx = canvas.getContext("2d")
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, img.width, img.height)
+            const dataURL = canvas.toDataURL("image/jpeg", 0.8)
+            messageContent.push({type: "image_url", image_url: {url: dataURL}})
           }
         }
       }
@@ -242,7 +238,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     setContent("")
     setPlugin(null)
 
-    if (window.innerWidth < 640 && textareaRef && textareaRef.current) {
+    if (window.innerWidth < 640 && textareaRef?.current) {
       textareaRef.current.blur()
     }
   }
@@ -299,7 +295,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const handlePromptSubmit = (updatedPromptVariables: string[]) => {
     setIsInputVarsModalVisible(false)
     const newContent = content?.replace(/{{(.*?)}}/g, (match, promptVariable) => {
-      const index = variables.indexOf(promptVariable)
+      const index = promptVariables.indexOf(promptVariable)
       return updatedPromptVariables[index]
     })
     setContent(newContent)
@@ -339,9 +335,9 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-      for (const file of Array.from(e.dataTransfer.files)) {
+      Array.from(e.dataTransfer.files).forEach((file) => {
         addImageToPrompt(file)
-      }
+      })
     }
   }
 
@@ -448,8 +444,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               disabled
                 ? t("Please wait {{waitTime}} seconds", {waitTime: retryAfter})
                 : prompts.length > 0
-                ? t('Type a message or type "/" and some characters to search for a prompt...')
-                : t("Type a message...")
+                  ? t('Type a message or type "/" and some characters to search for a prompt...')
+                  : t("Type a message...")
             }
             value={content}
             rows={1}
@@ -486,7 +482,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           {isInputVarsModalVisible && selectedPrompt && (
             <PromptInputVars
               prompt={selectedPrompt}
-              promptVariables={variables}
+              promptVariables={promptVariables}
               onSubmit={handlePromptSubmit}
               onCancel={handlePromptCancel}
             />

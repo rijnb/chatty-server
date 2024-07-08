@@ -1,4 +1,4 @@
-import React, {Component, ErrorInfo, ReactNode, useContext} from "react"
+import React, {Component, ErrorInfo, ReactNode} from "react"
 
 import {removeConversationsHistory, removeSelectedConversation} from "@/utils/app/conversations"
 

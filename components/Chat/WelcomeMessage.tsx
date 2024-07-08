@@ -1,9 +1,6 @@
 import Image from "next/image"
 import {useRouter} from "next/router"
 import React from "react"
-import rehypeMathjax from "rehype-mathjax"
-import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
 
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import useMarkdownFile from "@/utils/app/markdown"
@@ -34,7 +31,7 @@ export const WelcomeMessage = ({}: Props) => {
             </div>
           </div>
           <MemoizedReactMarkdown className="prose  flex-1 text-left dark:prose-invert">{`${
-            welcomeMessageMarkdown ? welcomeMessageMarkdown : ""
+            welcomeMessageMarkdown ?? ""
           }`}</MemoizedReactMarkdown>
 
           {!welcomeMessageMarkdown && (

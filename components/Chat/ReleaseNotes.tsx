@@ -1,5 +1,4 @@
 import {useRouter} from "next/router"
-import React, {useEffect, useState} from "react"
 
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {ModalDialog} from "@/components/ModalDialog"
@@ -21,7 +20,7 @@ export const ReleaseNotes = ({close}: Props) => {
       onClose={close}
     >
       <MemoizedReactMarkdown className="prose flex-1 dark:prose-invert">
-        {`${releaseNotesMarkdown ? releaseNotesMarkdown : `Loading release notes...`}`}
+        {`${releaseNotesMarkdown ?? "Loading release notes..."}`}
       </MemoizedReactMarkdown>
       <Button onClick={close}>Dismiss</Button>
     </ModalDialog>

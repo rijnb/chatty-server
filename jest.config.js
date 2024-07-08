@@ -30,7 +30,7 @@ const esModules = [
 ].join(`|`)
 
 // Add any custom config to be passed to Jest
-/** @type {import('jest').Config} */
+/** @type {import("jest").Config} */
 const customJestConfig = {
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],

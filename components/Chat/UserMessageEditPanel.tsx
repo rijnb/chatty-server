@@ -3,7 +3,15 @@ import React, {useState} from "react"
 
 import ResponsiveTextArea from "@/components/Chat/ResponsiveTextArea"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import {Message, getMessageImageContent, getMessageStringForDisplay} from "@/types/chat"
+import {
+  Message,
+  MessagePartImage,
+  MessagePartText,
+  UserMessage,
+  getMessageAsImageUrlsOnly,
+  getMessageAsString,
+  getMessageAsStringOnlyText
+} from "@/types/chat"
 
 interface EditPanelProps {
   message: Message
@@ -14,24 +22,33 @@ interface EditPanelProps {
 const EditPanel = ({message, onSaveMessage, onFinishEditing}: EditPanelProps) => {
   const {t} = useTranslation("common")
   const [content, setContent] = useState(message.content)
-  const stringContent = getMessageStringForDisplay(message)
 
   const handleSaveMessage = () => {
-    onSaveMessage({...message, content})
+    const imageUrls = getMessageAsImageUrlsOnly(message)
+    const newMessage: UserMessage = {role: "user", content: content!}
+    if (imageUrls.length === 0) {
+      onSaveMessage(newMessage)
+    } else {
+      const partText: MessagePartText = {type: "text", text: getMessageAsString(newMessage)}
+      let partImages: MessagePartImage[] = []
+      imageUrls.forEach((url) => partImages.push({type: "image_url", image_url: {url}}))
+      const newMultiMessage: Message = {role: "user", content: [partText, ...partImages]}
+      onSaveMessage(newMultiMessage)
+    }
     onFinishEditing()
   }
 
-  const imageContent = getMessageImageContent(message)
-  const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\t")
+  const imageUrls = getMessageAsImageUrlsOnly(message)
+  const imagesMarkdown = imageUrls.map((image, index) => `![Image ${index}](${image})`).join("\t")
   return (
     <div className="flex w-full flex-col">
-      <ResponsiveTextArea content={stringContent} onChange={setContent} onSave={handleSaveMessage} />
+      <ResponsiveTextArea content={content!} onChange={setContent} onSave={handleSaveMessage} />
       <MemoizedReactMarkdown>{imagesMarkdown}</MemoizedReactMarkdown>
       <div className="mt-10 flex justify-center space-x-4">
         <button
           className="h-[40px] rounded-md bg-blue-500 px-4 py-1 text-sm font-medium text-white enabled:hover:bg-blue-600 disabled:opacity-50"
           onClick={handleSaveMessage}
-          disabled={stringContent.trim().length <= 0}
+          disabled={!message.content?.length || message.content?.length <= 0}
         >
           {t("Save & submit")}
         </button>

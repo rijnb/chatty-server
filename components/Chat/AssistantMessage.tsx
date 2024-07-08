@@ -2,7 +2,7 @@ import {IconCheck, IconCopy, IconTrash} from "@tabler/icons-react"
 import React, {useState} from "react"
 
 import MessageMarkdown from "@/components/Chat/MessageMarkdown"
-import {Message} from "@/types/chat"
+import {Message, getMessageAsString} from "@/types/chat"
 
 interface Props {
   message: Message
@@ -11,14 +11,15 @@ interface Props {
 }
 
 export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) => {
-  const [messagedCopied, setMessageCopied] = useState(false)
+  const [messageCopied, setMessageCopied] = useState(false)
 
   const handleCopyOnClick = () => {
     if (!navigator.clipboard) {
       return
     }
 
-    navigator.clipboard.writeText(message.content).then(() => {
+    // !! TODO: Check if this is OK
+    navigator.clipboard.writeText(getMessageAsString(message)).then(() => {
       setMessageCopied(true)
       setTimeout(() => {
         setMessageCopied(false)
@@ -30,7 +31,7 @@ export const AssistantMessage = ({message, isComplete, onDeleteMessage}: Props) 
     <div className="flex flex-row">
       <MessageMarkdown message={message} isComplete={isComplete} />
       <div className="mx-0 flex flex-row items-start justify-start gap-1">
-        {messagedCopied ? (
+        {messageCopied ? (
           <IconCheck size={20} className="text-green-500 dark:text-green-400" />
         ) : (
           <button

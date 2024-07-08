@@ -6,7 +6,7 @@ import remarkMath from "remark-math"
 import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
-import {Message, MessagePart, getMessageImageContent, getMessageStringForDisplay} from "@/types/chat"
+import {Message, MessagePart, getMessageAsImageUrlsOnly, getMessageAsStringOnlyText} from "@/types/chat"
 
 interface Props {
   message: Message
@@ -36,8 +36,8 @@ const replaceNonAsciiWithinDollars = (content: MessagePart[] | string) => {
 }
 
 const MessageMarkdown = ({message, isComplete}: Props) => {
-  const messageContent = replaceNonAsciiWithinDollars(getMessageStringForDisplay(message))
-  const imageContent = getMessageImageContent(message)
+  const messageContent = replaceNonAsciiWithinDollars(getMessageAsStringOnlyText(message))
+  const imageContent = getMessageAsImageUrlsOnly(message)
   const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\n")
   return (
     <ErrorHandlerClearHistory>
@@ -61,7 +61,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
             return !inline ? (
               <CodeBlock
                 key={Math.random()}
-                language={(match && match[1]) || ""}
+                language={match?.[1] ?? ""}
                 value={String(children).replace(/\n\n$/, "\n")}
                 {...props}
               />

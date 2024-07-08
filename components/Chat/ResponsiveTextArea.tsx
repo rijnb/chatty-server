@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from "react"
 
+import {MessagePart, getMessageAsStringOnlyText} from "@/types/chat"
 import {isKeyboardEnter} from "@/utils/app/keyboard"
 
 interface Props {
-  content: string
+  content: string | MessagePart[]
   onChange: (content: string) => void
   onSave: () => void
 }
@@ -23,9 +24,8 @@ const ResponsiveTextArea = ({content, onChange, onSave}: Props) => {
     resizeTextArea(textareaRef)
   }, [])
 
-  const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(event.target.value)
-    resizeTextArea(textareaRef)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -39,8 +39,8 @@ const ResponsiveTextArea = ({content, onChange, onSave}: Props) => {
     <textarea
       ref={textareaRef}
       className="w-full resize-none whitespace-pre-line border-none dark:bg-[#343541]"
-      value={content}
-      onChange={handleContentChange}
+      value={getMessageAsStringOnlyText({role: "user", content: content})}
+      onChange={handleChange}
       onKeyDown={handleKeyDown}
       onCompositionStart={() => setIsTyping(true)}
       onCompositionEnd={() => setIsTyping(false)}

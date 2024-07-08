@@ -130,6 +130,8 @@ export interface MessageV4 {
   content: string
 }
 
+export type RoleV5 = "system" | "assistant" | "user" | "tool"
+
 export type RoleV4 = "system" | "assistant" | "user"
 
 export interface OpenAIModelV4 {

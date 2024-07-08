@@ -1,4 +1,4 @@
-import {OpenAIModel, OpenAIModels, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
+import {OpenAIModel, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
 export const config = {

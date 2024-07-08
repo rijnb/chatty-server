@@ -1,6 +1,6 @@
 import {Tiktoken, TiktokenBPE} from "js-tiktoken/lite"
 
-import {Message, createMessage, getMessageString} from "@/types/chat"
+import {Message, createMessage, getMessageAsString} from "@/types/chat"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 
 export class TiktokenEncoder {
@@ -34,7 +34,7 @@ export class TiktokenEncoder {
 
     return messages
       .map(({role, content}) => {
-        const text = getMessageString(createMessage(role, content))
+        const text = getMessageAsString(createMessage(role, content))
         return fixedTokensPerMessage + this.encoding.encode(role).length + this.encoding.encode(text).length
       })
       .reduce((acc, cur) => acc + cur, fixedTokensPerReply)
@@ -85,7 +85,7 @@ export class TiktokenEncoder {
     const systemPrompt: Message = {role: "assistant", content: prompt}
     let messagesToSend: Message[] = messages.slice()
 
-    // !!TODO: Check properly for model capabilities on imaging:
+    // !!TODO [tech-debt]: Check properly for model capabilities on imaging:
     if (!modelId.includes("gpt-4o")) {
       messagesToSend = messagesToSend.map((message) => {
         // Modify the message to only include text.

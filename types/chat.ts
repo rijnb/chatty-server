@@ -2,7 +2,7 @@
  * Note that the names of properties in this file are
  * dictated by the API interface of OpenAI.
  */
-export type Role = "system" | "assistant" | "user"
+export type Role = "system" | "assistant" | "user" | "tool"
 
 export interface MessagePartText {
   type: "text"
@@ -72,7 +72,7 @@ export interface Conversation {
   time: number
 }
 
-export const getMessageString = (message: Message): string => {
+export const getMessageAsString = (message: Message): string => {
   if (typeof message.content === "string") {
     return message.content
   }
@@ -88,7 +88,7 @@ export const getMessageString = (message: Message): string => {
     .join()
 }
 
-export const getMessageStringForDisplay = (message: Message): string => {
+export const getMessageAsStringOnlyText = (message: Message): string => {
   if (typeof message.content === "string") {
     return String(message.content)
   }
@@ -101,7 +101,7 @@ export const getMessageStringForDisplay = (message: Message): string => {
     .join()
 }
 
-export const getMessageImageContent = (message: Message): string[] => {
+export const getMessageAsImageUrlsOnly = (message: Message): string[] => {
   const images: string[] = []
   if (typeof message.content !== "string") {
     const messageItems = message.content as MessagePart[]

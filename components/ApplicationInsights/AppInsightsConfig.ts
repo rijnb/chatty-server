@@ -3,8 +3,8 @@ import {ApplicationInsights} from "@microsoft/applicationinsights-web"
 
 const disableTelemetry = !process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING
 
-var reactPlugin = new ReactPlugin()
-var appInsights = new ApplicationInsights({
+const reactPlugin = new ReactPlugin()
+const appInsights = new ApplicationInsights({
   config: {
     disableTelemetry,
     connectionString: process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING,

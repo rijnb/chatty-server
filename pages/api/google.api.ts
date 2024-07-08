@@ -3,7 +3,7 @@ import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 import {NextApiRequest, NextApiResponse} from "next"
 
-import {Message, getMessageString, getMessageStringForDisplay} from "@/types/chat"
+import {Message, getMessageAsStringOnlyText} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
@@ -22,13 +22,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
     }
-    const userMessage = getMessageStringForDisplay(messages[messages.length - 1]).trim()
+    const userMessage = getMessageAsStringOnlyText(messages[messages.length - 1]).trim()
     const query = encodeURIComponent(userMessage)
 
     console.debug(`Google search, query:${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${googleAPIKey || process.env.GOOGLE_API_KEY}&cx=${
-        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+        googleCSEId || process.env.GOOGLE_CSE_ID
       }&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
@@ -116,10 +116,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       headers: {
         "Content-Type": "application/json",
         ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+          Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+          "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {

@@ -17,7 +17,7 @@ export const PluginSelect = ({plugin, onPluginChange, onKeyDown}: Props) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLSelectElement>) => {
     const selectElement = selectRef.current
-    const optionCount = selectElement?.options.length || 0
+    const optionCount = selectElement?.options.length ?? 0
 
     if (e.key === "/" && e.metaKey) {
       e.preventDefault()
@@ -53,8 +53,7 @@ export const PluginSelect = ({plugin, onPluginChange, onKeyDown}: Props) => {
         <select
           ref={selectRef}
           className="w-full cursor-pointer bg-transparent p-2"
-          placeholder={t("Select a plugin")}
-          value={plugin?.id || ""}
+          value={plugin?.id ?? ""}
           onChange={(e) => {
             onPluginChange(PluginList.find((plugin) => plugin.id === e.target.value) as Plugin)
           }}

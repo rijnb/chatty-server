@@ -85,16 +85,16 @@ export const isValidJsonData = (jsonData: any): string[] => {
 
   // Version.
   if (
-    version === null ||
-    version === undefined ||
-    typeof version !== "number" ||
-    ![4, 5, 6].includes(version) ||
-    (history && !Array.isArray(history)) ||
-    (prompts && !Array.isArray(prompts)) ||
-    (folders && !Array.isArray(folders))
+      version === null ||
+      version === undefined ||
+      typeof version !== "number" ||
+      ![4, 5, 6].includes(version) ||
+      (history && !Array.isArray(history)) ||
+      (prompts && !Array.isArray(prompts)) ||
+      (folders && !Array.isArray(folders))
   ) {
     errors.push(
-      `Invalid file structure; expected {version, history, prompts, folders}\nGot: ${JSON.stringify(jsonData)}`
+        `Invalid file structure; expected {version, history, prompts, folders}\nGot: ${JSON.stringify(jsonData)}`
     )
   }
 
@@ -102,28 +102,28 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (history) {
     for (const historyItem of history) {
       if (
-        !historyItem.id ||
-        typeof historyItem.id !== "string" ||
-        (historyItem.name && typeof historyItem.name !== "string") ||
-        (historyItem.messages && !Array.isArray(historyItem.messages)) ||
-        (version === 4 && historyItem.model && typeof historyItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version >= 5 && historyItem.modelId && typeof historyItem.modelId !== "string") || // V5+ format has model as a string.
-        (historyItem.prompt && typeof historyItem.prompt !== "string") ||
-        (historyItem.temperature && typeof historyItem.temperature !== "number") ||
-        (historyItem.folderId && typeof historyItem.folderId !== "string") ||
-        typeof historyItem.time !== "number"
+          !historyItem.id ||
+          typeof historyItem.id !== "string" ||
+          (historyItem.name && typeof historyItem.name !== "string") ||
+          (historyItem.messages && !Array.isArray(historyItem.messages)) ||
+          (version === 4 && historyItem.model && typeof historyItem.model !== "object") || // V4 format has model as an object, not a string.
+          (version >= 5 && historyItem.modelId && typeof historyItem.modelId !== "string") || // V5+ format has model as a string.
+          (historyItem.prompt && typeof historyItem.prompt !== "string") ||
+          (historyItem.temperature && typeof historyItem.temperature !== "number") ||
+          (historyItem.folderId && typeof historyItem.folderId !== "string") ||
+          typeof historyItem.time !== "number"
       ) {
         errors.push(
-          `Invalid history, expected {id, name, messages[], ${
-            version === 4 ? "model" : "modelId"
-          }, prompt, temperature, folderId, time}\nGot: ${JSON.stringify(historyItem)}`
+            `Invalid history, expected {id, name, messages[], ${
+                version === 4 ? "model" : "modelId"
+            }, prompt, temperature, folderId, time}\nGot: ${JSON.stringify(historyItem)}`
         )
       }
       for (const message of historyItem.messages) {
         if (
-          (message.role && typeof message.role !== "string") ||
-          !["user", "assistant"].includes(message.role) ||
-          (message.content && !(typeof message.content === "string" || typeof message.content === "object"))
+            (message.role && typeof message.role !== "string") ||
+            !["user", "assistant"].includes(message.role) ||
+            (message.content && !(typeof message.content === "string" || typeof message.content === "object"))
         ) {
           errors.push(`Invalid message in history; expected {role, content}\nGot: ${JSON.stringify(message)}`)
         }
@@ -135,20 +135,20 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (prompts) {
     for (const promptItem of prompts) {
       if (
-        !promptItem.id ||
-        typeof promptItem.id !== "string" ||
-        (promptItem.name && typeof promptItem.name !== "string") ||
-        (promptItem.description && typeof promptItem.description !== "string") ||
-        (promptItem.content && typeof promptItem.content !== "string") ||
-        (version === 4 && promptItem.model && typeof promptItem.model !== "object") || // V4 format has model as an object, not a string.
-        (version >= 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5+ format has model as a string.
-        (promptItem.folderId && typeof promptItem.folderId !== "string") ||
-        (promptItem.factory && typeof promptItem.factory !== "boolean")
+          !promptItem.id ||
+          typeof promptItem.id !== "string" ||
+          (promptItem.name && typeof promptItem.name !== "string") ||
+          (promptItem.description && typeof promptItem.description !== "string") ||
+          (promptItem.content && typeof promptItem.content !== "string") ||
+          (version === 4 && promptItem.model && typeof promptItem.model !== "object") || // V4 format has model as an object, not a string.
+          (version >= 5 && promptItem.modelId && typeof promptItem.modelId !== "string") || // V5+ format has model as a string.
+          (promptItem.folderId && typeof promptItem.folderId !== "string") ||
+          (promptItem.factory && typeof promptItem.factory !== "boolean")
       ) {
         errors.push(
-          `Invalid prompt; expected {id, name, description, content, ${
-            version === 4 ? "model" : "modelId"
-          }, folderId, factory}\nGot: ${JSON.stringify(promptItem)}`
+            `Invalid prompt; expected {id, name, description, content, ${
+                version === 4 ? "model" : "modelId"
+            }, folderId, factory}\nGot: ${JSON.stringify(promptItem)}`
         )
       }
     }
@@ -158,12 +158,12 @@ export const isValidJsonData = (jsonData: any): string[] => {
   if (folders) {
     for (const folderItem of folders) {
       if (
-        (folderItem.id && typeof folderItem.id !== "string") ||
-        !folderItem.name ||
-        typeof folderItem.name !== "string" ||
-        !folderItem.type ||
-        typeof folderItem.type !== "string" ||
-        (folderItem.factory && typeof folderItem.factory !== "boolean")
+          (folderItem.id && typeof folderItem.id !== "string") ||
+          !folderItem.name ||
+          typeof folderItem.name !== "string" ||
+          !folderItem.type ||
+          typeof folderItem.type !== "string" ||
+          (folderItem.factory && typeof folderItem.factory !== "boolean")
       ) {
         errors.push(`Invalid folder; expected {id, name, type, factory}\nGot: ${JSON.stringify(folderItem)}`)
       }
@@ -186,25 +186,25 @@ export const importData = (data: SupportedFileFormats, readFactoryData: boolean 
   //   new user folders         - only read when readFactoryData is false
   //                              only non-factory folders that have a non-factory folder id
   const newFactoryFolders = readFactoryData
-    ? readFolders.map((folder) => {
+      ? readFolders.map((folder) => {
         folder.factory = true
         return folder
       })
-    : []
+      : []
   const newFactoryFolderIds = newFactoryFolders.map((folder) => folder.id)
   const existingUserFolders = getFolders().filter((folder) => !folder.factory)
   const existingFactoryFolders = getFolders().filter(
-    (folder) => folder.factory && !newFactoryFolderIds.includes(folder.id)
+      (folder) => folder.factory && !newFactoryFolderIds.includes(folder.id)
   )
   const existingFactoryFolderIds = existingFactoryFolders.map((folder) => folder.id)
   const allFactoryFolderIds = [...existingFactoryFolderIds, ...newFactoryFolderIds]
   const newUserFolders =
-    readFolders
-      .filter((folder) => !folder.factory && !allFactoryFolderIds.includes(folder.id))
-      .map((folder) => {
-        folder.factory = false
-        return folder
-      }) ?? []
+      readFolders
+          .filter((folder) => !folder.factory && !allFactoryFolderIds.includes(folder.id))
+          .map((folder) => {
+            folder.factory = false
+            return folder
+          }) ?? []
 
   // Extract:
   //   existing user prompts    - current non-factory prompts
@@ -214,32 +214,32 @@ export const importData = (data: SupportedFileFormats, readFactoryData: boolean 
   //   new user prompts         - only read when readFactoryData is false
   //                              only non-factory prompts that have a non-factory prompts id
   const newFactoryPrompts = readFactoryData
-    ? readPrompts.map((prompt) => {
+      ? readPrompts.map((prompt) => {
         prompt.factory = true
         return prompt
       })
-    : []
+      : []
   const newFactoryPromptIds = newFactoryPrompts.map((prompt) => prompt.id)
   const existingUserPrompts = getPrompts().filter((prompt) => !prompt.factory)
   const existingFactoryPrompts = getPrompts().filter(
-    (prompt) => prompt.factory && !newFactoryPromptIds.includes(prompt.id)
+      (prompt) => prompt.factory && !newFactoryPromptIds.includes(prompt.id)
   )
   const existingFactoryPromptIds = existingFactoryPrompts.map((prompt) => prompt.id)
   const allFactoryPromptIds = [...existingFactoryPromptIds, ...newFactoryPrompts.map((prompt) => prompt.id)]
   const newUserPrompts =
-    readPrompts
-      .filter((prompt) => !prompt.factory && !allFactoryPromptIds.includes(prompt.id))
-      .map((prompt) => {
-        prompt.factory = false
-        return prompt
-      }) ?? []
+      readPrompts
+          .filter((prompt) => !prompt.factory && !allFactoryPromptIds.includes(prompt.id))
+          .map((prompt) => {
+            prompt.factory = false
+            return prompt
+          }) ?? []
 
   const existingHistory = getConversationsHistory()
   const newHistory = readHistory ?? []
 
   // Existing conversations are not overwritten.
   const importedHistory: Conversation[] = [...existingHistory, ...newHistory].filter(
-    (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
+      (conversation, index, self) => index === self.findIndex((other) => other.id === conversation.id)
   )
   saveConversationsHistory(importedHistory)
   if (importedHistory.length > 0) {
@@ -250,14 +250,14 @@ export const importData = (data: SupportedFileFormats, readFactoryData: boolean 
 
   // Existing user folders are not overwritten.
   const importedUserFolders: FolderInterface[] = [...existingUserFolders, ...newUserFolders].filter(
-    (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
+      (folder, index, self) => index === self.findIndex((other) => other.id === folder.id)
   )
   const importedFolders = [...existingFactoryFolders, ...newFactoryFolders, ...importedUserFolders]
   saveFolders(importedFolders)
 
   // Existing user prompts are not overwritten.
   const importedUserPrompts: Prompt[] = [...existingUserPrompts, ...newUserPrompts].filter(
-    (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
+      (prompt, index, self) => index === self.findIndex((other) => other.id === prompt.id)
   )
   const importedPrompts = [...existingFactoryPrompts, ...newFactoryPrompts, ...importedUserPrompts]
   savePrompts(importedPrompts)

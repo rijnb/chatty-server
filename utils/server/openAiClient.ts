@@ -1,14 +1,7 @@
 import {OpenAIStream, StreamingTextResponse} from "ai"
 import OpenAI from "openai"
-import {ChatCompletionMessageParam} from "openai/resources/chat"
 
-import {
-  OPENAI_API_HOST,
-  OPENAI_API_TYPE,
-  OPENAI_API_VERSION,
-  OPENAI_AZURE_DEPLOYMENT_ID,
-  OPENAI_ORGANIZATION
-} from "../app/const"
+import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_AZURE_DEPLOYMENT_ID, OPENAI_ORGANIZATION} from "../app/const"
 import {Message} from "@/types/chat"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
@@ -60,7 +53,7 @@ export class OpenAILimitExceeded extends OpenAIError {
 
 function createOpenAiConfiguration(apiKey: string, modelId: string) {
   if (OPENAI_API_TYPE === "azure") {
-    let config = {
+    return {
       baseURL: `${OPENAI_API_HOST}/openai/deployments/${getAzureDeploymentIdForModelId(
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
@@ -73,7 +66,6 @@ function createOpenAiConfiguration(apiKey: string, modelId: string) {
         "api-key": apiKey || process.env.OPENAI_API_KEY
       }
     }
-    return config
   } else {
     return {
       baseURL: `${OPENAI_API_HOST}/v1`,

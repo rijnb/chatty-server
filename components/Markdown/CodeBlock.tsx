@@ -19,7 +19,7 @@ export const CodeBlock = memo(({language, value}: Props) => {
   const [isCopied, setIsCopied] = useState<Boolean>(false)
 
   const handleCopyToClipboard = () => {
-    if (!navigator.clipboard || !navigator.clipboard.writeText) {
+    if (!navigator.clipboard?.writeText) {
       return
     }
     navigator.clipboard.writeText(value).then(() => {

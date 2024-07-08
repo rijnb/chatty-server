@@ -1,5 +1,5 @@
 import {FolderType} from "@/types/folder"
-import {ConversationV5, ConversationV6, FileFormatV5, FileFormatV6, FolderInterfaceV4, PromptV5} from '@/types/import'
+import {ConversationV6, FileFormatV6, FolderInterfaceV4, PromptV5} from "@/types/import"
 import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
