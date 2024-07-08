@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import Image from "next/image"
 import {useRouter} from "next/router"
 import React from "react"
@@ -48,9 +47,11 @@ export const WelcomeMessage = ({}: Props) => {
               Azure and OpenAI GPT-3/GPT-4 models
             </div>
           </div>
-          <MemoizedReactMarkdown className="prose  flex-1 text-left dark:prose-invert">{`${
-            welcomeMessageMarkdown ?? ""
-          }`}</MemoizedReactMarkdown>
+          <div className="mx-auto mt-10 flex flex-col justify-center space-y-4 sm:w-[600px]">
+            <MemoizedReactMarkdown className="prose flex-1 text-left dark:prose-invert">{`${
+              welcomeMessageMarkdown ?? ""
+            }`}</MemoizedReactMarkdown>
+          </div>
 
           {!welcomeMessageMarkdown && (
             <div className="mx-auto flex flex-col justify-center space-y-4 sm:w-[600px]">
