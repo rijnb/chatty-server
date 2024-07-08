@@ -16,23 +16,23 @@
  * SOFTWARE.
  */
 
-import {ReactPlugin} from "@microsoft/applicationinsights-react-js"
-import {ApplicationInsights} from "@microsoft/applicationinsights-web"
+import fs from "fs"
+import {NextApiRequest, NextApiResponse} from "next"
+import path from "path"
 
-const disableTelemetry = !process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING
-
-const reactPlugin = new ReactPlugin()
-const appInsights = new ApplicationInsights({
-  config: {
-    disableTelemetry,
-    connectionString: process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING,
-    enableAutoRouteTracking: true,
-    extensions: [reactPlugin]
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const {filename} = req.query
+  if (typeof filename !== "string" || filename?.trim().length === 0 || path.basename(filename).length === 0) {
+    res.status(400).json({error: "Invalid filename"})
+    return
   }
-})
 
-if (!disableTelemetry) {
-  appInsights.loadAppInsights()
+  const filePath = path.join(process.cwd() + "/public", path.basename(filename))
+  if (fs.existsSync(filePath)) {
+    res.status(200).json({exists: true})
+  } else {
+    res.status(200).json({exists: false})
+  }
 }
 
-export {reactPlugin, appInsights}
+export default handler
