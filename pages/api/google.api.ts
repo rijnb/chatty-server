@@ -1,9 +1,27 @@
+/*
+ * Copyright (C) 2024, Rijn Buve.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ * of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import {Readability} from "@mozilla/readability"
 import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 import {NextApiRequest, NextApiResponse} from "next"
 
-import {Message} from "@/types/chat"
+import {Message, getMessageAsStringOnlyText} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
@@ -22,13 +40,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (messages.length === 0) {
       return res.status(200).json("No query was entered...")
     }
-    const userMessage = messages[messages.length - 1].content.trim()
+    const userMessage = getMessageAsStringOnlyText(messages[messages.length - 1]).trim()
     const query = encodeURIComponent(userMessage)
 
     console.debug(`Google search, query:${trimForPrivacy(userMessage)}`)
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${googleAPIKey || process.env.GOOGLE_API_KEY}&cx=${
-        googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
+        googleCSEId || process.env.GOOGLE_CSE_ID
       }&q=${query}&num=5`
     )
     const googleData = await googleRes.json()
@@ -116,10 +134,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       headers: {
         "Content-Type": "application/json",
         ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+          Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${apiKey ? apiKey : process.env.OPENAI_API_KEY}`
+          "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {
