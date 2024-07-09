@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import chatHandler from "@/pages/api/chat.api"
 import {asMock} from "@/testutils"
 import {ChatBody} from "@/types/chat"
@@ -72,7 +71,7 @@ describe("Chat Error Handling", () => {
         1.2,
         32,
         "somekey",
-        [{role: "user", content: [{type: "text", text: "ping"}]}]
+        [{role: "user", content: "ping"}]
       )
     })
   })

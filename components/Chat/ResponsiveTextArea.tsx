@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import React, {useEffect, useRef, useState} from "react"
 
 import {MessagePart, getMessageAsStringOnlyText} from "@/types/chat"
@@ -44,6 +43,7 @@ const ResponsiveTextArea = ({content, onChange, onSave}: Props) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(event.target.value)
+    resizeTextArea(textareaRef)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
