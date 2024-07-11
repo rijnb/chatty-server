@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {OpenAIStream, StreamingTextResponse} from "ai"
 import OpenAI from "openai"
 
@@ -69,9 +68,10 @@ export class OpenAILimitExceeded extends OpenAIError {
   }
 }
 
-function createOpenAiConfiguration(apiKey: string, modelId: string) {
+function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyAllowBrowser = false) {
+  let configuration
   if (OPENAI_API_TYPE === "azure") {
-    return {
+    configuration = {
       baseURL: `${OPENAI_API_HOST}/openai/deployments/${getAzureDeploymentIdForModelId(
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
@@ -85,12 +85,13 @@ function createOpenAiConfiguration(apiKey: string, modelId: string) {
       }
     }
   } else {
-    return {
+    configuration = {
       baseURL: `${OPENAI_API_HOST}/v1`,
       apiKey: apiKey || process.env.OPENAI_API_KEY,
       organization: OPENAI_ORGANIZATION
     }
   }
+  return {...configuration, dangerouslyAllowBrowser}
 }
 
 function createOpenAiClient(configuration: any) {
@@ -103,9 +104,10 @@ export const ChatCompletionStream = async (
   temperature: number,
   maxTokens: number,
   apiKey: string,
-  messages: Message[]
+  messages: Message[],
+  dangerouslyAllowBrowser = false
 ) => {
-  const configuration = createOpenAiConfiguration(apiKey, modelId)
+  const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
   const openai = createOpenAiClient(configuration)
 
   if (messages.length === 0) {

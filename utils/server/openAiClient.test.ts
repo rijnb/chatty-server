@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import fetchMock from "jest-fetch-mock"
 
 import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
@@ -47,7 +46,7 @@ describe("OpenAI Client", () => {
         status: 400
       },
       expectedError: new OpenAILimitExceeded(
-        "This model's maximum context length is 16384 tokens. However, you requested 50189 tokens (189 in the messages, 50000 in the completion). Please reduce the length of the messages or completion.",
+        "400 This model's maximum context length is 16384 tokens. However, you requested 50189 tokens (189 in the messages, 50000 in the completion). Please reduce the length of the messages or completion.",
         16384,
         50189
       )
@@ -61,9 +60,7 @@ describe("OpenAI Client", () => {
         },
         status: 401
       },
-      expectedError: new OpenAIAuthError(
-        "Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription."
-      )
+      expectedError: new OpenAIAuthError("401 status code (no body)")
     },
     "should handle missing key error": {
       openAiResponse: {
@@ -74,9 +71,7 @@ describe("OpenAI Client", () => {
         },
         status: 401
       },
-      expectedError: new OpenAIAuthError(
-        "Access denied due to missing subscription key. Make sure to include subscription key when making requests to an API."
-      )
+      expectedError: new OpenAIAuthError("401 status code (no body)")
     },
     "should handle another auth error": {
       openAiResponse: {
@@ -90,7 +85,7 @@ describe("OpenAI Client", () => {
         status: 401
       },
       expectedError: new OpenAIAuthError(
-        "Access denied due to invalid subscription key or wrong API endpoint. Make sure to provide a valid key for an active subscription and use a correct regional API endpoint for your resource."
+        "401 Access denied due to invalid subscription key or wrong API endpoint. Make sure to provide a valid key for an active subscription and use a correct regional API endpoint for your resource."
       )
     },
     "should handle quota limit error": {
@@ -105,7 +100,7 @@ describe("OpenAI Client", () => {
         status: 429
       },
       expectedError: new OpenAIRateLimited(
-        "Requests to the Creates a completion for the chat message Operation under Azure OpenAI API version 2023-05-15 have exceeded token rate limit of your current OpenAI S0 pricing tier. Please retry after 26 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.",
+        "429 Requests to the Creates a completion for the chat message Operation under Azure OpenAI API version 2023-05-15 have exceeded token rate limit of your current OpenAI S0 pricing tier. Please retry after 26 seconds. Please go here: https://aka.ms/oai/quotaincrease if you would like to further increase the default rate limit.",
         26
       )
     },
@@ -122,9 +117,9 @@ describe("OpenAI Client", () => {
         status: 400
       },
       expectedError: new GenericOpenAIError(
-        "Some human readable description",
+        "400 Some human readable description",
         "unknown_error_type",
-        "some_parameter",
+        "",
         "useful_error_code"
       )
     },
@@ -141,9 +136,9 @@ describe("OpenAI Client", () => {
         status: 400
       },
       expectedError: new GenericOpenAIError(
-        "Some human readable description",
+        "400 Some human readable description",
         "unknown_error_type",
-        "some_parameter",
+        "",
         "useful_error_code"
       )
     }
@@ -152,9 +147,15 @@ describe("OpenAI Client", () => {
   test.each(Object.entries(testCases))("%s", async (_, {openAiResponse, expectedError}) => {
     fetchMock.mockResponse(JSON.stringify(openAiResponse.body), {status: openAiResponse.status})
 
-    const result = ChatCompletionStream(FALLBACK_OPENAI_MODEL, "system prompt", 0.8, 32, "key", [
-      {role: "user", content: "ping"}
-    ])
+    const result = ChatCompletionStream(
+      FALLBACK_OPENAI_MODEL,
+      "system prompt",
+      0.8,
+      32,
+      "key",
+      [{role: "user", content: "ping"}],
+      true
+    )
 
     await expect(result).rejects.toThrowExactly(expectedError)
   })
