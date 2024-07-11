@@ -349,15 +349,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }
   }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-      Array.from(e.dataTransfer.files).forEach((file) => {
-        addImageToPrompt(file)
-      })
-    }
-  }
-
   useEffect(() => {
     if (promptListRef.current) {
       promptListRef.current.scrollTop = activePromptIndex * 36
@@ -389,7 +380,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     <div
       className="absolute bottom-0 left-0 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-2 dark:border-white/20 dark:via-[#343541] dark:to-[#343541]"
       style={{width: "calc(100% - 10px)"}}
-      onDrop={handleDrop}
     >
       <div className="flex items-center justify-center" id="images"></div>
       <div className="stretch bottom-0 mx-auto mt-[52px] flex max-w-3xl flex-row gap-3 last:mb-6">
