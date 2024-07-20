@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {GetServerSideProps} from "next"
 import {useTranslation} from "next-i18next"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations"
@@ -68,7 +67,7 @@ interface Props {
   allowModelSelection: boolean
 }
 
-const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 4000
+const AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS = 500
 
 export const getServerSideProps: GetServerSideProps = async ({locale}) => {
   const googleApiKey = process.env.GOOGLE_API_KEY
