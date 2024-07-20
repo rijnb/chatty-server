@@ -15,19 +15,23 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import React from "react"
 
 interface Props {
   text: string
   icon: React.JSX.Element
   onClick: () => void
+  highlight?: boolean
 }
 
-export const SidebarButton = ({text, icon, onClick}: Props) => {
+export const SidebarButton = ({text, icon, onClick, highlight}: Props) => {
   return (
     <button
-      className="flex w-full cursor-pointer select-none items-center gap-3 rounded-md px-3 py-3 text-[14px] leading-3 text-gray-800 transition-colors duration-200 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
+      className={
+        highlight
+          ? "flex w-full cursor-pointer select-none items-center gap-3 rounded-md px-3 py-3 text-[14px] leading-3 text-red-800 transition-colors duration-200 hover:bg-gray-300 dark:text-red-400 dark:hover:bg-[#343541]/90"
+          : "flex w-full cursor-pointer select-none items-center gap-3 rounded-md px-3 py-3 text-[14px] leading-3 text-gray-800 transition-colors duration-200 hover:bg-gray-300 dark:text-white dark:hover:bg-[#343541]/90"
+      }
       onClick={onClick}
     >
       <div>{icon}</div>

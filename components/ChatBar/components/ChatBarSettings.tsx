@@ -15,13 +15,13 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {IconFileExport} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import React, {useContext} from "react"
 
 import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import ClearConversations from "@/components/ChatBar/components/ClearConversations"
+import CleanupConversations from "@/components/ChatBar/components/CleanupConversations"
+import ClearAllConversations from "@/components/ChatBar/components/ClearAllConversations"
 import PluginKeyList from "@/components/ChatBar/components/PluginKeyList"
 import ApiKey from "@/components/Settings/ApiKey"
 import ImportData from "@/components/Settings/ImportData"
@@ -38,12 +38,25 @@ export const ChatBarSettings = () => {
     state: {apiKey, serverSideApiKeyIsSet, serverSidePluginKeysSet, conversations}
   } = useContext(HomeContext)
 
-  const {handleClearConversations, handleImportConversations, handleExportConversations, handleApiKeyChange} =
-    useContext(ChatBarContext)
+  const {
+    handleCleanupConversations,
+    handleClearAllConversations,
+    handleImportConversations,
+    handleExportConversations,
+    handleApiKeyChange
+  } = useContext(ChatBarContext)
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
-      {conversations.length > 0 ? <ClearConversations onClearConversations={handleClearConversations} /> : null}
+      {conversations.filter((conversation) => conversation.folderId === undefined).length > 10 ? (
+        <CleanupConversations
+          onCleanupConversations={handleCleanupConversations}
+          highlight={conversations.filter((conversation) => conversation.folderId === undefined).length > 20}
+        />
+      ) : null}
+      {conversations.length > 0 ? (
+        <ClearAllConversations onClearAllConversations={handleClearAllConversations} />
+      ) : null}
 
       <ImportData id="conversations" text={t("Import conversations")} onImport={handleImportConversations} />
       {conversations.length > 0 ? (
