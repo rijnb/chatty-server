@@ -15,24 +15,24 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import {IconCheck, IconTrash, IconX} from "@tabler/icons-react"
+import {IconCheck, IconHistory, IconTrash, IconX} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import {useState} from "react"
 
 import SidebarButton from "@/components/Sidebar/SidebarButton"
 
 interface Props {
-  onClearConversations: () => void
+  onCleanupConversations: () => void
+  highlight: boolean
 }
 
-export const ClearConversations = ({onClearConversations}: Props) => {
+export const CleanupConversations = ({onCleanupConversations, highlight}: Props) => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false)
 
   const {t} = useTranslation("common")
 
-  const handleClearConversations = () => {
-    onClearConversations()
+  const handleCleanupConversations = () => {
+    onCleanupConversations()
     setIsConfirming(false)
   }
 
@@ -50,7 +50,7 @@ export const ClearConversations = ({onClearConversations}: Props) => {
           size={18}
           onClick={(e) => {
             e.stopPropagation()
-            handleClearConversations()
+            handleCleanupConversations()
           }}
         />
 
@@ -66,11 +66,12 @@ export const ClearConversations = ({onClearConversations}: Props) => {
     </div>
   ) : (
     <SidebarButton
-      text={t("Clear conversations")}
-      icon={<IconTrash size={18} />}
+      text={t("Cleanup (keep last 10)")}
+      icon={<IconHistory size={18} />}
       onClick={() => setIsConfirming(true)}
+      highlight={highlight}
     />
   )
 }
 
-export default ClearConversations
+export default CleanupConversations

@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {useTranslation} from "next-i18next"
 import {useCallback, useContext, useEffect} from "react"
 
@@ -34,6 +33,7 @@ import {PluginID, PluginKey} from "@/types/plugin"
 import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
+  getConversationsHistory,
   removeConversationsHistory,
   removeSelectedConversation,
   saveConversationsHistory,
@@ -44,6 +44,8 @@ import {saveFolders} from "@/utils/app/folders"
 import {importData} from "@/utils/app/import"
 import {removePluginKeys, savePluginKeys} from "@/utils/app/plugins"
 import {saveApiKey, saveShowChatBar} from "@/utils/app/settings"
+
+const KEEP_ROOT_CONVERSATIONS_AFTER_CLEANUP = 10
 
 export const ChatBar = () => {
   const {t} = useTranslation("common")
@@ -99,8 +101,24 @@ export const ChatBar = () => {
     }
   }
 
-  const handleClearConversations = () => {
+  const handleCleanupConversations = () => {
+    let folderConversations = getConversationsHistory().filter((conversation) => conversation.folderId !== undefined)
+    let rootConversations = getConversationsHistory()
+      .filter((conversation) => conversation.id !== selectedConversation?.id)
+      .filter((conversation) => conversation.folderId === undefined)
+      .sort((a, b) => a.time - b.time)
+      .slice(-KEEP_ROOT_CONVERSATIONS_AFTER_CLEANUP + (selectedConversation ? 1 : 0))
+    if (selectedConversation && selectedConversation.folderId === undefined) {
+      rootConversations.push(selectedConversation)
+    }
+    let conversations = folderConversations.concat(rootConversations)
+    homeDispatch({field: "selectedConversation", value: selectedConversation})
+    homeDispatch({field: "conversations", value: conversations})
     removeConversationsHistory()
+    saveConversationsHistory(conversations)
+  }
+
+  const handleClearAllConversations = () => {
     removeSelectedConversation()
     const updatedFolders = folders.filter((f) => f.type !== "chat")
     if (defaultModelId) {
@@ -218,7 +236,8 @@ export const ChatBar = () => {
       value={{
         ...chatBarContextValue,
         handleDeleteConversation,
-        handleClearConversations,
+        handleCleanupConversations,
+        handleClearAllConversations,
         handleImportConversations,
         handleExportConversations,
         handlePluginKeyChange,

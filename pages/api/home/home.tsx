@@ -422,7 +422,11 @@ const Home = ({
       if (!selectedConversation || tokenCount >= AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS) {
         const lastConversation =
           conversationsHistory.length > 0 ? conversationsHistory[conversationsHistory.length - 1] : undefined
-        if (lastConversation && lastConversation.messages.length === 0) {
+        if (
+          lastConversation &&
+          lastConversation.messages.length === 0 &&
+          tokenCount < AUTO_NEW_CONVERSATION_IF_LARGER_THAN_TOKENS
+        ) {
           // If no conversation was selected, select the last conversation if it was empty.
           homeDispatch({field: "conversations", value: cleanedConversationHistory})
           homeDispatch({field: "selectedConversation", value: lastConversation})

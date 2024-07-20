@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {Dispatch, createContext} from "react"
 
 import {ChatBarInitialState} from "@/components/ChatBar/ChatBar.state"
@@ -28,7 +27,8 @@ export interface ChatBarContextProps {
   state: ChatBarInitialState
   dispatch: Dispatch<ActionType<ChatBarInitialState>>
   handleDeleteConversation: (conversation: Conversation) => void
-  handleClearConversations: () => void
+  handleCleanupConversations: () => void
+  handleClearAllConversations: () => void
   handleImportConversations: (data: SupportedFileFormats) => void
   handleExportConversations: () => void
   handlePluginKeyChange: (pluginKey: PluginKey) => void

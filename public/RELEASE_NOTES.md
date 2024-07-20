@@ -158,6 +158,15 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-07-20
+
+#### Features
+
+- Chatty starts a new conversation earlier than before (after 500 tokens, instead of 4000), when
+  you start the application.
+- A button to cleanup old conversations is added. Only the last 10 conversations that are not 
+  stored in folders are kept.
+
 ### 2024-07-06
 
 #### Features
