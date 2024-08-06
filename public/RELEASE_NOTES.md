@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2024-08-06
+
+#### Features
+
+- Support `gpt-4o-mini`.
+
 ### 2024-07-20
 
 #### Features

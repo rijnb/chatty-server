@@ -3,7 +3,7 @@
 ## Chatty is updated! 
 
 We've added support for image recognition! You can now add one or more images to your
-chat by clicking on the camera symbol in the input box. This is supported for `gpt-4o`
+chat by clicking on the camera symbol in the input box. This is supported for `gpt-4o` and `gpt-4o-mini`.
 conversations only. 
 
 The image becomes part of your prompt and you ask Chatty anything about it. Like:

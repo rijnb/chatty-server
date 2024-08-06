@@ -232,7 +232,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
         text: content ? content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
       }
     ]
-    if (modelId === "gpt-4o") {
+    if (modelId.includes("gpt-4o")) {
       if (images && images.length > 0) {
         for (const img of images) {
           const canvas = document.createElement("canvas")
