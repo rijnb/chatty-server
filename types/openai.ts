@@ -44,7 +44,8 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
   ["gpt-4-32k"]: {id: "gpt-4-32k", inputTokenLimit: K32, outputTokenLimit: K32},
   ["gpt-4-turbo-preview"]: {id: "gpt-4-turbo-preview", inputTokenLimit: K128, outputTokenLimit: K4},
   ["gpt-4-turbo"]: {id: "gpt-4-turbo", inputTokenLimit: K128, outputTokenLimit: K4},
-  ["gpt-4o"]: {id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4}
+  ["gpt-4o"]: {id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4},
+  ["gpt-4o-mini"]: {id: "gpt-4o-mini", inputTokenLimit: K128, outputTokenLimit: K16}
 }
 
 export const maxInputTokensForModel = (modelId: string) => {
