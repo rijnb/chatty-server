@@ -72,7 +72,7 @@ const handler = async (req: Request): Promise<Response> => {
       })
 
     // Temporary solution to add and remove specific models for TomTom Azure deployment.
-    const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"]] : []
+    const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"], OpenAIModels["gpt-4o-mini"]] : []
     const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
     const editedModels = models.filter((model) => !removeVisibleModels.includes(model.id)).concat(addHiddenModels)
     console.debug(
