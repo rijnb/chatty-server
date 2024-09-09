@@ -158,6 +158,13 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+=======
+### 2024-09-09
+
+#### Features
+
+- Minor change. Renamed "Writing assistant" to "Assistant".
+
 ### 2024-08-06
 
 #### Features
@@ -192,7 +199,7 @@ _Rijn Buve & Oleksii Kulyk_
 
 #### Features
 
-Ad- ded GPT-4o as an option (no visuals yet).
+- Added GPT-4o as an option (no visuals yet).
 
 ### 2024-05-06
 
