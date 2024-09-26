@@ -28,7 +28,7 @@
     },
     {
       "id": "a07c4d13-b7a8-416a-af30-da4c39401cf3",
-      "name": "Drop some files",
+      "name": "Drop some text files",
       "description": "Just drop your text files in the chat so we can use it in our chat. The filenames are automatically used to differentiate between files.",
       "content": "Consider the following text files and their contents. Just respond with “OK, ask me about your files.” if you get this. Nothing else, no explanations.\n\n{{Drop your text files here #DROP}}",
       "folderId": "1b890231-2b1c-4f11-b340-aeb2dd301cb1",
