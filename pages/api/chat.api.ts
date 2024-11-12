@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
 import {ChatBody, Message, getMessageAsString} from "@/types/chat"
@@ -68,13 +67,13 @@ const handler = async (req: Request): Promise<Response> => {
     const message = allMessages[allMessages.length - 1]
     const messageString = getMessageAsString(message)
     console.info(`sendRequest: {\
-        message:'${trimForPrivacy(messageString)}', \
-        totalNumberOfTokens:${encoder.numberOfTokensInConversation(allMessages, modelId)}, \
-        modelId:'${modelId}', \
-        messageLengthInChars:${messageString.length}, \
-        totalNumberOfMessages:${allMessages.length}, \
-        temperature:${temperature}, \
-        maxTokens:${maxReplyTokensToUse}}`)
+message:'${trimForPrivacy(messageString)}', \
+totalNumberOfTokens:${encoder.numberOfTokensInConversation(allMessages, modelId)}, \
+modelId:'${modelId}', \
+messageLengthInChars:${messageString.length}, \
+totalNumberOfMessages:${allMessages.length}, \
+temperature:${temperature}, \
+maxTokens:${maxReplyTokensToUse}}`)
 
     return await ChatCompletionStream(
       modelId,
