@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {OpenAIModel, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
@@ -55,6 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const json = await response.json()
+    const uniqueModelIds = new Set()
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
         return {
@@ -68,9 +68,15 @@ const handler = async (req: Request): Promise<Response> => {
       // Filter out unsupported models:
       .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
       // Filter out duplicate models:
-      .filter((obj: OpenAIModel, index: any, self: OpenAIModel[]) => {
-        return index === self.findIndex((other: any) => other.id === obj.id)
+      .filter((model: OpenAIModel) => {
+        if (uniqueModelIds.has(model.id)) {
+          return false
+        } else {
+          uniqueModelIds.add(model.id)
+          return true
+        }
       })
+      .sort((a: OpenAIModel, b: OpenAIModel) => a.id.localeCompare(b.id))
     console.debug(`Found ${models.length} models: ${models.map((model) => model.id).join(", ")}`)
     return new Response(JSON.stringify(models), {status: 200})
   } catch (error) {
