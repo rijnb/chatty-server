@@ -16,7 +16,7 @@
     "test:ci": "jest --ci"
   },
   "engines": {
-    "node": ">=18"
+    "node": "20.18.0"
   },
   "dependencies": {
     "@microsoft/applicationinsights-react-js": "^17.3.0",
