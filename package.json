@@ -1,7 +1,7 @@
 {
   "name": "chatty",
   "productName": "Chatty",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -16,7 +16,8 @@
     "test:ci": "jest --ci"
   },
   "engines": {
-    "node": "20.18.0"
+    "node": "20.18.0",
+    "npm": "10.8.2"
   },
   "dependencies": {
     "@microsoft/applicationinsights-react-js": "^17.3.0",
