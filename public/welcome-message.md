@@ -11,4 +11,4 @@ you can import them, should you lose them due to clearing the browser cache.
 
 Want to know more...? Click the `(?)` in the top menu to learn more about Chatty.
 
-**Have fun!**  ❄⛄🦌🌟️⭐
+**Have fun!**
