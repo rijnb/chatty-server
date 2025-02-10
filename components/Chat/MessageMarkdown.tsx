@@ -15,13 +15,12 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import React from "react"
 import rehypeMathjax from "rehype-mathjax"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
-import ErrorHandlerClearHistory from "@/components/Error/ErrorHandlerClearHistory"
+import ErrorHandlerTryingToRecover from "@/components/Error/ErrorHandlerTryingToRecover"
 import CodeBlock from "@/components/Markdown/CodeBlock"
 import MemoizedReactMarkdown from "@/components/Markdown/MemoizedReactMarkdown"
 import {Message, MessagePart, getMessageAsImageUrlsOnly, getMessageAsStringOnlyText} from "@/types/chat"
@@ -58,7 +57,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
   const imageContent = getMessageAsImageUrlsOnly(message)
   const imagesMarkdown = imageContent.map((image, index) => `![Image ${index}](${image})`).join("\n")
   return (
-    <ErrorHandlerClearHistory>
+    <ErrorHandlerTryingToRecover>
       <MemoizedReactMarkdown
         className="prose flex-1 dark:prose-invert"
         remarkPlugins={[
@@ -106,7 +105,7 @@ const MessageMarkdown = ({message, isComplete}: Props) => {
       >
         {`${messageContent}${!isComplete ? "`▍`" : ""}\n${imagesMarkdown}`}
       </MemoizedReactMarkdown>
-    </ErrorHandlerClearHistory>
+    </ErrorHandlerTryingToRecover>
   )
 }
 

@@ -15,10 +15,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import React, {Component, ErrorInfo, ReactNode} from "react"
 
 import {removeConversationsHistory, removeSelectedConversation} from "@/utils/app/conversations"
+import {exportData} from "@/utils/app/export"
 
 interface Props {
   children: ReactNode
@@ -29,15 +29,18 @@ interface State {
   error: Error | null
 }
 
-class ErrorHandlerClearHistory extends Component<Props, State> {
+class ErrorHandlerTryingToRecover extends Component<Props, State> {
+  private static readonly waitTimeAfterErrorMsec = 6000
+
   constructor(props: Props) {
     super(props)
     this.state = {hasError: false, error: null}
   }
 
-  static cleanup = () => {
-    // Remove the current chat history, just in case it contains problematic data. It's better to lose the chat
-    // history than to have the app crash and not be able to recover.
+  static readonly cleanup = () => {
+    // Remove the current chat, just in case it contains problematic data. It's better to lose the last chat
+    // than to have the app crash and not be able to recover.
+    exportData("conversations", "chat")
     removeConversationsHistory()
     removeSelectedConversation()
   }
@@ -52,18 +55,24 @@ class ErrorHandlerClearHistory extends Component<Props, State> {
     // You can also log the error to an error reporting service
     console.log("componentDidCatch: Uncaught exception")
     console.log({error, errorInfo})
-    ErrorHandlerClearHistory.cleanup()
+    ErrorHandlerTryingToRecover.cleanup()
   }
 
   render() {
     if (this.state.hasError) {
       setTimeout(function () {
         window.location.reload()
-      }, 5000)
+      }, ErrorHandlerTryingToRecover.waitTimeAfterErrorMsec)
       return (
         <div>
           <h1>ERROR:</h1>
           <div>We encountered a serious technical problem, and we could not easily recover from it.</div>
+          <div>-</div>
+          <div>
+            We had to clear your conversation history here, but automatically saved the history to your{" "}
+            <strong>Downloads</strong> folder. You should be able to recover them from there.
+          </div>
+          <div>-</div>
           <div>Refresh this page, or wait until Chatty reloads automatically in a couple of seconds.</div>
         </div>
       )
@@ -73,4 +82,4 @@ class ErrorHandlerClearHistory extends Component<Props, State> {
   }
 }
 
-export default ErrorHandlerClearHistory
+export default ErrorHandlerTryingToRecover

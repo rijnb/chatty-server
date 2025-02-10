@@ -158,6 +158,13 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-02-10
+
+#### Bug fixes
+
+- When a fatal error is encountered, the conversation history is now exported to
+  the Downloads folder first.
+
 ### 2024-09-09
 
 #### Features
