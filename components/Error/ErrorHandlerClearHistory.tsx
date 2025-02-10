@@ -19,6 +19,7 @@
 import React, {Component, ErrorInfo, ReactNode} from "react"
 
 import {removeConversationsHistory, removeSelectedConversation} from "@/utils/app/conversations"
+import {exportData} from "@/utils/app/export"
 
 interface Props {
   children: ReactNode
@@ -38,6 +39,7 @@ class ErrorHandlerClearHistory extends Component<Props, State> {
   static cleanup = () => {
     // Remove the current chat history, just in case it contains problematic data. It's better to lose the chat
     // history than to have the app crash and not be able to recover.
+    exportData("conversations", "chat")
     removeConversationsHistory()
     removeSelectedConversation()
   }
@@ -64,6 +66,12 @@ class ErrorHandlerClearHistory extends Component<Props, State> {
         <div>
           <h1>ERROR:</h1>
           <div>We encountered a serious technical problem, and we could not easily recover from it.</div>
+          <div>-</div>
+          <div>
+            We had to clear your conversation history here, but automatically saved the history to your{" "}
+            <strong>Downloads</strong> folder. You should be able to recover them from there.
+          </div>
+          <div>-</div>
           <div>Refresh this page, or wait until Chatty reloads automatically in a couple of seconds.</div>
         </div>
       )
