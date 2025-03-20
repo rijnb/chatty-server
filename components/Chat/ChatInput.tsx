@@ -268,7 +268,6 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
   }
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
     const items = e.clipboardData.items;
 
     for (const item of items) {
