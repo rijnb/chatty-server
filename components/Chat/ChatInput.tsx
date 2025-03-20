@@ -267,6 +267,20 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     }, 3000)
   }
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    const items = e.clipboardData.items;
+
+    for (const item of items) {
+      if (item.kind === 'file' && item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          addImageToPrompt(file);
+        }
+      }
+    }
+  }
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPromptList) {
       if (e.key === "ArrowDown") {
@@ -460,6 +474,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             onCompositionEnd={() => setIsTyping(false)}
             onChange={handleContentChange}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
           />
           <button
             data-testid="chat-send"
