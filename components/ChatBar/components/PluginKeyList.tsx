@@ -15,16 +15,18 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { IconKey } from "@tabler/icons-react";
+import React, { ChangeEvent, useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import {IconKey} from "@tabler/icons-react"
-import React, {useContext, useState} from "react"
-import {useTranslation} from "react-i18next"
 
-import ChatBarContext from "@/components/ChatBar/ChatBar.context"
-import SidebarButton from "@/components/Sidebar/SidebarButton"
-import {Button, Dialog, FormHeader, FormLabel, FormText, Input} from "@/components/Styled"
-import {useHomeContext} from "@/pages/api/home/home.context"
-import {PluginID} from "@/types/plugin"
+
+import ChatBarContext from "@/components/ChatBar/ChatBar.context";
+import SidebarButton from "@/components/Sidebar/SidebarButton";
+import { Button, Dialog, FormHeader, FormLabel, FormText, Input } from "@/components/Styled";
+import { useHomeContext } from "@/pages/api/home/home.context";
+import { PluginID } from "@/types/plugin";
+
 
 export const PluginKeyList = () => {
   const {t} = useTranslation("common")
@@ -82,7 +84,7 @@ export const PluginKeyList = () => {
           <Input
             type="password"
             value={googleApiKey}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setGoogleApiKey(e.target.value)
             }}
           />
@@ -91,7 +93,7 @@ export const PluginKeyList = () => {
           <Input
             type="password"
             value={googleCseId}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setGoogleCseId(e.target.value)
             }}
           />
