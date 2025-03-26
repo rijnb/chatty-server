@@ -15,8 +15,9 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {OpenAIModel, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
-import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
+import { OpenAIModel, OpenAIModels, maxInputTokensForModel, maxOutputTokensForModel } from "@/types/openai";
+import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from "@/utils/app/const";
+
 
 export const config = {
   runtime: "edge"
@@ -54,7 +55,6 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const json = await response.json()
-    const uniqueModelIds = new Set()
     const models: OpenAIModel[] = json.data
       .map((model: any) => {
         return {
@@ -67,7 +67,15 @@ const handler = async (req: Request): Promise<Response> => {
       .filter(Boolean)
       // Filter out unsupported models:
       .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
-      // Filter out duplicate models:
+
+    // Temporary solution to add and remove specific models for TomTom Azure deployment.
+    const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"], OpenAIModels["gpt-4o-mini"]] : []
+    const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
+
+    const uniqueModelIds = new Set()
+    const editedModels = models
+      .filter((model) => !removeVisibleModels.includes(model.id))
+      .concat(addHiddenModels)
       .filter((model: OpenAIModel) => {
         if (uniqueModelIds.has(model.id)) {
           return false
@@ -77,8 +85,10 @@ const handler = async (req: Request): Promise<Response> => {
         }
       })
       .sort((a: OpenAIModel, b: OpenAIModel) => a.id.localeCompare(b.id))
-    console.debug(`Found ${models.length} models: ${models.map((model) => model.id).join(", ")}`)
-    return new Response(JSON.stringify(models), {status: 200})
+    console.debug(
+      `Found ${editedModels.length} models: ${editedModels.map((model) => model.id).join(", ")}, added: ${addHiddenModels.map((model) => model.id).join(", ")}, removed: ${removeVisibleModels.join(", ")}`
+    )
+    return new Response(JSON.stringify(editedModels), {status: 200})
   } catch (error) {
     console.error(`Error retrieving models, error:${error}`)
     return new Response("Error", {status: 500, statusText: error ? JSON.stringify(error) : ""})
