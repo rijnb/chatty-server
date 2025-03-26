@@ -15,12 +15,14 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { useTranslation } from "next-i18next";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import {useTranslation} from "next-i18next"
-import {useEffect, useMemo, useRef, useState} from "react"
 
-import {Button, Dialog, FormDisclaimer, FormLabel, Input, TextArea} from "@/components/Styled"
-import {Prompt} from "@/types/prompt"
+
+import { Button, Dialog, FormDisclaimer, FormLabel, Input, TextArea } from "@/components/Styled";
+import { Prompt } from "@/types/prompt";
+
 
 interface Props {
   prompt: Prompt
@@ -57,16 +59,16 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
         ref={nameInputRef}
         placeholder={t("A name for your prompt.")}
         value={name}
-        onChange={(e) => setName(e.target.value)}
-        onBlur={(e) => setName(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+        onBlur={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
       />
 
       <FormLabel className="mt-2">{t("Description")}</FormLabel>
       <TextArea
         placeholder={t("A description for your prompt.")}
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        onBlur={(e) => setDescription(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+        onBlur={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
         rows={3}
       />
 
@@ -76,8 +78,8 @@ export const PromptEditModal = ({prompt, onClose, onUpdatePrompt}: Props) => {
           "Use {{...}} to specify one or more prompt variables. For example:\n\n| Translate: {{Paste your text}} \n| Into this language: {{Specify target language}}\n\nThis will show 2 input boxes, one for the text and one for the target language. If you specify {{#DROP}} as the last parameter, a drop zone for files to be read is shown."
         )}
         value={content}
-        onChange={(e) => setContent(e.target.value)}
-        onBlur={(e) => setContent(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
+        onBlur={(e: ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
         rows={9}
       />
 

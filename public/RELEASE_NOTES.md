@@ -158,7 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
-=======
+### 2025-03-26
+
+#### Features
+
+- Added support for pasting images from the clipboard.
+
 ### 2024-09-09
 
 #### Features
@@ -177,7 +182,7 @@ _Rijn Buve & Oleksii Kulyk_
 
 - Chatty starts a new conversation earlier than before (after 500 tokens, instead of 4000), when
   you start the application.
-- A button to cleanup old conversations is added. Only the last 10 conversations that are not 
+- A button to cleanup old conversations is added. Only the last 10 conversations that are not
   stored in folders are kept.
 
 ### 2024-07-06

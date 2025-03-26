@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const doc = dom.window.document
           const parsed = new Readability(doc).parse()
           if (parsed) {
-            let sourceText = cleanSourceText(parsed.textContent)
+            let sourceText = cleanSourceText(parsed.textContent ?? "")
             return {
               ...source,
               text: sourceText.slice(0, 3000)
