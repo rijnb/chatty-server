@@ -23,8 +23,9 @@ function createStyledComponent<P extends HTMLAttributes<HTMLElement>>(
   baseStyles: string,
   extraProps?: P
 ) {
+  // TODO [techdebt]: The 'any' type was 'P' but is no usuable. This is a workaround.
   const component = React.forwardRef(
-    ({className, children, ...props}: P, ref: ForwardedRef<HTMLElement>): ReactElement => {
+    ({className, children, ...props}: any, ref: ForwardedRef<HTMLElement>): ReactElement => {
       const classes = [className, baseStyles].filter(Boolean).join(" ")
 
       const allProps = {
