@@ -25,9 +25,10 @@
  */
 
 export interface OpenAIModel {
-  id: string // The model identifier.
-  inputTokenLimit: number // The maximum number of input tokens for this model; if 0, the model is not supported.
-  outputTokenLimit: number // The maximum number of input tokens for this model; if 0, the model is not supported.
+  id: string; // The model identifier.
+  inputTokenLimit: number; // The maximum number of input tokens for this model; if 0, the model is not supported.
+  outputTokenLimit: number; // The maximum number of output tokens for this model; if 0, the model is not supported.
+  openAiReasoningModel?: boolean; // Indicates if the model is an OpenAI reasoning model like o1 or o3-mini
 }
 
 const K4 = 4 * 1024
@@ -45,7 +46,8 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
   ["gpt-4-turbo-preview"]: {id: "gpt-4-turbo-preview", inputTokenLimit: K128, outputTokenLimit: K4},
   ["gpt-4-turbo"]: {id: "gpt-4-turbo", inputTokenLimit: K128, outputTokenLimit: K4},
   ["gpt-4o"]: {id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4},
-  ["gpt-4o-mini"]: {id: "gpt-4o-mini", inputTokenLimit: K128, outputTokenLimit: K16}
+  ["gpt-4o-mini"]: {id: "gpt-4o-mini", inputTokenLimit: K128, outputTokenLimit: K16},
+  ["o3-mini"]: {id: "o3-mini", inputTokenLimit: K128, outputTokenLimit: K32, openAiReasoningModel: true}
 }
 
 export const maxInputTokensForModel = (modelId: string) => {
@@ -54,6 +56,10 @@ export const maxInputTokensForModel = (modelId: string) => {
 
 export const maxOutputTokensForModel = (modelId: string) => {
   return OpenAIModels[modelId]?.outputTokenLimit ?? 0
+}
+
+export const isOpenAiReasoningModel = (modelId: string) => {
+  return OpenAIModels[modelId]?.openAiReasoningModel ?? false
 }
 
 export const FALLBACK_OPENAI_MODEL = "gpt-35-turbo"
