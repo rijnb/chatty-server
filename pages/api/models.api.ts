@@ -15,7 +15,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {OpenAIModel, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
+import {OpenAIModel, maxInputTokensForModel, maxOutputTokensForModel, isOpenAiReasoningModel} from "@/types/openai"
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
 export const config = {
@@ -60,14 +60,12 @@ const handler = async (req: Request): Promise<Response> => {
         return {
           id: model.id,
           inputTokenLimit: maxInputTokensForModel(model.id),
-          outputTokenLimit: maxOutputTokensForModel(model.id)
-        }
+          outputTokenLimit: maxOutputTokensForModel(model.id),
+          isOpenAiReasoningModel: isOpenAiReasoningModel(model.id), 
+        };
       })
-      // Filter "falsy" items:
       .filter(Boolean)
-      // Filter out unsupported models:
       .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
-      // Filter out duplicate models:
       .filter((model: OpenAIModel) => {
         if (uniqueModelIds.has(model.id)) {
           return false

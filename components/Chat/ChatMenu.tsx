@@ -19,7 +19,7 @@
 import {IconBulbFilled, IconBulbOff, IconHelp, IconMarkdown, IconScreenshot} from "@tabler/icons-react"
 import {useTranslation} from "next-i18next"
 import {useTheme} from "next-themes"
-import React, {useRef, useState} from "react"
+import React, {useEffect, useRef, useState} from "react"
 
 import useClickAway from "@/components/Hooks/useClickAway"
 import useSaveMarkdown from "@/components/Hooks/useSaveMarkdown"
@@ -27,7 +27,7 @@ import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
-import {OpenAIModel, maxOutputTokensForModel} from "@/types/openai"
+import {OpenAIModel, isOpenAiReasoningModel, maxOutputTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 
 interface Props {
@@ -55,6 +55,14 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const maxOutputTokens =
     Math.min(conversation.maxTokens, maxOutputTokensForModel(conversation.modelId)) ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
+  const reasoningEffort = conversation.reasoningEffort ?? "low"
+
+  const [openAiReasoningModel, setOpenAiReasoningModel] = useState(isOpenAiReasoningModel(modelId))
+
+  useEffect(() => {
+    setOpenAiReasoningModel(isOpenAiReasoningModel(modelId))
+  }, [modelId])
+
   const ref = useRef<HTMLDivElement>(null)
 
   useClickAway(ref, isMenuOpen, () => {
@@ -67,6 +75,11 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
   const handleTemperatureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     conversation.temperature = Number(event.target.value)
+    onUpdateConversation(conversation)
+  }
+
+  const handleReasoningEffortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    conversation.reasoningEffort = event.target.value
     onUpdateConversation(conversation)
   }
 
@@ -129,25 +142,40 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
           <textarea id="prompt" className="mt-2" rows={6} value={prompt} onChange={handlePromptChange} />
         </div>
 
-        <div className="flex flex-col">
-          <FormLabel htmlFor="temperature">Temperature</FormLabel>
-          <FormText>
-            Higher values means the model will take more risks or be more creative. Try 0 for more predictable answers
-            and 1 for more creative ones.
-          </FormText>
-          <Range
-            id="temperature"
-            className="mt-2"
-            min="0"
-            max="1"
-            step="0.1"
-            value={temperature}
-            onChange={handleTemperatureChange}
-          />
-          <FormText className="text-center">{temperature}</FormText>
-        </div>
+        {openAiReasoningModel ? (
+          <div className="flex flex-col pt-2">
+            <FormLabel htmlFor="reasoningEffort">Reasoning Effort</FormLabel>
+            <FormText>
+              Choose the reasoning effort level:
+              • Low: Fast, concise responses with basic reasoning. • Medium: Balanced answers with clear reasoning. • High: In-depth, step-by-step answers for detailed analysis
+            </FormText>
+            <Select id="reasoningEffort" className="mt-2" value={reasoningEffort} onChange={handleReasoningEffortChange}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </Select>
+          </div>
+        ) : (
+          <div className="flex flex-col pt-2">
+            <FormLabel htmlFor="temperature">Temperature</FormLabel>
+            <FormText>
+              Higher values means the model will take more risks or be more creative. Try 0 for more predictable answers
+              and 1 for more creative ones.
+            </FormText>
+            <Range
+              id="temperature"
+              className="mt-2"
+              min="0"
+              max="1"
+              step="0.1"
+              value={temperature}
+              onChange={handleTemperatureChange}
+            />
+            <FormText className="text-center">{temperature}</FormText>
+          </div>
+        )}
 
-        <div className="flex flex-col">
+        <div className="flex flex-col pt-2">
           <FormLabel htmlFor="maxTokens">Response token limit</FormLabel>
           <FormText>The maximum number of tokens used to generate an answer.</FormText>
           <Range
