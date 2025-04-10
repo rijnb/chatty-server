@@ -20,13 +20,13 @@ import {v4 as uuidv4} from "uuid"
 
 import {Conversation} from "@/types/chat"
 import {maxOutputTokensForModel} from "@/types/openai"
-import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_REASONING_EFFORT, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {localStorageSafeGetItem, localStorageSafeRemoveItem, localStorageSafeSetItem} from "@/utils/app/storage"
 
 export const LOCAL_STORAGE_SELECTED_CONVERSATION = "selectedConversation"
 export const STORAGE_KEY_HISTORY = "history"
 
-export const createNewConversation = (name: string, modelId: string, temperature: number): Conversation => {
+export const createNewConversation = (name: string, modelId: string, temperature: number, reasoningEffort: string): Conversation => {
   return {
     id: uuidv4(),
     name: name,
@@ -35,9 +35,10 @@ export const createNewConversation = (name: string, modelId: string, temperature
     modelId: modelId,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
     temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
-    maxTokens: OPENAI_API_MAX_TOKENS,
+    maxTokens: maxOutputTokensForModel(modelId) || OPENAI_API_MAX_TOKENS,
     folderId: undefined,
-    time: new Date().getTime()
+    time: new Date().getTime(),
+    reasoningEffort: reasoningEffort || OPENAI_DEFAULT_REASONING_EFFORT
   }
 }
 

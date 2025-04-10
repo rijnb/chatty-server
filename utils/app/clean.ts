@@ -16,7 +16,7 @@
  * SOFTWARE.
  */
 
-import {OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
+import {OPENAI_DEFAULT_REASONING_EFFORT, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "./const"
 import {Conversation} from "@/types/chat"
 import {OpenAIModel} from "@/types/openai"
 
@@ -49,6 +49,12 @@ export const cleanSelectedConversation = (
     updatedConversation = {
       ...updatedConversation,
       temperature: updatedConversation.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+    }
+  }
+  if (updatedConversation.reasoningEffort === undefined || updatedConversation.reasoningEffort === null) {
+    updatedConversation = {
+      ...updatedConversation,
+      reasoningEffort: updatedConversation.reasoningEffort ?? OPENAI_DEFAULT_REASONING_EFFORT
     }
   }
   if (!updatedConversation.folderId) {
