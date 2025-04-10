@@ -43,11 +43,11 @@ export const createNewConversation = (
     tokenCount: 0,
     modelId: modelId,
     prompt: OPENAI_DEFAULT_SYSTEM_PROMPT,
-    temperature: temperature || OPENAI_DEFAULT_TEMPERATURE,
+    temperature: temperature,
     maxTokens: maxOutputTokensForModel(modelId) || OPENAI_API_MAX_TOKENS,
     folderId: undefined,
     time: new Date().getTime(),
-    reasoningEffort: reasoningEffort || OPENAI_DEFAULT_REASONING_EFFORT
+    reasoningEffort: reasoningEffort
   }
 }
 

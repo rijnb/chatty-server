@@ -27,7 +27,12 @@ import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
 import {OpenAIModel, isOpenAIReasoningModel, maxOutputTokensForModel} from "@/types/openai"
-import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {
+  OPENAI_API_MAX_TOKENS,
+  OPENAI_DEFAULT_REASONING_EFFORT,
+  OPENAI_DEFAULT_SYSTEM_PROMPT,
+  OPENAI_DEFAULT_TEMPERATURE
+} from "@/utils/app/const"
 
 interface Props {
   conversation: Conversation
@@ -54,7 +59,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
   const maxOutputTokens =
     Math.min(conversation.maxTokens, maxOutputTokensForModel(conversation.modelId)) ?? OPENAI_API_MAX_TOKENS
   const prompt = conversation.prompt ?? OPENAI_DEFAULT_SYSTEM_PROMPT
-  const reasoningEffort = conversation.reasoningEffort ?? "low"
+  const reasoningEffort = conversation.reasoningEffort ?? OPENAI_DEFAULT_REASONING_EFFORT
 
   const [openAiReasoningModel, setOpenAiReasoningModel] = useState(isOpenAIReasoningModel(modelId))
 
@@ -143,7 +148,7 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
         {openAiReasoningModel ? (
           <div className="flex flex-col pt-2">
-            <FormLabel htmlFor="reasoningEffort">Reasoning Effort</FormLabel>
+            <FormLabel htmlFor="reasoningEffort">Reasoning effort</FormLabel>
             <FormText>
               Choose the reasoning effort level: • Low: Fast, concise responses with basic reasoning. • Medium: Balanced
               answers with clear reasoning. • High: In-depth, step-by-step answers for detailed analysis.

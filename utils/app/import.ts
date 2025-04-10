@@ -17,7 +17,15 @@
  */
 import {Conversation} from "@/types/chat"
 import {FolderInterface} from "@/types/folder"
-import {ConversationV4, FileFormatV4, FileFormatV5, FileFormatV6, PromptV4, SupportedFileFormats} from "@/types/import"
+import {
+  ConversationV4,
+  FileFormatV4,
+  FileFormatV5,
+  FileFormatV6,
+  FileFormatV7,
+  PromptV4,
+  SupportedFileFormats
+} from "@/types/import"
 import {Prompt} from "@/types/prompt"
 import {
   getConversationsHistory,
@@ -33,6 +41,18 @@ type Data = {
   history: Conversation[]
   prompts: Prompt[]
   folders: FolderInterface[]
+}
+
+export function isFileFormatV7(obj: any): obj is FileFormatV7 {
+  return obj.version === 7
+}
+
+const readFileFormatV7 = (data: FileFormatV7): Data => {
+  return {
+    history: data.history as Conversation[],
+    prompts: data.prompts as Prompt[],
+    folders: data.folders as FolderInterface[]
+  }
 }
 
 export function isFileFormatV6(obj: any): obj is FileFormatV6 {

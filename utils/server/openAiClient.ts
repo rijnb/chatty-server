@@ -108,7 +108,7 @@ export const ChatCompletionStream = async (
   apiKey: string,
   messages: Message[],
   dangerouslyAllowBrowser = false,
-  reasoningEffort?: string
+  reasoningEffort: string
 ) => {
   const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
   const openai = createOpenAiClient(configuration)

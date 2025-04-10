@@ -74,7 +74,7 @@ export interface ChatBody {
   prompt: string
   temperature: number
   outputTokenLimit: number
-  reasoningEffort?: string
+  reasoningEffort: string
 }
 
 // This type is used to store a conversation in the store.
@@ -89,7 +89,7 @@ export interface Conversation {
   maxTokens: number
   folderId: string | undefined
   time: number
-  reasoningEffort?: string
+  reasoningEffort: string
 }
 
 export const getMessageAsString = (message: Message): string => {
