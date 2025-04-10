@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {DocumentProps, Head, Html, Main, NextScript} from "next/document"
 
 import i18nextConfig from "@/next-i18next.config"

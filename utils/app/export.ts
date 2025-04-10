@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {FolderType} from "@/types/folder"
 import {ConversationV6, FileFormatV6, FolderInterfaceV4, PromptV5} from "@/types/import"
 import {getConversationsHistory} from "@/utils/app/conversations"

@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {useContext, useEffect} from "react"
 import {useTranslation} from "react-i18next"
 import {v4 as uuidv4} from "uuid"

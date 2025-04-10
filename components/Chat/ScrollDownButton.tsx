@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {IconArrowDown} from "@tabler/icons-react"
 import React from "react"
 
@@ -33,7 +32,7 @@ const ScrollDownButton = ({container}: Props) => {
 
   return (
     <button
-      className="flex h-7 w-7 items-center justify-center  rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:bg-gray-700 dark:text-neutral-200 dark:focus:ring-gray-500"
+      className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-300 text-gray-800 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:bg-gray-700 dark:text-neutral-200 dark:focus:ring-gray-500"
       onClick={handleScrollToBottom}
     >
       <IconArrowDown size={18} />
