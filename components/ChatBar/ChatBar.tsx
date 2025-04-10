@@ -30,7 +30,7 @@ import {Conversation, MessagePartText} from "@/types/chat"
 import {SupportedFileFormats} from "@/types/import"
 import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
 import {PluginID, PluginKey} from "@/types/plugin"
-import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
+import {NEW_CONVERSATION_TITLE, OPENAI_DEFAULT_REASONING_EFFORT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {
   createNewConversation,
   getConversationsHistory,
@@ -125,7 +125,8 @@ export const ChatBar = () => {
       const newConversation = createNewConversation(
         t(NEW_CONVERSATION_TITLE),
         defaultModelId,
-        OPENAI_DEFAULT_TEMPERATURE
+        OPENAI_DEFAULT_TEMPERATURE,
+        OPENAI_DEFAULT_REASONING_EFFORT
       )
       homeDispatch({field: "selectedConversation", value: newConversation})
     }
@@ -145,7 +146,8 @@ export const ChatBar = () => {
           : createNewConversation(
               t(NEW_CONVERSATION_TITLE),
               defaultModelId || FALLBACK_OPENAI_MODEL,
-              OPENAI_DEFAULT_TEMPERATURE
+              OPENAI_DEFAULT_TEMPERATURE,
+              OPENAI_DEFAULT_REASONING_EFFORT
             )
     })
     homeDispatch({field: "folders", value: folders})
@@ -173,7 +175,12 @@ export const ChatBar = () => {
       defaultModelId &&
         homeDispatch({
           field: "selectedConversation",
-          value: createNewConversation(t(NEW_CONVERSATION_TITLE), defaultModelId, OPENAI_DEFAULT_TEMPERATURE)
+          value: createNewConversation(
+            t(NEW_CONVERSATION_TITLE),
+            defaultModelId,
+            OPENAI_DEFAULT_TEMPERATURE,
+            OPENAI_DEFAULT_REASONING_EFFORT
+          )
         })
     }
   }
