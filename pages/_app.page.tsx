@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {AppInsightsContext} from "@microsoft/applicationinsights-react-js"
 import {appWithTranslation} from "next-i18next"
 import {ThemeProvider} from "next-themes"

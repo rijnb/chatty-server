@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {FALLBACK_OPENAI_MODEL} from "@/types/openai"
 
 /**
@@ -59,3 +58,5 @@ export const OPENAI_ALLOW_MODEL_SELECTION =
 
 // Other constants.
 export const NEW_CONVERSATION_TITLE = "New conversation"
+
+export const OPENAI_DEFAULT_REASONING_EFFORT = process.env.OPENAI_DEFAULT_REASONING_EFFORT ?? "medium"

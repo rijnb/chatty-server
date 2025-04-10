@@ -15,15 +15,12 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js";
-import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
+import {useAppInsightsContext} from "@microsoft/applicationinsights-react-js"
+import {ChangeEvent, DragEvent, useEffect, useRef, useState} from "react"
 
-
-
-import { Button, Dialog, FormHeader, FormLabel, FormText, TextArea } from "@/components/Styled";
-import { Prompt } from "@/types/prompt";
-import { isLanguageSupported } from "@/utils/app/codeblock";
-
+import {Button, Dialog, FormHeader, FormLabel, FormText, TextArea} from "@/components/Styled"
+import {Prompt} from "@/types/prompt"
+import {isLanguageSupported} from "@/utils/app/codeblock"
 
 interface Props {
   prompt: Prompt

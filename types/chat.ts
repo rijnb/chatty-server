@@ -20,7 +20,7 @@
  * Note that the names of properties in this file are
  * dictated by the API interface of OpenAI.
  */
-export type Role = "system" | "assistant" | "user" | "tool"
+export type Role = "system" | "assistant" | "user" | "tool" | "developer"
 
 export interface MessagePartText {
   type: "text"
@@ -46,7 +46,7 @@ export interface UserMessage {
 }
 
 export interface SystemMessage {
-  role: "system"
+  role: "system" | "developer"
   content: string
   name?: string
 }
@@ -74,6 +74,7 @@ export interface ChatBody {
   prompt: string
   temperature: number
   outputTokenLimit: number
+  reasoningEffort: string
 }
 
 // This type is used to store a conversation in the store.
@@ -88,6 +89,7 @@ export interface Conversation {
   maxTokens: number
   folderId: string | undefined
   time: number
+  reasoningEffort: string
 }
 
 export const getMessageAsString = (message: Message): string => {
@@ -136,6 +138,8 @@ export const createMessage = (role: string, content: any): Message => {
   if (role === "user") {
     return {role, content: [{type: "text", text: content}]}
   } else if (role === "system") {
+    return {role, content}
+  } else if (role === "developer") {
     return {role, content}
   } else if (role === "assistant") {
     return {role, content}

@@ -71,7 +71,9 @@ describe("Chat Error Handling", () => {
         1.2,
         32,
         "somekey",
-        [{role: "user", content: "ping"}]
+        [{role: "user", content: "ping"}],
+        false,
+        undefined
       )
     })
   })

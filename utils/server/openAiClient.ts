@@ -17,9 +17,11 @@
  */
 import {OpenAIStream, StreamingTextResponse} from "ai"
 import OpenAI from "openai"
+import {ReasoningEffort} from "openai/resources/shared"
 
 import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_AZURE_DEPLOYMENT_ID, OPENAI_ORGANIZATION} from "../app/const"
 import {Message} from "@/types/chat"
+import {isOpenAIReasoningModel} from "@/types/openai"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
 export class OpenAIError extends Error {
@@ -105,7 +107,8 @@ export const ChatCompletionStream = async (
   maxTokens: number,
   apiKey: string,
   messages: Message[],
-  dangerouslyAllowBrowser = false
+  dangerouslyAllowBrowser = false,
+  reasoningEffort: string
 ) => {
   const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
   const openai = createOpenAiClient(configuration)
@@ -114,15 +117,33 @@ export const ChatCompletionStream = async (
     throw new Error("No messages in history")
   }
 
+  // Check if the model is a reasoning model
+  const isReasoningModel = isOpenAIReasoningModel(modelId)
+
   // Ask OpenAI for a streaming chat completion given the prompt
   try {
-    const response = await openai.chat.completions.create({
-      model: modelId,
-      messages: [{role: "system", content: systemPrompt}, ...messages],
-      max_tokens: maxTokens,
-      temperature: temperature,
-      stream: true
-    })
+    const response = await openai.chat.completions
+      .create({
+        model: modelId,
+        messages: [
+          {
+            role: isReasoningModel ? "developer" : "system",
+            content: systemPrompt
+          },
+          ...messages
+        ],
+        ...(isReasoningModel
+          ? {
+              reasoning_effort: reasoningEffort as ReasoningEffort,
+              max_completion_tokens: maxTokens
+            }
+          : {
+              temperature,
+              max_tokens: maxTokens
+            }),
+        stream: true
+      })
+      .asResponse()
 
     // Convert the response into a friendly text-stream
     const stream = OpenAIStream(response)

@@ -15,9 +15,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { OpenAIModel, OpenAIModels, maxInputTokensForModel, maxOutputTokensForModel } from "@/types/openai";
-import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from "@/utils/app/const";
-
+import {OpenAIModel, isOpenAIReasoningModel, maxInputTokensForModel, maxOutputTokensForModel} from "@/types/openai"
+import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION} from "@/utils/app/const"
 
 export const config = {
   runtime: "edge"
@@ -60,12 +59,11 @@ const handler = async (req: Request): Promise<Response> => {
         return {
           id: model.id,
           inputTokenLimit: maxInputTokensForModel(model.id),
-          outputTokenLimit: maxOutputTokensForModel(model.id)
+          outputTokenLimit: maxOutputTokensForModel(model.id),
+          isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
         }
       })
-      // Filter "falsy" items:
       .filter(Boolean)
-      // Filter out unsupported models:
       .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
 
     // Temporary solution to add and remove specific models for TomTom Azure deployment.

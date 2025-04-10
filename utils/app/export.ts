@@ -15,16 +15,15 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {FolderType} from "@/types/folder"
-import {ConversationV6, FileFormatV6, FolderInterfaceV4, PromptV5} from "@/types/import"
+import {ConversationV7, FileFormatV7, FolderInterfaceV4, PromptV5} from "@/types/import"
 import {getConversationsHistory} from "@/utils/app/conversations"
 import {generateFilename} from "@/utils/app/filename"
 import {getFolders} from "@/utils/app/folders"
 import {getPrompts} from "@/utils/app/prompts"
 
 export const exportData = (prefix: string, type: FolderType) => {
-  let conversationsToExport: ConversationV6[] = getConversationsHistory().map((conversation) => {
+  let conversationsToExport: ConversationV7[] = getConversationsHistory().map((conversation) => {
     const {modelId, ...rest} = conversation
     return {modelId: modelId, ...rest}
   })
@@ -40,8 +39,8 @@ export const exportData = (prefix: string, type: FolderType) => {
   /**
    * Create body of file.
    */
-  const data: FileFormatV6 = {
-    version: 6,
+  const data: FileFormatV7 = {
+    version: 7,
     history: type === "chat" ? conversationsToExport : [],
     prompts:
       type == "prompt"
@@ -55,7 +54,7 @@ export const exportData = (prefix: string, type: FolderType) => {
           })
         : [],
     folders: foldersToExport
-  } as FileFormatV6
+  } as FileFormatV7
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json"

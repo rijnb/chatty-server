@@ -19,7 +19,14 @@
 /**
  * Do not change this file format, unless there is an upgrade path defined from earlier formats.
  */
-export type SupportedFileFormats = FileFormatV6 | FileFormatV5 | FileFormatV4
+export type SupportedFileFormats = FileFormatV7 | FileFormatV6 | FileFormatV5 | FileFormatV4
+
+export interface FileFormatV7 {
+  version: 7
+  history: ConversationV7[]
+  folders: FolderInterfaceV4[]
+  prompts: PromptV5[]
+}
 
 export interface FileFormatV6 {
   version: 6
@@ -47,9 +54,18 @@ export interface FileFormatV4 {
  * They are not used in the app itself.
  */
 
-/**
- * V6.
- */
+export interface ConversationV7 {
+  id: string
+  name: string
+  messages: MessageV6[]
+  modelId: string
+  prompt: string
+  temperature: number
+  folderId: string | undefined
+  time: number
+  reasoningEffort: string
+}
+
 export interface ConversationV6 {
   id: string
   name: string
@@ -61,9 +77,6 @@ export interface ConversationV6 {
   time: number
 }
 
-/**
- * V5.
- */
 export interface ConversationV5 {
   id: string
   name: string
@@ -85,9 +98,6 @@ export interface PromptV5 {
   factory: boolean | undefined
 }
 
-/**
- * V4.
- */
 export interface ConversationV4 {
   id: string
   name: string
@@ -141,12 +151,22 @@ export interface ToolMessageV1 {
   name?: string
 }
 
+export interface DeveloperMessageV1 {
+  role: "developer"
+  content?: string | null
+  name?: string
+}
+
+export type MessageV6 = UserMessageV1 | SystemMessageV1 | AssistantMessageV1 | ToolMessageV1 | DeveloperMessageV1
+
 export type MessageV5 = UserMessageV1 | SystemMessageV1 | AssistantMessageV1 | ToolMessageV1
 
 export interface MessageV4 {
   role: RoleV4
   content: string
 }
+
+export type RoleV7 = "system" | "assistant" | "user" | "tool" | "developer"
 
 export type RoleV5 = "system" | "assistant" | "user" | "tool"
 

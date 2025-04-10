@@ -41,6 +41,7 @@ import {cleanConversationHistory, cleanSelectedConversation} from "@/utils/app/c
 import {
   NEW_CONVERSATION_TITLE,
   OPENAI_ALLOW_MODEL_SELECTION,
+  OPENAI_DEFAULT_REASONING_EFFORT,
   OPENAI_DEFAULT_TEMPERATURE,
   OPENAI_REUSE_MODEL
 } from "@/utils/app/const"
@@ -210,10 +211,11 @@ const Home = ({
         t(NEW_CONVERSATION_TITLE),
         allowModelSelection
           ? reuseModel
-            ? lastConversation?.modelId ?? defaultModelId
+            ? (lastConversation?.modelId ?? defaultModelId)
             : defaultModelId
           : defaultModelId,
-        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+        lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+        lastConversation?.reasoningEffort ?? OPENAI_DEFAULT_REASONING_EFFORT
       )
       const updatedConversations = [...conversations, newConversation]
       homeDispatch({field: "selectedConversation", value: newConversation})
@@ -436,10 +438,11 @@ const Home = ({
             t(NEW_CONVERSATION_TITLE),
             allowModelSelection
               ? reuseModel
-                ? lastConversation?.modelId ?? defaultModelId
+                ? (lastConversation?.modelId ?? defaultModelId)
                 : defaultModelId
               : defaultModelId,
-            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE
+            lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
+            lastConversation?.reasoningEffort ?? OPENAI_DEFAULT_REASONING_EFFORT
           )
           // Only add a new conversation to the history if there are existing conversations.
           if (cleanedConversationHistory.length > 0) {

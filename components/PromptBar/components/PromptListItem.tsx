@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {IconBuildingFactory2, IconCheck, IconPencil, IconTrash, IconUserCircle, IconX} from "@tabler/icons-react"
 import {DragEvent, MouseEventHandler, useContext, useState} from "react"
 

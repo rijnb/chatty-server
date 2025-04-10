@@ -48,7 +48,8 @@ const encoder = TiktokenEncoder.wrap(cl100k_base)
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const {messages, apiKey, modelId, prompt, temperature, outputTokenLimit} = (await req.json()) as ChatBody
+    const {messages, apiKey, modelId, prompt, temperature, outputTokenLimit, reasoningEffort} =
+      (await req.json()) as ChatBody
     const inputTokenLimit = maxInputTokensForModel(modelId)
 
     const maxReplyTokensToUse = outputTokenLimit || OPENAI_API_MAX_TOKENS
@@ -81,7 +82,9 @@ maxTokens:${maxReplyTokensToUse}}`)
       temperatureToUse,
       maxReplyTokensToUse,
       apiKey,
-      messagesToSend
+      messagesToSend,
+      false,
+      reasoningEffort
     )
   } catch (error) {
     if (error instanceof OpenAIRateLimited) {
