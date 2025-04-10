@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {useTranslation} from "next-i18next"
 import React, {useState} from "react"
 
@@ -27,8 +26,7 @@ import {
   MessagePartText,
   UserMessage,
   getMessageAsImageUrlsOnly,
-  getMessageAsString,
-  getMessageAsStringOnlyText
+  getMessageAsString
 } from "@/types/chat"
 
 interface EditPanelProps {

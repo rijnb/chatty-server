@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import "@testing-library/jest-dom"
 import fetchMock from "jest-fetch-mock"
 import {TextDecoder, TextEncoder} from "util"

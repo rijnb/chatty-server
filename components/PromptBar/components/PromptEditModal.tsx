@@ -15,14 +15,11 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { useTranslation } from "next-i18next";
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import {useTranslation} from "next-i18next"
+import {ChangeEvent, useEffect, useMemo, useRef, useState} from "react"
 
-
-
-import { Button, Dialog, FormDisclaimer, FormLabel, Input, TextArea } from "@/components/Styled";
-import { Prompt } from "@/types/prompt";
-
+import {Button, Dialog, FormDisclaimer, FormLabel, Input, TextArea} from "@/components/Styled"
+import {Prompt} from "@/types/prompt"
 
 interface Props {
   prompt: Prompt

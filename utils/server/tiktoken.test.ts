@@ -15,7 +15,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import {Message} from "@/types/chat"
 import {OpenAILimitExceeded} from "@/utils/server/openAiClient"
 import {TiktokenEncoder} from "@/utils/server/tiktoken"

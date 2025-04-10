@@ -211,7 +211,7 @@ const Home = ({
         t(NEW_CONVERSATION_TITLE),
         allowModelSelection
           ? reuseModel
-            ? lastConversation?.modelId ?? defaultModelId
+            ? (lastConversation?.modelId ?? defaultModelId)
             : defaultModelId
           : defaultModelId,
         lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,
@@ -438,7 +438,7 @@ const Home = ({
             t(NEW_CONVERSATION_TITLE),
             allowModelSelection
               ? reuseModel
-                ? lastConversation?.modelId ?? defaultModelId
+                ? (lastConversation?.modelId ?? defaultModelId)
                 : defaultModelId
               : defaultModelId,
             lastConversation?.temperature ?? OPENAI_DEFAULT_TEMPERATURE,

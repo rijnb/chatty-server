@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-04-10
+
+#### Features
+
+- Add support for openAI reasoning models like `o3-mini`, `o1`. (Thanks, Dishant Pawar!)
+
 ### 2025-03-26
 
 #### Features
