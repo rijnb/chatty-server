@@ -43,6 +43,10 @@ type Data = {
   folders: FolderInterface[]
 }
 
+// ----------
+// Important: Make sure 'readData' and 'isValidJsonData' are updated as well with new file formats!
+// ----------
+
 export function isFileFormatV7(obj: any): obj is FileFormatV7 {
   return obj.version === 7
 }
@@ -98,7 +102,9 @@ const readFileFormatV4 = (data: FileFormatV4): Data => {
 }
 
 export const readData = (data: SupportedFileFormats): Data => {
-  if (isFileFormatV6(data)) {
+  if (isFileFormatV7(data)) {
+    return readFileFormatV7(data)
+  } else if (isFileFormatV6(data)) {
     return readFileFormatV6(data)
   } else if (isFileFormatV5(data)) {
     return readFileFormatV5(data)
@@ -125,7 +131,7 @@ export const isValidJsonData = (jsonData: any): string[] => {
     version === null ||
     version === undefined ||
     typeof version !== "number" ||
-    ![4, 5, 6].includes(version) ||
+    ![4, 5, 6, 7].includes(version) ||
     (history && !Array.isArray(history)) ||
     (prompts && !Array.isArray(prompts)) ||
     (folders && !Array.isArray(folders))
