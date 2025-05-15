@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-05-15
+
+#### Features
+
+- Fixed bug in import/export functions.
+
 ### 2025-04-10
 
 #### Features
