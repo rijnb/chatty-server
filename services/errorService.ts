@@ -29,15 +29,24 @@ const useErrorService = () => {
         return !error
           ? null
           : ({
-              title: t("Error fetching conversation models."),
-              code: error.status || "unknown",
-              messageLines: error.statusText
-                ? [error.statusText]
-                : [
-                    t("Make sure your OpenAI API key and unlock codes are set in the left of the sidebar."),
-                    t("If you completed this step and the problems persists, the server may be experiencing issues.")
-                  ]
-            } as ErrorMessage)
+            title: t("Oops. There's a problem talking to the OpenAI server..."),
+            code: error.status || "unknown",
+            messageLines:
+              [
+                t("I'm sorry... I can't seem to retrieve information about"),
+                t("the OpenAI models from the server."),
+                t("-"),
+                t("If you are using an OpenAI API key, or an Unlock code,"),
+                t("please make sure it is entered correctly in the left sidebar."),
+                t("-"),
+                t("Or perhaps the server is down for a moment, and you need to"),
+                t("wait until it's back up again. Anyway, I'm afraid there's not"),
+                t("much more I can do to help at this moment."),
+                t("-"),
+                t("The message I got back from the server was:"),
+                "'" + error.statusText + "'"
+              ]
+          } as ErrorMessage)
       },
       [t]
     )
