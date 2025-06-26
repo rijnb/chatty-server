@@ -24,7 +24,7 @@ import {
   OPENAI_API_HOST_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_AZURE_DEPLOYMENT_ID,
-  OPENAI_ORGANIZATION
+  OPENAI_ORGANIZATION, SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "../app/const"
 import {Message} from "@/types/chat"
 import {isOpenAIReasoningModel} from "@/types/openai"
@@ -34,29 +34,20 @@ import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 let currentHost = OPENAI_API_HOST
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
-const HOST_SWITCH_DURATION = 30 * 60 * 1000 // 30 minutes in milliseconds.
-
-function switchToPrimaryHost(): void {
-  if (currentHost !== OPENAI_API_HOST) {
-    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
-    currentHost = OPENAI_API_HOST
-  }
-  switchBackToPrimaryHostTime = undefined
-}
-
 function switchToBackupHost(): void {
   if (currentHost !== OPENAI_API_HOST_BACKUP) {
-    console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${HOST_SWITCH_DURATION / 60000} minutes.`)
+    console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`)
     currentHost = OPENAI_API_HOST_BACKUP
-    switchBackToPrimaryHostTime = Date.now() + HOST_SWITCH_DURATION
+    switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   }
 }
 
-function getCurrentHost(): string {
-  if (switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
-    switchToPrimaryHost()
+function switchBackToPrimaryHostIfNeeded(): void {
+  if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
+    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
+    currentHost = OPENAI_API_HOST
+    switchBackToPrimaryHostTime = undefined
   }
-  return currentHost
 }
 
 export class OpenAIError extends Error {
@@ -106,11 +97,11 @@ export class OpenAILimitExceeded extends OpenAIError {
 }
 
 function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyAllowBrowser = false) {
-  const host = getCurrentHost()
+  switchBackToPrimaryHostIfNeeded()
   let configuration
   if (OPENAI_API_TYPE === "azure") {
     configuration = {
-      baseURL: `${host}/openai/deployments/${getAzureDeploymentIdForModelId(
+      baseURL: `${currentHost}/openai/deployments/${getAzureDeploymentIdForModelId(
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
@@ -124,7 +115,7 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
     }
   } else {
     configuration = {
-      baseURL: `${host}/v1`,
+      baseURL: `${currentHost}/v1`,
       apiKey: apiKey || process.env.OPENAI_API_KEY,
       organization: OPENAI_ORGANIZATION
     }
@@ -190,7 +181,7 @@ export const ChatCompletionStream = async (
     if (error instanceof OpenAI.APIError) {
 
       // Check for 5xx errors and switch to backup host.
-      if (error.status >= 300 && error.status < 600) {
+      if (currentHost !== OPENAI_API_HOST_BACKUP && !error.status || (error.status >= 500 && error.status < 600)) {
         switchToBackupHost()
 
         // Retry the request with the backup host,

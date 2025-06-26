@@ -98,7 +98,7 @@ async function safeFetch(url: string, callOptions: RequestInit): Promise<Respons
       console.error("Request was cancelled", error)
       throw new Error("Request was cancelled")
     }
-    console.error("Unexpected error", error)
+    console.error("Unexpected error in safeFetch", error)
     throw new Error(`Request failed with error ${error}`)
   }
 }
