@@ -19,10 +19,45 @@ import {OpenAIStream, StreamingTextResponse} from "ai"
 import OpenAI from "openai"
 import {ReasoningEffort} from "openai/resources/shared"
 
-import {OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_AZURE_DEPLOYMENT_ID, OPENAI_ORGANIZATION} from "../app/const"
+import {
+  OPENAI_API_HOST,
+  OPENAI_API_HOST_BACKUP,
+  OPENAI_API_TYPE,
+  OPENAI_AZURE_DEPLOYMENT_ID,
+  OPENAI_ORGANIZATION
+} from "../app/const"
 import {Message} from "@/types/chat"
 import {isOpenAIReasoningModel} from "@/types/openai"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
+
+// Host switching mechanism.
+let currentHost = OPENAI_API_HOST
+let switchBackToPrimaryHostTime: number | undefined = undefined
+
+const HOST_SWITCH_DURATION = 30 * 60 * 1000 // 30 minutes in milliseconds.
+
+function switchToPrimaryHost(): void {
+  if (currentHost !== OPENAI_API_HOST) {
+    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
+    currentHost = OPENAI_API_HOST
+  }
+  switchBackToPrimaryHostTime = undefined
+}
+
+function switchToBackupHost(): void {
+  if (currentHost !== OPENAI_API_HOST_BACKUP) {
+    console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${HOST_SWITCH_DURATION / 60000} minutes.`)
+    currentHost = OPENAI_API_HOST_BACKUP
+    switchBackToPrimaryHostTime = Date.now() + HOST_SWITCH_DURATION
+  }
+}
+
+function getCurrentHost(): string {
+  if (switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
+    switchToPrimaryHost()
+  }
+  return currentHost
+}
 
 export class OpenAIError extends Error {
   constructor(message: string) {
@@ -71,10 +106,11 @@ export class OpenAILimitExceeded extends OpenAIError {
 }
 
 function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyAllowBrowser = false) {
+  const host = getCurrentHost()
   let configuration
   if (OPENAI_API_TYPE === "azure") {
     configuration = {
-      baseURL: `${OPENAI_API_HOST}/openai/deployments/${getAzureDeploymentIdForModelId(
+      baseURL: `${host}/openai/deployments/${getAzureDeploymentIdForModelId(
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
@@ -88,7 +124,7 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
     }
   } else {
     configuration = {
-      baseURL: `${OPENAI_API_HOST}/v1`,
+      baseURL: `${host}/v1`,
       apiKey: apiKey || process.env.OPENAI_API_KEY,
       organization: OPENAI_ORGANIZATION
     }
@@ -134,13 +170,13 @@ export const ChatCompletionStream = async (
         ],
         ...(isReasoningModel
           ? {
-              reasoning_effort: reasoningEffort as ReasoningEffort,
-              max_completion_tokens: maxTokens
-            }
+            reasoning_effort: reasoningEffort as ReasoningEffort,
+            max_completion_tokens: maxTokens
+          }
           : {
-              temperature,
-              max_tokens: maxTokens
-            }),
+            temperature,
+            max_tokens: maxTokens
+          }),
         stream: true
       })
       .asResponse()
@@ -152,6 +188,58 @@ export const ChatCompletionStream = async (
   } catch (error) {
     console.log(error)
     if (error instanceof OpenAI.APIError) {
+
+      // Check for 5xx errors and switch to backup host.
+      if (error.status >= 300 && error.status < 600) {
+        switchToBackupHost()
+
+        // Retry the request with the backup host,
+        const newConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+        const newOpenai = createOpenAiClient(newConfiguration)
+
+        try {
+          const response = await newOpenai.chat.completions
+            .create({
+              model: modelId,
+              messages: [
+                {
+                  role: isReasoningModel ? "developer" : "system",
+                  content: systemPrompt
+                },
+                ...messages
+              ],
+              ...(isReasoningModel
+                ? {
+                  reasoning_effort: reasoningEffort as ReasoningEffort,
+                  max_completion_tokens: maxTokens
+                }
+                : {
+                  temperature,
+                  max_tokens: maxTokens
+                }),
+              stream: true
+            })
+            .asResponse()
+
+          const stream = OpenAIStream(response)
+          return new StreamingTextResponse(stream)
+        } catch (retryError) {
+
+          // If retry also fails, throw the original error.
+          console.error("Retry with backup host also failed:", retryError)
+
+          // Assert to avoid type warning.
+          if (error instanceof OpenAI.APIError && retryError instanceof OpenAI.APIError) {
+            error = retryError
+          }
+        }
+      }
+
+      // Assert to avoid type warning.
+      if (!(error instanceof OpenAI.APIError)) {
+        throw new Error(`Assertion failed: ${error} is not an instance of APIError`)
+      }
+
       if (error.status === 401) {
         throw new OpenAIAuthError(error.message)
       }

@@ -34,6 +34,9 @@ export const OPENAI_API_TYPE = process.env.OPENAI_API_TYPE ?? "openai"
 // The host URI; for OpenAI only.
 export const OPENAI_API_HOST = process.env.OPENAI_API_HOST ?? "https://api.openai.com"
 
+// The backup host URI; for OpenAI only.
+export const OPENAI_API_HOST_BACKUP = process.env.OPENAI_API_HOST_BACKUP ?? OPENAI_API_HOST
+
 // The API version.
 export const OPENAI_API_VERSION = process.env.OPENAI_API_VERSION ?? "2023-03-15-preview"
 
