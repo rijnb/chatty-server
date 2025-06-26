@@ -146,8 +146,6 @@ const handler = async (req: Request): Promise<Response> => {
           console.error(`${OPENAI_API_TYPE} backup returned an error, ${backupResponse}`)
           responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
         }
-
-        // If backup host request succeeded, use this response
       } catch (backupError) {
 
         // Backup host response throws an HTTP error.
