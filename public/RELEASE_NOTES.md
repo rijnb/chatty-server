@@ -163,6 +163,7 @@ _Rijn Buve & Oleksii Kulyk_
 #### Features
 
 - Added new models. 
+- Changed default model to `gpt-5-nano`.
 
 ### 2025-05-15
 
