@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
       responseInit = {status: 500, statusText: error ? JSON.stringify(error) : ""}
     }
   }
-  console.error(`Returning HTTP errpr: ${responseInit}`)
+  console.error(`Returning HTTP error: ${JSON.stringify(responseInit)}`)
   return new Response("Error", responseInit)
 }
 
