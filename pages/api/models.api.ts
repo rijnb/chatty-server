@@ -15,15 +15,24 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {isOpenAIReasoningModel, maxInputTokensForModel, maxOutputTokensForModel, OpenAIModel} from "@/types/openai"
+import {RemoteError} from "@/hooks/useFetch"
+import {
+  isOpenAIReasoningModel,
+  maxInputTokensForModel,
+  maxOutputTokensForModel,
+  OpenAIModel,
+  OpenAIModels
+} from "@/types/openai"
 import {
   OPENAI_API_HOST,
   OPENAI_API_HOST_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
-  OPENAI_ORGANIZATION, SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  OPENAI_ORGANIZATION,
+  SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "@/utils/app/const"
-import {RemoteError} from "@/hooks/useFetch"
+
+// Host switching mechanism.
 
 // Host switching mechanism.
 let currentHost = OPENAI_API_HOST
@@ -31,7 +40,9 @@ let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
   if (currentHost !== OPENAI_API_HOST_BACKUP) {
-    console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`)
+    console.log(
+      `Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`
+    )
     currentHost = OPENAI_API_HOST_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   }
@@ -49,17 +60,22 @@ function switchBackToPrimaryHostIfNeeded(): void {
 async function processModelsResponse(response: Response): Promise<Response> {
   const json = await response.json()
   const uniqueModelIds = new Set()
-  const models: OpenAIModel[] = json.data
-    .map((model: any) => {
-      return {
-        id: model.id,
-        inputTokenLimit: maxInputTokensForModel(model.id),
-        outputTokenLimit: maxOutputTokensForModel(model.id),
-        isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
-      }
-    })
-    .filter(Boolean)
-    .filter((model: OpenAIModel) => model.inputTokenLimit > 0)
+
+  // TODO: Remove temporary solution to add and remove specific models for a specific (Azure) deployment.
+  const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"], OpenAIModels["gpt-4o-mini"]] : []
+  const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
+
+  // Find models to display.
+  const models: OpenAIModel[] = json.data.map((model: any) => {
+    return {
+      id: model.id,
+      inputTokenLimit: maxInputTokensForModel(model.id),
+      outputTokenLimit: maxOutputTokensForModel(model.id),
+      isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
+    }
+  })
+    .filter((model: any) => !removeVisibleModels.includes(model.id))
+    .concat(addHiddenModels)
     .filter((model: OpenAIModel) => {
       if (uniqueModelIds.has(model.id)) {
         return false
@@ -106,22 +122,20 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const response = await fetch(url, {headers: headers})
     if (response.ok) {
-
       // Primary host OK.
       return await processModelsResponse(response)
     } else {
-
       // Primary host response not OK.
       console.error(`Getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
       responseInit = {status: 500, statusText: response ? JSON.stringify(response) : ""}
     }
   } catch (error) {
-
     // Primary host response returns HTTP error.
     console.error(`${OPENAI_API_TYPE} threw an exception, ${error}`)
-    if (currentHost !== OPENAI_API_HOST_BACKUP &&
-      (!(error instanceof RemoteError) || (error.status >= 500 && error.status < 600))) {
-
+    if (
+      currentHost !== OPENAI_API_HOST_BACKUP &&
+      (!(error instanceof RemoteError) || (error.status >= 500 && error.status < 600))
+    ) {
       // Exception was thrown because remote server returns an error.
       // If it's a 5xx error and we're not already using the backup host, try the backup host.
       console.log(`Switching to backup host due to error: ${error}`)
@@ -137,23 +151,19 @@ const handler = async (req: Request): Promise<Response> => {
       try {
         const backupResponse = await fetch(backupUrl, {headers: headers})
         if (backupResponse.ok) {
-
           // Backup host OK.
           return await processModelsResponse(backupResponse)
         } else {
-
           // Backup host response not OK.
           console.error(`${OPENAI_API_TYPE} backup returned an error, ${backupResponse}`)
           responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
         }
       } catch (backupError) {
-
         // Backup host response throws an HTTP error.
         console.error(`${OPENAI_API_TYPE} backup threw an exception, ${backupError}`)
         responseInit = {status: 500, statusText: backupError ? JSON.stringify(backupError) : ""}
       }
     } else {
-
       // Some other exception. No retry.
       console.error(`Exception thrown, error: ${error}`)
       responseInit = {status: 500, statusText: error ? JSON.stringify(error) : ""}
