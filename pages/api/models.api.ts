@@ -112,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
     } else {
 
       // Primary host response not OK.
-      console.error(`${OPENAI_API_TYPE} returned an error, ${response}`)
+      console.error(`Getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
       responseInit = {status: 500, statusText: response ? JSON.stringify(response) : ""}
     }
   } catch (error) {
