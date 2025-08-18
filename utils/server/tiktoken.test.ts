@@ -76,7 +76,7 @@ describe("Tiktoken", () => {
           }
         ]
 
-        expect(encoder.numberOfTokensInConversation(messages, "gpt-35-turbo")).toEqual(23)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-5-nano")).toEqual(23)
       })
 
       it("should count tokens2", async () => {
@@ -92,7 +92,7 @@ describe("Tiktoken", () => {
             content: "ping"
           }
         ]
-        expect(encoder.numberOfTokensInConversation(messages, "gpt-35-turbo")).toEqual(20)
+        expect(encoder.numberOfTokensInConversation(messages, "gpt-5-nano")).toEqual(20)
       })
     })
   })

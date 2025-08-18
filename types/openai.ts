@@ -73,4 +73,4 @@ export const isOpenAIReasoningModel = (modelId: string) => {
   return OpenAIModels[modelId]?.openAIReasoningModel ?? false
 }
 
-export const FALLBACK_OPENAI_MODEL = "gpt-35-turbo"
+export const FALLBACK_OPENAI_MODEL = "gpt-5-nano"
