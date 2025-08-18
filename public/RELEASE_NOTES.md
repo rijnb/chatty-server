@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-08-18
+
+#### Features
+
+- Added new models. 
+
 ### 2025-05-15
 
 #### Features

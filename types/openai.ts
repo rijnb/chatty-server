@@ -51,14 +51,14 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
   ["gpt-4-turbo"]: {id: "gpt-4-turbo", inputTokenLimit: K128, outputTokenLimit: K4},
   ["gpt-4o"]: {id: "gpt-4o", inputTokenLimit: K128, outputTokenLimit: K4},
   ["gpt-4o-mini"]: {id: "gpt-4o-mini", inputTokenLimit: K128, outputTokenLimit: K16},
-  ["o3-mini"]: {id: "o3-mini", inputTokenLimit: K128, outputTokenLimit: K32, openAIReasoningModel: true},
-  ["o3-pro"]: {id: "o3-pro", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
-  ["o4-mini"]: {id: "o4-mini", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
-  ["codex-mini"]: {id: "codex-mini", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
-  ["gpt-5"]: {id: "gpt-5", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
-  ["gpt-5-chat"]: {id: "gpt-5-chat", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
-  ["gpt-5-mini"]: {id: "gpt-5-mini", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
-  ["gpt-5-nano"]: {id: "gpt-5-nano", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
+  // ["o3-mini"]: {id: "o3-mini", inputTokenLimit: K128, outputTokenLimit: K32, openAIReasoningModel: true},
+  // ["o3-pro"]: {id: "o3-pro", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
+  // ["o4-mini"]: {id: "o4-mini", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
+  // ["codex-mini"]: {id: "codex-mini", inputTokenLimit: K200, outputTokenLimit: K100, openAIReasoningModel: true},
+  // ["gpt-5"]: {id: "gpt-5", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
+  // ["gpt-5-chat"]: {id: "gpt-5-chat", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
+  // ["gpt-5-mini"]: {id: "gpt-5-mini", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
+  // ["gpt-5-nano"]: {id: "gpt-5-nano", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
 }
 
 export const maxInputTokensForModel = (modelId: string) => {
