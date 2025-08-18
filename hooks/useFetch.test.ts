@@ -199,7 +199,7 @@ describe("useFetch", () => {
 
       await expect(useFetch().get("/api/test")).rejects.toThrow("Network error")
 
-      expect(console.error).toHaveBeenCalledWith("Unexpected error", new Error("Network error"))
+      expect(console.error).toHaveBeenCalledWith("Unexpected error in safeFetch", new Error("Network error"))
       expect(fetchMock.mock.calls).toHaveLength(1)
       expect(fetchMock.mock.lastCall).toStrictEqual(["/api/test", {method: "GET"}])
     })
