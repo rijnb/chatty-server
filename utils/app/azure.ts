@@ -17,23 +17,26 @@
  */
 
 export const getAzureDeploymentIdForModelId = (deploymentId: string, modelId: string) => {
+  // Drop "-YYYY-MM-DD" from model name.
+  const cleanModelId = modelId.replace(/-\d{4}-\d{2}-\d{2}$/, "")
+
   // Use a ';'-separated list of IDs.
   const ids = deploymentId.split(";")
 
-  // If there are no IDs, return the modelId.
+  // If there are no IDs, return the cleanModelId.
   if (ids.length === 0) {
-    return modelId
+    return cleanModelId
   }
 
-  // Find an exact match for an ID ending in modelId.
-  const found = ids.filter((id) => id.endsWith(modelId))
+  // Find an exact match for an ID ending in cleanModelId.
+  const found = ids.filter((id) => id.endsWith(cleanModelId))
   if (found.length > 0) {
     return found[0]
   }
 
-  // Otherwise, replace the prefix if there's a "-" in modelId.
+  // Otherwise, replace the prefix if there's a "-" in cleanModelId.
   if (ids[0].includes("-")) {
-    return deploymentId.split("-")[0] + "-" + modelId
+    return deploymentId.split("-")[0] + "-" + cleanModelId
   } else {
     return ids[0]
   }
