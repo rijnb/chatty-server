@@ -63,7 +63,9 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
 
 const normalizeModelId = (modelId: string): string => {
   // Strip a trailing date suffix like -YYYY-MM-DD (e.g., gpt-5-nano-2025-02-02 -> gpt-5-nano).
-  return modelId.replace(/-\d{4}-\d{2}-\d{2}$/i, "")
+  // For now, we won't do this, because it seems dated models are not always well supported.
+  // Code to nowmalize: return modelId.replace(/-\d{4}-\d{2}-\d{2}$/i, "")
+  return modelId
 }
 
 export const maxInputTokensForModel = (modelId: string) => {
