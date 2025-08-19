@@ -48,7 +48,7 @@ function switchToBackupHost(): void {
 
 function switchBackToPrimaryHostIfNeeded(): void {
   if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
-    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
+    console.log(`Switching to primary host: ${OPENAI_API_HOST}`)
     currentHost = OPENAI_API_HOST
     switchBackToPrimaryHostTime = undefined
   }
@@ -121,6 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
     })
   }
 
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
   try {
     const response = await fetch(url, {headers: headers})
     if (response.ok) {
