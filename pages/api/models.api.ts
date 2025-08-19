@@ -33,8 +33,6 @@ import {
 } from "@/utils/app/const"
 
 // Host switching mechanism.
-
-// Host switching mechanism.
 let currentHost = OPENAI_API_HOST
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
@@ -56,7 +54,16 @@ function switchBackToPrimaryHostIfNeeded(): void {
   }
 }
 
-// Helper function to process the models response
+function createGetModelsUrls(host: string): string {
+  let url = `${host}/v1/models`
+  if (OPENAI_API_TYPE === "azure") {
+    url = `${host}/openai/models?api-version=${OPENAI_API_VERSION}`
+  }
+  console.debug(`Get models (${OPENAI_API_TYPE}): ${url}`)
+  return url
+}
+
+// Helper function to process the models response.
 async function processModelsResponse(response: Response): Promise<Response> {
   const json = await response.json()
   const uniqueModelIds = new Set()
@@ -89,22 +96,17 @@ async function processModelsResponse(response: Response): Promise<Response> {
   return new Response(JSON.stringify(models), {status: 200})
 }
 
-export const config = {
-  runtime: "edge"
-}
-
 const handler = async (req: Request): Promise<Response> => {
   let responseInit: ResponseInit = {status: 500, statusText: ""}
   const {apiKey} = (await req.json()) as {apiKey: string}
 
-  // Use getCurrentHost() to get the current host (primary or backup)
+  // Switch back to primary host after a timeout.
   switchBackToPrimaryHostIfNeeded()
 
-  let url = `${currentHost}/v1/models`
-  if (OPENAI_API_TYPE === "azure") {
-    url = `${currentHost}/openai/models?api-version=${OPENAI_API_VERSION}`
-  }
-  console.debug(`Get models (${OPENAI_API_TYPE}): ${url}`)
+  // Compose URL to get models.
+  let url = createGetModelsUrls(currentHost)
+
+  // Compose HTTP headers.
   const headers = {
     "Content-Type": "application/json",
     ...(OPENAI_API_TYPE === "openai" && {
@@ -125,28 +127,23 @@ const handler = async (req: Request): Promise<Response> => {
       // Primary host OK.
       return await processModelsResponse(response)
     } else {
-      // Primary host response not OK.
-      console.error(`Getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
+      // Primary host response not OK. This should not cause a switch to the backup host.
+      console.error(`Primary host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
       responseInit = {status: 500, statusText: response ? JSON.stringify(response) : ""}
     }
   } catch (error) {
     // Primary host response returns HTTP error.
-    console.error(`${OPENAI_API_TYPE} threw an exception, ${error}`)
+    console.error(`Primary host for '${OPENAI_API_TYPE}' threw an exception; ${JSON.stringify(error)}`)
     if (
       currentHost !== OPENAI_API_HOST_BACKUP &&
       (!(error instanceof RemoteError) || (error.status >= 500 && error.status < 600))
     ) {
-      // Exception was thrown because remote server returns an error.
-      // If it's a 5xx error and we're not already using the backup host, try the backup host.
-      console.log(`Switching to backup host due to error: ${error}`)
+      // Exception was thrown because the primary server (not the backup one) returns an 5xx error.
+      console.log(`Switching to backup host due to error: ${JSON.stringify(error)}`)
       switchToBackupHost()
 
-      // Retry with the backup host.
-      let backupUrl = `${currentHost}/v1/models`
-      if (OPENAI_API_TYPE === "azure") {
-        backupUrl = `${currentHost}/openai/models?api-version=${OPENAI_API_VERSION}`
-      }
-      console.debug(`Retrying get models with backup host (${OPENAI_API_TYPE}): ${backupUrl}`)
+      // Retry with the backup host. Recreate the URL with the new host. HTTP headers remains the same.
+      let backupUrl = createGetModelsUrls(currentHost)
 
       try {
         const backupResponse = await fetch(backupUrl, {headers: headers})
@@ -155,22 +152,28 @@ const handler = async (req: Request): Promise<Response> => {
           return await processModelsResponse(backupResponse)
         } else {
           // Backup host response not OK.
-          console.error(`${OPENAI_API_TYPE} backup returned an error, ${backupResponse}`)
+          console.error(`Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(backupResponse)}`)
           responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
         }
       } catch (backupError) {
         // Backup host response throws an HTTP error.
-        console.error(`${OPENAI_API_TYPE} backup threw an exception, ${backupError}`)
+        console.error(`Backup host for '${OPENAI_API_TYPE}' threw an exception: ${JSON.stringify(error)}`)
+
+        // Return a 5xx error.
         responseInit = {status: 500, statusText: backupError ? JSON.stringify(backupError) : ""}
       }
     } else {
       // Some other exception. No retry.
-      console.error(`Exception thrown, error: ${error}`)
+      console.error(`Primary host for '${OPENAI_API_TYPE}' returned a non-5xx error: ${JSON.stringify(error)}`)
       responseInit = {status: 500, statusText: error ? JSON.stringify(error) : ""}
     }
   }
   console.error(`Returning HTTP error: ${JSON.stringify(responseInit)}`)
   return new Response("Error", responseInit)
+}
+
+export const config = {
+  runtime: "edge"
 }
 
 export default handler
