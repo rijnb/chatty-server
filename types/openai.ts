@@ -58,19 +58,16 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
   ["gpt-5"]: {id: "gpt-5", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
   ["gpt-5-chat"]: {id: "gpt-5-chat", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
   ["gpt-5-mini"]: {id: "gpt-5-mini", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
-  ["gpt-5-nano"]: {id: "gpt-5-nano", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true},
+  ["gpt-5-nano"]: {id: "gpt-5-nano", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true}
 }
 
-export const maxInputTokensForModel = (modelId: string) => {
-  return OpenAIModels[modelId]?.inputTokenLimit ?? 0
-}
+export const maxInputTokensForModel = (modelId: string) =>
+  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.inputTokenLimit ?? 0 : 0
 
-export const maxOutputTokensForModel = (modelId: string) => {
-  return OpenAIModels[modelId]?.outputTokenLimit ?? 0
-}
+export const maxOutputTokensForModel = (modelId: string) =>
+  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.outputTokenLimit ?? 0 : 0
 
-export const isOpenAIReasoningModel = (modelId: string) => {
-  return OpenAIModels[modelId]?.openAIReasoningModel ?? false
-}
+export const isOpenAIReasoningModel = (modelId: string) =>
+  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.openAIReasoningModel ?? false : false
 
 export const FALLBACK_OPENAI_MODEL = "gpt-5-nano"
