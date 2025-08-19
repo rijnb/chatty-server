@@ -129,7 +129,9 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             value={modelId}
             onChange={handleModelChange}
           >
-            {models.map((model) => (
+            {models
+              .filter((model) => model.inputTokenLimit > 0 && model.outputTokenLimit > 0)
+              .map((model) => (
               <option key={model.id} value={model.id}>
                 {model.id}
               </option>
