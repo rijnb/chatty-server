@@ -45,12 +45,8 @@ export const ChatInputTokenCount = ({content, inputTokenLimit}: Props) => {
   const messages: Message[] = useMemo(() => selectedConversation?.messages ?? [], [selectedConversation?.messages])
   const modelId = selectedConversation?.modelId ?? defaultModelId
 
-  if (!encoder || !inputTokenLimit || !selectedConversation) {
-    return null
-  }
-
-  const tokenCount = tokensInConversation + encoder.numberOfTokensInString(content ?? "")
-  const tokenPercentage = Math.min(100, Math.max(5, Math.floor((tokenCount / inputTokenLimit) * 100)))
+  const tokenCount = tokensInConversation + (encoder ? encoder.numberOfTokensInString(content ?? "") : 0)
+  const tokenPercentage = inputTokenLimit ? Math.min(100, Math.max(5, Math.floor((tokenCount / inputTokenLimit) * 100))) : 1
 
   const handleClearConversationMessages = () => {
     if (confirm(t("Are you sure you want to clear the messages from this conversation?")) && selectedConversation) {
@@ -86,6 +82,10 @@ export const ChatInputTokenCount = ({content, inputTokenLimit}: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encoder, messages, modelId, prompt])
+
+  if (!encoder || !inputTokenLimit || !selectedConversation) {
+    return null
+  }
 
   const backgroundColor = theme == "dark" ? "#404050" : "#f0f0f0"
   let textColor = theme == "dark" ? "text-neutral-300" : "text-neutral-800"
