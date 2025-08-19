@@ -61,13 +61,24 @@ export const OpenAIModels: Record<string, OpenAIModel> = {
   ["gpt-5-nano"]: {id: "gpt-5-nano", inputTokenLimit: K400, outputTokenLimit: K128, openAIReasoningModel: true}
 }
 
-export const maxInputTokensForModel = (modelId: string) =>
-  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.inputTokenLimit ?? 0 : 0
+const normalizeModelId = (modelId: string): string => {
+  // Strip a trailing date suffix like -YYYY-MM-DD (e.g., gpt-5-nano-2025-02-02 -> gpt-5-nano).
+  return modelId.replace(/-\d{4}-\d{2}-\d{2}$/i, "")
+}
 
-export const maxOutputTokensForModel = (modelId: string) =>
-  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.outputTokenLimit ?? 0 : 0
+export const maxInputTokensForModel = (modelId: string) => {
+  const baseId = normalizeModelId(modelId)
+  return OpenAIModels.hasOwnProperty(baseId) ? OpenAIModels[baseId]?.inputTokenLimit ?? 0 : 0
+}
 
-export const isOpenAIReasoningModel = (modelId: string) =>
-  OpenAIModels.hasOwnProperty(modelId) ? OpenAIModels[modelId]?.openAIReasoningModel ?? false : false
+export const maxOutputTokensForModel = (modelId: string) => {
+  const baseId = normalizeModelId(modelId)
+  return OpenAIModels.hasOwnProperty(baseId) ? OpenAIModels[baseId]?.outputTokenLimit ?? 0 : 0
+}
+
+export const isOpenAIReasoningModel = (modelId: string) => {
+  const baseId = normalizeModelId(modelId)
+  return OpenAIModels.hasOwnProperty(baseId) ? OpenAIModels[baseId]?.openAIReasoningModel ?? false : false
+}
 
 export const FALLBACK_OPENAI_MODEL = "gpt-5-nano"
