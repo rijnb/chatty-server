@@ -138,7 +138,7 @@ export const ChatCompletionStream = async (
   reasoningEffort: string
 ) => {
   const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-  const openai = createOpenAiClient(configuration)
+  const openAiClient = createOpenAiClient(configuration)
 
   if (messages.length === 0) {
     throw new Error("No messages in history")
@@ -148,8 +148,9 @@ export const ChatCompletionStream = async (
   const isReasoningModel = isOpenAIReasoningModel(modelId)
 
   // Ask OpenAI for a streaming chat completion given the prompt
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
   try {
-    const response = await openai.chat.completions
+    const response = await openAiClient.chat.completions
       .create({
         model: modelId,
         messages: [
@@ -185,11 +186,12 @@ export const ChatCompletionStream = async (
         switchToBackupHost()
 
         // Retry the request with the backup host,
-        const newConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-        const newOpenai = createOpenAiClient(newConfiguration)
+        const backupConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+        const backupOpenAiClient = createOpenAiClient(backupConfiguration)
 
+        console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
         try {
-          const response = await newOpenai.chat.completions
+          const response = await backupOpenAiClient.chat.completions
             .create({
               model: modelId,
               messages: [
