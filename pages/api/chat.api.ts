@@ -17,7 +17,7 @@
  */
 import cl100k_base from "js-tiktoken/ranks/cl100k_base"
 
-import {ChatBody, Message, getMessageAsString} from "@/types/chat"
+import {ChatBody, getMessageAsString, Message} from "@/types/chat"
 import {maxInputTokensForModel} from "@/types/openai"
 import {OPENAI_API_MAX_TOKENS, OPENAI_DEFAULT_SYSTEM_PROMPT, OPENAI_DEFAULT_TEMPERATURE} from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"

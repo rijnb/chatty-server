@@ -34,6 +34,9 @@ export const OPENAI_API_TYPE = process.env.OPENAI_API_TYPE ?? "openai"
 // The host URI; for OpenAI only.
 export const OPENAI_API_HOST = process.env.OPENAI_API_HOST ?? "https://api.openai.com"
 
+// The backup host URI; for OpenAI only.
+export const OPENAI_API_HOST_BACKUP = process.env.OPENAI_API_HOST_BACKUP ?? OPENAI_API_HOST
+
 // The API version.
 export const OPENAI_API_VERSION = process.env.OPENAI_API_VERSION ?? "2023-03-15-preview"
 
@@ -56,7 +59,8 @@ export const OPENAI_REUSE_MODEL = (process.env.OPENAI_REUSE_MODEL && process.env
 export const OPENAI_ALLOW_MODEL_SELECTION =
   (process.env.OPENAI_ALLOW_MODEL_SELECTION && process.env.OPENAI_ALLOW_MODEL_SELECTION == "true") ?? false
 
+export const OPENAI_DEFAULT_REASONING_EFFORT = process.env.OPENAI_DEFAULT_REASONING_EFFORT ?? "medium"
+
 // Other constants.
 export const NEW_CONVERSATION_TITLE = "New conversation"
-
-export const OPENAI_DEFAULT_REASONING_EFFORT = process.env.OPENAI_DEFAULT_REASONING_EFFORT ?? "medium"
+export const SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS = 5 * 60 * 1000

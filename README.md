@@ -107,22 +107,22 @@ You should be able to start chatting at `http://localhost:3000/`.
 
 When deploying the application, the following environment variables can be set:
 
-| Environment Variable         | Default value                  | Description                                                                                                                               |
-| ---------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| OPENAI_API_KEY               |                                | The default API key used for authentication with OpenAI                                                                                   |
-| OPENAI_API_HOST              | `https://api.openai.com`       | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
-| OPENAI_API_TYPE              | `openai`                       | The API type, options are `openai` or `azure`                                                                                             |
-| OPENAI_API_VERSION           | `2023-03-15-preview`           | Only applicable for Azure OpenAI                                                                                                          |
-| OPENAI_UNLOCK_CODE           |                                | If set, the UI requires a user to unlock the UI before being able to use it.                                                              |
-| OPENAI_AZURE_DEPLOYMENT_ID   | `PTU-;dep-gpt-35-turbo`        | Needed when Azure OpenAI, Ref [Azure OpenAI API](https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/reference#completions) |
-| OPENAI_ORGANIZATION          |                                | Your OpenAI organization ID                                                                                                               |
-| OPENAI_DEFAULT_MODEL         | `gpt-3.5-turbo`                | The default model to use on new conversations, for Azure use `gpt-35-turbo`                                                               |
+| Environment Variable         | Default value                 | Description                                                                                                                               |
+| ---------------------------- |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| OPENAI_API_KEY               |                               | The default API key used for authentication with OpenAI                                                                                   |
+| OPENAI_API_HOST              | `https://api.openai.com`      | The base url, for Azure use `https://<endpoint>.openai.azure.com`                                                                         |
+| OPENAI_API_TYPE              | `openai`                      | The API type, options are `openai` or `azure`                                                                                             |
+| OPENAI_API_VERSION           | `2023-03-15-preview`          | Only applicable for Azure OpenAI                                                                                                          |
+| OPENAI_UNLOCK_CODE           |                               | If set, the UI requires a user to unlock the UI before being able to use it.                                                              |
+| OPENAI_AZURE_DEPLOYMENT_ID   | `PTU-;dep-gpt-5-nano`         | Needed when Azure OpenAI, Ref [Azure OpenAI API](https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/reference#completions) |
+| OPENAI_ORGANIZATION          |                               | Your OpenAI organization ID                                                                                                               |
+| OPENAI_DEFAULT_MODEL         | `gpt-5-nano`                  | The default model to use on new conversations, for Azure use `gpt-5-nano`                                                                 |
 | OPENAI_DEFAULT_SYSTEM_PROMPT | [see here](utils/app/const.ts) | The default system prompt to use on new conversations                                                                                     |
-| OPENAI_REUSE_MODEL           | true                           | Reuse a manually selected model for the next conversation, or fall back to the default model every time                                   |
-| OPENAI_ALLOW_MODEL_SELECTION | true                           | Allow the user to selected a different model than the default model                                                                       |
-| OPENAI_DEFAULT_TEMPERATURE   | 1                              | The default temperature to use on new conversations                                                                                       |
-| GOOGLE_API_KEY               |                                | See [Custom Search JSON API documentation][GCSE]                                                                                          |
-| GOOGLE_CSE_ID                |                                | See [Custom Search JSON API documentation][GCSE]                                                                                          |
+| OPENAI_REUSE_MODEL           | true                          | Reuse a manually selected model for the next conversation, or fall back to the default model every time                                   |
+| OPENAI_ALLOW_MODEL_SELECTION | true                          | Allow the user to selected a different model than the default model                                                                       |
+| OPENAI_DEFAULT_TEMPERATURE   | 1                             | The default temperature to use on new conversations                                                                                       |
+| GOOGLE_API_KEY               |                               | See [Custom Search JSON API documentation][GCSE]                                                                                          |
+| GOOGLE_CSE_ID                |                               | See [Custom Search JSON API documentation][GCSE]                                                                                          |
 
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 The same applies to the Google Search keys.
@@ -135,8 +135,8 @@ Note: The value of `OPENAI_AZURE_DEPLOYMENT_ID` is a list of 1 or more IDs.
 - Otherwise, if there's no "-" in the first ID, the first ID is used as-is.
 
 This makes it possible to always append a specific prefix to the model, or to use a specific prefix for a specific
-model. For example, if `OPENAI_AZURE_DEPLOYMENT_ID` is `dep-;PTU-gpt-35-turbo`, then the prefix `dep-` would be
-used for every model, except for `PTU-gpt-35-turbo`, which would used unmodified. As you see, the first ID
+model. For example, if `OPENAI_AZURE_DEPLOYMENT_ID` is `dep-;PTU-gpt-5-nano`, then the prefix `dep-` would be
+used for every model, except for `PTU-gpt-5-nano`, which would used unmodified. As you see, the first ID
 does not need to be a full model name, it can just be a prefix, but it should contain a "-".
 
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
