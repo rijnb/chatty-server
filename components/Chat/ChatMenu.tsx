@@ -26,7 +26,13 @@ import useScreenshot from "@/components/Hooks/useScreenshot"
 import {FormLabel, FormText, Range, Select} from "@/components/Styled"
 import {useHomeContext} from "@/pages/api/home/home.context"
 import {Conversation} from "@/types/chat"
-import {OpenAIModel, isOpenAIReasoningModel, maxOutputTokensForModel} from "@/types/openai"
+import {
+  OpenAIModel,
+  getDateFromModelId,
+  getModelIdWithoutDate,
+  isOpenAIReasoningModel,
+  maxOutputTokensForModel
+} from "@/types/openai"
 import {
   OPENAI_API_MAX_TOKENS,
   OPENAI_DEFAULT_REASONING_EFFORT,
@@ -129,13 +135,53 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             value={modelId}
             onChange={handleModelChange}
           >
-            {models
-              .filter((model) => model.inputTokenLimit > 0 && model.outputTokenLimit > 0)
-              .map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.id}
-              </option>
-            ))}
+            {(() => {
+              // 1) First, filter out unsupported models.
+              const supported = models.filter((m) => m.inputTokenLimit > 0 && m.outputTokenLimit > 0)
+
+              // 2) Group by base ID and keep the newest dated variant (or undated if none).
+              const byBase: Record<string, OpenAIModel> = {}
+              for (const model of supported) {
+                const base = getModelIdWithoutDate(model.id)
+                const date = getDateFromModelId(model.id) // string like YYYY-MM-DD | undefined.
+
+                const current = byBase[base]
+                if (!current) {
+                  byBase[base] = model
+                  continue
+                }
+                const currentDate = getDateFromModelId(current.id)
+
+                // Prefer undated version; if both have dates, prefer the newer one.
+                const shouldReplace =
+                  (!currentDate && !date) ? false : // Both undated, keep current
+                  (!currentDate && !!date) ? false : // Current undated, new dated - keep undated
+                  (!!currentDate && !date) ? true :  // Current dated, new undated - prefer undated
+                  (!!date && !!currentDate && date > currentDate) // Both dated, prefer newer
+                if (shouldReplace) {
+                  byBase[base] = model
+                }
+                // Keep current model if no replacement needed.
+              }
+
+              // 3) Turn into a list and sort for stable display (optional: by base name).
+              const uniqueLatest = Object.values(byBase).sort((a, b) => {
+                const aBase = getModelIdWithoutDate(a.id)
+                const bBase = getModelIdWithoutDate(b.id)
+                return aBase.localeCompare(bBase)
+              })
+
+              return uniqueLatest.map((model) => {
+                const base = getModelIdWithoutDate(model.id)
+                const date = getDateFromModelId(model.id)
+                const label = date ? `${base} (${date})` : base
+                return (
+                  <option key={model.id} value={model.id}>
+                    {label}
+                  </option>
+                )
+              })
+            })()}
           </Select>
         </div>
 
@@ -225,7 +271,9 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
             onClick={toggleMenu}
             title="Change model settings"
           >
-            {conversation.modelId}
+            {getModelIdWithoutDate(conversation.modelId) +
+              (getDateFromModelId(conversation.modelId) ?
+              " (" + getDateFromModelId(conversation.modelId) + ")" : "")}
           </button>
 
           <button
