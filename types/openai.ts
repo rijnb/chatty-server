@@ -25,7 +25,7 @@
  */
 
 export interface OpenAIModel {
-  id: string // The model identifier.
+  id: string // The real model identifier.
   inputTokenLimit: number // The maximum number of input tokens for this model; if 0, the model is not supported.
   outputTokenLimit: number // The maximum number of output tokens for this model; if 0, the model is not supported.
   openAIReasoningModel?: boolean // Indicates if the model is an OpenAI reasoning model like o1 or o3-mini.

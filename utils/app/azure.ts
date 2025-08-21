@@ -16,12 +16,12 @@
  * SOFTWARE.
  */
 
-export const getAzureDeploymentIdForModelId = (deploymentId: string, modelId: string) => {
+export const getAzureDeploymentIdForModelId = (deploymentIdPrefixes: string, modelId: string) => {
   // Drop "-YYYY-MM-DD" from model name.
   const cleanModelId = modelId.replace(/-\d{4}-\d{2}-\d{2}$/, "")
 
   // Use a ';'-separated list of IDs.
-  const ids = deploymentId.split(";")
+  const ids = deploymentIdPrefixes.split(";")
 
   // If there are no IDs, return the cleanModelId.
   if (ids.length === 0) {
@@ -36,8 +36,32 @@ export const getAzureDeploymentIdForModelId = (deploymentId: string, modelId: st
 
   // Otherwise, replace the prefix if there's a "-" in cleanModelId.
   if (ids[0].includes("-")) {
-    return deploymentId.split("-")[0] + "-" + cleanModelId
+    return deploymentIdPrefixes.split("-")[0] + "-" + cleanModelId
   } else {
     return ids[0]
   }
+}
+
+export const getModelIdFromAzureDeploymentId = (deploymentIdPrefixes: string, modelId: string) => {
+  // Use a ';'-separated list of prefixes.
+  const prefixes = deploymentIdPrefixes.split(";")
+
+  // If there are no prefixes, return the modelId as-is.
+  if (prefixes.length === 0) {
+    return modelId
+  }
+
+  // Check if the first prefix contains a "-", indicating an optional prefix for modelId.
+  const firstPrefix = prefixes[0]
+  if (firstPrefix.includes("-")) {
+    const optionalPrefix = firstPrefix.split("-")[0] + "-"
+
+    // If modelId starts with the optional prefix, remove it.
+    if (modelId.startsWith(optionalPrefix)) {
+      return modelId.substring(optionalPrefix.length)
+    }
+  }
+
+  // Return the modelId as-is if no prefix removal is needed.
+  return modelId
 }

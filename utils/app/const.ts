@@ -47,7 +47,7 @@ export const OPENAI_API_MAX_TOKENS = parseInt(process.env.OPENAI_MAX_TOKENS ?? "
 export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION ?? ""
 
 // The Azure deployment ID; for Azure only.
-export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID ?? ""
+export const OPENAI_AZURE_DEPLOYMENT_ID = process.env.OPENAI_AZURE_DEPLOYMENT_ID ?? "dep-;"
 
 // The default model to use if the user's model is not supported.
 export const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL ?? FALLBACK_OPENAI_MODEL

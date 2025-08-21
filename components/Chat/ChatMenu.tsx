@@ -34,11 +34,12 @@ import {
   maxOutputTokensForModel
 } from "@/types/openai"
 import {
-  OPENAI_API_MAX_TOKENS,
+  OPENAI_API_MAX_TOKENS, OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_DEFAULT_REASONING_EFFORT,
   OPENAI_DEFAULT_SYSTEM_PROMPT,
   OPENAI_DEFAULT_TEMPERATURE
 } from "@/utils/app/const"
+import {getModelIdFromAzureDeploymentId} from "@/utils/app/azure"
 
 interface Props {
   conversation: Conversation
@@ -142,7 +143,8 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
               // 2) Group by base ID and keep the newest dated variant (or undated if none).
               const byBase: Record<string, OpenAIModel> = {}
               for (const model of supported) {
-                const base = getModelIdWithoutDate(model.id)
+                const cleanId = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, model.id)
+                const base = getModelIdWithoutDate(cleanId)
                 const date = getDateFromModelId(model.id) // string like YYYY-MM-DD | undefined.
 
                 const current = byBase[base]
@@ -166,13 +168,13 @@ const ChatMenu = ({conversation, container, models, onUpdateConversation, onOpen
 
               // 3) Turn into a list and sort for stable display (optional: by base name).
               const uniqueLatest = Object.values(byBase).sort((a, b) => {
-                const aBase = getModelIdWithoutDate(a.id)
-                const bBase = getModelIdWithoutDate(b.id)
+                const aBase = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, getModelIdWithoutDate(a.id))
+                const bBase = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, getModelIdWithoutDate(b.id))
                 return aBase.localeCompare(bBase)
               })
 
               return uniqueLatest.map((model) => {
-                const base = getModelIdWithoutDate(model.id)
+                const base = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, getModelIdWithoutDate(model.id))
                 const date = getDateFromModelId(model.id)
                 const label = date ? `${base} (${date})` : base
                 return (

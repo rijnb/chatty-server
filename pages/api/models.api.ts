@@ -16,21 +16,17 @@
  * SOFTWARE.
  */
 import {RemoteError} from "@/hooks/useFetch"
-import {
-  isOpenAIReasoningModel,
-  maxInputTokensForModel,
-  maxOutputTokensForModel,
-  OpenAIModel,
-  OpenAIModels
-} from "@/types/openai"
+import {isOpenAIReasoningModel, maxInputTokensForModel, maxOutputTokensForModel, OpenAIModel} from "@/types/openai"
 import {
   OPENAI_API_HOST,
   OPENAI_API_HOST_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
+  OPENAI_AZURE_DEPLOYMENT_ID,
   OPENAI_ORGANIZATION,
   SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "@/utils/app/const"
+import {getModelIdFromAzureDeploymentId} from "@/utils/app/azure"
 
 // Host switching mechanism.
 let currentHost = OPENAI_API_HOST
@@ -57,47 +53,44 @@ function switchBackToPrimaryHostIfNeeded(): void {
 function createGetModelsUrls(host: string): string {
   let url = `${host}/v1/models?api-version=${OPENAI_API_VERSION}`
   if (OPENAI_API_TYPE === "azure") {
-    url = `${host}/openai/models?api-version=${OPENAI_API_VERSION}`
+    url = `${host}/openai/deployments?api-version=${OPENAI_API_VERSION}`
   }
   console.debug(`Get models (${OPENAI_API_TYPE}): ${url}`)
   return url
 }
 
 // Helper function to process the models response.
-async function processModelsResponse(response: Response): Promise<Response> {
+async function processModelsResponse(response: Response): Promise<OpenAIModel[]> {
   const json = await response.json()
   const uniqueModelIds = new Set()
 
-  // TODO: Remove temporary solution to add and remove specific models for a specific (Azure) deployment.
-  const addHiddenModels = OPENAI_API_TYPE === "azure" ? [OpenAIModels["gpt-4o"], OpenAIModels["gpt-4o-mini"]] : []
-  const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
-
   // Find models to display.
-  const models: OpenAIModel[] = json.data.map((model: any) => {
-    return {
-      id: model.id,
-      inputTokenLimit: maxInputTokensForModel(model.id),
-      outputTokenLimit: maxOutputTokensForModel(model.id),
-      isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
-    }
-  })
-    .filter((model: any) => !removeVisibleModels.includes(model.id))
-    .concat(addHiddenModels)
+  const models: OpenAIModel[] = json.data
+    .map((model: any) => {
+      const cleanId = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, model.id)
+      return {
+        id: model.id,
+        inputTokenLimit: maxInputTokensForModel(cleanId),
+        outputTokenLimit: maxOutputTokensForModel(cleanId),
+        isOpenAiReasoningModel: isOpenAIReasoningModel(cleanId)
+      }
+    })
     .filter((model: OpenAIModel) => {
-      if (uniqueModelIds.has(model.id)) {
+      const cleanId = getModelIdFromAzureDeploymentId(OPENAI_AZURE_DEPLOYMENT_ID, model.id)
+      if (uniqueModelIds.has(cleanId)) {
         return false
       } else {
-        uniqueModelIds.add(model.id)
+        uniqueModelIds.add(cleanId)
         return true
       }
     })
     .sort((a: OpenAIModel, b: OpenAIModel) => a.id.localeCompare(b.id))
   console.debug(`Found ${models.length} models: ${models.map((model) => model.id).join(", ")}`)
-  return new Response(JSON.stringify(models), {status: 200})
+  return models
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  let responseInit: ResponseInit = {status: 500, statusText: ""}
+  let resultResponse: Response
   const {apiKey} = (await req.json()) as {apiKey: string}
 
   // Switch back to primary host after a timeout.
@@ -123,14 +116,18 @@ const handler = async (req: Request): Promise<Response> => {
 
   console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
   try {
-    const response = await fetch(url, {headers: headers})
-    if (response.ok) {
+    const modelsResponse = await fetch(url, {headers: headers})
+    if (modelsResponse.ok) {
       // Primary host OK.
-      return await processModelsResponse(response)
+      const models = await processModelsResponse(modelsResponse)
+      resultResponse = new Response(JSON.stringify(models), {status: 200})
     } else {
       // Primary host response not OK. This should not cause a switch to the backup host.
-      console.error(`Primary host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
-      responseInit = {status: 500, statusText: response ? JSON.stringify(response) : ""}
+      console.error(`Primary host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(modelsResponse)}`)
+      resultResponse = new Response("Error", {
+        status: 500,
+        statusText: modelsResponse ? JSON.stringify(modelsResponse) : ""
+      })
     }
   } catch (error) {
     // Primary host response returns HTTP error.
@@ -150,27 +147,36 @@ const handler = async (req: Request): Promise<Response> => {
         const backupResponse = await fetch(backupUrl, {headers: headers})
         if (backupResponse.ok) {
           // Backup host OK.
-          return await processModelsResponse(backupResponse)
+          const models = await processModelsResponse(backupResponse)
+          resultResponse = new Response(JSON.stringify(models), {status: 200})
         } else {
           // Backup host response not OK.
           console.error(`Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(backupResponse)}`)
-          responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
+          resultResponse = resultResponse = new Response("Error", {
+            status: 500,
+            statusText: backupResponse ? JSON.stringify(backupResponse) : ""
+          })
         }
       } catch (backupError) {
         // Backup host response throws an HTTP error.
         console.error(`Backup host for '${OPENAI_API_TYPE}' threw an exception: ${JSON.stringify(error)}`)
 
         // Return a 5xx error.
-        responseInit = {status: 500, statusText: backupError ? JSON.stringify(backupError) : ""}
+        resultResponse = resultResponse = new Response("Error", {
+          status: 500,
+          statusText: backupError ? JSON.stringify(backupError) : ""
+        })
       }
     } else {
       // Some other exception. No retry.
       console.error(`Primary host for '${OPENAI_API_TYPE}' returned a non-5xx error: ${JSON.stringify(error)}`)
-      responseInit = {status: 500, statusText: error ? JSON.stringify(error) : ""}
+      resultResponse = resultResponse = new Response("Error", {
+        status: 500,
+        statusText: error ? JSON.stringify(error) : ""
+      })
     }
   }
-  console.error(`Returning HTTP error: ${JSON.stringify(responseInit)}`)
-  return new Response("Error", responseInit)
+  return resultResponse
 }
 
 export const config = {
