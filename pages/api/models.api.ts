@@ -55,7 +55,7 @@ function switchBackToPrimaryHostIfNeeded(): void {
 }
 
 function createGetModelsUrls(host: string): string {
-  let url = `${host}/v1/models`
+  let url = `${host}/v1/models?api-version=${OPENAI_API_VERSION}`
   if (OPENAI_API_TYPE === "azure") {
     url = `${host}/openai/models?api-version=${OPENAI_API_VERSION}`
   }
