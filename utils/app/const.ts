@@ -31,10 +31,16 @@ export const OPENAI_DEFAULT_TEMPERATURE = parseFloat(process.env.OPENAI_DEFAULT_
 // The API type; "openai" or "azure".
 export const OPENAI_API_TYPE = process.env.OPENAI_API_TYPE ?? "openai"
 
-// The host URI; for OpenAI only.
+// The API key for the primary host.
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? ""
+
+// The API key for the backup host.
+export const OPENAI_API_KEY_BACKUP = process.env.OPENAI_API_KEY_BACKUP ?? OPENAI_API_KEY
+
+// The primary host URI.
 export const OPENAI_API_HOST = process.env.OPENAI_API_HOST ?? "https://api.openai.com"
 
-// The backup host URI; for OpenAI only.
+// The backup host URI.
 export const OPENAI_API_HOST_BACKUP = process.env.OPENAI_API_HOST_BACKUP ?? OPENAI_API_HOST
 
 // The API version.
