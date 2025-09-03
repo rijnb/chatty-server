@@ -33,11 +33,10 @@ import {
   OPENAI_ORGANIZATION,
   SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "@/utils/app/const"
-import assert from "node:assert"
 
 // Host switching mechanism.
-let currentHost: string | undefined = undefined
-let currentApiKey: string | undefined = undefined
+let currentHost = ""
+let currentApiKey = ""
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
@@ -109,8 +108,6 @@ const handler = async (req: Request): Promise<Response> => {
 
   // Switch back to primary host after a timeout.
   switchBackToPrimaryHostIfNeeded()
-  assert(currentHost)
-  assert(currentApiKey)
 
   // Compose URL to get models.
   let url = createGetModelsUrls(currentHost)
@@ -118,14 +115,14 @@ const handler = async (req: Request): Promise<Response> => {
   const headers = {
     "Content-Type": "application/json",
     ...(OPENAI_API_TYPE === "openai" && {
-      Authorization: `Bearer ${currentApiKey}`
+      Authorization: `Bearer ${apiKey ?? currentApiKey}`
     }),
     ...(OPENAI_API_TYPE === "openai" &&
       OPENAI_ORGANIZATION && {
         "OpenAI-Organization": OPENAI_ORGANIZATION
       }),
     ...(OPENAI_API_TYPE === "azure" && {
-      "api-key": currentApiKey
+      "api-key": apiKey ?? currentApiKey
     })
   }
 

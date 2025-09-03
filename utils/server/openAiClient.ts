@@ -32,11 +32,10 @@ import {
 import {Message} from "@/types/chat"
 import {isOpenAIReasoningModel} from "@/types/openai"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
-import assert from "node:assert"
 
 // Host switching mechanism.
-let currentHost: string | undefined = undefined
-let currentApiKey: string | undefined = undefined
+let currentHost = ""
+let currentApiKey = ""
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
@@ -105,8 +104,6 @@ export class OpenAILimitExceeded extends OpenAIError {
 
 function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyAllowBrowser = false) {
   switchBackToPrimaryHostIfNeeded()
-  assert(currentHost)
-  assert(currentApiKey)
 
   let configuration
   if (OPENAI_API_TYPE === "azure") {
@@ -115,18 +112,18 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
-      apiKey: currentApiKey,
+      apiKey: apiKey ?? currentApiKey,
       defaultQuery: {
         "api-version": process.env.OPENAI_API_VERSION
       },
       defaultHeaders: {
-        "api-key": currentApiKey
+        "api-key": apiKey ?? currentApiKey
       }
     }
   } else {
     configuration = {
       baseURL: `${currentHost}/v1`,
-      apiKey: currentApiKey,
+      apiKey: apiKey ?? currentApiKey,
       organization: OPENAI_ORGANIZATION
     }
   }
