@@ -47,6 +47,8 @@ function switchToBackupHost(): void {
     currentHost = OPENAI_API_HOST_BACKUP
     currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  } else {
+    switchBackToPrimaryHostIfNeeded(true)
   }
 }
 
@@ -142,35 +144,32 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error) {
     // Primary host response returns HTTP error.
     console.error(`Primary host for '${OPENAI_API_TYPE}' threw an exception; ${JSON.stringify(error)}`)
-    if (
-      currentHost !== OPENAI_API_HOST_BACKUP &&
-      (!(error instanceof RemoteError) || (error.status >= 500 && error.status < 600))
-    ) {
+    if (!(error instanceof RemoteError) || (error.status >= 500 && error.status < 600)) {
       // Exception was thrown because the primary server (not the backup one) returns an 5xx error.
       console.log(`Switching to backup host due to error: ${JSON.stringify(error)}`)
       switchToBackupHost()
 
       // Retry with the backup host. Recreate the URL with the new host. HTTP headers remains the same.
-      let backupUrl = createGetModelsUrls(currentHost)
+      let retryUrl = createGetModelsUrls(currentHost)
 
       try {
-        const backupResponse = await fetch(backupUrl, {headers: headers})
-        if (backupResponse.ok) {
+        const retryResponse = await fetch(retryUrl, {headers: headers})
+        if (retryResponse.ok) {
           // Backup host OK.
-          return await processModelsResponse(backupResponse)
+          return await processModelsResponse(retryResponse)
         } else {
           // Backup host response not OK.
           console.error(
-            `Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(backupResponse)}`
+            `Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(retryResponse)}`
           )
-          responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
+          responseInit = {status: 500, statusText: retryResponse ? JSON.stringify(retryResponse) : ""}
         }
-      } catch (backupError) {
+      } catch (retryError) {
         // Backup host response throws an HTTP error.
         console.error(`Backup host for '${OPENAI_API_TYPE}' threw an exception: ${JSON.stringify(error)}`)
 
         // Return a 5xx error.
-        responseInit = {status: 500, statusText: backupError ? JSON.stringify(backupError) : ""}
+        responseInit = {status: 500, statusText: retryError ? JSON.stringify(retryError) : ""}
       }
     } else {
       // Some other exception. No retry.

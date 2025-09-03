@@ -45,7 +45,7 @@ function switchToBackupHost(): void {
     currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   } else {
-    console.log(`Switching to backup host: no backup host defined`)
+    switchBackToPrimaryHostIfNeeded(true)
   }
 }
 
@@ -220,16 +220,16 @@ export const ChatCompletionStream = async (
     if (error instanceof OpenAI.APIError) {
 
       // Check for 5xx errors and switch to backup host.
-      if (currentHost !== OPENAI_API_HOST_BACKUP && !error.status || (error.status >= 500 && error.status < 600)) {
+      if (!error.status || (error.status >= 500 && error.status < 600)) {
         switchToBackupHost()
 
         // Retry the request with the backup host,
-        const backupConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-        const backupOpenAiClient = createOpenAiClient(backupConfiguration)
+        const retryConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+        const retryOpenAiClient = createOpenAiClient(retryConfiguration)
 
         console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
         try {
-          const response = await backupOpenAiClient.chat.completions
+          const retryResponse = await retryOpenAiClient.chat.completions
             .create({
               model: modelId,
               messages: [
@@ -252,8 +252,8 @@ export const ChatCompletionStream = async (
             })
             .asResponse()
 
-          const stream = OpenAIStream(response)
-          return new StreamingTextResponse(stream)
+          const retryStream = OpenAIStream(retryResponse)
+          return new StreamingTextResponse(retryStream)
         } catch (retryError) {
 
           // If retry also fails, throw the original error.
