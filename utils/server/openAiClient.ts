@@ -22,9 +22,12 @@ import {ReasoningEffort} from "openai/resources/shared"
 import {
   OPENAI_API_HOST,
   OPENAI_API_HOST_BACKUP,
+  OPENAI_API_KEY,
+  OPENAI_API_KEY_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_AZURE_DEPLOYMENT_ID,
-  OPENAI_ORGANIZATION, SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  OPENAI_ORGANIZATION,
+  SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "../app/const"
 import {Message} from "@/types/chat"
 import {isOpenAIReasoningModel} from "@/types/openai"
@@ -32,20 +35,23 @@ import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
 // Host switching mechanism.
 let currentHost = OPENAI_API_HOST
+let currentApiKey = OPENAI_API_KEY
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
   if (currentHost !== OPENAI_API_HOST_BACKUP) {
     console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`)
     currentHost = OPENAI_API_HOST_BACKUP
+    currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   }
 }
 
-function switchBackToPrimaryHostIfNeeded(): void {
-  if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
-    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
+function switchBackToPrimaryHostIfNeeded(forced = false): void {
+  if (forced || (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime)) {
+    console.log(`Switching back to primary host${forced ? " (forced)" : ""}: ${OPENAI_API_HOST_BACKUP}`)
     currentHost = OPENAI_API_HOST
+    currentApiKey = OPENAI_API_KEY
     switchBackToPrimaryHostTime = undefined
   }
 }
@@ -105,18 +111,18 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
-      apiKey: apiKey || process.env.OPENAI_API_KEY,
+      apiKey: currentApiKey,
       defaultQuery: {
         "api-version": process.env.OPENAI_API_VERSION
       },
       defaultHeaders: {
-        "api-key": apiKey || process.env.OPENAI_API_KEY
+        "api-key": currentApiKey
       }
     }
   } else {
     configuration = {
       baseURL: `${currentHost}/v1`,
-      apiKey: apiKey || process.env.OPENAI_API_KEY,
+      apiKey: currentApiKey,
       organization: OPENAI_ORGANIZATION
     }
   }
@@ -125,6 +131,33 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
 
 function createOpenAiClient(configuration: any) {
   return new OpenAI(configuration)
+}
+
+// Implement sme "secret" terminal commands for debugging.
+function handleTerminalCommands(messages: Message[]) {
+  let terminalCommand: string | undefined = undefined
+  if (messages.length > 0) {
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage.content && lastMessage.content.length > 0) {
+      const content = lastMessage.content[0]
+      if (typeof content === "string") {
+        terminalCommand = content
+      } else if (content.type === "text") {
+        terminalCommand = content.text
+      }
+    }
+  }
+  if (terminalCommand) {
+    console.info(`Terminal command: ${terminalCommand}`)
+  }
+  switch (terminalCommand) {
+    case "@backup":
+      switchToBackupHost()
+      break
+    case "@primary":
+      switchBackToPrimaryHostIfNeeded(true)
+      break
+  }
 }
 
 export const ChatCompletionStream = async (
@@ -137,12 +170,14 @@ export const ChatCompletionStream = async (
   dangerouslyAllowBrowser = false,
   reasoningEffort: string
 ) => {
-  const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-  const openAiClient = createOpenAiClient(configuration)
-
   if (messages.length === 0) {
     throw new Error("No messages in history")
   }
+  handleTerminalCommands(messages)
+
+  const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+  const openAiClient = createOpenAiClient(configuration)
+
 
   // Check if the model is a reasoning model
   const isReasoningModel = isOpenAIReasoningModel(modelId)

@@ -15,19 +15,24 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Readability } from "@mozilla/readability";
-import endent from "endent";
-import jsdom, { JSDOM } from "jsdom";
-import { NextApiRequest, NextApiResponse } from "next";
+import {Readability} from "@mozilla/readability"
+import endent from "endent"
+import jsdom, {JSDOM} from "jsdom"
+import {NextApiRequest, NextApiResponse} from "next"
 
 
-
-import { Message, getMessageAsStringOnlyText } from "@/types/chat";
-import { GoogleBody, GoogleSource } from "@/types/google";
-import { getAzureDeploymentIdForModelId } from "@/utils/app/azure";
-import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_AZURE_DEPLOYMENT_ID, OPENAI_ORGANIZATION } from "@/utils/app/const";
-import { trimForPrivacy } from "@/utils/app/privacy";
-import { cleanSourceText } from "@/utils/server/google";
+import {getMessageAsStringOnlyText, Message} from "@/types/chat"
+import {GoogleBody, GoogleSource} from "@/types/google"
+import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
+import {
+  OPENAI_API_HOST,
+  OPENAI_API_TYPE,
+  OPENAI_API_VERSION,
+  OPENAI_AZURE_DEPLOYMENT_ID,
+  OPENAI_ORGANIZATION
+} from "@/utils/app/const"
+import {trimForPrivacy} from "@/utils/app/privacy"
+import {cleanSourceText} from "@/utils/server/google"
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -126,16 +131,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       )}/chat/completions?api-version=${OPENAI_API_VERSION}`
     }
     console.debug(`Google search, POST:${OPENAI_API_TYPE}`)
-    const realApiKey =
-      apiKey || (currentHost === OPENAI_API_HOST ? process.env.OPENAI_API_KEY : process.env.OPENAI_API_KEY_BACKUP)
+    const primaryApiKey = apiKey || process.env.OPENAI_API_KEY
     const answerRes = await fetch(`${url}`, {
       headers: {
         "Content-Type": "application/json",
         ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${realApiKey}`
+          Authorization: `Bearer ${primaryApiKey}`
         }),
         ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${realApiKey}`
+          "api-key": `${primaryApiKey}`
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {

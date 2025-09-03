@@ -15,15 +15,28 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { RemoteError } from "@/hooks/useFetch";
-import { OpenAIModel, OpenAIModels, isOpenAIReasoningModel, maxInputTokensForModel, maxOutputTokensForModel } from "@/types/openai";
-import { OPENAI_API_HOST, OPENAI_API_HOST_BACKUP, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION, SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS } from "@/utils/app/const";
-
-
-// Host switching mechanism.
+import {RemoteError} from "@/hooks/useFetch"
+import {
+  isOpenAIReasoningModel,
+  maxInputTokensForModel,
+  maxOutputTokensForModel,
+  OpenAIModel,
+  OpenAIModels
+} from "@/types/openai"
+import {
+  OPENAI_API_HOST,
+  OPENAI_API_HOST_BACKUP,
+  OPENAI_API_KEY,
+  OPENAI_API_KEY_BACKUP,
+  OPENAI_API_TYPE,
+  OPENAI_API_VERSION,
+  OPENAI_ORGANIZATION,
+  SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+} from "@/utils/app/const"
 
 // Host switching mechanism.
 let currentHost = OPENAI_API_HOST
+let currentApiKey = OPENAI_API_KEY
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
@@ -32,6 +45,7 @@ function switchToBackupHost(): void {
       `Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`
     )
     currentHost = OPENAI_API_HOST_BACKUP
+    currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   }
 }
@@ -40,6 +54,7 @@ function switchBackToPrimaryHostIfNeeded(): void {
   if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
     console.log(`Switching to primary host: ${OPENAI_API_HOST}`)
     currentHost = OPENAI_API_HOST
+    currentApiKey = OPENAI_API_KEY
     switchBackToPrimaryHostTime = undefined
   }
 }
@@ -97,21 +112,17 @@ const handler = async (req: Request): Promise<Response> => {
   // Compose URL to get models.
   let url = createGetModelsUrls(currentHost)
 
-  // Compose HTTP headers.
-  const realApiKey =
-    apiKey || (currentHost === OPENAI_API_HOST ? process.env.OPENAI_API_KEY : process.env.OPENAI_API_KEY_BACKUP)
-
   const headers = {
     "Content-Type": "application/json",
     ...(OPENAI_API_TYPE === "openai" && {
-      Authorization: `Bearer ${realApiKey}`
+      Authorization: `Bearer ${currentApiKey}`
     }),
     ...(OPENAI_API_TYPE === "openai" &&
       OPENAI_ORGANIZATION && {
         "OpenAI-Organization": OPENAI_ORGANIZATION
       }),
     ...(OPENAI_API_TYPE === "azure" && {
-      "api-key": `${realApiKey}`
+      "api-key": currentApiKey
     })
   }
 
