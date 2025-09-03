@@ -44,6 +44,8 @@ function switchToBackupHost(): void {
     currentHost = OPENAI_API_HOST_BACKUP
     currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  } else {
+    console.log(`Switching to backup host: no backup host defined`)
   }
 }
 
@@ -152,10 +154,10 @@ function handleTerminalCommands(messages: Message[]) {
     console.info(`Terminal command: ${terminalCommand}`)
   }
   switch (terminalCommand) {
-    case "@backup":
+    case "@chatty:backup":
       switchToBackupHost()
       break
-    case "@primary":
+    case "@chatty:primary":
       switchBackToPrimaryHostIfNeeded(true)
       break
   }
@@ -184,7 +186,7 @@ export const ChatCompletionStream = async (
   const isReasoningModel = isOpenAIReasoningModel(modelId)
 
   // Ask OpenAI for a streaming chat completion given the prompt
-  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
   try {
     const response = await openAiClient.chat.completions
       .create({
@@ -225,7 +227,7 @@ export const ChatCompletionStream = async (
         const backupConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
         const backupOpenAiClient = createOpenAiClient(backupConfiguration)
 
-        console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
+        console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
         try {
           const response = await backupOpenAiClient.chat.completions
             .create({

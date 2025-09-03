@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
     })
   }
 
-  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
   try {
     const response = await fetch(url, {headers: headers})
     if (response.ok) {
