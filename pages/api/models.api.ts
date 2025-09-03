@@ -100,7 +100,7 @@ async function processModelsResponse(response: Response): Promise<Response> {
       }
     })
     .sort((a: OpenAIModel, b: OpenAIModel) => a.id.localeCompare(b.id))
-  console.debug(`Found ${models.length} models: ${models.map((model) => model.id).join(", ")}`)
+  console.debug(`Found ${models.length} models`)
   return new Response(JSON.stringify(models), {status: 200})
 }
 
