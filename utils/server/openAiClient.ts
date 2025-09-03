@@ -183,7 +183,7 @@ export const ChatCompletionStream = async (
   const isReasoningModel = isOpenAIReasoningModel(modelId)
 
   // Ask OpenAI for a streaming chat completion given the prompt
-  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}/${currentApiKey}`)
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
   try {
     const response = await openAiClient.chat.completions
       .create({
@@ -224,7 +224,7 @@ export const ChatCompletionStream = async (
         const backupConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
         const backupOpenAiClient = createOpenAiClient(backupConfiguration)
 
-        console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}/${currentApiKey}`)
+        console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
         try {
           const response = await backupOpenAiClient.chat.completions
             .create({

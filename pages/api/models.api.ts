@@ -64,7 +64,7 @@ function createGetModelsUrls(host: string): string {
   if (OPENAI_API_TYPE === "azure") {
     url = `${host}/openai/models?api-version=${OPENAI_API_VERSION}`
   }
-  console.debug(`Get models (${OPENAI_API_TYPE}): ${url}`)
+  console.debug(`Get models (for ${OPENAI_API_TYPE}): ${url}`)
   return url
 }
 
@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
     })
   }
 
-  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}/${currentApiKey}`)
+  console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost} with ${currentApiKey}`)
   try {
     const response = await fetch(url, {headers: headers})
     if (response.ok) {
