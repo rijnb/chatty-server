@@ -33,10 +33,11 @@ import {
   OPENAI_ORGANIZATION,
   SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "@/utils/app/const"
+import assert from "node:assert"
 
 // Host switching mechanism.
-let currentHost = OPENAI_API_HOST
-let currentApiKey = OPENAI_API_KEY
+let currentHost: string | undefined = undefined
+let currentApiKey: string | undefined = undefined
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
@@ -50,9 +51,9 @@ function switchToBackupHost(): void {
   }
 }
 
-function switchBackToPrimaryHostIfNeeded(): void {
-  if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
-    console.log(`Switching to primary host: ${OPENAI_API_HOST}`)
+function switchBackToPrimaryHostIfNeeded(forced = false): void {
+  if (forced || !currentHost || (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime)) {
+    console.log(`Switching back to primary host${forced ? " (forced)" : ""}: ${OPENAI_API_HOST}`)
     currentHost = OPENAI_API_HOST
     currentApiKey = OPENAI_API_KEY
     switchBackToPrimaryHostTime = undefined
@@ -108,6 +109,8 @@ const handler = async (req: Request): Promise<Response> => {
 
   // Switch back to primary host after a timeout.
   switchBackToPrimaryHostIfNeeded()
+  assert(currentHost)
+  assert(currentApiKey)
 
   // Compose URL to get models.
   let url = createGetModelsUrls(currentHost)
