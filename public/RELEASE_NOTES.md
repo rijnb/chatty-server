@@ -158,6 +158,12 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-09-02
+
+### Features
+
+- Allow backup host to use a different API key.
+
 ### 2025-08-18
 
 #### Features

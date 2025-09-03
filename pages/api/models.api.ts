@@ -26,6 +26,8 @@ import {
 import {
   OPENAI_API_HOST,
   OPENAI_API_HOST_BACKUP,
+  OPENAI_API_KEY,
+  OPENAI_API_KEY_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_API_VERSION,
   OPENAI_ORGANIZATION,
@@ -34,6 +36,7 @@ import {
 
 // Host switching mechanism.
 let currentHost = OPENAI_API_HOST
+let currentApiKey = OPENAI_API_KEY
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
@@ -42,6 +45,7 @@ function switchToBackupHost(): void {
       `Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`
     )
     currentHost = OPENAI_API_HOST_BACKUP
+    currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
   }
 }
@@ -50,6 +54,7 @@ function switchBackToPrimaryHostIfNeeded(): void {
   if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
     console.log(`Switching to primary host: ${OPENAI_API_HOST}`)
     currentHost = OPENAI_API_HOST
+    currentApiKey = OPENAI_API_KEY
     switchBackToPrimaryHostTime = undefined
   }
 }
@@ -73,14 +78,15 @@ async function processModelsResponse(response: Response): Promise<Response> {
   const removeVisibleModels = OPENAI_API_TYPE === "azure" ? ["gpt-35-turbo-16k", "gpt-4", "gpt-4-32k"] : []
 
   // Find models to display.
-  const models: OpenAIModel[] = json.data.map((model: any) => {
-    return {
-      id: model.id,
-      inputTokenLimit: maxInputTokensForModel(model.id),
-      outputTokenLimit: maxOutputTokensForModel(model.id),
-      isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
-    }
-  })
+  const models: OpenAIModel[] = json.data
+    .map((model: any) => {
+      return {
+        id: model.id,
+        inputTokenLimit: maxInputTokensForModel(model.id),
+        outputTokenLimit: maxOutputTokensForModel(model.id),
+        isOpenAiReasoningModel: isOpenAIReasoningModel(model.id)
+      }
+    })
     .filter((model: any) => !removeVisibleModels.includes(model.id))
     .concat(addHiddenModels)
     .filter((model: OpenAIModel) => {
@@ -106,18 +112,17 @@ const handler = async (req: Request): Promise<Response> => {
   // Compose URL to get models.
   let url = createGetModelsUrls(currentHost)
 
-  // Compose HTTP headers.
   const headers = {
     "Content-Type": "application/json",
     ...(OPENAI_API_TYPE === "openai" && {
-      Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
+      Authorization: `Bearer ${currentApiKey}`
     }),
     ...(OPENAI_API_TYPE === "openai" &&
       OPENAI_ORGANIZATION && {
         "OpenAI-Organization": OPENAI_ORGANIZATION
       }),
     ...(OPENAI_API_TYPE === "azure" && {
-      "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
+      "api-key": currentApiKey
     })
   }
 
@@ -129,7 +134,9 @@ const handler = async (req: Request): Promise<Response> => {
       return await processModelsResponse(response)
     } else {
       // Primary host response not OK. This should not cause a switch to the backup host.
-      console.error(`Primary host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`)
+      console.error(
+        `Primary host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(response)}`
+      )
       responseInit = {status: 500, statusText: response ? JSON.stringify(response) : ""}
     }
   } catch (error) {
@@ -153,7 +160,9 @@ const handler = async (req: Request): Promise<Response> => {
           return await processModelsResponse(backupResponse)
         } else {
           // Backup host response not OK.
-          console.error(`Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(backupResponse)}`)
+          console.error(
+            `Backup host for getting models for '${OPENAI_API_TYPE}' returned an error: ${JSON.stringify(backupResponse)}`
+          )
           responseInit = {status: 500, statusText: backupResponse ? JSON.stringify(backupResponse) : ""}
         }
       } catch (backupError) {
