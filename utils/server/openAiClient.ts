@@ -114,18 +114,18 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
-      apiKey: apiKey ?? currentApiKey,
+      apiKey: currentApiKey ?? apiKey,
       defaultQuery: {
         "api-version": process.env.OPENAI_API_VERSION
       },
       defaultHeaders: {
-        "api-key": apiKey ?? currentApiKey
+        "api-key": currentApiKey ?? apiKey
       }
     }
   } else {
     configuration = {
       baseURL: `${currentHost}/v1`,
-      apiKey: apiKey ?? currentApiKey,
+      apiKey: currentApiKey ?? apiKey,
       organization: OPENAI_ORGANIZATION
     }
   }
