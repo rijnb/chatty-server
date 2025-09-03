@@ -117,14 +117,14 @@ const handler = async (req: Request): Promise<Response> => {
   const headers = {
     "Content-Type": "application/json",
     ...(OPENAI_API_TYPE === "openai" && {
-      Authorization: `Bearer ${currentApiKey ?? apiKey}`
+      Authorization: `Bearer ${currentApiKey.length > 0 ? currentApiKey : apiKey}`
     }),
     ...(OPENAI_API_TYPE === "openai" &&
       OPENAI_ORGANIZATION && {
         "OpenAI-Organization": OPENAI_ORGANIZATION
       }),
     ...(OPENAI_API_TYPE === "azure" && {
-      "api-key": currentApiKey ?? apiKey
+      "api-key": currentApiKey.length > 0 ? currentApiKey : apiKey
     })
   }
 
