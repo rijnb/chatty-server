@@ -20,7 +20,8 @@ import endent from "endent"
 import jsdom, {JSDOM} from "jsdom"
 import {NextApiRequest, NextApiResponse} from "next"
 
-import {Message, getMessageAsStringOnlyText} from "@/types/chat"
+
+import {getMessageAsStringOnlyText, Message} from "@/types/chat"
 import {GoogleBody, GoogleSource} from "@/types/google"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 import {
@@ -32,6 +33,7 @@ import {
 } from "@/utils/app/const"
 import {trimForPrivacy} from "@/utils/app/privacy"
 import {cleanSourceText} from "@/utils/server/google"
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -129,14 +131,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       )}/chat/completions?api-version=${OPENAI_API_VERSION}`
     }
     console.debug(`Google search, POST:${OPENAI_API_TYPE}`)
+    const primaryApiKey = apiKey || process.env.OPENAI_API_KEY
     const answerRes = await fetch(`${url}`, {
       headers: {
         "Content-Type": "application/json",
         ...(OPENAI_API_TYPE === "openai" && {
-          Authorization: `Bearer ${apiKey || process.env.OPENAI_API_KEY}`
+          Authorization: `Bearer ${primaryApiKey}`
         }),
         ...(OPENAI_API_TYPE === "azure" && {
-          "api-key": `${apiKey || process.env.OPENAI_API_KEY}`
+          "api-key": `${primaryApiKey}`
         }),
         ...(OPENAI_API_TYPE === "openai" &&
           OPENAI_ORGANIZATION && {

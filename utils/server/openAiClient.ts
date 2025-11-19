@@ -22,30 +22,38 @@ import {ReasoningEffort} from "openai/resources/shared"
 import {
   OPENAI_API_HOST,
   OPENAI_API_HOST_BACKUP,
+  OPENAI_API_KEY,
+  OPENAI_API_KEY_BACKUP,
   OPENAI_API_TYPE,
   OPENAI_AZURE_DEPLOYMENT_ID,
-  OPENAI_ORGANIZATION, SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  OPENAI_ORGANIZATION,
+  SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
 } from "../app/const"
 import {Message} from "@/types/chat"
 import {isOpenAIReasoningModel} from "@/types/openai"
 import {getAzureDeploymentIdForModelId} from "@/utils/app/azure"
 
 // Host switching mechanism.
-let currentHost = OPENAI_API_HOST
+let currentHost = ""
+let currentApiKey = ""
 let switchBackToPrimaryHostTime: number | undefined = undefined
 
 function switchToBackupHost(): void {
   if (currentHost !== OPENAI_API_HOST_BACKUP) {
     console.log(`Switching to backup host: ${OPENAI_API_HOST_BACKUP} for the next ${SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS / 60000} minutes.`)
     currentHost = OPENAI_API_HOST_BACKUP
+    currentApiKey = OPENAI_API_KEY_BACKUP
     switchBackToPrimaryHostTime = Date.now() + SWITCH_BACK_TO_PRIMARY_HOST_TIMEOUT_MS
+  } else {
+    switchBackToPrimaryHostIfNeeded(true)
   }
 }
 
-function switchBackToPrimaryHostIfNeeded(): void {
-  if (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime) {
-    console.log(`Switching back to primary host: ${OPENAI_API_HOST_BACKUP}`)
+function switchBackToPrimaryHostIfNeeded(forced = false): void {
+  if (forced || !currentHost || (currentHost !== OPENAI_API_HOST && switchBackToPrimaryHostTime && Date.now() >= switchBackToPrimaryHostTime)) {
+    console.log(`Switching back to primary host${forced ? " (forced)" : ""}: ${OPENAI_API_HOST}`)
     currentHost = OPENAI_API_HOST
+    currentApiKey = OPENAI_API_KEY
     switchBackToPrimaryHostTime = undefined
   }
 }
@@ -98,6 +106,7 @@ export class OpenAILimitExceeded extends OpenAIError {
 
 function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyAllowBrowser = false) {
   switchBackToPrimaryHostIfNeeded()
+
   let configuration
   if (OPENAI_API_TYPE === "azure") {
     configuration = {
@@ -105,18 +114,18 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
         OPENAI_AZURE_DEPLOYMENT_ID,
         modelId
       )}`,
-      apiKey: apiKey || process.env.OPENAI_API_KEY,
+      apiKey: currentApiKey.length > 0 ? currentApiKey : apiKey,
       defaultQuery: {
         "api-version": process.env.OPENAI_API_VERSION
       },
       defaultHeaders: {
-        "api-key": apiKey || process.env.OPENAI_API_KEY
+        "api-key": currentApiKey.length > 0 ? currentApiKey : apiKey
       }
     }
   } else {
     configuration = {
       baseURL: `${currentHost}/v1`,
-      apiKey: apiKey || process.env.OPENAI_API_KEY,
+      apiKey: currentApiKey.length > 0 ? currentApiKey : apiKey,
       organization: OPENAI_ORGANIZATION
     }
   }
@@ -125,6 +134,33 @@ function createOpenAiConfiguration(apiKey: string, modelId: string, dangerouslyA
 
 function createOpenAiClient(configuration: any) {
   return new OpenAI(configuration)
+}
+
+// Implement sme "secret" terminal commands for debugging.
+function handleTerminalCommands(messages: Message[]) {
+  let terminalCommand: string | undefined = undefined
+  if (messages.length > 0) {
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage.content && lastMessage.content.length > 0) {
+      const content = lastMessage.content[0]
+      if (typeof content === "string") {
+        terminalCommand = content
+      } else if (content.type === "text") {
+        terminalCommand = content.text
+      }
+    }
+  }
+  if (terminalCommand) {
+    console.info(`Terminal command: ${terminalCommand}`)
+  }
+  switch (terminalCommand) {
+    case "@chatty:backup":
+      switchToBackupHost()
+      break
+    case "@chatty:primary":
+      switchBackToPrimaryHostIfNeeded(true)
+      break
+  }
 }
 
 export const ChatCompletionStream = async (
@@ -137,12 +173,14 @@ export const ChatCompletionStream = async (
   dangerouslyAllowBrowser = false,
   reasoningEffort: string
 ) => {
-  const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-  const openAiClient = createOpenAiClient(configuration)
-
   if (messages.length === 0) {
     throw new Error("No messages in history")
   }
+  handleTerminalCommands(messages)
+
+  const configuration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+  const openAiClient = createOpenAiClient(configuration)
+
 
   // Check if the model is a reasoning model
   const isReasoningModel = isOpenAIReasoningModel(modelId)
@@ -182,16 +220,16 @@ export const ChatCompletionStream = async (
     if (error instanceof OpenAI.APIError) {
 
       // Check for 5xx errors and switch to backup host.
-      if (currentHost !== OPENAI_API_HOST_BACKUP && !error.status || (error.status >= 500 && error.status < 600)) {
+      if (!error.status || (error.status >= 500 && error.status < 600)) {
         switchToBackupHost()
 
         // Retry the request with the backup host,
-        const backupConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
-        const backupOpenAiClient = createOpenAiClient(backupConfiguration)
+        const retryConfiguration = createOpenAiConfiguration(apiKey, modelId, dangerouslyAllowBrowser)
+        const retryOpenAiClient = createOpenAiClient(retryConfiguration)
 
         console.debug(`Using ${currentHost === OPENAI_API_HOST ? "primary" : "backup"} host: ${currentHost}`)
         try {
-          const response = await backupOpenAiClient.chat.completions
+          const retryResponse = await retryOpenAiClient.chat.completions
             .create({
               model: modelId,
               messages: [
@@ -214,8 +252,8 @@ export const ChatCompletionStream = async (
             })
             .asResponse()
 
-          const stream = OpenAIStream(response)
-          return new StreamingTextResponse(stream)
+          const retryStream = OpenAIStream(retryResponse)
+          return new StreamingTextResponse(retryStream)
         } catch (retryError) {
 
           // If retry also fails, throw the original error.
