@@ -2,13 +2,8 @@
 
 ![TomTom](./tomtom-icon.png)
 
-**This instance of the ChatGPT is hosted exclusively for TomTom.** 
-Your queries are not shared outside TomTom. 
+Heads-up, TomTom’er! On **January 1, 2026**, we’re shifting from **Chatty** to **Microsoft Chat**. Want to ride along? 
 
-**Important:** Your conversations and prompts are stored in the browser only on your computer. They are not stored on a
-server. Please make sure you make regular backups using the `Export conversations` and `Export user prompts` buttons so
-you can import them, should you lose them due to clearing the browser cache.
-
-Want to know more...? Click the `(?)` in the top menu to learn more about Chatty.
+Click [here](https://support.microsoft.com/en-us/topic/get-started-with-microsoft-365-copilot-chat-5b00a52d-7296-48ee-b938-b95b7209f737) to explore what’s new and how it can help you.
 
 **Have fun!**
