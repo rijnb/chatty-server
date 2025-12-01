@@ -229,7 +229,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     const messageContent: MessagePart[] = [
       {
         type: "text",
-        text: content ? content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
+        text: content ? content.replace(/[\x00-\x1F]/g, " ").replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
       }
     ]
     if (modelId.includes("gpt-4o")) {

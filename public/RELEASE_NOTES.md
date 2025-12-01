@@ -158,9 +158,15 @@ _Rijn Buve & Oleksii Kulyk_
 
 ## Release notes
 
+### 2025-12-01
+
+#### Bug fixes
+
+* Fixed control characters in input to avoid crashes with Markdown plugin.
+
 ### 2025-09-02
 
-### Features
+#### Features
 
 - Allow backup host to use a different API key.
 
