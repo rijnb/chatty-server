@@ -229,7 +229,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
     const messageContent: MessagePart[] = [
       {
         type: "text",
-        text: content ? content.replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
+        text: content ? content.replace(/[\x00-\x1F]/g, ".").replace(/\s+$/, "").replace(/\n{3,}/g, "\n\n") : ""
       }
     ]
     if (modelId.includes("gpt-4o")) {
@@ -414,7 +414,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           </button>
         )}
 
-        <div className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+        <div
+          className="relative mx-4 flex w-full flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
           <button
             className="absolute left-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={() => setShowPluginSelect(!showPluginSelect)}
@@ -436,7 +437,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             title="Browse file"
           >
             {messageIsStreaming ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+              <div
+                className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
             ) : (
               <IconCameraPlus size={18} />
             )}
@@ -463,7 +465,7 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
               disabled
                 ? t("Please wait {{waitTime}} seconds", {waitTime: retryAfter})
                 : prompts.length > 0
-                  ? t('Type a message or type "/" and some characters to search for a prompt...')
+                  ? t("Type a message or type \"/\" and some characters to search for a prompt...")
                   : t("Type a message...")
             }
             value={content}
@@ -483,7 +485,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
             title="Send query"
           >
             {messageIsStreaming ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+              <div
+                className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
             ) : (
               <IconSend size={18} />
             )}
@@ -509,7 +512,8 @@ export const ChatInput = ({modelId, onSend, onRegenerate, stopConversationRef, t
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center px-4 pb-1 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
+      <div
+        className="flex items-center justify-center px-4 pb-1 pt-3 text-center text-[12px] text-black/50 dark:text-white/50">
         <a href="https://github.com/rijnb/chatty-server" target="_blank" rel="noreferrer" className="underline">
           Chatty
         </a>
